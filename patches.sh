@@ -15,7 +15,7 @@ fi
 
 OPT="--since $SINCE "
 
-if [ $UNTIL != "" ]
+if [ $UNTIL ]
 then
 	OPT=$OPT"--until $UNTIL"
 fi
