@@ -5,14 +5,8 @@ import sys
 for line in sys.stdin:
     # patch lines start with "[PATCH"
     line = line.strip()
-    fields = line.split()
-    if (fields[0] == "[PATCH]" or       # Single patch
-            fields[1][-1] == "]" or     # Versioned single patch,
-                                        #  e.g., [PATCH v2]
-            fields[1][0:2] == "0/" or   # First patch in series
-                                        #  e.g., [PATCH 0/3]
-            fields[2][0:2] == "0/"):    # First patch in versioned series
-                                        #  e.g., [PATCH v2 0/3]
-        print(line)
-        continue
-    print("\t", line)
+    fields = line.split(']')[0][1:].split() # e.g., PATCH, PATCH v2, PATCH 1/3
+    series_idx = fields[-1].split('/')[0]
+    if series_idx.isdigit() and int(series_idx) != 0:
+        line = "\t" + line
+    print(line)
