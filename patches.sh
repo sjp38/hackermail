@@ -1,19 +1,19 @@
 #!/bin/bash
 
-if [ $# -gt 0 ]
+if [ $# -lt 1 ]
 then
-	SINCE=$1
+	echo "Usage: $0 <since date> [end date]"
+	exit 1
 fi
+
+SINCE=$1
 
 if [ $# -gt 1 ]
 then
 	UNTIL=$2
 fi
 
-if [ $SINCE != "" ]
-then
-	OPT="--since $SINCE "
-fi
+OPT="--since $SINCE "
 
 if [ $UNTIL != "" ]
 then
