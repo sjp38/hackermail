@@ -6,6 +6,8 @@ then
 	exit 1
 fi
 
+BINDIR=`dirname $0`
+
 SINCE=$1
 
 if [ $# -gt 1 ]
@@ -20,4 +22,4 @@ then
 	OPT=$OPT"--until $UNTIL"
 fi
 
-git log --pretty="%s (%h) %cd" $OPT | grep -e "^\[PATCH*"
+git log --pretty="%s (%h) %cd" $OPT | grep -e "^\[PATCH*" | $BINDIR/_indent_patches.py
