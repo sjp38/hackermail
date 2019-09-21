@@ -22,4 +22,4 @@ then
 	OPT=$OPT"--until $UNTIL"
 fi
 
-git log --pretty="%s (%h) %cd" $OPT | grep -e "^\[PATCH*" | $BINDIR/_indent_patches.py
+git log --reverse --pretty="%s (%h) %cd" $OPT | grep -e "^\[PATCH*" | $BINDIR/_indent_patches.py
