@@ -3,6 +3,8 @@
 import argparse
 import subprocess
 
+INDENT = ' ' * 4
+
 parser = argparse.ArgumentParser()
 parser.add_argument('since', metavar='since', type=str, nargs=1,
         help='Show mails more recent than a specific date.')
@@ -28,7 +30,7 @@ for line in subprocess.run(cmd, stdout=subprocess.PIPE).stdout.decode(
         original_subject = ' '.join(subject_fields[1:])
         if original_subject in duplicate_re_map:
             continue
-        subject = '\t' + subject
+        subject = INDENT + subject
         duplicate_re_map[original_subject] = True
 
     if subject[0] == '[':
@@ -37,6 +39,6 @@ for line in subprocess.run(cmd, stdout=subprocess.PIPE).stdout.decode(
         if tag_fields[0] in ['PATCH', 'RFC']:
             series = tag_fields[-1].split('/')[0]
             if series.isdigit() and int(series) != 0:
-                subject = '\t' + subject
+                subject = INDENT + subject
 
     print("%s [%s] %s" % (gitid, date, subject))
