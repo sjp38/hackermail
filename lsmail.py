@@ -19,5 +19,4 @@ for line in subprocess.run(cmd, stdout=subprocess.PIPE).stdout.decode(
     date = fields[1]
     subject = ' '.join(fields[2:])
 
-#    print(line)
-    print("commit %s\tdate %s\tsubject %s" % (gitid, date, subject))
+    print("%s\t%s\t%s" % (gitid, date, subject))
