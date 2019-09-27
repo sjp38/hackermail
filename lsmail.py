@@ -28,6 +28,7 @@ for line in subprocess.run(cmd, stdout=subprocess.PIPE).stdout.decode(
         original_subject = ' '.join(subject_fields[1:])
         if original_subject in duplicate_re_map:
             continue
+        subject = '\t' + subject
         duplicate_re_map[original_subject] = True
 
     print("%s\t%s\t%s" % (gitid, date, subject))
