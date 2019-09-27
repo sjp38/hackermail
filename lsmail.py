@@ -39,4 +39,4 @@ for line in subprocess.run(cmd, stdout=subprocess.PIPE).stdout.decode(
             if series.isdigit() and int(series) != 0:
                 subject = '\t' + subject
 
-    print("%s\t%s\t%s" % (gitid, date, subject))
+    print("%s [%s] %s" % (gitid, date, subject))
