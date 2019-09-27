@@ -9,7 +9,7 @@ parser.add_argument('since', metavar='since', type=str, nargs=1,
 args = parser.parse_args()
 since = args.since
 
-cmd = ("git log --reverse".split() +
+cmd = ("git log".split() +
         ['--date=iso-strict', '--pretty=%h %ad %s', "--since=%s" % since])
 
 for line in subprocess.run(cmd, stdout=subprocess.PIPE).stdout.decode(
