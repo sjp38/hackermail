@@ -31,4 +31,12 @@ for line in subprocess.run(cmd, stdout=subprocess.PIPE).stdout.decode(
         subject = '\t' + subject
         duplicate_re_map[original_subject] = True
 
+    if subject[0] == '[':
+        tag = subject[1:].split(']')[0].strip()
+        tag_fields = tag.split()
+        if tag_fields[0] in ['PATCH', 'RFC']:
+            series = tag_fields[-1].split('/')[0]
+            if series.isdigit() and int(series) != 0:
+                subject = '\t' + subject
+
     print("%s\t%s\t%s" % (gitid, date, subject))
