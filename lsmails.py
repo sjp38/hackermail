@@ -24,16 +24,18 @@ class Mail:
     gitid = None
     date = None
     subject_fields = None
+    subject = None
+    is_reply = False
+    orig_subject = None
 
     def __init__(self, gitid, date, subject_fields):
         self.gitid = gitid
         self.date = date
         self.subject_fields = subject_fields
-
-    def is_reply(self):
+        self.subject = ' '.join(self.subject_fields)
         if self.subject_fields[0] in ['re:', 'RE:', 'Re:']:
-            return True
-        return False
+            self.is_reply = True
+            self.orig_subject = ' '.join(self.subject_fields[1:])
 
     def get_tag_fields(self):
         subject = ' '.join(self.subject_fields)
@@ -69,14 +71,13 @@ for line in subprocess.run(cmd, stdout=subprocess.PIPE).stdout.decode(
     subject = ' '.join(fields[2:])
     mail = Mail(fields[0], fields[1], fields[2:])
 
-    if mail.is_reply():
+    if mail.is_reply:
         if not 'etc' in types:
             continue
-        original_subject = ' '.join(mail.subject_fields[1:])
-        if original_subject in duplicate_re_map:
+        if mail.orig_subject in duplicate_re_map:
             continue
-        subject = INDENT + subject
-        duplicate_re_map[original_subject] = True
+        duplicate_re_map[mail.orig_subject] = True
+        subject = INDENT + mail.subject
 
     if mail.is_patch() and not 'patch' in types:
         continue
