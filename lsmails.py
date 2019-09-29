@@ -27,37 +27,24 @@ class Mail:
     subject = None
     is_reply = False
     orig_subject = None
+    is_patch = False
+    patch_tag_fields = None
 
     def __init__(self, gitid, date, subject_fields):
         self.gitid = gitid
         self.date = date
         self.subject_fields = subject_fields
         self.subject = ' '.join(self.subject_fields)
+
         if self.subject_fields[0] in ['re:', 'RE:', 'Re:']:
             self.is_reply = True
             self.orig_subject = ' '.join(self.subject_fields[1:])
 
-    def get_tag_fields(self):
-        subject = ' '.join(self.subject_fields)
-        if subject[0] != '[':
-            return None
-        tag = subject[1:].split(']')[0].strip()
-        return tag.split()
-
-    def is_patch(self):
-        tag_fields = self.get_tag_fields()
-        if not tag_fields:
-            return False
-        if tag_fields[0] == 'PATCH':
-            return True
-        return False
-
-    def is_rfc(self):
-        tag_fields = self.get_tag_fields()
-        if not tag_fields:
-            return False
-        if tag_fields[0] == 'RFC':
-            return True
+        if self.subject[0] == '[':
+            tag = subject[1:].split(']')[0].strip()
+            self.patch_tag_fields = tag.split()
+            if len(self.patch_tag_fields) > 0:
+                self.is_patch = True
 
 duplicate_re_map = {}
 to_print = []
@@ -79,14 +66,12 @@ for line in subprocess.run(cmd, stdout=subprocess.PIPE).stdout.decode(
         duplicate_re_map[mail.orig_subject] = True
         subject = INDENT + mail.subject
 
-    if mail.is_patch() and not 'patch' in types:
+    if mail.is_patch and mail.patch_tag_fields[0] == 'PATCH' and not 'patch' in types:
         continue
-    if mail.is_rfc() and not 'rfc' in types:
+    if mail.is_patch and mail.patch_tag_fields[0] == 'RFC' and not 'rfc' in types:
         continue
-    if mail.is_patch() or mail.is_rfc():
-        tag = subject[1:].split(']')[0].strip()
-        tag_fields = tag.split()
-        series = tag_fields[-1].split('/')[0]
+    if mail.is_patch:
+        series = mail.patch_tag_fields[-1].split('/')[0]
         if series.isdigit() and int(series) != 0:
             subject = INDENT + subject
     elif not 'etc' in types:
