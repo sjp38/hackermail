@@ -54,14 +54,7 @@ for line in subprocess.run(cmd, stdout=subprocess.PIPE).stdout.decode(
     mail = Mail(fields[0], fields[1], fields[2:])
     indent = ""
 
-    if mail.is_reply:
-        if not 'etc' in types:
-            continue
-        if mail.orig_subject in duplicate_re_map:
-            continue
-        duplicate_re_map[mail.orig_subject] = True
-        indent = INDENT
-    elif mail.is_patch:
+    if mail.is_patch:
         # TODO: [patch] [PATCHSET] [RESEND], etc
         if mail.patch_tag_fields[0] == 'PATCH' and not 'patch' in types:
             continue
@@ -70,8 +63,14 @@ for line in subprocess.run(cmd, stdout=subprocess.PIPE).stdout.decode(
         series = mail.patch_tag_fields[-1].split('/')[0]
         if series.isdigit() and int(series) != 0:
             indent = INDENT
-    elif not 'etc' in types:
+    else:
+        if not 'etc' in types:
             continue
+        if mail.is_reply:
+            if mail.orig_subject in duplicate_re_map:
+                continue
+            duplicate_re_map[mail.orig_subject] = True
+            indent = INDENT
 
     to_print.append("%s [%s] %s%s" % (mail.gitid, mail.date, indent, mail.subject))
 
