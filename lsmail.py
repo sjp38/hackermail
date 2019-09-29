@@ -20,22 +20,37 @@ if not types or 'all' in types:
 cmd = ("git log".split() +
         ['--date=iso-strict', '--pretty=%h %ad %s', "--since=%s" % since])
 
+class Mail:
+    gitid = None
+    date = None
+    subject_fields = None
+
+    def __init__(self, gitid, date, subject_fields):
+        self.gitid = gitid
+        self.date = date
+        self.subject_fields = subject_fields
+
+    def is_reply(self):
+        if self.subject_fields[0] in ['re:', 'RE:', 'Re:']:
+            return True
+        return False
+
 duplicate_re_map = {}
-
 to_print = []
-
 for line in subprocess.run(cmd, stdout=subprocess.PIPE).stdout.decode(
         'utf-8').strip().split('\n'):
     fields = line.split()
+
     gitid = fields[0]
     date = fields[1]
     subject_fields = fields[2:]
     subject = ' '.join(fields[2:])
+    mail = Mail(fields[0], fields[1], fields[2:])
 
-    if subject_fields[0] in ['re:', 'RE:', 'Re:']:
+    if mail.is_reply():
         if not 'etc' in types:
             continue
-        original_subject = ' '.join(subject_fields[1:])
+        original_subject = ' '.join(mail.subject_fields[1:])
         if original_subject in duplicate_re_map:
             continue
         subject = INDENT + subject
