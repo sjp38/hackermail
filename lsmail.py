@@ -22,6 +22,8 @@ cmd = ("git log".split() +
 
 duplicate_re_map = {}
 
+to_print = []
+
 for line in subprocess.run(cmd, stdout=subprocess.PIPE).stdout.decode(
         'utf-8').strip().split('\n'):
     fields = line.split()
@@ -53,4 +55,7 @@ for line in subprocess.run(cmd, stdout=subprocess.PIPE).stdout.decode(
         elif not 'etc' in types:
             continue
 
-    print("%s [%s] %s" % (gitid, date, subject))
+    to_print.append("%s [%s] %s" % (gitid, date, subject))
+
+for line in reversed(to_print):
+    print(line)
