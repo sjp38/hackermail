@@ -35,6 +35,28 @@ class Mail:
             return True
         return False
 
+    def get_tag_fields(self):
+        subject = ' '.join(self.subject_fields)
+        if subject[0] != '[':
+            return None
+        tag = subject[1:].split(']')[0].strip()
+        return tag.split()
+
+    def is_patch(self):
+        tag_fields = self.get_tag_fields()
+        if not tag_fields:
+            return False
+        if tag_fields[0] == 'PATCH':
+            return True
+        return False
+
+    def is_rfc(self):
+        tag_fields = self.get_tag_fields()
+        if not tag_fields:
+            return False
+        if tag_fields[0] == 'RFC':
+            return True
+
 duplicate_re_map = {}
 to_print = []
 for line in subprocess.run(cmd, stdout=subprocess.PIPE).stdout.decode(
@@ -56,18 +78,17 @@ for line in subprocess.run(cmd, stdout=subprocess.PIPE).stdout.decode(
         subject = INDENT + subject
         duplicate_re_map[original_subject] = True
 
-    if subject[0] == '[':
+    if mail.is_patch() and not 'patch' in types:
+        continue
+    if mail.is_rfc() and not 'rfc' in types:
+        continue
+    if mail.is_patch() or mail.is_rfc():
         tag = subject[1:].split(']')[0].strip()
         tag_fields = tag.split()
-        if tag_fields[0] in ['PATCH', 'RFC']:
-            if tag_fields[0] == 'PATCH' and not 'patch' in types:
-                continue
-            if tag_fields[0] == 'RFC' and not 'rfc' in types:
-                continue
-            series = tag_fields[-1].split('/')[0]
-            if series.isdigit() and int(series) != 0:
-                subject = INDENT + subject
-        elif not 'etc' in types:
+        series = tag_fields[-1].split('/')[0]
+        if series.isdigit() and int(series) != 0:
+            subject = INDENT + subject
+    elif not 'etc' in types:
             continue
 
     to_print.append("%s [%s] %s" % (gitid, date, subject))
