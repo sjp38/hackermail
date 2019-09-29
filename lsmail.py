@@ -30,11 +30,9 @@ for line in subprocess.run(cmd, stdout=subprocess.PIPE).stdout.decode(
     subject_fields = fields[2:]
     subject = ' '.join(fields[2:])
 
-    is_reply = False
     if subject_fields[0] in ['re:', 'RE:', 'Re:']:
         if not 'etc' in types:
             continue
-        is_reply = True
         original_subject = ' '.join(subject_fields[1:])
         if original_subject in duplicate_re_map:
             continue
