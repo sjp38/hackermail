@@ -61,12 +61,12 @@ for line in subprocess.run(cmd, stdout=subprocess.PIPE).stdout.decode(
             continue
         duplicate_re_map[mail.orig_subject] = True
         indent = INDENT
-
-    if mail.is_patch and mail.patch_tag_fields[0] == 'PATCH' and not 'patch' in types:
-        continue
-    if mail.is_patch and mail.patch_tag_fields[0] == 'RFC' and not 'rfc' in types:
-        continue
-    if mail.is_patch:
+    elif mail.is_patch:
+        # TODO: [patch] [PATCHSET] [RESEND], etc
+        if mail.patch_tag_fields[0] == 'PATCH' and not 'patch' in types:
+            continue
+        if mail.patch_tag_fields[0] == 'RFC' and not 'rfc' in types:
+            continue
         series = mail.patch_tag_fields[-1].split('/')[0]
         if series.isdigit() and int(series) != 0:
             indent = INDENT
