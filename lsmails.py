@@ -41,7 +41,7 @@ class Mail:
             self.orig_subject = ' '.join(self.subject_fields[1:])
 
         if self.subject[0] == '[':
-            tag = subject[1:].split(']')[0].strip()
+            tag = self.subject[1:].split(']')[0].strip()
             self.patch_tag_fields = tag.split()
             if len(self.patch_tag_fields) > 0:
                 self.is_patch = True
@@ -51,12 +51,8 @@ to_print = []
 for line in subprocess.run(cmd, stdout=subprocess.PIPE).stdout.decode(
         'utf-8').strip().split('\n'):
     fields = line.split()
-
-    gitid = fields[0]
-    date = fields[1]
-    subject_fields = fields[2:]
-    subject = ' '.join(fields[2:])
     mail = Mail(fields[0], fields[1], fields[2:])
+    indent = ""
 
     if mail.is_reply:
         if not 'etc' in types:
@@ -64,7 +60,7 @@ for line in subprocess.run(cmd, stdout=subprocess.PIPE).stdout.decode(
         if mail.orig_subject in duplicate_re_map:
             continue
         duplicate_re_map[mail.orig_subject] = True
-        subject = INDENT + mail.subject
+        indent = INDENT
 
     if mail.is_patch and mail.patch_tag_fields[0] == 'PATCH' and not 'patch' in types:
         continue
@@ -73,11 +69,11 @@ for line in subprocess.run(cmd, stdout=subprocess.PIPE).stdout.decode(
     if mail.is_patch:
         series = mail.patch_tag_fields[-1].split('/')[0]
         if series.isdigit() and int(series) != 0:
-            subject = INDENT + subject
+            indent = INDENT
     elif not 'etc' in types:
             continue
 
-    to_print.append("%s [%s] %s" % (gitid, date, subject))
+    to_print.append("%s [%s] %s%s" % (mail.gitid, mail.date, indent, mail.subject))
 
 for line in reversed(to_print):
     print(line)
