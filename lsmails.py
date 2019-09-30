@@ -31,6 +31,7 @@ class Mail:
     is_reply = False
     orig_subject = None
     is_patch = False
+    is_rfc = False
     patch_tag_fields = None
 
     def __init__(self, gitid, date, subject_fields):
@@ -46,10 +47,13 @@ class Mail:
         if self.subject[0] == '[':
             tag = self.subject[1:].split(']')[0].strip()
             self.patch_tag_fields = tag.split()
-            if (len(self.patch_tag_fields) > 0 and
-                    'PATCH' in [x.upper() for x in self.patch_tag_fields] or
-                    'RFC' in [x.upper() for x in self.patch_tag_fields]):
+            if len(self.patch_tag_fields) == 0:
+                return
+            if 'PATCH' in [x.upper() for x in self.patch_tag_fields]:
                 self.is_patch = True
+            if 'RFC' in [x.upper() for x in self.patch_tag_fields]:
+                self.is_patch = True
+                self.is_rfc = True
 
 duplicate_re_map = {}
 to_print = []
@@ -63,9 +67,9 @@ for line in subprocess.run(cmd, stdout=subprocess.PIPE).stdout.decode(
 
     if mail.is_patch:
         # TODO: [PATCHSET] [RESEND], etc
-        if mail.patch_tag_fields[0] == 'PATCH' and not 'patch' in types:
+        if not mail.is_rfc and not 'patch' in types:
             continue
-        if mail.patch_tag_fields[0] == 'RFC' and not 'rfc' in types:
+        if mail.is_rfc and not 'rfc' in types:
             continue
         series = mail.patch_tag_fields[-1].split('/')[0]
         if series.isdigit() and int(series) != 0:
