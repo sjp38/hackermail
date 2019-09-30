@@ -46,7 +46,9 @@ class Mail:
         if self.subject[0] == '[':
             tag = self.subject[1:].split(']')[0].strip()
             self.patch_tag_fields = tag.split()
-            if len(self.patch_tag_fields) > 0:
+            if (len(self.patch_tag_fields) > 0 and
+                    'PATCH' in [x.upper() for x in self.patch_tag_fields] or
+                    'RFC' in [x.upper() for x in self.patch_tag_fields]):
                 self.is_patch = True
 
 duplicate_re_map = {}
@@ -60,7 +62,7 @@ for line in subprocess.run(cmd, stdout=subprocess.PIPE).stdout.decode(
     indent = ""
 
     if mail.is_patch:
-        # TODO: [patch] [PATCHSET] [RESEND], etc
+        # TODO: [PATCHSET] [RESEND], etc
         if mail.patch_tag_fields[0] == 'PATCH' and not 'patch' in types:
             continue
         if mail.patch_tag_fields[0] == 'RFC' and not 'rfc' in types:
