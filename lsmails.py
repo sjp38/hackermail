@@ -10,15 +10,18 @@ parser.add_argument('since', metavar='since', type=str, nargs=1,
         help='Show mails more recent than a specific date.')
 parser.add_argument('--types', metavar='types', type=str, nargs='+',
         help='Type of mails (patch, rfc, etc, all) to show.')
+parser.add_argument('--mdir', metavar='mdir', type=str,
+        help='Directory containing the mail data.')
 args = parser.parse_args()
 since = args.since
 types = args.types
+mdir = args.mdir + "/.git"
 
 if not types or 'all' in types:
     types = ['patch', 'rfc', 'etc']
 
-cmd = ("git log".split() +
-        ['--date=iso-strict', '--pretty=%h %ad %s', "--since=%s" % since])
+cmd = ["git", "--git-dir=%s" % mdir, "log",
+        '--date=iso-strict', '--pretty=%h %ad %s', "--since=%s" % since]
 
 class Mail:
     gitid = None
