@@ -51,6 +51,8 @@ to_print = []
 for line in subprocess.run(cmd, stdout=subprocess.PIPE).stdout.decode(
         'utf-8').strip().split('\n'):
     fields = line.split()
+    if len(fields) < 3:
+        continue
     mail = Mail(fields[0], fields[1], fields[2:])
     indent = ""
 
