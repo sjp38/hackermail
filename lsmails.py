@@ -83,7 +83,9 @@ for line in subprocess.run(cmd, stdout=subprocess.PIPE).stdout.decode(
             duplicate_re_map[mail.orig_subject] = True
             indent = INDENT
 
-    to_print.append("%s [%s] %s%s" % (mail.gitid, mail.date, indent, mail.subject))
+    # date: 2019-09-30T09:57:38+08:00
+    date = '/'.join(mail.date.split('T')[0].split('-')[1:])
+    to_print.append("%s %s %s%s" % (date, mail.gitid, indent, mail.subject))
 
 for line in reversed(to_print):
     print(line)
