@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 
 import argparse
+import datetime
 import subprocess
 
 INDENT = ' ' * 4
 
 parser = argparse.ArgumentParser()
-parser.add_argument('since', metavar='since', type=str, nargs=1,
+parser.add_argument('--since', metavar='since', type=str,
         help='Show mails more recent than a specific date.')
 parser.add_argument('--types', metavar='types', type=str, nargs='+',
         help='Type of mails (patch, rfc, etc, all) to show.')
@@ -16,6 +17,10 @@ args = parser.parse_args()
 since = args.since
 types = args.types
 mdir = args.mdir
+
+if not since:
+    since_date = datetime.datetime.now() - datetime.timedelta(days=3)
+    since = "%s-%s-%s" % (since_date.year, since_date.month, since_date.day)
 
 if not types or 'all' in types:
     types = ['patch', 'rfc', 'etc']
