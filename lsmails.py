@@ -40,7 +40,7 @@ class Mail:
     orig_subject = None
     is_patch = False
     is_rfc = False
-    patch_tag_fields = None
+    tags_fields = None
 
     def __init__(self, gitid, date, subject_fields):
         self.gitid = gitid
@@ -54,12 +54,12 @@ class Mail:
 
         if self.subject[0] == '[':
             tag = self.subject[1:].split(']')[0].strip()
-            self.patch_tag_fields = tag.split()
-            if len(self.patch_tag_fields) == 0:
+            self.tags_fields = tag.split()
+            if len(self.tags_fields) == 0:
                 return
-            if 'PATCH' in [x.upper() for x in self.patch_tag_fields]:
+            if 'PATCH' in [x.upper() for x in self.tags_fields]:
                 self.is_patch = True
-            if 'RFC' in [x.upper() for x in self.patch_tag_fields]:
+            if 'RFC' in [x.upper() for x in self.tags_fields]:
                 self.is_patch = True
                 self.is_rfc = True
 
@@ -79,7 +79,7 @@ for line in subprocess.run(cmd, stdout=subprocess.PIPE).stdout.decode(
             continue
         if mail.is_rfc and not 'rfc' in types:
             continue
-        series = mail.patch_tag_fields[-1].split('/')[0]
+        series = mail.tags_fields[-1].split('/')[0]
         if series.isdigit() and int(series) != 0:
             indent = INDENT
     else:
