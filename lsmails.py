@@ -25,6 +25,9 @@ if not since:
 if not types or 'all' in types:
     types = ['patch', 'rfc', 'etc']
 
+if not mdir:
+    mdir = "./.git"
+
 cmd = ["git", "--git-dir=%s" % mdir, "log",
         '--date=iso-strict', '--pretty=%h %ad %s', "--since=%s" % since]
 
