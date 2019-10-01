@@ -15,7 +15,7 @@ parser.add_argument('--mdir', metavar='mdir', type=str,
 args = parser.parse_args()
 since = args.since
 types = args.types
-mdir = args.mdir + "/.git"
+mdir = args.mdir
 
 if not types or 'all' in types:
     types = ['patch', 'rfc', 'etc']
