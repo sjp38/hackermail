@@ -18,6 +18,6 @@ then
 	GDIR="./.git"
 fi
 
-MSGID=$(git --git-dir=$GDIR show $HASH:m | grep -e "^Message-ID: " | \
+MSGID=$(git --git-dir=$GDIR show $HASH:m | grep -i -e "^Message-ID: " | \
 	awk -e '{print substr($2, 2, length($2) - 2)}')
 echo https://lkml.kernel.org/r/$MSGID
