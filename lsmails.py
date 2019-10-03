@@ -11,14 +11,16 @@ parser.add_argument('--tags', metavar='tag', type=str, nargs='+',
         help='Show mails having the tags (e.g., patch, rfc, reply, ...) only.')
 parser.add_argument('--filters', metavar='tag', type=str, nargs='+',
         help='Filter out mails having the tags.')
-
 parser.add_argument('--mdir', metavar='mdir', type=str,
         help='Directory containing the mail data.')
+parser.add_argument('--cols', metavar='cols', type=int,
+        help='Number of columns for each line.')
 args = parser.parse_args()
 since = args.since
 tags = args.tags
 filters = args.filters
 mdir = args.mdir
+nr_cols_in_line = args.cols
 
 if not since:
     since_date = datetime.datetime.now() - datetime.timedelta(days=3)
@@ -26,6 +28,9 @@ if not since:
 
 if not mdir:
     mdir = "./.git"
+
+if not nr_cols_in_line:
+    nr_cols_in_line = 80
 
 cmd = ["git", "--git-dir=%s" % mdir, "log",
         '--date=iso-strict', '--pretty=%h %ad %s', "--since=%s" % since]
@@ -113,7 +118,6 @@ for line in subprocess.run(cmd, stdout=subprocess.PIPE).stdout.decode(
 
     mails_to_show.append(mail)
 
-NR_COLS_LINE = 100
 for mail in reversed(mails_to_show):
     indent = ""
     if (mail.series and mail.series[0] > 0) or ('reply' in mail.tags):
@@ -123,4 +127,4 @@ for mail in reversed(mails_to_show):
     #       e.g., 2019-09-30T09:57:38+08:00
     date = '/'.join(mail.date.split('T')[0].split('-')[1:])
     pr_line_wrap("%s %s %s%s" % (date, mail.gitid, indent, mail.subject),
-            5 + 1 + 10 + 1 + len(indent), NR_COLS_LINE)
+            5 + 1 + 10 + 1 + len(indent), nr_cols_in_line)
