@@ -10,7 +10,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--since', metavar='since', type=str,
         help='Show mails more recent than a specific date.')
 parser.add_argument('--tags', metavar='tag', type=str, nargs='+',
-        help='Show mails having the tags (e.g., patch, rfc, ...) only.')
+        help='Show mails having the tags (e.g., patch, rfc, reply, ...) only.')
 parser.add_argument('--filters', metavar='tag', type=str, nargs='+',
         help='Filter out mails having the tags.')
 
@@ -37,18 +37,18 @@ class Mail:
     date = None
     subject_fields = None
     subject = None
-    is_reply = False
     orig_subject = None
-    tags = []
+    tags = None
 
     def __init__(self, gitid, date, subject_fields):
         self.gitid = gitid
         self.date = date
         self.subject_fields = subject_fields
         self.subject = ' '.join(self.subject_fields)
+        self.tags = []
 
-        if self.subject_fields[0] in ['re:', 'RE:', 'Re:']:
-            self.is_reply = True
+        if self.subject_fields[0].lower() == 're:':
+            self.tags.append('reply')
             self.orig_subject = ' '.join(self.subject_fields[1:])
 
         if self.subject[0] == '[':
@@ -87,7 +87,7 @@ for line in subprocess.run(cmd, stdout=subprocess.PIPE).stdout.decode(
     if not valid_to_show(mail):
         continue
 
-    if mail.is_reply:
+    if mail.tags and 'reply' in mail.tags:
         if mail.orig_subject in duplicate_re_map:
             continue
         duplicate_re_map[mail.orig_subject] = True
