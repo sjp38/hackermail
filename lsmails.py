@@ -49,6 +49,7 @@ class Mail:
         if self.subject_fields[0].lower() == 're:':
             self.tags.append('reply')
             self.orig_subject = ' '.join(self.subject_fields[1:])
+            return
 
         if self.subject[0] == '[':
             tag = self.subject[1:].split(']')[0].strip().lower()
@@ -89,6 +90,7 @@ for line in subprocess.run(cmd, stdout=subprocess.PIPE).stdout.decode(
     if not valid_to_show(mail):
         continue
 
+    # Shows only latest reply for given mail
     if mail.tags and 'reply' in mail.tags:
         if mail.orig_subject in duplicate_re_map:
             continue
