@@ -39,6 +39,7 @@ class Mail:
     subject = None
     orig_subject = None
     tags = None
+    series = None
 
     def __init__(self, gitid, date, subject_fields):
         self.gitid = gitid
@@ -54,6 +55,10 @@ class Mail:
         if self.subject[0] == '[':
             tag = self.subject[1:].split(']')[0].strip().lower()
             self.tags = tag.split()
+
+            series = self.tags[-1].split('/')
+            if series[0].isdigit() and series[1].isdigit():
+                self.series = [int(x) for x in series]
 
 def valid_to_show(mail):
     has_tag = False
@@ -93,10 +98,8 @@ for line in subprocess.run(cmd, stdout=subprocess.PIPE).stdout.decode(
         duplicate_re_map[mail.orig_subject] = True
         indent = INDENT
 
-    if len(mail.tags):
-        series = mail.tags[-1].split('/')[0]
-        if series.isdigit() and int(series) != 0:
-            indent = INDENT
+    if mail.series and mail.series[0] > 0:
+        indent = INDENT
 
     # date: 2019-09-30T09:57:38+08:00
     date = '/'.join(mail.date.split('T')[0].split('-')[1:])
