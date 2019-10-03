@@ -55,6 +55,25 @@ class Mail:
             tag = self.subject[1:].split(']')[0].strip().lower()
             self.tags = tag.split()
 
+def valid_to_show(mail):
+    has_tag = False
+    if filters:
+        for tag in filters:
+            if tag in mail.tags:
+                has_tag = True
+                break
+        if has_tag:
+            return False
+
+    if tags:
+        for tag in tags:
+            if tag in mail.tags:
+                has_tag = True
+                break
+        if not has_tag:
+            return False
+    return True
+
 duplicate_re_map = {}
 to_print = []
 for line in subprocess.run(cmd, stdout=subprocess.PIPE).stdout.decode(
@@ -65,22 +84,8 @@ for line in subprocess.run(cmd, stdout=subprocess.PIPE).stdout.decode(
     mail = Mail(fields[0], fields[1], fields[2:])
     indent = ""
 
-    if filters:
-        has_tag = False
-        for tag in filters:
-            if tag in mail.tags:
-                has_tag = True
-                break
-        if has_tag:
-            continue
-    if tags:
-        has_tag = False
-        for tag in tags:
-            if tag in mail.tags:
-                has_tag = True
-                break
-        if not has_tag:
-            continue
+    if not valid_to_show(mail):
+        continue
 
     if mail.is_reply:
         if mail.orig_subject in duplicate_re_map:
