@@ -98,11 +98,19 @@ for line in subprocess.run(cmd, stdout=subprocess.PIPE).stdout.decode(
 
     mails_to_show.append(mail)
 
+NR_COLS_LINE = 100
 for mail in reversed(mails_to_show):
     indent = ""
     if (mail.series and mail.series[0] > 0) or ('reply' in mail.tags):
         indent = "    "
 
-    # date: 2019-09-30T09:57:38+08:00
+    # date: <YYYY-MM-DD>T<HH>:<MM>:<SS>+<UTC offset>
+    #       e.g., 2019-09-30T09:57:38+08:00
     date = '/'.join(mail.date.split('T')[0].split('-')[1:])
-    print("%s %s %s%s" % (date, mail.gitid, indent, mail.subject))
+    to_print = "%s %s %s%s" % (date, mail.gitid, indent, mail.subject)
+    print(to_print[0:NR_COLS_LINE])
+    # date, space, hash, space, indent
+    len_indent = 5 + 1 + 10 + 1 + len(indent)
+    new_nr_cols_line = NR_COLS_LINE - len_indent
+    for idx in range(NR_COLS_LINE, len(to_print), new_nr_cols_line):
+        print("%s%s" % (' ' * len_indent, to_print[idx:idx + new_nr_cols_line]))
