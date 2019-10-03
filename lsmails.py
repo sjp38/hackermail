@@ -79,11 +79,19 @@ def valid_to_show(mail):
     return True
 
 def pr_line_wrap(line, len_indent, nr_cols):
-    print(line[0:nr_cols])
-    # date, space, hash, space, indent
-    new_nr_cols_line = NR_COLS_LINE - len_indent
-    for idx in range(NR_COLS_LINE, len(line), new_nr_cols_line):
-        print("%s%s" % (' ' * len_indent, line[idx:idx + new_nr_cols_line]))
+    words = line.split(' ')
+    line = ""
+    words_to_print = []
+    for w in words:
+        words_to_print.append(w)
+        line_len = len(' '.join(words_to_print))
+        if line_len > nr_cols:
+            if len(words_to_print) == 1:
+                print(words_to_print[0])
+            else:
+                print(' '.join(words_to_print[:-1]))
+                words_to_print = [' ' * len_indent + words_to_print[-1]]
+    print(' '.join(words_to_print))
 
 mails_to_show = []
 duplicate_re_map = {}
