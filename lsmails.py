@@ -4,8 +4,6 @@ import argparse
 import datetime
 import subprocess
 
-INDENT = ' ' * 4
-
 parser = argparse.ArgumentParser()
 parser.add_argument('--since', metavar='since', type=str,
         help='Show mails more recent than a specific date.')
@@ -79,15 +77,14 @@ def valid_to_show(mail):
             return False
     return True
 
+mails_to_show = []
 duplicate_re_map = {}
-to_print = []
 for line in subprocess.run(cmd, stdout=subprocess.PIPE).stdout.decode(
         'utf-8').strip().split('\n'):
     fields = line.split()
     if len(fields) < 3:
         continue
     mail = Mail(fields[0], fields[1], fields[2:])
-    indent = ""
 
     if not valid_to_show(mail):
         continue
@@ -96,14 +93,14 @@ for line in subprocess.run(cmd, stdout=subprocess.PIPE).stdout.decode(
         if mail.orig_subject in duplicate_re_map:
             continue
         duplicate_re_map[mail.orig_subject] = True
-        indent = INDENT
 
-    if mail.series and mail.series[0] > 0:
-        indent = INDENT
+    mails_to_show.append(mail)
+
+for mail in reversed(mails_to_show):
+    indent = ""
+    if (mail.series and mail.series[0] > 0) or ('reply' in mail.tags):
+        indent = "    "
 
     # date: 2019-09-30T09:57:38+08:00
     date = '/'.join(mail.date.split('T')[0].split('-')[1:])
-    to_print.append("%s %s %s%s" % (date, mail.gitid, indent, mail.subject))
-
-for line in reversed(to_print):
-    print(line)
+    print("%s %s %s%s" % (date, mail.gitid, indent, mail.subject))
