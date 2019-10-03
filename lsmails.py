@@ -78,6 +78,13 @@ def valid_to_show(mail):
             return False
     return True
 
+def pr_line_wrap(line, len_indent, nr_cols):
+    print(line[0:nr_cols])
+    # date, space, hash, space, indent
+    new_nr_cols_line = NR_COLS_LINE - len_indent
+    for idx in range(NR_COLS_LINE, len(line), new_nr_cols_line):
+        print("%s%s" % (' ' * len_indent, line[idx:idx + new_nr_cols_line]))
+
 mails_to_show = []
 duplicate_re_map = {}
 for line in subprocess.run(cmd, stdout=subprocess.PIPE).stdout.decode(
@@ -107,10 +114,5 @@ for mail in reversed(mails_to_show):
     # date: <YYYY-MM-DD>T<HH>:<MM>:<SS>+<UTC offset>
     #       e.g., 2019-09-30T09:57:38+08:00
     date = '/'.join(mail.date.split('T')[0].split('-')[1:])
-    to_print = "%s %s %s%s" % (date, mail.gitid, indent, mail.subject)
-    print(to_print[0:NR_COLS_LINE])
-    # date, space, hash, space, indent
-    len_indent = 5 + 1 + 10 + 1 + len(indent)
-    new_nr_cols_line = NR_COLS_LINE - len_indent
-    for idx in range(NR_COLS_LINE, len(to_print), new_nr_cols_line):
-        print("%s%s" % (' ' * len_indent, to_print[idx:idx + new_nr_cols_line]))
+    pr_line_wrap("%s %s %s%s" % (date, mail.gitid, indent, mail.subject),
+            5 + 1 + 10 + 1 + len(indent), NR_COLS_LINE)
