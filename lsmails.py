@@ -35,7 +35,7 @@ class Mail:
     subject = None
     is_reply = False
     orig_subject = None
-    tags_fields = []
+    tags = []
 
     def __init__(self, gitid, date, subject_fields):
         self.gitid = gitid
@@ -49,7 +49,7 @@ class Mail:
 
         if self.subject[0] == '[':
             tag = self.subject[1:].split(']')[0].strip().lower()
-            self.tags_fields = tag.split()
+            self.tags = tag.split()
 
 duplicate_re_map = {}
 to_print = []
@@ -64,7 +64,7 @@ for line in subprocess.run(cmd, stdout=subprocess.PIPE).stdout.decode(
     if tags:
         has_tag = False
         for tag in tags:
-            if tag in mail.tags_fields:
+            if tag in mail.tags:
                 has_tag = True
                 break
         if not has_tag:
@@ -76,8 +76,8 @@ for line in subprocess.run(cmd, stdout=subprocess.PIPE).stdout.decode(
         duplicate_re_map[mail.orig_subject] = True
         indent = INDENT
 
-    if len(mail.tags_fields):
-        series = mail.tags_fields[-1].split('/')[0]
+    if len(mail.tags):
+        series = mail.tags[-1].split('/')[0]
         if series.isdigit() and int(series) != 0:
             indent = INDENT
 
