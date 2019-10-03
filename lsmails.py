@@ -11,11 +11,15 @@ parser.add_argument('--since', metavar='since', type=str,
         help='Show mails more recent than a specific date.')
 parser.add_argument('--tags', metavar='tag', type=str, nargs='+',
         help='Show mails having the tags (e.g., patch, rfc, ...) only.')
+parser.add_argument('--filters', metavar='tag', type=str, nargs='+',
+        help='Filter out mails having the tags.')
+
 parser.add_argument('--mdir', metavar='mdir', type=str,
         help='Directory containing the mail data.')
 args = parser.parse_args()
 since = args.since
 tags = args.tags
+filters = args.filters
 mdir = args.mdir
 
 if not since:
@@ -61,6 +65,14 @@ for line in subprocess.run(cmd, stdout=subprocess.PIPE).stdout.decode(
     mail = Mail(fields[0], fields[1], fields[2:])
     indent = ""
 
+    if filters:
+        has_tag = False
+        for tag in filters:
+            if tag in mail.tags:
+                has_tag = True
+                break
+        if has_tag:
+            continue
     if tags:
         has_tag = False
         for tag in tags:
