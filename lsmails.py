@@ -38,7 +38,6 @@ cmd = ["git", "--git-dir=%s" % mdir, "log",
 class Mail:
     gitid = None
     date = None
-    subject_fields = None
     subject = None
     orig_subject = None
     tags = None
@@ -47,17 +46,16 @@ class Mail:
     def __init__(self, gitid, date, subject_fields):
         self.gitid = gitid
         self.date = date
-        self.subject_fields = subject_fields
-        self.subject = ' '.join(self.subject_fields)
+        self.subject = ' '.join(subject_fields)
+        self.orig_subject = self.subject
         self.tags = []
 
-        if self.subject_fields[0].lower() == 're:':
+        if subject_fields[0].lower() == 're:':
             self.tags.append('reply')
-            self.orig_subject = ' '.join(self.subject_fields[1:])
-            return
+            self.orig_subject = ' '.join(subject_fields[1:])
 
-        if self.subject[0] == '[':
-            tag = self.subject[1:].split(']')[0].strip().lower()
+        if self.orig_subject[0] == '[':
+            tag = self.orig_subject[1:].split(']')[0].strip().lower()
             self.tags = tag.split()
 
             series = self.tags[-1].split('/')
