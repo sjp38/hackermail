@@ -30,7 +30,7 @@ if not mdir:
     mdir = "./.git"
 
 if not nr_cols_in_line:
-    nr_cols_in_line = 80
+    nr_cols_in_line = 130
 
 cmd = ["git", "--git-dir=%s" % mdir, "log",
         '--date=iso-strict', '--pretty=%h %ad %s', "--since=%s" % since]
