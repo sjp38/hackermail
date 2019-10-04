@@ -50,9 +50,15 @@ class Mail:
         self.orig_subject = self.subject
         self.tags = []
 
-        if subject_fields[0].lower() == 're:':
+        re_depth = 0
+        for f in subject_fields:
+            if f.lower() == 're:':
+                re_depth += 1
+            else:
+                break
+        if re_depth > 0:
             self.tags.append('reply')
-            self.orig_subject = ' '.join(subject_fields[1:])
+            self.orig_subject = ' '.join(subject_fields[re_depth:])
 
         if self.orig_subject[0] == '[':
             tag = self.orig_subject[1:].split(']')[0].strip().lower()
