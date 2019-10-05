@@ -62,7 +62,7 @@ class Mail:
 
         if self.orig_subject[0] == '[':
             tag = self.orig_subject[1:].split(']')[0].strip().lower()
-            self.tags = tag.split()
+            self.tags += tag.split()
 
             series = self.tags[-1].split('/')
             if series[0].isdigit() and series[1].isdigit():
