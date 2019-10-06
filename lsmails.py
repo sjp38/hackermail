@@ -17,6 +17,8 @@ parser.add_argument('--cols', metavar='cols', type=int,
         help='Number of columns for each line.')
 parser.add_argument('--gitid', action='store_true',
         help='Print git id of each mail')
+parser.add_argument('--content', metavar='idx', type=int,
+        help='Show content of specific mail.')
 args = parser.parse_args()
 since = args.since
 tags = args.tags
@@ -24,6 +26,7 @@ filters = args.filters
 mdir = args.mdir
 nr_cols_in_line = args.cols
 pr_git_id = args.gitid
+idx_of_mail = args.content
 
 if not since:
     since_date = datetime.datetime.now() - datetime.timedelta(days=3)
@@ -124,6 +127,16 @@ for line in subprocess.run(cmd, stdout=subprocess.PIPE).stdout.decode(
         duplicate_re_map[mail.orig_subject] = True
 
     mails_to_show.append(mail)
+
+if idx_of_mail != None:
+    mail = mails_to_show[-1 * idx_of_mail]
+
+    cmd = ["git", "--git-dir=%s" % mdir,
+            'show', '%s:m' % mail.gitid]
+    for line in subprocess.run(cmd, stdout=subprocess.PIPE).stdout.decode(
+            'utf-8').strip().split('\n'):
+        print(line)
+    quit()
 
 for idx, mail in enumerate(reversed(mails_to_show)):
     indent = ""
