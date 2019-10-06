@@ -122,7 +122,7 @@ for line in subprocess.run(cmd, stdout=subprocess.PIPE).stdout.decode(
 
     mails_to_show.append(mail)
 
-for mail in reversed(mails_to_show):
+for idx, mail in enumerate(reversed(mails_to_show)):
     indent = ""
     if (mail.series and mail.series[0] > 0) or ('reply' in mail.tags):
         indent = "    "
@@ -130,5 +130,5 @@ for mail in reversed(mails_to_show):
     # date: <YYYY-MM-DD>T<HH>:<MM>:<SS>+<UTC offset>
     #       e.g., 2019-09-30T09:57:38+08:00
     date = '/'.join(mail.date.split('T')[0].split('-')[1:])
-    pr_line_wrap("%s %s %s%s" % (date, mail.gitid, indent, mail.subject),
-            5 + 1 + 10 + 1 + len(indent), nr_cols_in_line)
+    pr_line_wrap("[%04d] %s %s %s%s" % (idx, date, mail.gitid, indent, mail.subject),
+            6 + 1 + 5 + 1 + 10 + 1 + len(indent), nr_cols_in_line)
