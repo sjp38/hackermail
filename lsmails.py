@@ -15,12 +15,15 @@ parser.add_argument('--mdir', metavar='mdir', type=str,
         help='Directory containing the mail data.')
 parser.add_argument('--cols', metavar='cols', type=int,
         help='Number of columns for each line.')
+parser.add_argument('--gitid', action='store_true',
+        help='Print git id of each mail')
 args = parser.parse_args()
 since = args.since
 tags = args.tags
 filters = args.filters
 mdir = args.mdir
 nr_cols_in_line = args.cols
+pr_git_id = args.gitid
 
 if not since:
     since_date = datetime.datetime.now() - datetime.timedelta(days=3)
@@ -130,5 +133,8 @@ for idx, mail in enumerate(reversed(mails_to_show)):
     # date: <YYYY-MM-DD>T<HH>:<MM>:<SS>+<UTC offset>
     #       e.g., 2019-09-30T09:57:38+08:00
     date = '/'.join(mail.date.split('T')[0].split('-')[1:])
-    pr_line_wrap("[%04d] %s %s %s%s" % (idx, date, mail.gitid, indent, mail.subject),
-            6 + 1 + 5 + 1 + 10 + 1 + len(indent), nr_cols_in_line)
+    line_prefix = "[%04d] %s " % (idx, date)
+    if pr_git_id:
+        line_prefix += "%s " % mail.gitid
+    line = "%s%s%s" % (line_prefix, indent, mail.subject)
+    pr_line_wrap(line, len(line_prefix) + len(indent), nr_cols_in_line)
