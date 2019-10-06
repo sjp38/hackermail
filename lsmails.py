@@ -17,7 +17,7 @@ parser.add_argument('--cols', metavar='cols', type=int,
         help='Number of columns for each line.')
 parser.add_argument('--gitid', action='store_true',
         help='Print git id of each mail')
-parser.add_argument('--content', metavar='idx', type=int,
+parser.add_argument('content', metavar='idx', type=int, nargs='?',
         help='Show content of specific mail.')
 args = parser.parse_args()
 since = args.since
