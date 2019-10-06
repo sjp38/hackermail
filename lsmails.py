@@ -19,6 +19,9 @@ parser.add_argument('--gitid', action='store_true',
         help='Print git id of each mail')
 parser.add_argument('content', metavar='idx', type=int, nargs='?',
         help='Show content of specific mail.')
+parser.add_argument('--lore', action='store_true',
+        help='Print lore link for the <content> mail.')
+
 args = parser.parse_args()
 since = args.since
 tags = args.tags
@@ -27,6 +30,12 @@ mdir = args.mdir
 nr_cols_in_line = args.cols
 pr_git_id = args.gitid
 idx_of_mail = args.content
+show_lore_link = args.lore
+
+if show_lore_link and idx_of_mail == None:
+    print("--lore option works with content argument only.\n")
+    parser.print_help()
+    exit(1)
 
 if not since:
     since_date = datetime.datetime.now() - datetime.timedelta(days=3)
@@ -133,9 +142,16 @@ if idx_of_mail != None:
 
     cmd = ["git", "--git-dir=%s" % mdir,
             'show', '%s:m' % mail.gitid]
-    for line in subprocess.run(cmd, stdout=subprocess.PIPE).stdout.decode(
-            'utf-8').strip().split('\n'):
-        print(line)
+    mail_content = subprocess.run(cmd, stdout=subprocess.PIPE).stdout.decode(
+            'utf-8').strip()
+    if show_lore_link:
+        for line in mail_content.split('\n'):
+            fields = line.split()
+            if len(fields) == 2 and fields[0].lower() == 'message-id:':
+                print("https://lore.kernel.org/r/%s\n" % fields[1][1:-1])
+                break
+
+    print(mail_content)
     quit()
 
 for idx, mail in enumerate(reversed(mails_to_show)):
