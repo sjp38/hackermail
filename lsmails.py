@@ -137,8 +137,9 @@ for line in subprocess.run(cmd, stdout=subprocess.PIPE).stdout.decode(
 
     mails_to_show.append(mail)
 
+mails_to_show.reverse()
 if idx_of_mail != None:
-    mail = mails_to_show[-1 * idx_of_mail]
+    mail = mails_to_show[idx_of_mail]
 
     cmd = ["git", "--git-dir=%s" % mdir,
             'show', '%s:m' % mail.gitid]
@@ -154,7 +155,7 @@ if idx_of_mail != None:
     print(mail_content)
     quit()
 
-for idx, mail in enumerate(reversed(mails_to_show)):
+for idx, mail in enumerate(mails_to_show):
     indent = ""
     if (mail.series and mail.series[0] > 0) or ('reply' in mail.tags):
         indent = "    "
