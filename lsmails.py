@@ -117,6 +117,34 @@ def pr_line_wrap(line, len_indent, nr_cols):
                 words_to_print = [' ' * len_indent + words_to_print[-1]]
     print(' '.join(words_to_print))
 
+def show_mail(mail):
+    cmd = ["git", "--git-dir=%s" % mdir,
+            'show', '%s:m' % mail.gitid]
+    mail_content = subprocess.run(cmd, stdout=subprocess.PIPE).stdout.decode(
+            'utf-8').strip()
+    if show_lore_link:
+        for line in mail_content.split('\n'):
+            fields = line.split()
+            if len(fields) == 2 and fields[0].lower() == 'message-id:':
+                print("https://lore.kernel.org/r/%s\n" % fields[1][1:-1])
+                break
+    print(mail_content)
+
+def show_mails(mails):
+    for idx, mail in enumerate(mails_to_show):
+        indent = ""
+        if (mail.series and mail.series[0] > 0) or ('reply' in mail.tags):
+            indent = "    "
+
+        # date: <YYYY-MM-DD>T<HH>:<MM>:<SS>+<UTC offset>
+        #       e.g., 2019-09-30T09:57:38+08:00
+        date = '/'.join(mail.date.split('T')[0].split('-')[1:])
+        line_prefix = "[%04d] %s " % (idx, date)
+        if pr_git_id:
+            line_prefix += "%s " % mail.gitid
+        line = "%s%s%s" % (line_prefix, indent, mail.subject)
+        pr_line_wrap(line, len(line_prefix) + len(indent), nr_cols_in_line)
+
 mails_to_show = []
 duplicate_re_map = {}
 for line in subprocess.run(cmd, stdout=subprocess.PIPE).stdout.decode(
@@ -139,32 +167,6 @@ for line in subprocess.run(cmd, stdout=subprocess.PIPE).stdout.decode(
 
 mails_to_show.reverse()
 if idx_of_mail != None:
-    mail = mails_to_show[idx_of_mail]
-
-    cmd = ["git", "--git-dir=%s" % mdir,
-            'show', '%s:m' % mail.gitid]
-    mail_content = subprocess.run(cmd, stdout=subprocess.PIPE).stdout.decode(
-            'utf-8').strip()
-    if show_lore_link:
-        for line in mail_content.split('\n'):
-            fields = line.split()
-            if len(fields) == 2 and fields[0].lower() == 'message-id:':
-                print("https://lore.kernel.org/r/%s\n" % fields[1][1:-1])
-                break
-
-    print(mail_content)
-    quit()
-
-for idx, mail in enumerate(mails_to_show):
-    indent = ""
-    if (mail.series and mail.series[0] > 0) or ('reply' in mail.tags):
-        indent = "    "
-
-    # date: <YYYY-MM-DD>T<HH>:<MM>:<SS>+<UTC offset>
-    #       e.g., 2019-09-30T09:57:38+08:00
-    date = '/'.join(mail.date.split('T')[0].split('-')[1:])
-    line_prefix = "[%04d] %s " % (idx, date)
-    if pr_git_id:
-        line_prefix += "%s " % mail.gitid
-    line = "%s%s%s" % (line_prefix, indent, mail.subject)
-    pr_line_wrap(line, len(line_prefix) + len(indent), nr_cols_in_line)
+    show_mail(mails_to_show[idx_of_mail])
+else:
+    show_mails(mails_to_show)
