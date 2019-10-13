@@ -1,16 +1,10 @@
-erol_tools
-==========
+Hacker Mail
+===========
 
-CLI tools for the kernel lore exploration.
-
-`erol_tools` is a CLI toolset for linux kernel mailing list explorations.  It
-intenally uses public-inbox[1] based mailing list archives.
+CLI mail client for the hackers.
 
 
 Author
 ======
 
 SeongJae Park <sj38.park@gmail.com>
-
-
-[1] https://public-inbox.org/README.html
