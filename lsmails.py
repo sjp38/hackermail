@@ -97,6 +97,8 @@ def show_mails(mails):
         if pr_git_id:
             line_prefix += "%s " % mail.gitid
         line = "%s%s%s" % (line_prefix, indent, mail.subject)
+        if 'reply' in mail.tags:
+            line += " (%d replies)" % duplicate_re_map[mail.orig_subject]
         pr_line_wrap(line, len(line_prefix) + len(indent), nr_cols_in_line)
 
 if __name__ == '__main__':
@@ -162,8 +164,9 @@ if __name__ == '__main__':
         # Shows only latest reply for given mail
         if mail.tags and 'reply' in mail.tags:
             if mail.orig_subject in duplicate_re_map:
+                duplicate_re_map[mail.orig_subject] += 1
                 continue
-            duplicate_re_map[mail.orig_subject] = True
+            duplicate_re_map[mail.orig_subject] = 1
 
         mails_to_show.append(mail)
 
