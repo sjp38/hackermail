@@ -6,9 +6,9 @@ import json
 parser = argparse.ArgumentParser()
 parser.add_argument('--manifest', '-m', type=str,
         default='.configs/manifest.js',
-        help='Manifesto file in grok\'s format')
+        help='Manifesto file in grok\'s format plus site field.')
 parser.add_argument('lists', type=str, nargs='+',
-        help='Name of the mailing list')
+        help='Name of the mailing list.')
 
 args = parser.parse_args()
 manifest_file = args.manifest
