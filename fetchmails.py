@@ -2,6 +2,7 @@
 
 import argparse
 import json
+import os
 import subprocess
 
 parser = argparse.ArgumentParser()
@@ -25,5 +26,8 @@ for path in manifest:
             print('%s%s' % (site, path))
             git_url = '%s%s' % (site, path)
             local_path = '.mails%s' % path
-            cmd = 'git clone --mirror %s %s' % (git_url, local_path)
+            if not os.path.isdir(local_path):
+                cmd = 'git clone --mirror %s %s' % (git_url, local_path)
+            else:
+                cmd = 'git --git-dir=%s remote update' % local_path
             subprocess.call(cmd.split())
