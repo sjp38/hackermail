@@ -2,6 +2,7 @@
 
 import argparse
 import json
+import subprocess
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--manifest', '-m', type=str,
@@ -22,3 +23,7 @@ for path in manifest:
     for mlist in mail_lists:
         if path.startswith('/%s/' % mlist):
             print('%s%s' % (site, path))
+            git_url = '%s%s' % (site, path)
+            local_path = '.mails%s' % path
+            cmd = 'git clone --mirror %s %s' % (git_url, local_path)
+            subprocess.call(cmd.split())
