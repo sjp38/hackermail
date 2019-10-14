@@ -5,9 +5,13 @@ import json
 import os
 import subprocess
 
+HCKMAILDIR = '.hckmail'
+DEFAULT_MANIFEST = HCKMAILDIR + '/manifest.js'
+MAILDAT_DIR = HCKMAILDIR + '/mails'
+
 parser = argparse.ArgumentParser()
 parser.add_argument('--manifest', '-m', type=str,
-        default='.configs/manifest.js',
+        default=DEFAULT_MANIFEST,
         help='Manifesto file in grok\'s format plus site field.')
 parser.add_argument('lists', type=str, nargs='+',
         help='Name of the mailing list.')
@@ -25,7 +29,7 @@ for path in manifest:
         if path.startswith('/%s/' % mlist):
             print('%s%s' % (site, path))
             git_url = '%s%s' % (site, path)
-            local_path = '.mails%s' % path
+            local_path = '%s%s' % (MAILDAT_DIR, path)
             if not os.path.isdir(local_path):
                 cmd = 'git clone --mirror %s %s' % (git_url, local_path)
             else:
