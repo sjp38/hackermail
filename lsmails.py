@@ -105,9 +105,9 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--since', metavar='since', type=str,
             help='Show mails more recent than a specific date.')
-    parser.add_argument('--tags', metavar='tag', type=str, nargs='+',
+    parser.add_argument('--show', metavar='tag', type=str, nargs='+',
             help='Show mails having the tags (e.g., patch, rfc, reply, ...) only.')
-    parser.add_argument('--filters', metavar='tag', type=str, nargs='+',
+    parser.add_argument('--hide', metavar='tag', type=str, nargs='+',
             help='Filter out mails having the tags.')
     parser.add_argument('--mdir', metavar='mdir', type=str,
             help='Directory containing the mail data.')
@@ -122,8 +122,8 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
     since = args.since
-    tags = args.tags
-    filters = args.filters
+    tags = args.show
+    filters = args.hide
     mdir = args.mdir
     nr_cols_in_line = args.cols
     pr_git_id = args.gitid
