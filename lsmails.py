@@ -39,16 +39,16 @@ class Mail:
 
 def valid_to_show(mail):
     has_tag = False
-    if filters:
-        for tag in filters:
+    if tags_to_hide:
+        for tag in tags_to_hide:
             if tag in mail.tags:
                 has_tag = True
                 break
         if has_tag:
             return False
 
-    if tags:
-        for tag in tags:
+    if tags_to_show:
+        for tag in tags_to_show:
             if tag in mail.tags:
                 has_tag = True
                 break
@@ -123,12 +123,12 @@ if __name__ == '__main__':
     args = parser.parse_args()
     since = args.since
 
-    tags = []
-    filters = []
+    tags_to_show = []
+    tags_to_hide = []
     if args.show:
-        tags = args.show.split(',')
+        tags_to_show = args.show.split(',')
     if args.hide:
-        filters = args.hide.split(',')
+        tags_to_hide = args.hide.split(',')
 
     mdir = args.mdir
     nr_cols_in_line = args.cols
