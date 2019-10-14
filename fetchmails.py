@@ -7,7 +7,7 @@ import subprocess
 
 HCKMAILDIR = '.hckmail'
 DEFAULT_MANIFEST = HCKMAILDIR + '/manifest.js'
-MAILDAT_DIR = HCKMAILDIR + '/mails'
+MAILDAT_DIR = HCKMAILDIR + '/archives'
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--manifest', '-m', type=str,
