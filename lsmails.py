@@ -106,9 +106,9 @@ if __name__ == '__main__':
     parser.add_argument('--since', metavar='since', type=str,
             help='Show mails more recent than a specific date.')
     parser.add_argument('--show', metavar='tags', type=str,
-            help='Show mails having the tags.  Tags are seperated by commas.')
+            help='Tags seperated by comma.  Show mails having the tags.')
     parser.add_argument('--hide', metavar='tag', type=str,
-            help='Hide mails having the tags.  Tags are seperated by commas.')
+            help='Tags seperated by comma.  Hide mails having the tags.')
     parser.add_argument('--mdir', metavar='mdir', type=str,
             help='Directory containing the mail data.')
     parser.add_argument('--cols', metavar='cols', type=int,
