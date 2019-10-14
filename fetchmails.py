@@ -20,8 +20,13 @@ args = parser.parse_args()
 manifest_file = args.manifest
 mail_lists = args.lists
 
-with open(manifest_file) as f:
-    manifest = json.load(f)
+try:
+    with open(manifest_file) as f:
+        manifest = json.load(f)
+except FileNotFoundError:
+    print("Cannot open manifest file %s" % manifest_file)
+    parser.print_help()
+    exit(1)
 
 site = manifest['site']
 for path in manifest:
