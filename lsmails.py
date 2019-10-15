@@ -113,7 +113,7 @@ if __name__ == '__main__':
             help='Tags seperated by comma.  Show mails having the tags.')
     parser.add_argument('--hide', metavar='tag', type=str,
             help='Tags seperated by comma.  Hide mails having the tags.')
-    parser.add_argument('--mdir', metavar='mdir', type=str,
+    parser.add_argument('--mdir', '-m', metavar='mdir', type=str,
             help='Directory containing the mail data.')
     parser.add_argument('--cols', metavar='cols', type=int,
             help='Number of columns for each line.')
