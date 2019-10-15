@@ -93,9 +93,10 @@ def show_mails(mails):
         # date: <YYYY-MM-DD>T<HH>:<MM>:<SS>+<UTC offset>
         #       e.g., 2019-09-30T09:57:38+08:00
         date = '/'.join(mail.date.split('T')[0].split('-')[1:])
-        line_prefix = "[%04d] %s " % (idx, date)
+        prefixes = ["[%04d]" % idx, date]
         if pr_git_id:
-            line_prefix += "%s " % mail.gitid
+            prefixes.append(mail.gitid)
+        line_prefix = ' '.join(prefixes) + ' '
         line = "%s%s%s" % (line_prefix, indent, mail.subject)
         if nr_news_in_thr[mail.orig_subject] > 1:
             line += " (%d more msgs) " % (nr_news_in_thr[mail.orig_subject] - 1)
