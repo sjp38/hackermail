@@ -161,8 +161,8 @@ if __name__ == '__main__':
 
     mails_to_show = []
     sz_thr = {}
-    for line in subprocess.run(cmd, stdout=subprocess.PIPE).stdout.decode(
-            'utf-8').strip().split('\n'):
+    lines = subprocess.check_output(cmd).decode('utf-8').strip().split('\n')
+    for line in lines:
         fields = line.split()
         if len(fields) < 3:
             continue
