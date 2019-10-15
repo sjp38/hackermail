@@ -100,8 +100,8 @@ def show_mails(mails):
         prefix = ' '.join(prefix_fields)
 
         line = mail.subject
-        if nr_news_in_thr[mail.orig_subject] > 1:
-            line += " (%d more msgs) " % (nr_news_in_thr[mail.orig_subject] - 1)
+        if sz_thr[mail.orig_subject] > 1:
+            line += " (%d more msgs) " % (sz_thr[mail.orig_subject] - 1)
 
         pr_line_wrap(prefix + line, len(prefix), nr_cols_in_line)
 
@@ -160,7 +160,7 @@ if __name__ == '__main__':
             '--date=iso-strict', '--pretty=%h %ad %s', "--since=%s" % since]
 
     mails_to_show = []
-    nr_news_in_thr = {}
+    sz_thr = {}
     for line in subprocess.run(cmd, stdout=subprocess.PIPE).stdout.decode(
             'utf-8').strip().split('\n'):
         fields = line.split()
@@ -172,10 +172,10 @@ if __name__ == '__main__':
             continue
 
         # Shows only latest reply for given mail
-        if mail.orig_subject in nr_news_in_thr:
-            nr_news_in_thr[mail.orig_subject] += 1
+        if mail.orig_subject in sz_thr:
+            sz_thr[mail.orig_subject] += 1
             continue
-        nr_news_in_thr[mail.orig_subject] = 1
+        sz_thr[mail.orig_subject] = 1
 
         mails_to_show.append(mail)
 
