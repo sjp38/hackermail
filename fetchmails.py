@@ -6,7 +6,7 @@ import os
 import subprocess
 
 HCKMAILDIR = '.hkm'
-DEFAULT_MANIFEST = HCKMAILDIR + '/manifest.js'
+DEFAULT_MANIFEST = HCKMAILDIR + '/manifest'
 MAILDAT_DIR = HCKMAILDIR + '/archives'
 
 parser = argparse.ArgumentParser()
