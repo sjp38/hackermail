@@ -110,7 +110,16 @@ HCKMAILDIR = '.hkm'
 DEFAULT_MANIFEST = HCKMAILDIR + '/manifest'
 MAILDAT_DIR = HCKMAILDIR + '/archives'
 
+DEFAULT_SINCE = datetime.datetime.now() - datetime.timedelta(days=3)
+DEFAULT_SINCE = "%s-%s-%s" % (DEFAULT_SINCE.year, DEFAULT_SINCE.month,
+            DEFAULT_SINCE.day)
+
 if __name__ == '__main__':
+
+    since_date = datetime.datetime.now() - datetime.timedelta(days=3)
+    since = "%s-%s-%s" % (since_date.year, since_date.month,
+            since_date.day)
+
     parser = argparse.ArgumentParser()
     parser.add_argument('--manifest', metavar='manifest', type=str,
             default=DEFAULT_MANIFEST,
@@ -118,14 +127,16 @@ if __name__ == '__main__':
     parser.add_argument('--mlist', metavar='mailing list', type=str,
             help='Mailing list to show.')
     parser.add_argument('--since', metavar='since', type=str,
+            default=DEFAULT_SINCE,
             help='Show mails more recent than a specific date.')
     parser.add_argument('--show', metavar='tags', type=str,
             help='Tags seperated by comma.  Show mails having the tags.')
     parser.add_argument('--hide', metavar='tag', type=str,
             help='Tags seperated by comma.  Hide mails having the tags.')
     parser.add_argument('--mdir', '-m', metavar='mdir', type=str,
+            default = './.git',
             help='Directory containing the mail data.')
-    parser.add_argument('--cols', metavar='cols', type=int,
+    parser.add_argument('--cols', metavar='cols', type=int, default=130,
             help='Number of columns for each line.')
     parser.add_argument('--gitid', action='store_true',
             help='Print git id of each mail')
@@ -168,17 +179,6 @@ if __name__ == '__main__':
         print("--lore option works with content argument only.\n")
         parser.print_help()
         exit(1)
-
-    if not since:
-        since_date = datetime.datetime.now() - datetime.timedelta(days=3)
-        since = "%s-%s-%s" % (since_date.year, since_date.month,
-                since_date.day)
-
-    if not mdir:
-        mdir = "./.git"
-
-    if not nr_cols_in_line:
-        nr_cols_in_line = 130
 
     cmd = ["git", "--git-dir=%s" % mdir, "log",
             '--date=iso-strict', '--pretty=%h %ad %s', "--since=%s" % since]
