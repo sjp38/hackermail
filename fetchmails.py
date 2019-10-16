@@ -5,7 +5,7 @@ import json
 import os
 import subprocess
 
-HCKMAILDIR = '.hckmail'
+HCKMAILDIR = '.hkm'
 DEFAULT_MANIFEST = HCKMAILDIR + '/manifest.js'
 MAILDAT_DIR = HCKMAILDIR + '/archives'
 
