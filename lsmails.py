@@ -2,6 +2,7 @@
 
 import argparse
 import datetime
+import json
 import subprocess
 
 class Mail:
@@ -105,8 +106,17 @@ def show_mails(mails):
 
         pr_line_wrap(prefix + line, len(prefix), nr_cols_in_line)
 
+HCKMAILDIR = '.hkm'
+DEFAULT_MANIFEST = HCKMAILDIR + '/manifest'
+MAILDAT_DIR = HCKMAILDIR + '/archives'
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
+    parser.add_argument('--manifest', metavar='manifest', type=str,
+            default=DEFAULT_MANIFEST,
+            help='Manifesto file in grok\'s format plus site field.')
+    parser.add_argument('--mlist', metavar='mailing list', type=str,
+            help='Mailing list to show.')
     parser.add_argument('--since', metavar='since', type=str,
             help='Show mails more recent than a specific date.')
     parser.add_argument('--show', metavar='tags', type=str,
@@ -125,6 +135,8 @@ if __name__ == '__main__':
             help='Print lore link for the <content> mail.')
 
     args = parser.parse_args()
+    manifest_file = args.manifest
+    mail_list = args.mlist
     since = args.since
 
     tags_to_show = []
@@ -139,6 +151,18 @@ if __name__ == '__main__':
     pr_git_id = args.gitid
     idx_of_mail = args.content
     show_lore_link = args.lore
+
+    if mail_list:
+        try:
+            with open(manifest_file) as f:
+                manifest = json.load(f)
+        except FileNotFoundError:
+            print("Cannot open manifest file %s" % manifest_file)
+            parser.print_help()
+            exit(1)
+        for path in manifest:
+            if path.startswith('/%s/' % mail_list):
+                mdir = MAILDAT_DIR + path
 
     if show_lore_link and idx_of_mail == None:
         print("--lore option works with content argument only.\n")
