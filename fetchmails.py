@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 import argparse
-import json
 import os
 import subprocess
 
@@ -18,23 +17,22 @@ args = parser.parse_args()
 manifest_file = args.manifest
 mail_lists = args.lists
 
-try:
-    with open(manifest_file) as f:
-        manifest = json.load(f)
-except FileNotFoundError:
+manifest = get_manifest(manifest_file)
+if not manifest:
     print("Cannot open manifest file %s" % manifest_file)
     parser.print_help()
     exit(1)
 
 site = manifest['site']
-for path in manifest:
-    for mlist in mail_lists:
-        if path.startswith('/%s/' % mlist):
-            print('%s%s' % (site, path))
-            git_url = '%s%s' % (site, path)
-            local_path = '%s%s' % (MAILDAT_DIR, path)
-            if not os.path.isdir(local_path):
-                cmd = 'git clone --mirror %s %s' % (git_url, local_path)
-            else:
-                cmd = 'git --git-dir=%s remote update' % local_path
-            subprocess.call(cmd.split())
+for mlist in mail_lists:
+    repo_path = mail_list_repo_path(mlist, manifest)
+    if not repo_path:
+        continue
+    print('%s%s' % (site, repo_path))
+    git_url = '%s%s' % (site, repo_path)
+    local_path = mail_list_data_path(mlist, manifest)
+    if not os.path.isdir(local_path):
+        cmd = 'git clone --mirror %s %s' % (git_url, local_path)
+    else:
+        cmd = 'git --git-dir=%s remote update' % local_path
+    subprocess.call(cmd.split())

@@ -2,7 +2,6 @@
 
 import argparse
 import datetime
-import json
 import subprocess
 
 from _hckmail import *
@@ -162,16 +161,12 @@ if __name__ == '__main__':
     show_lore_link = args.lore
 
     if mail_list:
-        try:
-            with open(manifest_file) as f:
-                manifest = json.load(f)
-        except FileNotFoundError:
+        manifest = get_manifest(manifest_file)
+        if not manifest:
             print("Cannot open manifest file %s" % manifest_file)
             parser.print_help()
             exit(1)
-        for path in manifest:
-            if path.startswith('/%s/' % mail_list):
-                mdir = MAILDAT_DIR + path
+        mdir = mail_list_data_path(mail_list, manifest)
 
     if show_lore_link and idx_of_mail == None:
         print("--lore option works with content argument only.\n")
