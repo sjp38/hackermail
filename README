@@ -1,7 +1,8 @@
-Hacker Mail
-===========
+hackermail
+==========
 
-CLI mail client for the hackers.
+Fast and decentralized CLI mail client for mailing lists that dedicated for
+hacking project discussions (e.g., Linux Kernel Mailing Lists).
 
 
 Author
