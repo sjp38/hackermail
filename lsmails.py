@@ -84,7 +84,17 @@ def show_mail(mail):
             if len(fields) == 2 and fields[0].lower() == 'message-id:':
                 print("https://lore.kernel.org/r/%s\n" % fields[1][1:-1])
                 break
-    print(mail_content)
+    paragraphs = mail_content.split('\n\n')
+    head = paragraphs[0]
+    message = '\n\n'.join(paragraphs[1:])
+    do_skip = True
+    for hline in head.split('\n'):
+        field_name = hline.split()[0]
+        if field_name.lower() == 'date:':
+            do_skip = False
+        if not do_skip:
+            print(hline)
+    print('\n' + message)
 
 def show_mails(mails):
     for idx, mail in enumerate(mails_to_show):
