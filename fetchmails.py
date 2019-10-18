@@ -5,9 +5,7 @@ import json
 import os
 import subprocess
 
-HCKMAILDIR = '.hkm'
-DEFAULT_MANIFEST = HCKMAILDIR + '/manifest'
-MAILDAT_DIR = HCKMAILDIR + '/archives'
+from _hckmail import *
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--manifest', '-m', type=str,

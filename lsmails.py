@@ -5,6 +5,8 @@ import datetime
 import json
 import subprocess
 
+from _hckmail import *
+
 class Mail:
     gitid = None
     date = None
@@ -105,10 +107,6 @@ def show_mails(mails):
             line += " (%d more msgs) " % (sz_thr[mail.orig_subject] - 1)
 
         pr_line_wrap(prefix + line, len(prefix), nr_cols_in_line)
-
-HCKMAILDIR = '.hkm'
-DEFAULT_MANIFEST = HCKMAILDIR + '/manifest'
-MAILDAT_DIR = HCKMAILDIR + '/archives'
 
 DEFAULT_SINCE = datetime.datetime.now() - datetime.timedelta(days=3)
 DEFAULT_SINCE = "%s-%s-%s" % (DEFAULT_SINCE.year, DEFAULT_SINCE.month,
