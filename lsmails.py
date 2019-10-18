@@ -121,7 +121,7 @@ if __name__ == '__main__':
     parser.add_argument('--manifest', metavar='manifest', type=str,
             default=DEFAULT_MANIFEST,
             help='Manifesto file in grok\'s format plus site field.')
-    parser.add_argument('--mlist', metavar='mailing list', type=str,
+    parser.add_argument('mlist', metavar='mailing list', type=str,
             help='Mailing list to show.')
     parser.add_argument('--since', metavar='since', type=str,
             default=DEFAULT_SINCE,
@@ -130,9 +130,6 @@ if __name__ == '__main__':
             help='Tags seperated by comma.  Show mails having the tags.')
     parser.add_argument('--hide', metavar='tag', type=str,
             help='Tags seperated by comma.  Hide mails having the tags.')
-    parser.add_argument('--mdir', '-m', metavar='mdir', type=str,
-            default = './.git',
-            help='Directory containing the mail data.')
     parser.add_argument('--cols', metavar='cols', type=int, default=130,
             help='Number of columns for each line.')
     parser.add_argument('--gitid', action='store_true',
@@ -154,19 +151,17 @@ if __name__ == '__main__':
     if args.hide:
         tags_to_hide = args.hide.split(',')
 
-    mdir = args.mdir
     nr_cols_in_line = args.cols
     pr_git_id = args.gitid
     idx_of_mail = args.content
     show_lore_link = args.lore
 
-    if mail_list:
-        manifest = get_manifest(manifest_file)
-        if not manifest:
-            print("Cannot open manifest file %s" % manifest_file)
-            parser.print_help()
-            exit(1)
-        mdir = mail_list_data_path(mail_list, manifest)
+    manifest = get_manifest(manifest_file)
+    if not manifest:
+        print("Cannot open manifest file %s" % manifest_file)
+        parser.print_help()
+        exit(1)
+    mdir = mail_list_data_path(mail_list, manifest)
 
     if show_lore_link and idx_of_mail == None:
         print("--lore option works with content argument only.\n")
