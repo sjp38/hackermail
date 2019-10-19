@@ -6,15 +6,19 @@ import subprocess
 
 from _hckmail import *
 
-def main():
-    parser = argparse.ArgumentParser()
+def set_argparser(parser):
     parser.add_argument('--manifest', '-m', type=str,
             default=DEFAULT_MANIFEST,
             help='Manifesto file in grok\'s format plus site field.')
     parser.add_argument('lists', type=str, nargs='+',
             help='Name of the mailing list.')
 
-    args = parser.parse_args()
+def main(args=None):
+    if not args:
+        parser = argparse.ArgumentParser()
+        set_argparser(parser)
+        args = parser.parse_args()
+
     manifest_file = args.manifest
     mail_lists = args.lists
 
