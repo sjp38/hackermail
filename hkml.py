@@ -3,12 +3,20 @@
 import argparse
 import lsmails
 
-parser = argparse.ArgumentParser()
-subparsers = parser.add_subparsers(title='command', dest='command', help='sub parser help')
+class SubCmdHelpFormatter(argparse.RawDescriptionHelpFormatter):
+    def _format_action(self, action):
+        parts = super(argparse.RawDescriptionHelpFormatter,
+                self)._format_action(action)
+        # Skips subparsers help
+        if action.nargs == argparse.PARSER:
+            parts = '\n'.join(parts.split('\n')[1:])
+        return parts
+
+parser = argparse.ArgumentParser(formatter_class=SubCmdHelpFormatter)
+subparsers = parser.add_subparsers(title='command', dest='command', metavar='')
 
 parser_ls = subparsers.add_parser('ls', help = 'list mails')
 lsmails.set_argparser(parser_ls)
-# parser_ls.set_defaults(func=lsmails.main)
 
 args = parser.parse_args()
 
