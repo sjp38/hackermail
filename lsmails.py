@@ -121,13 +121,11 @@ DEFAULT_SINCE = datetime.datetime.now() - datetime.timedelta(days=3)
 DEFAULT_SINCE = "%s-%s-%s" % (DEFAULT_SINCE.year, DEFAULT_SINCE.month,
             DEFAULT_SINCE.day)
 
-def main():
-
+def set_argparser(parser=None):
     since_date = datetime.datetime.now() - datetime.timedelta(days=3)
     since = "%s-%s-%s" % (since_date.year, since_date.month,
             since_date.day)
 
-    parser = argparse.ArgumentParser()
     parser.add_argument('--manifest', metavar='manifest', type=str,
             default=DEFAULT_MANIFEST,
             help='Manifesto file in grok\'s format plus site field.')
@@ -149,7 +147,17 @@ def main():
     parser.add_argument('--lore', action='store_true',
             help='Print lore link for the <content> mail.')
 
-    args = parser.parse_args()
+def main(args=None):
+
+    since_date = datetime.datetime.now() - datetime.timedelta(days=3)
+    since = "%s-%s-%s" % (since_date.year, since_date.month,
+            since_date.day)
+
+    if not args:
+        parser = argparse.ArgumentParser()
+        set_argparser(parser)
+        args = parser.parse_args()
+
     manifest_file = args.manifest
     mail_list = args.mlist
     since = args.since
