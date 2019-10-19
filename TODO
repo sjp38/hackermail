@@ -1,3 +1,5 @@
 - One central command structure
 - Configuration feature implementation
 - Mail reply feature implementation
+- README writeup
+- Guarantee calling position independence
