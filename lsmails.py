@@ -6,6 +6,11 @@ import subprocess
 
 from _hckmail import *
 
+tags_to_show = []
+tags_to_hide = []
+mails_to_show = []
+sz_thr = {}
+
 class Mail:
     gitid = None
     date = None
@@ -40,6 +45,8 @@ class Mail:
                 self.series = [int(x) for x in series]
 
 def valid_to_show(mail):
+    global tags_to_hide
+    global tags_to_show
     has_tag = False
     if tags_to_hide:
         for tag in tags_to_hide:
@@ -96,7 +103,7 @@ def show_mail(mail):
             print(hline)
     print('\n' + message)
 
-def show_mails(mails):
+def show_mails(mails, pr_git_id, nr_cols_in_line):
     for idx, mail in enumerate(mails_to_show):
         indent = ""
         if (mail.series and mail.series[0] > 0) or ('reply' in mail.tags):
@@ -121,7 +128,7 @@ DEFAULT_SINCE = datetime.datetime.now() - datetime.timedelta(days=3)
 DEFAULT_SINCE = "%s-%s-%s" % (DEFAULT_SINCE.year, DEFAULT_SINCE.month,
             DEFAULT_SINCE.day)
 
-if __name__ == '__main__':
+def main():
 
     since_date = datetime.datetime.now() - datetime.timedelta(days=3)
     since = "%s-%s-%s" % (since_date.year, since_date.month,
@@ -154,8 +161,8 @@ if __name__ == '__main__':
     mail_list = args.mlist
     since = args.since
 
-    tags_to_show = []
-    tags_to_hide = []
+    global tags_to_show
+    global tags_to_hide
     if args.show:
         tags_to_show = args.show.split(',')
     if args.hide:
@@ -181,8 +188,8 @@ if __name__ == '__main__':
     cmd = ["git", "--git-dir=%s" % mdir, "log",
             '--date=iso-strict', '--pretty=%h %ad %s', "--since=%s" % since]
 
-    mails_to_show = []
-    sz_thr = {}
+    global mails_to_show
+    global sz_thr
     lines = subprocess.check_output(cmd).decode('utf-8').strip().split('\n')
     for line in lines:
         fields = line.split()
@@ -205,4 +212,7 @@ if __name__ == '__main__':
     if idx_of_mail != None:
         show_mail(mails_to_show[idx_of_mail])
     else:
-        show_mails(mails_to_show)
+        show_mails(mails_to_show, pr_git_id, nr_cols_in_line)
+
+if __name__ == '__main__':
+    main()
