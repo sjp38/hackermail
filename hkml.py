@@ -2,6 +2,7 @@
 
 import argparse
 import lsmails
+import fetchmails
 
 class SubCmdHelpFormatter(argparse.RawDescriptionHelpFormatter):
     def _format_action(self, action):
@@ -13,10 +14,14 @@ class SubCmdHelpFormatter(argparse.RawDescriptionHelpFormatter):
         return parts
 
 parser = argparse.ArgumentParser(formatter_class=SubCmdHelpFormatter)
-subparsers = parser.add_subparsers(title='command', dest='command', metavar='')
+subparsers = parser.add_subparsers(title='command', dest='command',
+        metavar='<command>')
 
 parser_ls = subparsers.add_parser('ls', help = 'list mails')
 lsmails.set_argparser(parser_ls)
+
+parser_fetch = subparsers.add_parser('fetch', help = 'fetch mails')
+fetchmails.set_argparser(parser_fetch)
 
 args = parser.parse_args()
 
@@ -26,3 +31,5 @@ if not args.command:
 
 if args.command == 'ls':
     lsmails.main(args)
+elif args.command == 'fetch':
+    fetchmails.main(args)
