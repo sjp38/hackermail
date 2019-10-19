@@ -6,11 +6,6 @@ import subprocess
 
 from _hckmail import *
 
-tags_to_show = []
-tags_to_hide = []
-mails_to_show = []
-sz_thr = {}
-
 class Mail:
     gitid = None
     date = None
@@ -44,9 +39,7 @@ class Mail:
             if series[0].isdigit() and series[1].isdigit():
                 self.series = [int(x) for x in series]
 
-def valid_to_show(mail):
-    global tags_to_hide
-    global tags_to_show
+def valid_to_show(mail, tags_to_hide, tags_to_show):
     has_tag = False
     if tags_to_hide:
         for tag in tags_to_hide:
@@ -103,7 +96,7 @@ def show_mail(mail):
             print(hline)
     print('\n' + message)
 
-def show_mails(mails, pr_git_id, nr_cols_in_line):
+def show_mails(mails_to_show, pr_git_id, nr_cols_in_line, sz_thr):
     for idx, mail in enumerate(mails_to_show):
         indent = ""
         if (mail.series and mail.series[0] > 0) or ('reply' in mail.tags):
@@ -161,8 +154,8 @@ def main():
     mail_list = args.mlist
     since = args.since
 
-    global tags_to_show
-    global tags_to_hide
+    tags_to_show = []
+    tags_to_hide = []
     if args.show:
         tags_to_show = args.show.split(',')
     if args.hide:
@@ -188,8 +181,8 @@ def main():
     cmd = ["git", "--git-dir=%s" % mdir, "log",
             '--date=iso-strict', '--pretty=%h %ad %s', "--since=%s" % since]
 
-    global mails_to_show
-    global sz_thr
+    mails_to_show = []
+    sz_thr = {}
     lines = subprocess.check_output(cmd).decode('utf-8').strip().split('\n')
     for line in lines:
         fields = line.split()
@@ -197,7 +190,7 @@ def main():
             continue
         mail = Mail(fields[0], fields[1], fields[2:])
 
-        if not valid_to_show(mail):
+        if not valid_to_show(mail, tags_to_hide, tags_to_show):
             continue
 
         # Shows only latest reply for given mail
@@ -212,7 +205,7 @@ def main():
     if idx_of_mail != None:
         show_mail(mails_to_show[idx_of_mail])
     else:
-        show_mails(mails_to_show, pr_git_id, nr_cols_in_line)
+        show_mails(mails_to_show, pr_git_id, nr_cols_in_line, sz_thr)
 
 if __name__ == '__main__':
     main()
