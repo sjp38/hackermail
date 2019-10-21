@@ -91,7 +91,8 @@ def show_mail(mail, show_lore_link):
     do_skip = True
     for hline in head.split('\n'):
         field_name = hline.split()[0]
-        if field_name.lower() == 'date:':
+        if field_name.lower() in ['date:', 'subject:', 'message-id:', 'from:',
+                                    'to:', 'cc:']:
             do_skip = False
         if not do_skip:
             print(hline)
