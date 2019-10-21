@@ -3,3 +3,4 @@
 - README writeup
 - Guarantee calling position independence
 - Support multiple repos for single mailing list
+- Consider moving manifest and mailing list argument to hkml common arguments
