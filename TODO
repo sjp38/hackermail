@@ -1,6 +1,6 @@
 - Configuration feature implementation
 - Mail reply feature implementation
 - README writeup
-- Guarantee calling position independence
+- Guarantee calling path independence
 - Support multiple repos for single mailing list
 - Consider moving manifest and mailing list argument to hkml common arguments
