@@ -115,8 +115,8 @@ def show_mails(mails_to_show, pr_git_id, nr_cols_in_line, sz_thr):
         prefix = ' '.join(prefix_fields)
 
         line = mail.subject
-        if sz_thr[mail.orig_subject] > 1:
-            line += " (%d more msgs) " % (sz_thr[mail.orig_subject] - 1)
+        if sz_thr[mail.orig_subject][0] > 1:
+            line += " (%d more msgs) " % (sz_thr[mail.orig_subject][0] - 1)
 
         pr_line_wrap(prefix + line, len(prefix), nr_cols_in_line)
 
@@ -194,7 +194,7 @@ def main(args=None):
             '--date=iso-strict', '--pretty=%h %ad %s', "--since=%s" % since]
 
     mails_to_show = []
-    sz_thr = {}
+    sz_thr = {} # orig_subject -> [nr_msgs, latest mail]
     lines = subprocess.check_output(cmd).decode('utf-8').strip().split('\n')
     for line in lines:
         fields = line.split()
@@ -207,9 +207,14 @@ def main(args=None):
 
         # Shows only latest reply for given mail
         if mail.orig_subject in sz_thr:
-            sz_thr[mail.orig_subject] += 1
+            sz_thr[mail.orig_subject][0] += 1
+            if not 'reply' in mail.tags:
+                latest_reply = sz_thr[mail.orig_subject][1]
+                if latest_reply in mails_to_show:
+                    mails_to_show.remove(latest_reply)
+                    mails_to_show.append(mail)
             continue
-        sz_thr[mail.orig_subject] = 1
+        sz_thr[mail.orig_subject] = [1, mail]
 
         mails_to_show.append(mail)
 
