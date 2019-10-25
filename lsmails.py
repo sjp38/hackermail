@@ -99,7 +99,7 @@ def show_mail(mail, show_lore_link):
             print(hline)
     print('\n' + message)
 
-def show_mails(mails_to_show, pr_git_id, nr_cols_in_line, sz_thr):
+def show_mails(mails_to_show, pr_git_id, nr_cols_in_line, threads):
     for idx, mail in enumerate(mails_to_show):
         indent = ""
         if (mail.series and mail.series[0] > 0) or ('reply' in mail.tags):
@@ -115,8 +115,8 @@ def show_mails(mails_to_show, pr_git_id, nr_cols_in_line, sz_thr):
         prefix = ' '.join(prefix_fields)
 
         line = mail.subject
-        if sz_thr[mail.orig_subject][0] > 1:
-            line += " (%d more msgs) " % (sz_thr[mail.orig_subject][0] - 1)
+        if len(threads[mail.orig_subject]) > 1:
+            line += " (%d more msgs) " % (len(threads[mail.orig_subject]) - 1)
 
         pr_line_wrap(prefix + line, len(prefix), nr_cols_in_line)
 
@@ -194,7 +194,7 @@ def main(args=None):
             '--date=iso-strict', '--pretty=%h %ad %s', "--since=%s" % since]
 
     mails_to_show = []
-    sz_thr = {} # orig_subject -> [nr_msgs, latest mail]
+    threads = {} # orig_subject -> mails (latest comes first)
     lines = subprocess.check_output(cmd).decode('utf-8').strip().split('\n')
     for line in lines:
         fields = line.split()
@@ -206,15 +206,15 @@ def main(args=None):
             continue
 
         # Shows only latest reply for given mail
-        if mail.orig_subject in sz_thr:
-            sz_thr[mail.orig_subject][0] += 1
+        if mail.orig_subject in threads:
+            threads[mail.orig_subject].append(mail)
             if not 'reply' in mail.tags:
-                latest_reply = sz_thr[mail.orig_subject][1]
+                latest_reply = threads[mail.orig_subject][0]
                 if latest_reply in mails_to_show:
                     mails_to_show.remove(latest_reply)
                     mails_to_show.append(mail)
             continue
-        sz_thr[mail.orig_subject] = [1, mail]
+        threads[mail.orig_subject] = [mail]
 
         mails_to_show.append(mail)
 
@@ -222,7 +222,7 @@ def main(args=None):
     if idx_of_mail != None:
         show_mail(mails_to_show[idx_of_mail], show_lore_link)
     else:
-        show_mails(mails_to_show, pr_git_id, nr_cols_in_line, sz_thr)
+        show_mails(mails_to_show, pr_git_id, nr_cols_in_line, threads)
 
 if __name__ == '__main__':
     main()
