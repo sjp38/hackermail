@@ -191,7 +191,8 @@ def main(args=None):
         exit(1)
 
     cmd = ["git", "--git-dir=%s" % mdir, "log",
-            '--date=iso-strict', '--pretty=%h %ad %s', "--since=%s" % since]
+            '--date=iso-strict', '--pretty=%h %ad %s (%an)',
+            "--since=%s" % since]
 
     mails_to_show = []
     threads = {} # orig_subject -> mails (latest comes first)
