@@ -36,7 +36,8 @@ class Mail:
             self.tags += tag.split()
 
             series = self.tags[-1].split('/')
-            if series[0].isdigit() and series[1].isdigit():
+            if (len(series) == 2 and series[0].isdigit() and
+                    series[1].isdigit()):
                 self.series = [int(x) for x in series]
 
 def valid_to_show(mail, tags_to_hide, tags_to_show):
