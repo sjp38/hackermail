@@ -4,3 +4,4 @@
 - Guarantee calling path independence
 - Support multiple repos for single mailing list
 - Consider moving manifest and mailing list argument to hkml common arguments
+- Tag mails (Just create a git repo for each tag and pick each commit)
