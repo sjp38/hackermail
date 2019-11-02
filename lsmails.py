@@ -80,24 +80,24 @@ def show_mail(mail, show_lore_link):
             'show', '%s:m' % mail.gitid]
     mail_content = subprocess.run(cmd, stdout=subprocess.PIPE).stdout.decode(
             'utf-8').strip()
-    if show_lore_link:
-        for line in mail_content.split('\n'):
-            fields = line.split()
-            if len(fields) == 2 and fields[0].lower() == 'message-id:':
-                print("https://lore.kernel.org/r/%s\n" % fields[1][1:-1])
-                break
     paragraphs = mail_content.split('\n\n')
     head = paragraphs[0]
     message = '\n\n'.join(paragraphs[1:])
+    msgid = ""
     do_skip = True
     for hline in head.split('\n'):
         field_name = hline.split()[0]
         if field_name.lower() in ['date:', 'subject:', 'message-id:', 'from:',
                                     'to:', 'cc:']:
             do_skip = False
+        if field_name.lower() == 'message-id:':
+            msgid = hline.split()[1][1:-1]
         if not do_skip:
             print(hline)
     print('\n' + message)
+    if show_lore_link and msgid != '':
+        print("\nhttps://lore.kernel.org/r/%s\n" % msgid)
+
 
 def show_mails(mails_to_show, pr_git_id, nr_cols_in_line, threads):
     for idx, mail in enumerate(mails_to_show):
