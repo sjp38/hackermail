@@ -1,5 +1,5 @@
-- Configuration feature implementation
-- Mail reply feature implementation
+- Global configuration
+- Mail reply/write implementation
 - README writeup
 - Guarantee calling path independence
 - Support multiple repos for single mailing list
