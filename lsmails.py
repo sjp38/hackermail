@@ -99,8 +99,10 @@ def show_mail(mail, show_lore_link):
         print("\nhttps://lore.kernel.org/r/%s\n" % msgid)
 
 
-def show_mails(mails_to_show, pr_git_id, nr_cols_in_line, threads):
+def show_mails(mails_to_show, pr_git_id, nr_cols_in_line, threads, nr_skips):
     for idx, mail in enumerate(mails_to_show):
+        if idx < nr_skips:
+            continue
         indent = ""
         if (mail.series and mail.series[0] > 0) or ('reply' in mail.tags):
             indent = "    "
@@ -149,6 +151,8 @@ def set_argparser(parser=None):
             help='Show content of specific mail.')
     parser.add_argument('--lore', action='store_true',
             help='Print lore link for the <content> mail.')
+    parser.add_argument('--skip', metavar='nr_skips', type=int, default=0,
+            help='Skips first <nr_skips> mails')
 
 def main(args=None):
 
@@ -176,6 +180,7 @@ def main(args=None):
     pr_git_id = args.gitid
     idx_of_mail = args.content
     show_lore_link = args.lore
+    nr_skip_mails = args.skip
 
     manifest = get_manifest(manifest_file)
     if not manifest:
@@ -223,7 +228,8 @@ def main(args=None):
     if idx_of_mail != None:
         show_mail(mails_to_show[idx_of_mail], show_lore_link)
     else:
-        show_mails(mails_to_show, pr_git_id, nr_cols_in_line, threads)
+        show_mails(mails_to_show, pr_git_id, nr_cols_in_line, threads,
+                nr_skip_mails)
 
 if __name__ == '__main__':
     main()
