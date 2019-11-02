@@ -116,7 +116,7 @@ def show_mails(mails_to_show, pr_git_id, nr_cols_in_line, threads):
 
         line = mail.subject
         if len(threads[mail.orig_subject]) > 1:
-            line += " (%d more msgs) " % (len(threads[mail.orig_subject]) - 1)
+            line += " (%d+ msgs) " % (len(threads[mail.orig_subject]) - 1)
 
         pr_line_wrap(prefix + line, len(prefix), nr_cols_in_line)
 
