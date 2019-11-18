@@ -1,8 +1,12 @@
 #!/usr/bin/env python3
 
 import argparse
-import lsmails
 import fetchmails
+import lsmails
+import os
+import subprocess
+import sys
+import tempfile
 
 class SubCmdHelpFormatter(argparse.RawDescriptionHelpFormatter):
     def _format_action(self, action):
@@ -30,6 +34,14 @@ if not args.command:
     exit(1)
 
 if args.command == 'ls':
-    lsmails.main(args)
+    tmp_path = tempfile.mkstemp()[1]
+    with open(tmp_path, 'w') as tmp_file:
+        sys.stdout = tmp_file
+
+        lsmails.main(args)
+
+        tmp_file.flush()
+        subprocess.call(['less', tmp_path])
+    os.remove(tmp_path)
 elif args.command == 'fetch':
     fetchmails.main(args)
