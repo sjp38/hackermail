@@ -74,8 +74,7 @@ def pr_line_wrap(line, len_indent, nr_cols):
                 words_to_print = [' ' * len_indent + words_to_print[-1]]
     print(' '.join(words_to_print))
 
-mdir = ''
-def show_mail(mail, show_lore_link):
+def show_mail(mail, mdir, show_lore_link):
     cmd = ["git", "--git-dir=%s" % mdir,
             'show', '%s:m' % mail.gitid]
     mail_content = subprocess.run(cmd, stdout=subprocess.PIPE).stdout.decode(
@@ -187,7 +186,6 @@ def main(args=None):
         print("Cannot open manifest file %s" % manifest_file)
         parser.print_help()
         exit(1)
-    global mdir
     mdir = mail_list_data_path(mail_list, manifest)
 
     if show_lore_link and idx_of_mail == None:
@@ -226,7 +224,7 @@ def main(args=None):
 
     mails_to_show.reverse()
     if idx_of_mail != None:
-        show_mail(mails_to_show[idx_of_mail], show_lore_link)
+        show_mail(mails_to_show[idx_of_mail], mdir, show_lore_link)
     else:
         show_mails(mails_to_show, pr_git_id, nr_cols_in_line, threads,
                 nr_skip_mails)
