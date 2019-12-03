@@ -154,11 +154,6 @@ def set_argparser(parser=None):
             help='Skips first <nr_skips> mails')
 
 def main(args=None):
-
-    since_date = datetime.datetime.now() - datetime.timedelta(days=3)
-    since = "%s-%s-%s" % (since_date.year, since_date.month,
-            since_date.day)
-
     if not args:
         parser = argparse.ArgumentParser()
         set_argparser(parser)
