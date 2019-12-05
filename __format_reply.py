@@ -10,11 +10,11 @@ head_fields = {}
 in_header = True
 with open(sys.argv[1], 'r') as f:
         for line in f:
-            line = line.strip()
             if in_header:
-                # TODO: handle multi line headers
-                # e.g., Subject: aasdf
-                #        asdgag
+                if line and line[0] in [' ', '\t'] and key:
+                    head_fields[key] += ' %s' % line.strip()
+                    continue
+                line = line.strip()
                 key = line.split(':')[0].lower()
                 if key:
                     head_fields[key] = line[len(key) + 2:]
@@ -25,4 +25,5 @@ with open(sys.argv[1], 'r') as f:
                     print("")
                     print("On %s %s wrote:\n" % (head_fields['date'], head_fields['from']))
                 continue
+            line = line.strip()
             print(">%s" % line)
