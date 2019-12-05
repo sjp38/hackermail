@@ -121,14 +121,10 @@ def show_mails(mails_to_show, pr_git_id, nr_cols_in_line, threads, nr_skips):
 
         pr_line_wrap(prefix + line, len(prefix), nr_cols_in_line)
 
-DEFAULT_SINCE = datetime.datetime.now() - datetime.timedelta(days=3)
-DEFAULT_SINCE = "%s-%s-%s" % (DEFAULT_SINCE.year, DEFAULT_SINCE.month,
-            DEFAULT_SINCE.day)
-
 def set_argparser(parser=None):
-    since_date = datetime.datetime.now() - datetime.timedelta(days=3)
-    since = "%s-%s-%s" % (since_date.year, since_date.month,
-            since_date.day)
+    DEFAULT_SINCE = datetime.datetime.now() - datetime.timedelta(days=3)
+    DEFAULT_SINCE = "%s-%s-%s" % (DEFAULT_SINCE.year, DEFAULT_SINCE.month,
+                DEFAULT_SINCE.day)
 
     parser.add_argument('--manifest', metavar='manifest', type=str,
             default=DEFAULT_MANIFEST,
