@@ -22,6 +22,8 @@ with open(sys.argv[1], 'r') as f:
                     in_header = False
                     print("Subject: Re: %s" % head_fields['subject'])
                     print("In-Reply-To: %s" % head_fields['message-id'])
+                    print("Cc: %s" % head_fields['cc'])
+                    print("To: %s" % head_fields['from'])
                     print("")
                     print("On %s %s wrote:\n" % (head_fields['date'], head_fields['from']))
                 continue
