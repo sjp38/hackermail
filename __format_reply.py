@@ -14,28 +14,23 @@ with open(sys.argv[1], 'r') as f:
         for line in f:
             line = line.strip()
             if is_header:
-                key = line.split(':')[0]
+                key = line.split(':')[0].lower()
                 # TODO: handle multi line headers
                 # e.g., Subject: aasdf
                 #        asdgag
-                if key.lower() == 'subject':
+                if key == 'subject':
                     subject = line[len(key) + 2:]
-                    continue
-                if key.lower() == 'message-id':
+                elif key == 'message-id':
                     msgid = line[len(key) + 2:]
-                    continue
-                if key.lower() == 'date':
+                elif key == 'date':
                     date = line[len(key) + 2:]
-                    continue
-                if key.lower() == 'from':
+                elif key == 'from':
                     sender = line[len(key) + 2:]
-                    continue
-                if line == '':
+                elif line == '':
                     is_header = False
                     print("Subject: Re: %s" % subject)
                     print("In-Reply-To: %s" % msgid)
                     print("")
                     print("On %s %s wrote:" % (date, sender))
-                    continue
                 continue
             print(">%s" % line)
