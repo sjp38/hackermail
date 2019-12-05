@@ -15,6 +15,9 @@ with open(sys.argv[1], 'r') as f:
             line = line.strip()
             if is_header:
                 key = line.split(':')[0]
+                # TODO: handle multi line headers
+                # e.g., Subject: aasdf
+                #        asdgag
                 if key.lower() == 'subject':
                     subject = line[len(key) + 2:]
                     continue
