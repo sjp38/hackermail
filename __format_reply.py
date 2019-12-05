@@ -5,32 +5,24 @@ import sys
 if len(sys.argv) != 2:
     print("Usage: %s <original plain mbox file>")
 
-is_header = True
-subject = None
-msgid = None
-date = None
-sender = None
+head_fields = {}
+
+in_header = True
 with open(sys.argv[1], 'r') as f:
         for line in f:
             line = line.strip()
-            if is_header:
-                key = line.split(':')[0].lower()
+            if in_header:
                 # TODO: handle multi line headers
                 # e.g., Subject: aasdf
                 #        asdgag
-                if key == 'subject':
-                    subject = line[len(key) + 2:]
-                elif key == 'message-id':
-                    msgid = line[len(key) + 2:]
-                elif key == 'date':
-                    date = line[len(key) + 2:]
-                elif key == 'from':
-                    sender = line[len(key) + 2:]
+                key = line.split(':')[0].lower()
+                if key:
+                    head_fields[key] = line[len(key) + 2:]
                 elif line == '':
-                    is_header = False
-                    print("Subject: Re: %s" % subject)
-                    print("In-Reply-To: %s" % msgid)
+                    in_header = False
+                    print("Subject: Re: %s" % head_fields['subject'])
+                    print("In-Reply-To: %s" % head_fields['message-id'])
                     print("")
-                    print("On %s %s wrote:\n" % (date, sender))
+                    print("On %s %s wrote:\n" % (head_fields['date'], head_fields['from']))
                 continue
             print(">%s" % line)
