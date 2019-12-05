@@ -31,6 +31,6 @@ with open(sys.argv[1], 'r') as f:
                     print("Subject: Re: %s" % subject)
                     print("In-Reply-To: %s" % msgid)
                     print("")
-                    print("On %s %s wrote:" % (date, sender))
+                    print("On %s %s wrote:\n" % (date, sender))
                 continue
             print(">%s" % line)
