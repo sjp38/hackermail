@@ -100,41 +100,9 @@ def set_argparser(parser=None):
     parser.add_argument('--skip', metavar='nr_skips', type=int, default=0,
             help='Skips first <nr_skips> mails')
 
-def main(args=None):
-    if not args:
-        parser = argparse.ArgumentParser()
-        set_argparser(parser)
-        args = parser.parse_args()
-
-    manifest_file = args.manifest
-    mail_list = args.mlist
-    since = args.since
-
-    tags_to_show = []
-    tags_to_hide = []
-    if args.show:
-        tags_to_show = args.show.split(',')
-    if args.hide:
-        tags_to_hide = args.hide.split(',')
-    msgid = args.msgid
-
-    nr_cols_in_line = args.cols
-    pr_git_id = args.gitid
-    idx_of_mail = args.content
-    show_lore_link = args.lore
-    nr_skip_mails = args.skip
-
-    manifest = get_manifest(manifest_file)
-    if not manifest:
-        print("Cannot open manifest file %s" % manifest_file)
-        parser.print_help()
-        exit(1)
+def filter_mails(manifest, mail_list, since, tags_to_show, tags_to_hide, msgid,
+        idx_of_mail, nr_skip_mails):
     mdir = mail_list_data_path(mail_list, manifest)
-
-    if show_lore_link and idx_of_mail == None:
-        print("--lore option works with content argument only.\n")
-        parser.print_help()
-        exit(1)
 
     cmd = ["git", "--git-dir=%s" % mdir, "log",
             '--date=iso-strict', '--pretty=%h %ad %s (%an)',
@@ -170,6 +138,46 @@ def main(args=None):
         mails_to_show.append(mail)
 
     mails_to_show.reverse()
+    return mails_to_show, threads
+
+def main(args=None):
+    if not args:
+        parser = argparse.ArgumentParser()
+        set_argparser(parser)
+        args = parser.parse_args()
+
+    manifest_file = args.manifest
+    mail_list = args.mlist
+    since = args.since
+
+    tags_to_show = []
+    tags_to_hide = []
+    if args.show:
+        tags_to_show = args.show.split(',')
+    if args.hide:
+        tags_to_hide = args.hide.split(',')
+    msgid = args.msgid
+
+    nr_cols_in_line = args.cols
+    pr_git_id = args.gitid
+    idx_of_mail = args.content
+    show_lore_link = args.lore
+    nr_skip_mails = args.skip
+
+    manifest = get_manifest(manifest_file)
+    if not manifest:
+        print("Cannot open manifest file %s" % manifest_file)
+        parser.print_help()
+        exit(1)
+
+    if show_lore_link and idx_of_mail == None:
+        print("--lore option works with content argument only.\n")
+        parser.print_help()
+        exit(1)
+
+    mails_to_show, threads = filter_mails(manifest, mail_list, since,
+            tags_to_show, tags_to_hide, msgid, idx_of_mail, nr_skip_mails)
+
     if idx_of_mail != None:
         show_mail(mails_to_show[idx_of_mail], show_lore_link)
     elif len(mails_to_show) == 1:
