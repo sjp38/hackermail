@@ -101,7 +101,7 @@ def set_argparser(parser=None):
             help='Skips first <nr_skips> mails')
 
 def filter_mails(manifest, mail_list, since, tags_to_show, tags_to_hide, msgid,
-        idx_of_mail, nr_skip_mails):
+        idx_of_mail):
     mdir = mail_list_data_path(mail_list, manifest)
 
     cmd = ["git", "--git-dir=%s" % mdir, "log",
@@ -178,7 +178,7 @@ def main(args=None):
         exit(1)
 
     mails_to_show, threads = filter_mails(manifest, mail_list, since,
-            tags_to_show, tags_to_hide, msgid, idx_of_mail, nr_skip_mails)
+            tags_to_show, tags_to_hide, msgid, idx_of_mail)
 
     if len(mails_to_show) == 1:
         show_mail(mails_to_show[0], show_lore_link)
