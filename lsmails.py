@@ -74,10 +74,10 @@ def set_argparser(parser=None):
             help='Number of columns for each line.')
     parser.add_argument('--gitid', action='store_true',
             help='Print git id of each mail')
-    parser.add_argument('content', metavar='idx', type=int, nargs='?',
-            help='Show content of specific mail.')
+    parser.add_argument('index', metavar='idx', type=int, nargs='?',
+            help='Index of mail to show its content.')
     parser.add_argument('--lore', action='store_true',
-            help='Print lore link for the <content> mail.')
+            help='Print lore link for the <index> mail.')
     parser.add_argument('--skip', metavar='nr_skips', type=int, default=0,
             help='Skips first <nr_skips> mails')
 
@@ -101,7 +101,7 @@ def main(args=None):
 
     nr_cols_in_line = args.cols
     pr_git_id = args.gitid
-    idx_of_mail = args.content
+    idx_of_mail = args.index
     show_lore_link = args.lore
     nr_skip_mails = args.skip
 
@@ -112,7 +112,7 @@ def main(args=None):
         exit(1)
 
     if show_lore_link and idx_of_mail == None:
-        print("--lore option works with content argument only.\n")
+        print("--lore option works with index argument only.\n")
         parser.print_help()
         exit(1)
 
