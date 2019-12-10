@@ -25,6 +25,67 @@ def mail_list_data_path(mail_list, manifest):
     if repo_path:
         return MAILDAT_DIR + repo_path
 
+def valid_to_show(mail, tags_to_hide, tags_to_show):
+    has_tag = False
+    if tags_to_hide:
+        for tag in tags_to_hide:
+            if tag in mail.tags:
+                has_tag = True
+                break
+        if has_tag:
+            return False
+
+    if tags_to_show:
+        for tag in tags_to_show:
+            if tag in mail.tags:
+                has_tag = True
+                break
+        if not has_tag:
+            return False
+    return True
+
+def filter_mails(manifest, mail_list, since, tags_to_show, tags_to_hide, msgid,
+        idx_of_mail):
+    mdir = mail_list_data_path(mail_list, manifest)
+
+    cmd = ["git", "--git-dir=%s" % mdir, "log",
+            '--date=iso-strict', '--pretty=%h %ad %s (%an)',
+            "--since=%s" % since]
+
+    mails_to_show = []
+    threads = {} # orig_subject -> mails (latest comes first)
+    lines = subprocess.check_output(cmd).decode('utf-8').strip().split('\n')
+    for line in lines:
+        fields = line.split()
+        if len(fields) < 3:
+            continue
+        mail = Mail(fields[0], mdir, fields[1], fields[2:])
+
+        if msgid and mail.mbox_parsed['header']['message-id'] != (
+                '<%s>' % msgid):
+            continue
+
+        if not valid_to_show(mail, tags_to_hide, tags_to_show):
+            continue
+
+        # Shows only latest reply for given mail
+        if mail.orig_subject in threads:
+            threads[mail.orig_subject].append(mail)
+            if not 'reply' in mail.tags:
+                latest_reply = threads[mail.orig_subject][0]
+                if latest_reply in mails_to_show:
+                    mails_to_show.remove(latest_reply)
+                    mails_to_show.append(mail)
+            continue
+        threads[mail.orig_subject] = [mail]
+
+        mails_to_show.append(mail)
+
+    mails_to_show.reverse()
+    if idx_of_mail:
+        mails_to_show = [mails_to_show[idx_of_mail]]
+    return mails_to_show, threads
+
 def parse_mbox(mbox):
     in_header = True
     head_fields = {}
