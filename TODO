@@ -1,4 +1,3 @@
-- Search mail by msgid
 - List mails by thread
 - Global configuration
 	- Support home dir global conf and local dir conf
