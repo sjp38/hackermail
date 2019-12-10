@@ -29,7 +29,7 @@ def format_reply(lines):
                 print("On %s %s wrote:\n" % (head_fields['date'], head_fields['from']))
             continue
         line = line.strip()
-        print(">%s" % line)
+        print("> %s" % line)
 
 if __name__ == '__main__':
     format_reply(sys.stdin)
