@@ -34,6 +34,7 @@ class Mail:
     tags = None
     series = None
     mail_content = None
+    mail_content_raw = None
 
     def __init__(self, gitid, gitdir, date, subject_fields):
         self.gitid = gitid
@@ -64,11 +65,16 @@ class Mail:
 
         self.set_mail_content()
 
-    def set_mail_content(self):
+    def get_raw_content(self):
         cmd = ["git", "--git-dir=%s" % self.gitdir,
                 'show', '%s:m' % self.gitid]
-        mail_content_raw = subprocess.run(cmd, stdout=subprocess.PIPE).stdout.decode(
-                'utf-8').strip()
+        self.mail_content_raw = subprocess.run(cmd,
+                stdout=subprocess.PIPE).stdout.decode( 'utf-8').strip()
+
+    def set_mail_content(self):
+        if not self.mail_content_raw:
+            self.get_raw_content()
+        mail_content_raw = self.mail_content_raw
         in_header = True
         head_fields = {}
         for idx, line in enumerate(mail_content_raw.split('\n')):
