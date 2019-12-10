@@ -150,6 +150,8 @@ def set_argparser(parser=None):
             help='Tags seperated by comma.  Show mails having the tags.')
     parser.add_argument('--hide', metavar='tag', type=str,
             help='Tags seperated by comma.  Hide mails having the tags.')
+    parser.add_argument('--msgid', metavar='msgid', type=str,
+            help='Message Id of the mail to show.')
     parser.add_argument('--cols', metavar='cols', type=int, default=130,
             help='Number of columns for each line.')
     parser.add_argument('--gitid', action='store_true',
@@ -177,6 +179,7 @@ def main(args=None):
         tags_to_show = args.show.split(',')
     if args.hide:
         tags_to_hide = args.hide.split(',')
+    msgid = args.msgid
 
     nr_cols_in_line = args.cols
     pr_git_id = args.gitid
@@ -209,6 +212,10 @@ def main(args=None):
             continue
         mail = Mail(fields[0], mdir, fields[1], fields[2:])
 
+        if msgid and mail.mail_content['header']['message-id'] != (
+                '<%s>' % msgid):
+            continue
+
         if not valid_to_show(mail, tags_to_hide, tags_to_show):
             continue
 
@@ -228,6 +235,8 @@ def main(args=None):
     mails_to_show.reverse()
     if idx_of_mail != None:
         show_mail(mails_to_show[idx_of_mail], show_lore_link)
+    elif len(mails_to_show) == 1:
+        show_mail(mails_to_show[0], show_lore_link)
     else:
         show_mails(mails_to_show, pr_git_id, nr_cols_in_line, threads,
                 nr_skip_mails)
