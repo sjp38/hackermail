@@ -3,6 +3,57 @@
 import json
 import subprocess
 
+class Mail:
+    gitid = None
+    gitdir = None
+    date = None
+    subject = None
+    orig_subject = None
+    tags = None
+    series = None
+    mbox_parsed = None
+    mbox = None
+
+    def __init__(self, gitid, gitdir, date, subject_fields):
+        self.gitid = gitid
+        self.gitdir = gitdir
+        self.date = date
+        self.subject = ' '.join(subject_fields)
+        self.orig_subject = self.subject
+        self.tags = []
+
+        re_depth = 0
+        for f in subject_fields:
+            if f.lower() == 're:':
+                re_depth += 1
+            else:
+                break
+        if re_depth > 0:
+            self.tags.append('reply')
+            self.orig_subject = ' '.join(subject_fields[re_depth:])
+
+        if self.orig_subject[0] == '[':
+            tag = self.orig_subject[1:].split(']')[0].strip().lower()
+            self.tags += tag.split()
+
+            series = self.tags[-1].split('/')
+            if (len(series) == 2 and series[0].isdigit() and
+                    series[1].isdigit()):
+                self.series = [int(x) for x in series]
+
+        self.set_mbox_parsed()
+
+    def get_raw_content(self):
+        cmd = ["git", "--git-dir=%s" % self.gitdir,
+                'show', '%s:m' % self.gitid]
+        self.mbox = subprocess.run(cmd,
+                stdout=subprocess.PIPE).stdout.decode( 'utf-8').strip()
+
+    def set_mbox_parsed(self):
+        if not self.mbox:
+            self.get_raw_content()
+        self.mbox_parsed = parse_mbox(self.mbox)
+
 HCKMAILDIR = '.hkm'
 DEFAULT_MANIFEST = HCKMAILDIR + '/manifest'
 MAILDAT_DIR = HCKMAILDIR + '/archives'
@@ -107,54 +158,3 @@ def parse_mbox(mbox):
     parsed['header'] = head_fields
     parsed['body'] = '\n'.join(mbox_lines[idx + 1:])
     return parsed
-
-class Mail:
-    gitid = None
-    gitdir = None
-    date = None
-    subject = None
-    orig_subject = None
-    tags = None
-    series = None
-    mbox_parsed = None
-    mbox = None
-
-    def __init__(self, gitid, gitdir, date, subject_fields):
-        self.gitid = gitid
-        self.gitdir = gitdir
-        self.date = date
-        self.subject = ' '.join(subject_fields)
-        self.orig_subject = self.subject
-        self.tags = []
-
-        re_depth = 0
-        for f in subject_fields:
-            if f.lower() == 're:':
-                re_depth += 1
-            else:
-                break
-        if re_depth > 0:
-            self.tags.append('reply')
-            self.orig_subject = ' '.join(subject_fields[re_depth:])
-
-        if self.orig_subject[0] == '[':
-            tag = self.orig_subject[1:].split(']')[0].strip().lower()
-            self.tags += tag.split()
-
-            series = self.tags[-1].split('/')
-            if (len(series) == 2 and series[0].isdigit() and
-                    series[1].isdigit()):
-                self.series = [int(x) for x in series]
-
-        self.set_mbox_parsed()
-
-    def get_raw_content(self):
-        cmd = ["git", "--git-dir=%s" % self.gitdir,
-                'show', '%s:m' % self.gitid]
-        self.mbox = subprocess.run(cmd,
-                stdout=subprocess.PIPE).stdout.decode( 'utf-8').strip()
-
-    def set_mbox_parsed(self):
-        if not self.mbox:
-            self.get_raw_content()
-        self.mbox_parsed = parse_mbox(self.mbox)
