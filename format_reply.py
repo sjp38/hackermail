@@ -3,6 +3,7 @@
 import argparse
 import datetime
 import subprocess
+import sys
 
 import _hckmail
 
@@ -44,12 +45,19 @@ def set_argparser(parser=None):
             help='Index of the mail to format reply for.')
     parser.add_argument('--mbox_file', metavar='mboxfile', type=str,
             help='Mbox format file of the mail to format reply for.')
+    parser.add_argument('--stdin', action='store_true',
+            help='Mbox format content is received via stdin.')
 
 def main(args=None):
     if not args:
         parser = argparse.ArgumentParser()
         set_argparser(parser)
         args = parser.parse_args()
+
+    if args.stdin:
+        parsed = _hckmail.parse_mbox(sys.stdin.read())
+        format_reply(parsed)
+        exit(0)
 
     if args.mbox_file:
         with open(args.mbox_file, 'r') as f:
