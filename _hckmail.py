@@ -55,7 +55,7 @@ class Mail:
     orig_subject = None
     tags = None
     series = None
-    mail_content = None
+    mbox_parsed = None
     mbox = None
 
     def __init__(self, gitid, gitdir, date, subject_fields):
@@ -85,7 +85,7 @@ class Mail:
                     series[1].isdigit()):
                 self.series = [int(x) for x in series]
 
-        self.set_mail_content()
+        self.set_mbox_parsed()
 
     def get_raw_content(self):
         cmd = ["git", "--git-dir=%s" % self.gitdir,
@@ -93,7 +93,7 @@ class Mail:
         self.mbox = subprocess.run(cmd,
                 stdout=subprocess.PIPE).stdout.decode( 'utf-8').strip()
 
-    def set_mail_content(self):
+    def set_mbox_parsed(self):
         if not self.mbox:
             self.get_raw_content()
-        self.mail_content = parse_mbox(self.mbox)
+        self.mbox_parsed = parse_mbox(self.mbox)

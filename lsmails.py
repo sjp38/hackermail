@@ -42,8 +42,8 @@ def pr_line_wrap(line, len_indent, nr_cols):
 
 def show_mail(mail, show_lore_link):
     for head in ['Date', 'Subject', 'Message-Id', 'From', 'To', 'CC']:
-        print("%s: %s" % (head, mail.mail_content['header'][head.lower()]))
-    print("\n%s" % mail.mail_content['body'])
+        print("%s: %s" % (head, mail.mbox_parsed['header'][head.lower()]))
+    print("\n%s" % mail.mbox_parsed['body'])
     if show_lore_link and msgid != '':
         print("\nhttps://lore.kernel.org/r/%s\n" % msgid)
 
@@ -149,7 +149,7 @@ def main(args=None):
             continue
         mail = Mail(fields[0], mdir, fields[1], fields[2:])
 
-        if msgid and mail.mail_content['header']['message-id'] != (
+        if msgid and mail.mbox_parsed['header']['message-id'] != (
                 '<%s>' % msgid):
             continue
 
