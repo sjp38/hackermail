@@ -103,7 +103,7 @@ def pr_line_wrap(line, len_indent, nr_cols):
                 words_to_print = [' ' * len_indent + words_to_print[-1]]
     print(' '.join(words_to_print))
 
-def show_mail(mail, mdir, show_lore_link):
+def show_mail(mail, show_lore_link):
     for head in ['date', 'subject', 'message-id', 'from', 'to', 'cc']:
         print("%s: %s" % (head, mail.mail_content['header'][head]))
     print("\n%s" % mail.mail_content['body'])
@@ -227,7 +227,7 @@ def main(args=None):
 
     mails_to_show.reverse()
     if idx_of_mail != None:
-        show_mail(mails_to_show[idx_of_mail], mdir, show_lore_link)
+        show_mail(mails_to_show[idx_of_mail], show_lore_link)
     else:
         show_mails(mails_to_show, pr_git_id, nr_cols_in_line, threads,
                 nr_skip_mails)
