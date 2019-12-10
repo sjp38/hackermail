@@ -6,8 +6,8 @@ import subprocess
 
 import _hckmail
 
-def format_reply(mail):
-    head_fields = mail.mbox_parsed['header']
+def format_reply(mbox_parsed):
+    head_fields = mbox_parsed['header']
     if 'subject' in head_fields:
         print("Subject: Re: %s" % head_fields['subject'])
     if 'message-id' in head_fields:
@@ -18,7 +18,7 @@ def format_reply(mail):
         print("To: %s" % head_fields['from'])
     print("")
     print("On %s %s wrote:\n" % (head_fields['date'], head_fields['from']))
-    for line in mail.mbox_parsed['body'].split('\n'):
+    for line in mbox_parsed['body'].split('\n'):
         print("> %s" % line)
 
 def set_argparser(parser=None):
@@ -72,7 +72,7 @@ def main(args=None):
     mails_to_show, threads = _hckmail.filter_mails(manifest, mail_list, since,
             tags_to_show, tags_to_hide, msgid, idx_of_mail)
 
-    format_reply(mails_to_show[0])
+    format_reply(mails_to_show[0].mbox_parsed)
 
 if __name__ == '__main__':
     main()
