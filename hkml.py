@@ -28,7 +28,7 @@ lsmails.set_argparser(parser_ls)
 parser_fetch = subparsers.add_parser('fetch', help = 'fetch mails')
 fetchmails.set_argparser(parser_fetch)
 
-parser_fmtre = subparsers.add_parser('format-reply', help = 'format reply')
+parser_fmtre = subparsers.add_parser('format_reply', help = 'format reply')
 format_reply.set_argparser(parser_fmtre)
 
 args = parser.parse_args()
@@ -49,5 +49,5 @@ if args.command == 'ls':
     os.remove(tmp_path)
 elif args.command == 'fetch':
     fetchmails.main(args)
-elif args.command == 'format-reply':
+elif args.command == 'format_reply':
     format_reply.main(args)
