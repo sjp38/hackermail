@@ -138,6 +138,8 @@ def filter_mails(manifest, mail_list, since, tags_to_show, tags_to_hide, msgid,
         mails_to_show.append(mail)
 
     mails_to_show.reverse()
+    if idx_of_mail:
+        mails_to_show = [mails_to_show[idx_of_mail]]
     return mails_to_show, threads
 
 def main(args=None):
@@ -178,9 +180,7 @@ def main(args=None):
     mails_to_show, threads = filter_mails(manifest, mail_list, since,
             tags_to_show, tags_to_hide, msgid, idx_of_mail, nr_skip_mails)
 
-    if idx_of_mail != None:
-        show_mail(mails_to_show[idx_of_mail], show_lore_link)
-    elif len(mails_to_show) == 1:
+    if len(mails_to_show) == 1:
         show_mail(mails_to_show[0], show_lore_link)
     else:
         show_mails(mails_to_show, pr_git_id, nr_cols_in_line, threads,
