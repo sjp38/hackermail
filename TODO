@@ -3,7 +3,7 @@
 	- Support home dir global conf and local dir conf
 - Mail reply implementation
 	- Make reply msg formatter (done)
-	- Connect with hkml mail viewer
+	- Connect with hkml mail viewer (done)
 	- Connect with vim-like editor for interactive writing
 	- Connect with git send-email
 - Mail write implementation
