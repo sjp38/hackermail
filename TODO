@@ -2,8 +2,6 @@
 - Global configuration
 	- Support home dir global conf and local dir conf
 - Mail reply implementation
-	- Make reply msg formatter (done)
-	- Connect with hkml mail viewer (done)
 	- Connect with git send-email
 - Mail write implementation
 - README writeup
@@ -11,3 +9,4 @@
 - Support multiple repos for single mailing list
 - Consider moving manifest and mailing list argument to hkml common arguments
 - Tag mails (Just create a git repo for each tag and pick each commit)
+- Fix lsmails error which occurs when mailing list option is not given.
