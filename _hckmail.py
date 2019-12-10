@@ -92,4 +92,5 @@ class Mail:
             break
         self.mail_content = {}
         self.mail_content['header'] = head_fields
-        self.mail_content['body'] = mail_content_raw[idx + 1:]
+        self.mail_content['body'] = '\n'.join(
+                mail_content_raw.split('\n')[idx + 1:])
