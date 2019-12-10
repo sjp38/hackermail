@@ -4,7 +4,6 @@
 - Mail reply implementation
 	- Make reply msg formatter (done)
 	- Connect with hkml mail viewer (done)
-	- Connect with vim-like editor for interactive writing
 	- Connect with git send-email
 - Mail write implementation
 - README writeup
