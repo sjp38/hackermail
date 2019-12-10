@@ -25,6 +25,28 @@ def mail_list_data_path(mail_list, manifest):
     if repo_path:
         return MAILDAT_DIR + repo_path
 
+def parse_mbox(mbox):
+    in_header = True
+    head_fields = {}
+    mbox_lines = mbox.split('\n')
+    for idx, line in enumerate(mbox_lines):
+        if in_header:
+            if line and line[0] in [' ', '\t'] and key:
+                head_fields[key] += ' %s' % line.strip()
+                continue
+            line = line.strip()
+            key = line.split(':')[0].lower()
+            if key:
+                head_fields[key] = line[len(key) + 2:]
+            elif line == '':
+                in_header = False
+            continue
+        break
+    parsed = {}
+    parsed['header'] = head_fields
+    parsed['body'] = '\n'.join(mbox_lines[idx + 1:])
+    return parsed
+
 class Mail:
     gitid = None
     gitdir = None
@@ -75,22 +97,4 @@ class Mail:
         if not self.mail_content_raw:
             self.get_raw_content()
         mail_content_raw = self.mail_content_raw
-        in_header = True
-        head_fields = {}
-        for idx, line in enumerate(mail_content_raw.split('\n')):
-            if in_header:
-                if line and line[0] in [' ', '\t'] and key:
-                    head_fields[key] += ' %s' % line.strip()
-                    continue
-                line = line.strip()
-                key = line.split(':')[0].lower()
-                if key:
-                    head_fields[key] = line[len(key) + 2:]
-                elif line == '':
-                    in_header = False
-                continue
-            break
-        self.mail_content = {}
-        self.mail_content['header'] = head_fields
-        self.mail_content['body'] = '\n'.join(
-                mail_content_raw.split('\n')[idx + 1:])
+        self.mail_content = parse_mbox(mail_content_raw)
