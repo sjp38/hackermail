@@ -29,7 +29,7 @@ def set_argparser(parser=None):
     parser.add_argument('--manifest', metavar='manifest', type=str,
             default=_hckmail.DEFAULT_MANIFEST,
             help='Manifesto file in grok\'s format plus site field.')
-    parser.add_argument('mlist', metavar='mailing list', type=str,
+    parser.add_argument('mlist', metavar='mailing list', type=str, nargs='?',
             help='Mailing list to show.')
     parser.add_argument('--since', metavar='since', type=str,
             default=DEFAULT_SINCE,
@@ -42,12 +42,20 @@ def set_argparser(parser=None):
             help='Message Id of the mail to show.')
     parser.add_argument('index', metavar='idx', type=int, nargs='?',
             help='Index of the mail to format reply for.')
+    parser.add_argument('--mbox_file', metavar='mboxfile', type=str,
+            help='Mbox format file of the mail to format reply for.')
 
 def main(args=None):
     if not args:
         parser = argparse.ArgumentParser()
         set_argparser(parser)
         args = parser.parse_args()
+
+    if args.mbox_file:
+        with open(args.mbox_file, 'r') as f:
+            parsed = _hckmail.parse_mbox(f.read())
+            format_reply(parsed)
+        exit(0)
 
     manifest_file = args.manifest
     mail_list = args.mlist
