@@ -8,14 +8,17 @@ from _hckmail import *
 
 class Mail:
     gitid = None
+    gitdir = None
     date = None
     subject = None
     orig_subject = None
     tags = None
     series = None
+    mail_content = None
 
-    def __init__(self, gitid, date, subject_fields):
+    def __init__(self, gitid, gitdir, date, subject_fields):
         self.gitid = gitid
+        self.gitdir = gitdir
         self.date = date
         self.subject = ' '.join(subject_fields)
         self.orig_subject = self.subject
@@ -39,6 +42,32 @@ class Mail:
             if (len(series) == 2 and series[0].isdigit() and
                     series[1].isdigit()):
                 self.series = [int(x) for x in series]
+
+        self.set_mail_content()
+
+    def set_mail_content(self):
+        cmd = ["git", "--git-dir=%s" % self.gitdir,
+                'show', '%s:m' % self.gitid]
+        mail_content_raw = subprocess.run(cmd, stdout=subprocess.PIPE).stdout.decode(
+                'utf-8').strip()
+        in_header = True
+        head_fields = {}
+        for idx, line in enumerate(mail_content_raw.split('\n')):
+            if in_header:
+                if line and line[0] in [' ', '\t'] and key:
+                    head_fields[key] += ' %s' % line.strip()
+                    continue
+                line = line.strip()
+                key = line.split(':')[0].lower()
+                if key:
+                    head_fields[key] = line[len(key) + 2:]
+                elif line == '':
+                    in_header = False
+                continue
+            break
+        self.mail_content = {}
+        self.mail_content['header'] = head_fields
+        self.mail_content['body'] = mail_content_raw[idx + 1:]
 
 def valid_to_show(mail, tags_to_hide, tags_to_show):
     has_tag = False
@@ -74,29 +103,12 @@ def pr_line_wrap(line, len_indent, nr_cols):
                 words_to_print = [' ' * len_indent + words_to_print[-1]]
     print(' '.join(words_to_print))
 
-def show_mail(mail, mdir, show_lore_link):
-    cmd = ["git", "--git-dir=%s" % mdir,
-            'show', '%s:m' % mail.gitid]
-    mail_content = subprocess.run(cmd, stdout=subprocess.PIPE).stdout.decode(
-            'utf-8').strip()
-    paragraphs = mail_content.split('\n\n')
-    head = paragraphs[0]
-    message = '\n\n'.join(paragraphs[1:])
-    msgid = ""
-    do_skip = True
-    for hline in head.split('\n'):
-        field_name = hline.split()[0]
-        if field_name.lower() in ['date:', 'subject:', 'message-id:', 'from:',
-                                    'to:', 'cc:']:
-            do_skip = False
-        if field_name.lower() == 'message-id:':
-            msgid = hline.split()[1][1:-1]
-        if not do_skip:
-            print(hline)
-    print('\n' + message)
+def show_mail(mail, show_lore_link):
+    for head in ['Date', 'Subject', 'Message-Id', 'From', 'To', 'CC']:
+        print("%s: %s" % (head, mail.mail_content['header'][head.lower()]))
+    print("\n%s" % mail.mail_content['body'])
     if show_lore_link and msgid != '':
         print("\nhttps://lore.kernel.org/r/%s\n" % msgid)
-
 
 def show_mails(mails_to_show, pr_git_id, nr_cols_in_line, threads, nr_skips):
     for idx, mail in enumerate(mails_to_show):
@@ -138,6 +150,8 @@ def set_argparser(parser=None):
             help='Tags seperated by comma.  Show mails having the tags.')
     parser.add_argument('--hide', metavar='tag', type=str,
             help='Tags seperated by comma.  Hide mails having the tags.')
+    parser.add_argument('--msgid', metavar='msgid', type=str,
+            help='Message Id of the mail to show.')
     parser.add_argument('--cols', metavar='cols', type=int, default=130,
             help='Number of columns for each line.')
     parser.add_argument('--gitid', action='store_true',
@@ -165,6 +179,7 @@ def main(args=None):
         tags_to_show = args.show.split(',')
     if args.hide:
         tags_to_hide = args.hide.split(',')
+    msgid = args.msgid
 
     nr_cols_in_line = args.cols
     pr_git_id = args.gitid
@@ -195,7 +210,11 @@ def main(args=None):
         fields = line.split()
         if len(fields) < 3:
             continue
-        mail = Mail(fields[0], fields[1], fields[2:])
+        mail = Mail(fields[0], mdir, fields[1], fields[2:])
+
+        if msgid and mail.mail_content['header']['message-id'] != (
+                '<%s>' % msgid):
+            continue
 
         if not valid_to_show(mail, tags_to_hide, tags_to_show):
             continue
@@ -215,7 +234,9 @@ def main(args=None):
 
     mails_to_show.reverse()
     if idx_of_mail != None:
-        show_mail(mails_to_show[idx_of_mail], mdir, show_lore_link)
+        show_mail(mails_to_show[idx_of_mail], show_lore_link)
+    elif len(mails_to_show) == 1:
+        show_mail(mails_to_show[0], show_lore_link)
     else:
         show_mails(mails_to_show, pr_git_id, nr_cols_in_line, threads,
                 nr_skip_mails)
