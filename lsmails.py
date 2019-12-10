@@ -4,7 +4,7 @@ import argparse
 import datetime
 import subprocess
 
-from _hckmail import *
+import _hckmail
 
 def pr_line_wrap(line, len_indent, nr_cols):
     words = line.split(' ')
@@ -52,7 +52,7 @@ def show_mails(mails_to_show, pr_git_id, nr_cols_in_line, threads, nr_skips):
         pr_line_wrap(prefix + line, len(prefix), nr_cols_in_line)
 
 def set_argparser(parser=None):
-    set_mail_search_options(parser)
+    _hckmail.set_mail_search_options(parser)
     parser.add_argument('--cols', metavar='cols', type=int, default=130,
             help='Number of columns for each line.')
     parser.add_argument('--gitid', action='store_true',
@@ -86,7 +86,7 @@ def main(args=None):
     show_lore_link = args.lore
     nr_skip_mails = args.skip
 
-    manifest = get_manifest(manifest_file)
+    manifest = _hckmail.get_manifest(manifest_file)
     if not manifest:
         print("Cannot open manifest file %s" % manifest_file)
         parser.print_help()
@@ -97,7 +97,7 @@ def main(args=None):
         parser.print_help()
         exit(1)
 
-    mails_to_show, threads = filter_mails(manifest, mail_list, since,
+    mails_to_show, threads = _hckmail.filter_mails(manifest, mail_list, since,
             tags_to_show, tags_to_hide, msgid, idx_of_mail)
 
     if len(mails_to_show) == 1:
