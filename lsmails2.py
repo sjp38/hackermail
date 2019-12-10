@@ -104,28 +104,11 @@ def pr_line_wrap(line, len_indent, nr_cols):
     print(' '.join(words_to_print))
 
 def show_mail(mail, mdir, show_lore_link):
-    cmd = ["git", "--git-dir=%s" % mdir,
-            'show', '%s:m' % mail.gitid]
-    mail_content = subprocess.run(cmd, stdout=subprocess.PIPE).stdout.decode(
-            'utf-8').strip()
-    paragraphs = mail_content.split('\n\n')
-    head = paragraphs[0]
-    message = '\n\n'.join(paragraphs[1:])
-    msgid = ""
-    do_skip = True
-    for hline in head.split('\n'):
-        field_name = hline.split()[0]
-        if field_name.lower() in ['date:', 'subject:', 'message-id:', 'from:',
-                                    'to:', 'cc:']:
-            do_skip = False
-        if field_name.lower() == 'message-id:':
-            msgid = hline.split()[1][1:-1]
-        if not do_skip:
-            print(hline)
-    print('\n' + message)
+    for head in ['date', 'subject', 'message-id', 'from', 'to', 'cc']:
+        print("%s: %s" % (head, mail.mail_content['header'][head]))
+    print("\n%s" % mail.mail_content['body'])
     if show_lore_link and msgid != '':
         print("\nhttps://lore.kernel.org/r/%s\n" % msgid)
-
 
 def show_mails(mails_to_show, pr_git_id, nr_cols_in_line, threads, nr_skips):
     for idx, mail in enumerate(mails_to_show):
