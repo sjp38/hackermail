@@ -45,29 +45,7 @@ def main(args=None):
             format_reply(parsed)
         exit(0)
 
-    manifest_file = args.manifest
-    mail_list = args.mlist
-    since = args.since
-
-    tags_to_show = []
-    tags_to_hide = []
-    if args.show:
-        tags_to_show = args.show.split(',')
-    if args.hide:
-        tags_to_hide = args.hide.split(',')
-    msgid = args.msgid
-
-    idx_of_mail = args.index
-
-    manifest = _hckmail.get_manifest(manifest_file)
-    if not manifest:
-        print("Cannot open manifest file %s" % manifest_file)
-        parser.print_help()
-        exit(1)
-
-    mails_to_show, threads = _hckmail.filter_mails(manifest, mail_list, since,
-            tags_to_show, tags_to_hide, msgid, idx_of_mail)
-
+    mails_to_show, threads = _hckmail.filter_mails(args)
     format_reply(mails_to_show[0].mbox_parsed)
 
 if __name__ == '__main__':

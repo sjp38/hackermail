@@ -68,37 +68,17 @@ def main(args=None):
         set_argparser(parser)
         args = parser.parse_args()
 
-    manifest_file = args.manifest
-    mail_list = args.mlist
-    since = args.since
-
-    tags_to_show = []
-    tags_to_hide = []
-    if args.show:
-        tags_to_show = args.show.split(',')
-    if args.hide:
-        tags_to_hide = args.hide.split(',')
-    msgid = args.msgid
-
     nr_cols_in_line = args.cols
     pr_git_id = args.gitid
-    idx_of_mail = args.index
     show_lore_link = args.lore
     nr_skip_mails = args.skip
-
-    manifest = _hckmail.get_manifest(manifest_file)
-    if not manifest:
-        print("Cannot open manifest file %s" % manifest_file)
-        parser.print_help()
-        exit(1)
 
     if show_lore_link and idx_of_mail == None:
         print("--lore option works with index argument only.\n")
         parser.print_help()
         exit(1)
 
-    mails_to_show, threads = _hckmail.filter_mails(manifest, mail_list, since,
-            tags_to_show, tags_to_hide, msgid, idx_of_mail)
+    mails_to_show, threads = _hckmail.filter_mails(args)
 
     if len(mails_to_show) == 1:
         show_mail(mails_to_show[0], show_lore_link)

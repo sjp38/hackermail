@@ -96,8 +96,27 @@ def valid_to_show(mail, tags_to_hide, tags_to_show):
             return False
     return True
 
-def filter_mails(manifest, mail_list, since, tags_to_show, tags_to_hide, msgid,
-        idx_of_mail):
+def filter_mails(args):
+    manifest_file = args.manifest
+    mail_list = args.mlist
+    since = args.since
+
+    tags_to_show = []
+    tags_to_hide = []
+    if args.show:
+        tags_to_show = args.show.split(',')
+    if args.hide:
+        tags_to_hide = args.hide.split(',')
+    msgid = args.msgid
+
+    idx_of_mail = args.index
+
+    manifest = get_manifest(manifest_file)
+    if not manifest:
+        print("Cannot open manifest file %s" % manifest_file)
+        parser.print_help()
+        exit(1)
+
     mdir = mail_list_data_path(mail_list, manifest)
 
     cmd = ["git", "--git-dir=%s" % mdir, "log",
