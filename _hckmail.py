@@ -138,28 +138,6 @@ def filter_mails(manifest, mail_list, since, tags_to_show, tags_to_hide, msgid,
         mails_to_show = [mails_to_show[idx_of_mail]]
     return mails_to_show, threads
 
-def parse_mbox(mbox):
-    in_header = True
-    head_fields = {}
-    mbox_lines = mbox.split('\n')
-    for idx, line in enumerate(mbox_lines):
-        if in_header:
-            if line and line[0] in [' ', '\t'] and key:
-                head_fields[key] += ' %s' % line.strip()
-                continue
-            line = line.strip()
-            key = line.split(':')[0].lower()
-            if key:
-                head_fields[key] = line[len(key) + 2:]
-            elif line == '':
-                in_header = False
-            continue
-        break
-    parsed = {}
-    parsed['header'] = head_fields
-    parsed['body'] = '\n'.join(mbox_lines[idx + 1:])
-    return parsed
-
 def set_mail_search_options(parser):
     DEFAULT_SINCE = datetime.datetime.now() - datetime.timedelta(days=3)
     DEFAULT_SINCE = "%s-%s-%s" % (DEFAULT_SINCE.year, DEFAULT_SINCE.month,
@@ -181,3 +159,25 @@ def set_mail_search_options(parser):
             help='Message Id of the mail to show.')
     parser.add_argument('index', metavar='idx', type=int, nargs='?',
             help='Index of the mail to format reply for.')
+
+def parse_mbox(mbox):
+    in_header = True
+    head_fields = {}
+    mbox_lines = mbox.split('\n')
+    for idx, line in enumerate(mbox_lines):
+        if in_header:
+            if line and line[0] in [' ', '\t'] and key:
+                head_fields[key] += ' %s' % line.strip()
+                continue
+            line = line.strip()
+            key = line.split(':')[0].lower()
+            if key:
+                head_fields[key] = line[len(key) + 2:]
+            elif line == '':
+                in_header = False
+            continue
+        break
+    parsed = {}
+    parsed['header'] = head_fields
+    parsed['body'] = '\n'.join(mbox_lines[idx + 1:])
+    return parsed
