@@ -104,8 +104,8 @@ def pr_line_wrap(line, len_indent, nr_cols):
     print(' '.join(words_to_print))
 
 def show_mail(mail, show_lore_link):
-    for head in ['date', 'subject', 'message-id', 'from', 'to', 'cc']:
-        print("%s: %s" % (head, mail.mail_content['header'][head]))
+    for head in ['Date', 'Subject', 'Message-Id', 'From', 'To', 'CC']:
+        print("%s: %s" % (head, mail.mail_content['header'][head.lower()]))
     print("\n%s" % mail.mail_content['body'])
     if show_lore_link and msgid != '':
         print("\nhttps://lore.kernel.org/r/%s\n" % msgid)
