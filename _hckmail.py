@@ -67,6 +67,13 @@ def get_manifest(manifest_file):
         return None
     return manifest
 
+def mail_list_repo_paths(mail_list, manifest):
+    paths = []
+    for path in manifest:
+        if path.startswith('/%s/' % mail_list):
+            paths.append(path)
+    return paths
+
 def mail_list_repo_path(mail_list, manifest):
     for path in manifest:
         if path.startswith('/%s/' % mail_list):

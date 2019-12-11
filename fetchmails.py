@@ -30,17 +30,16 @@ def main(args=None):
 
     site = manifest['site']
     for mlist in mail_lists:
-        repo_path = mail_list_repo_path(mlist, manifest)
-        if not repo_path:
-            continue
-        print('%s%s' % (site, repo_path))
-        git_url = '%s%s' % (site, repo_path)
-        local_path = mail_list_data_path(mlist, manifest)
-        if not os.path.isdir(local_path):
-            cmd = 'git clone --mirror %s %s' % (git_url, local_path)
-        else:
-            cmd = 'git --git-dir=%s remote update' % local_path
-        subprocess.call(cmd.split())
+        repo_paths = mail_list_repo_paths(mlist, manifest)
+        for repo_path in repo_paths:
+            print('%s%s' % (site, repo_path))
+            git_url = '%s%s' % (site, repo_path)
+            local_path = mail_list_data_path(mlist, manifest)
+            if not os.path.isdir(local_path):
+                cmd = 'git clone --mirror %s %s' % (git_url, local_path)
+            else:
+                cmd = 'git --git-dir=%s remote update' % local_path
+            subprocess.call(cmd.split())
 
 if __name__ == '__main__':
     main()
