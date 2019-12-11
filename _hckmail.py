@@ -130,6 +130,9 @@ def filter_mails(args):
             '--date=iso-strict', '--pretty=%h %ad %s (%an)',
             "--since=%s" % since]
 
+    if args.author:
+        cmd += ['--author', args.author]
+
     mails_to_show = []
     threads = {} # orig_subject -> mails (latest comes first)
     lines = subprocess.check_output(cmd).decode('utf-8').strip().split('\n')
@@ -183,6 +186,8 @@ def set_mail_search_options(parser):
             help='Tags seperated by comma.  Hide mails having the tags.')
     parser.add_argument('--msgid', metavar='msgid', type=str,
             help='Message Id of the mail to show.')
+    parser.add_argument('--author', metavar='msgid', type=str,
+            help='Author of the mails.')
     parser.add_argument('index', metavar='idx', type=int, nargs='?',
             help='Index of the mail to format reply for.')
 
