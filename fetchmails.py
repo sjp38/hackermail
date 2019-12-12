@@ -13,15 +13,7 @@ def set_argparser(parser):
     parser.add_argument('lists', type=str, nargs='+',
             help='Name of the mailing list.')
 
-def main(args=None):
-    if not args:
-        parser = argparse.ArgumentParser()
-        set_argparser(parser)
-        args = parser.parse_args()
-
-    manifest_file = args.manifest
-    mail_lists = args.lists
-
+def fetch_mail(manifest_file, mail_lists):
     manifest = get_manifest(manifest_file)
     if not manifest:
         print("Cannot open manifest file %s" % manifest_file)
@@ -41,6 +33,16 @@ def main(args=None):
                 cmd = 'git --git-dir=%s remote update' % local_path
             print(cmd)
             subprocess.call(cmd.split())
+
+def main(args=None):
+    if not args:
+        parser = argparse.ArgumentParser()
+        set_argparser(parser)
+        args = parser.parse_args()
+
+    manifest_file = args.manifest
+    mail_lists = args.lists
+    fetch_mail(manifest_file, mail_lists)
 
 if __name__ == '__main__':
     main()
