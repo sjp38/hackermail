@@ -131,18 +131,20 @@ def filter_mails(args):
         parser.print_help()
         exit(1)
 
-    mdir = mail_list_data_path(mail_list, manifest)
+    lines = []
+    mdirs = mail_list_data_paths(mail_list, manifest)
+    for mdir in mdirs:
+        cmd = ["git", "--git-dir=%s" % mdir, "log",
+                '--date=iso-strict', '--pretty=%h %ad %s (%an)',
+                "--since=%s" % since]
 
-    cmd = ["git", "--git-dir=%s" % mdir, "log",
-            '--date=iso-strict', '--pretty=%h %ad %s (%an)',
-            "--since=%s" % since]
+        if args.author:
+            cmd += ['--author', args.author]
 
-    if args.author:
-        cmd += ['--author', args.author]
+        mails_to_show = []
+        threads = {} # orig_subject -> mails (latest comes first)
+        lines += subprocess.check_output(cmd).decode('utf-8').strip().split('\n')
 
-    mails_to_show = []
-    threads = {} # orig_subject -> mails (latest comes first)
-    lines = subprocess.check_output(cmd).decode('utf-8').strip().split('\n')
     for line in lines:
         fields = line.split()
         if len(fields) < 3:
