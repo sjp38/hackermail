@@ -17,7 +17,8 @@ def format_reply(mbox_parsed):
     if 'from' in head_fields:
         print("To: %s" % head_fields['from'])
     print("")
-    print("On %s %s wrote:\n" % (head_fields['date'], head_fields['from']))
+    if 'date' in head_fields and 'from' in head_fields:
+        print("On %s %s wrote:\n" % (head_fields['date'], head_fields['from']))
     for line in mbox_parsed['body'].split('\n'):
         print("> %s" % line)
 
