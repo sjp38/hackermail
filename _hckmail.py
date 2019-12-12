@@ -133,6 +133,10 @@ def filter_mails(args):
 
     lines = []
     mdirs = mail_list_data_paths(mail_list, manifest)
+    if not mdirs:
+        print("Mailing list '%s' in manifest '%s' not found." % (
+            mail_list, manifest_file))
+        exit(1)
     for mdir in mdirs:
         cmd = ["git", "--git-dir=%s" % mdir, "log",
                 '--date=iso-strict', '--pretty=%h %ad %s (%an)',
