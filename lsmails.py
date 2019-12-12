@@ -52,7 +52,7 @@ def show_mails(mails_to_show, pr_git_id, nr_cols_in_line, threads, nr_skips):
         pr_line_wrap(prefix + line, len(prefix), nr_cols_in_line)
 
 def set_argparser(parser=None):
-    _hckmail.set_mail_search_options(parser)
+    _hckmail.set_mail_search_options(parser, mlist_nargs=1)
     parser.add_argument('--cols', metavar='cols', type=int, default=130,
             help='Number of columns for each line.')
     parser.add_argument('--gitid', action='store_true',
