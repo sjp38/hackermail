@@ -52,7 +52,7 @@ def main(args=None):
         exit(0)
 
     mails_to_show, threads = _hckmail.filter_mails(args)
-    format_reply(mails_to_show[0].mbox_parsed)
+    format_reply(mails_to_show[0].get_mbox_parsed_field())
 
 if __name__ == '__main__':
     main()

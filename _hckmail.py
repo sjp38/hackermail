@@ -12,7 +12,7 @@ class Mail:
     orig_subject = None
     tags = None
     series = None
-    mbox_parsed = None
+    __mbox_parsed = None
     mbox = None
 
     def __init__(self, gitid, gitdir, date, subject_fields):
@@ -53,10 +53,13 @@ class Mail:
     def set_mbox_parsed(self):
         if not self.mbox:
             self.get_raw_content()
-        self.mbox_parsed = parse_mbox(self.mbox)
+        self.__mbox_parsed = parse_mbox(self.mbox)
 
     def get_mbox_parsed(self, tag):
-        return get_mbox_field(self.mbox_parsed, tag)
+        return get_mbox_field(self.__mbox_parsed, tag)
+
+    def get_mbox_parsed_field(self):
+        return self.__mbox_parsed
 
 HCKMAILDIR = '.hkm'
 DEFAULT_MANIFEST = HCKMAILDIR + '/manifest'
