@@ -55,6 +55,14 @@ class Mail:
             self.get_raw_content()
         self.mbox_parsed = parse_mbox(self.mbox)
 
+    def get_mbox_parsed(self, tag):
+        tag = tag.lower()
+        if tag == 'body':
+            return self.mbox_parsed['body']
+        if tag in self.mbox_parsed['header']:
+            return self.mbox_parsed['header'][tag]
+        return None
+
 HCKMAILDIR = '.hkm'
 DEFAULT_MANIFEST = HCKMAILDIR + '/manifest'
 MAILDAT_DIR = HCKMAILDIR + '/archives'
@@ -155,8 +163,7 @@ def filter_mails(args):
             continue
         mail = Mail(fields[0], mdir, fields[1], fields[2:])
 
-        if msgid and mail.mbox_parsed['header']['message-id'] != (
-                '<%s>' % msgid):
+        if msgid and mail.get_mbox_parsed('message-id') != ( '<%s>' % msgid):
             continue
 
         if not valid_to_show(mail, tags_to_hide, tags_to_show):
