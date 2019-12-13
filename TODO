@@ -11,3 +11,4 @@
 - Reduce mbox parsing overhead
  - do read and parse mbox on demand
 - List mail threads
+- Redesign mail class to be more modular and git independent
