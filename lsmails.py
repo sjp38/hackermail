@@ -26,7 +26,7 @@ def show_mail(mail, show_lore_link):
         value = mail.get_mbox_parsed(head)
         if value:
             print("%s: %s" % (head, value))
-    print("\n%s" % mail.get_mbox_parsed('body')
+    print("\n%s" % mail.get_mbox_parsed('body'))
     if show_lore_link and msgid != '':
         print("\nhttps://lore.kernel.org/r/%s\n" % msgid)
 
