@@ -227,5 +227,5 @@ def parse_mbox(mbox):
         break
     parsed = {}
     parsed['header'] = head_fields
-    parsed['body'] = '\n'.join(mbox_lines[idx + 1:])
+    parsed['body'] = '\n'.join(mbox_lines[idx:])
     return parsed
