@@ -56,12 +56,7 @@ class Mail:
         self.mbox_parsed = parse_mbox(self.mbox)
 
     def get_mbox_parsed(self, tag):
-        tag = tag.lower()
-        if tag == 'body':
-            return self.mbox_parsed['body']
-        if tag in self.mbox_parsed['header']:
-            return self.mbox_parsed['header'][tag]
-        return None
+        return get_mbox_field(self.mbox_parsed, tag)
 
 HCKMAILDIR = '.hkm'
 DEFAULT_MANIFEST = HCKMAILDIR + '/manifest'
@@ -214,6 +209,15 @@ def set_mail_search_options(parser, mlist_mandatory=False):
             help='Author of the mails.')
     parser.add_argument('index', metavar='idx', type=int, nargs='?',
             help='Index of the mail to format reply for.')
+
+def get_mbox_field(parsed, tag):
+    tag = tag.lower()
+    if tag == 'body':
+        return parsed['body']
+    heads = parsed['header']
+    if tag in heads:
+        return heads[tag]
+    return None
 
 def parse_mbox(mbox):
     in_header = True

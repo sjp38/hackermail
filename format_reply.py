@@ -7,19 +7,24 @@ import sys
 import _hckmail
 
 def format_reply(mbox_parsed):
-    head_fields = mbox_parsed['header']
-    if 'subject' in head_fields:
-        print("Subject: Re: %s" % head_fields['subject'])
-    if 'message-id' in head_fields:
-        print("In-Reply-To: %s" % head_fields['message-id'])
-    if 'cc' in head_fields:
-        print("Cc: %s" % head_fields['cc'])
-    if 'from' in head_fields:
-        print("To: %s" % head_fields['from'])
+    subject = _hckmail.get_mbox_field(mbox_parsed, 'subject')
+    if subject:
+        print("Subject: Re: %s" % subject)
+    msgid = _hckmail.get_mbox_field(mbox_parsed, 'message-id')
+    if msgid:
+        print("In-Reply-To: %s" % msgid)
+    cc = _hckmail.get_mbox_field(mbox_parsed, 'cc')
+    if cc:
+        print("Cc: %s" % cc)
+    from_ = _hckmail.get_mbox_field(mbox_parsed, 'from')
+    if from_:
+        print("To: %s" % from_)
     print("")
-    if 'date' in head_fields and 'from' in head_fields:
-        print("On %s %s wrote:\n" % (head_fields['date'], head_fields['from']))
-    for line in mbox_parsed['body'].split('\n'):
+    date = _hckmail.get_mbox_field(mbox_parsed, 'date')
+    if date and from_:
+        print("On %s %s wrote:\n" % (date, from_))
+    body = _hckmail.get_mbox_field(mbox_parsed, 'body')
+    for line in body.split('\n'):
         print("> %s" % line)
 
 def set_argparser(parser=None):
