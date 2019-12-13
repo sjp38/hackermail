@@ -9,3 +9,4 @@
 - Consider moving manifest and mailing list argument to hkml common arguments
 - Tag mails (Just create a git repo for each tag and pick each commit)
 - Reduce mbox parsing overhead
+- List mail threads
