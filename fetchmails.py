@@ -4,13 +4,13 @@ import argparse
 import os
 import subprocess
 
-from _hkml import *
+import _hkml
 
 def set_argparser(parser):
-    set_manifest_mlist_options(parser, mlist_nargs='+')
+    _hkml.set_manifest_mlist_options(parser, mlist_nargs='+')
 
 def fetch_mail(manifest_file, mail_lists):
-    manifest = get_manifest(manifest_file)
+    manifest = _hkml.get_manifest(manifest_file)
     if not manifest:
         print("Cannot open manifest file %s" % manifest_file)
         parser.print_help()
@@ -18,8 +18,8 @@ def fetch_mail(manifest_file, mail_lists):
 
     site = manifest['site']
     for mlist in mail_lists:
-        repo_paths = mail_list_repo_paths(mlist, manifest)
-        local_paths = mail_list_data_paths(mlist, manifest)
+        repo_paths = _hkml.mail_list_repo_paths(mlist, manifest)
+        local_paths = _hkml.mail_list_data_paths(mlist, manifest)
         for idx, repo_path in enumerate(repo_paths):
             git_url = '%s%s' % (site, repo_path)
             local_path = local_paths[idx]
