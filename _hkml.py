@@ -65,21 +65,32 @@ class Mail:
             self.set_mbox_parsed()
         return self.__mbox_parsed
 
-def get_hkml_dir():
-    THE_DIR='.hkm'
+__hkml_dir = None
 
+def set_hkml_dir(path=None):
+    global __hkml_dir
+    if path:
+        __hkml_dir = path
+        return
+
+    THE_DIR='.hkm'
     env_dir = os.getenv('HKML_DIR')
     if env_dir and os.path.exists(env_dir):
-        return env_dir
+        __hkml_dir = env_dir
     cwd_dir = os.path.join(os.getcwd(), THE_DIR)
     if cwd_dir and os.path.exists(cwd_dir):
-        return cwd_dir
+        __hkml_dir = cwd_dir
     bin_dir = os.path.join(os.path.dirname(sys.argv[0]), THE_DIR)
     if bin_dir and os.path.exists(bin_dir):
-        return bin_dir
+        __hkml_dir = bin_dir
     home_dir = os.path.join(os.getenv('HOME'), THE_DIR)
     if home_dir and os.path.exists(home_dir):
-        return home_dir
+        __hkml_dir = home_dir
+
+def get_hkml_dir():
+    if not __hkml_dir:
+        set_hkml_dir()
+    return __hkml_dir
 
 def get_manifest(manifest_file):
     try:

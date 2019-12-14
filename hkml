@@ -9,6 +9,8 @@ import subprocess
 import sys
 import tempfile
 
+import _hkml
+
 class SubCmdHelpFormatter(argparse.RawDescriptionHelpFormatter):
     def _format_action(self, action):
         parts = super(argparse.RawDescriptionHelpFormatter,
@@ -19,6 +21,9 @@ class SubCmdHelpFormatter(argparse.RawDescriptionHelpFormatter):
         return parts
 
 parser = argparse.ArgumentParser(formatter_class=SubCmdHelpFormatter)
+parser.add_argument('--hkml_dir', metavar='hkml dir', type=str,
+        help='Path to the hkml meta data directory.')
+
 subparsers = parser.add_subparsers(title='command', dest='command',
         metavar='<command>')
 
@@ -32,6 +37,7 @@ parser_fmtre = subparsers.add_parser('format_reply', help = 'format reply')
 format_reply.set_argparser(parser_fmtre)
 
 args = parser.parse_args()
+_hkml.set_hkml_dir(args.hkml_dir)
 
 if not args.command:
     parser.print_help()
