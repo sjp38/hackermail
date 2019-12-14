@@ -2,7 +2,9 @@
 
 import datetime
 import json
+import os
 import subprocess
+import sys
 
 class Mail:
     gitid = None
@@ -63,9 +65,26 @@ class Mail:
             self.set_mbox_parsed()
         return self.__mbox_parsed
 
-HCKMAILDIR = '.hkm'
-DEFAULT_MANIFEST = HCKMAILDIR + '/manifest'
-MAILDAT_DIR = HCKMAILDIR + '/archives'
+def get_hkml_dir():
+    THE_DIR='.hkm'
+
+    env_dir = os.getenv('HKML_DIR')
+    if env_dir and os.path.exists(env_dir):
+        return env_dir
+    cwd_dir = os.path.join(os.getcwd(), THE_DIR)
+    if cwd_dir and os.path.exists(cwd_dir):
+        return cwd_dir
+    bin_dir = os.path.join(os.path.dirname(sys.argv[0]), THE_DIR)
+    if bin_dir and os.path.exists(bin_dir):
+        return bin_dir
+    home_dir = os.path.join(os.getenv('HOME'), THE_DIR)
+    if home_dir and os.path.exists(home_dir):
+        return home_dir
+    print("Failed to get hkml dir")
+    exit(1)
+
+DEFAULT_MANIFEST = get_hkml_dir() + '/manifest'
+MAILDAT_DIR = get_hkml_dir() + '/archives'
 
 def get_manifest(manifest_file):
     try:
