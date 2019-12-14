@@ -81,8 +81,6 @@ def get_hkml_dir():
     if home_dir and os.path.exists(home_dir):
         return home_dir
 
-MAILDAT_DIR = get_hkml_dir() + '/archives'
-
 def get_manifest(manifest_file):
     try:
         with open(manifest_file) as f:
@@ -102,7 +100,7 @@ def mail_list_data_paths(mail_list, manifest):
     repo_paths = mail_list_repo_paths(mail_list, manifest)
     mdir_paths = []
     for path in repo_paths:
-        mdir_paths.append(MAILDAT_DIR + path)
+        mdir_paths.append(get_hkml_dir() + '/archives' + path)
     return mdir_paths
 
 def valid_to_show(mail, tags_to_hide, tags_to_show):
