@@ -7,11 +7,7 @@ import subprocess
 from _hkml import *
 
 def set_argparser(parser):
-    parser.add_argument('--manifest', '-m', type=str,
-            default=DEFAULT_MANIFEST,
-            help='Manifesto file in grok\'s format plus site field.')
-    parser.add_argument('lists', type=str, nargs='+',
-            help='Name of the mailing list.')
+    set_manifest_mlist_options(parser, mlist_nargs='+')
 
 def fetch_mail(manifest_file, mail_lists):
     manifest = get_manifest(manifest_file)
@@ -41,7 +37,7 @@ def main(args=None):
         args = parser.parse_args()
 
     manifest_file = args.manifest
-    mail_lists = args.lists
+    mail_lists = args.mlist
     fetch_mail(manifest_file, mail_lists)
 
 if __name__ == '__main__':
