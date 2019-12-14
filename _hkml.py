@@ -70,6 +70,9 @@ __hkml_dir = None
 def set_hkml_dir(path=None):
     global __hkml_dir
     if path:
+        if not os.path.exists(path):
+            sys.stderr.write("Given hkml_dir %s does not exists\n" % path)
+            exit(1)
         __hkml_dir = path
         return
 
@@ -86,6 +89,11 @@ def set_hkml_dir(path=None):
     home_dir = os.path.join(os.getenv('HOME'), THE_DIR)
     if home_dir and os.path.exists(home_dir):
         __hkml_dir = home_dir
+    if not __hkml_dir:
+        sys.stderr.write("Couldn't get hkml dir;\n")
+        sys.stderr.write("Tried '%s', '%s', '%s' and '%s'\n" %
+                (env_dir, cwd_dir, bin_dir, home_dir))
+        exit(1)
 
 def get_hkml_dir():
     if not __hkml_dir:
