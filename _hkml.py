@@ -207,20 +207,23 @@ def filter_mails(args):
         mails_to_show = [mails_to_show[idx_of_mail]]
     return mails_to_show, threads
 
-def set_mail_search_options(parser, mlist_mandatory=False):
-    DEFAULT_SINCE = datetime.datetime.now() - datetime.timedelta(days=3)
-    DEFAULT_SINCE = "%s-%s-%s" % (DEFAULT_SINCE.year, DEFAULT_SINCE.month,
-                DEFAULT_SINCE.day)
-
+def set_manifest_mlist_options(parser, mlist_nargs='?'):
     parser.add_argument('--manifest', metavar='manifest', type=str,
             default=DEFAULT_MANIFEST,
             help='Manifesto file in grok\'s format plus site field.')
-    if mlist_mandatory:
+    if not mlist_nargs:
         parser.add_argument('mlist', metavar='mailing list', type=str,
                 help='Mailing list to show.')
     else:
         parser.add_argument('mlist', metavar='mailing list', type=str,
-                nargs='?', help='Mailing list to show.')
+                nargs=mlist_nargs, help='Mailing list to show.')
+
+def set_mail_search_options(parser, mlist_nargs='?'):
+    DEFAULT_SINCE = datetime.datetime.now() - datetime.timedelta(days=3)
+    DEFAULT_SINCE = "%s-%s-%s" % (DEFAULT_SINCE.year, DEFAULT_SINCE.month,
+                DEFAULT_SINCE.day)
+
+    set_manifest_mlist_options(parser, mlist_nargs)
     parser.add_argument('--since', metavar='since', type=str,
             default=DEFAULT_SINCE,
             help='Show mails more recent than a specific date.')
