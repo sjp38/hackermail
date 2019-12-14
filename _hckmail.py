@@ -42,8 +42,6 @@ class Mail:
                     series[1].isdigit()):
                 self.series = [int(x) for x in series]
 
-        self.set_mbox_parsed()
-
     def get_raw_content(self):
         cmd = ["git", "--git-dir=%s" % self.gitdir,
                 'show', '%s:m' % self.gitid]
@@ -56,9 +54,13 @@ class Mail:
         self.__mbox_parsed = parse_mbox(self.mbox)
 
     def get_mbox_parsed(self, tag):
+        if not self.__mbox_parsed:
+            self.set_mbox_parsed()
         return get_mbox_field(self.__mbox_parsed, tag)
 
     def get_mbox_parsed_field(self):
+        if not self.__mbox_parsed:
+            self.set_mbox_parsed()
         return self.__mbox_parsed
 
 HCKMAILDIR = '.hkm'
