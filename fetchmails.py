@@ -37,6 +37,8 @@ def main(args=None):
         args = parser.parse_args()
 
     manifest_file = args.manifest
+    if not manifest_file:
+        manifest_file = _hkml.get_hkml_dir() + '/manifest'
     mail_lists = args.mlist
     fetch_mail(manifest_file, mail_lists)
 

@@ -81,7 +81,6 @@ def get_hkml_dir():
     if home_dir and os.path.exists(home_dir):
         return home_dir
 
-DEFAULT_MANIFEST = get_hkml_dir() + '/manifest'
 MAILDAT_DIR = get_hkml_dir() + '/archives'
 
 def get_manifest(manifest_file):
@@ -127,6 +126,8 @@ def valid_to_show(mail, tags_to_hide, tags_to_show):
 
 def filter_mails(args):
     manifest_file = args.manifest
+    if not manifest_file:
+        manifest_file = get_hkml_dir() + '/manifest'
     mail_list = args.mlist
     since = args.since
 
@@ -196,7 +197,6 @@ def filter_mails(args):
 
 def set_manifest_mlist_options(parser, mlist_nargs='?'):
     parser.add_argument('--manifest', metavar='manifest', type=str,
-            default=DEFAULT_MANIFEST,
             help='Manifesto file in grok\'s format plus site field.')
     if not mlist_nargs:
         parser.add_argument('mlist', metavar='mailing list', type=str,
