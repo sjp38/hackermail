@@ -4,7 +4,7 @@ import argparse
 import datetime
 import subprocess
 
-import _hckmail
+import _hkml
 
 def pr_line_wrap(line, len_indent, nr_cols):
     words = line.split(' ')
@@ -54,7 +54,7 @@ def show_mails(mails_to_show, pr_git_id, nr_cols_in_line, threads, nr_skips):
         pr_line_wrap(prefix + line, len(prefix), nr_cols_in_line)
 
 def set_argparser(parser=None):
-    _hckmail.set_mail_search_options(parser, mlist_mandatory=True)
+    _hkml.set_mail_search_options(parser, mlist_mandatory=True)
     parser.add_argument('--cols', metavar='cols', type=int, default=130,
             help='Number of columns for each line.')
     parser.add_argument('--gitid', action='store_true',
@@ -80,7 +80,7 @@ def main(args=None):
         parser.print_help()
         exit(1)
 
-    mails_to_show, threads = _hckmail.filter_mails(args)
+    mails_to_show, threads = _hkml.filter_mails(args)
 
     if len(mails_to_show) == 1:
         show_mail(mails_to_show[0], show_lore_link)

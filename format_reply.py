@@ -4,31 +4,31 @@ import argparse
 import subprocess
 import sys
 
-import _hckmail
+import _hkml
 
 def format_reply(mbox_parsed):
-    subject = _hckmail.get_mbox_field(mbox_parsed, 'subject')
+    subject = _hkml.get_mbox_field(mbox_parsed, 'subject')
     if subject:
         print("Subject: Re: %s" % subject)
-    msgid = _hckmail.get_mbox_field(mbox_parsed, 'message-id')
+    msgid = _hkml.get_mbox_field(mbox_parsed, 'message-id')
     if msgid:
         print("In-Reply-To: %s" % msgid)
-    cc = _hckmail.get_mbox_field(mbox_parsed, 'cc')
+    cc = _hkml.get_mbox_field(mbox_parsed, 'cc')
     if cc:
         print("Cc: %s" % cc)
-    from_ = _hckmail.get_mbox_field(mbox_parsed, 'from')
+    from_ = _hkml.get_mbox_field(mbox_parsed, 'from')
     if from_:
         print("To: %s" % from_)
     print("")
-    date = _hckmail.get_mbox_field(mbox_parsed, 'date')
+    date = _hkml.get_mbox_field(mbox_parsed, 'date')
     if date and from_:
         print("On %s %s wrote:\n" % (date, from_))
-    body = _hckmail.get_mbox_field(mbox_parsed, 'body')
+    body = _hkml.get_mbox_field(mbox_parsed, 'body')
     for line in body.split('\n'):
         print("> %s" % line)
 
 def set_argparser(parser=None):
-    _hckmail.set_mail_search_options(parser)
+    _hkml.set_mail_search_options(parser)
     parser.add_argument('--mbox_file', metavar='mboxfile', type=str,
             help='Mbox format file of the mail to format reply for.')
     parser.add_argument('--stdin', action='store_true',
@@ -41,17 +41,17 @@ def main(args=None):
         args = parser.parse_args()
 
     if args.stdin:
-        parsed = _hckmail.parse_mbox(sys.stdin.read())
+        parsed = _hkml.parse_mbox(sys.stdin.read())
         format_reply(parsed)
         exit(0)
 
     if args.mbox_file:
         with open(args.mbox_file, 'r') as f:
-            parsed = _hckmail.parse_mbox(f.read())
+            parsed = _hkml.parse_mbox(f.read())
             format_reply(parsed)
         exit(0)
 
-    mails_to_show, threads = _hckmail.filter_mails(args)
+    mails_to_show, threads = _hkml.filter_mails(args)
     format_reply(mails_to_show[0].get_mbox_parsed_field())
 
 if __name__ == '__main__':

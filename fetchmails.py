@@ -4,7 +4,7 @@ import argparse
 import os
 import subprocess
 
-from _hckmail import *
+from _hkml import *
 
 def set_argparser(parser):
     parser.add_argument('--manifest', '-m', type=str,
