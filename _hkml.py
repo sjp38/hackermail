@@ -80,9 +80,6 @@ def get_hkml_dir():
     home_dir = os.path.join(os.getenv('HOME'), THE_DIR)
     if home_dir and os.path.exists(home_dir):
         return home_dir
-    print("Failed to get hkml dir.  Tried '%s', '%s', '%s' and '%s'" %
-            (env_dir, cwd_dir, bin_dir, home_dir))
-    exit(1)
 
 DEFAULT_MANIFEST = get_hkml_dir() + '/manifest'
 MAILDAT_DIR = get_hkml_dir() + '/archives'
