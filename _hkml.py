@@ -102,11 +102,6 @@ def mail_list_repo_paths(mail_list, manifest):
             paths.append(path)
     return paths
 
-def mail_list_repo_path(mail_list, manifest):
-    for path in manifest:
-        if path.startswith('/%s/' % mail_list):
-            return path
-
 def mail_list_data_paths(mail_list, manifest):
     repo_paths = mail_list_repo_paths(mail_list, manifest)
     mdir_paths = []
