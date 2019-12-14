@@ -5,4 +5,3 @@
 - README writeup
 - Tag mails (Just create a git repo for each tag and pick each commit)
 - Redesign mail class to be more modular and git independent
-- Add hkml_dir setting argument
