@@ -114,11 +114,6 @@ def mail_list_data_paths(mail_list, manifest):
         mdir_paths.append(MAILDAT_DIR + path)
     return mdir_paths
 
-def mail_list_data_path(mail_list, manifest):
-    repo_path = mail_list_repo_path(mail_list, manifest)
-    if repo_path:
-        return MAILDAT_DIR + repo_path
-
 def valid_to_show(mail, tags_to_hide, tags_to_show):
     has_tag = False
     if tags_to_hide:
