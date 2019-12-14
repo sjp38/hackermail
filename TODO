@@ -1,7 +1,6 @@
 - List mails by thread
-- Mail reply implementation
-	- Connect with git send-email
 - Mail write implementation
 - README writeup
 - Tag mails (Just create a git repo for each tag and pick each commit)
 - Redesign mail class to be more modular and git independent
+- Implement tweet like real-time streaming
