@@ -119,7 +119,7 @@ def mail_list_data_paths(mail_list, manifest):
     repo_paths = mail_list_repo_paths(mail_list, manifest)
     mdir_paths = []
     for path in repo_paths:
-        mdir_paths.append(get_hkml_dir() + '/archives' + path)
+        mdir_paths.append(os.path.join(get_hkml_dir(), 'archives' + path))
     return mdir_paths
 
 def valid_to_show(mail, tags_to_hide, tags_to_show):
@@ -144,7 +144,7 @@ def valid_to_show(mail, tags_to_hide, tags_to_show):
 def filter_mails(args):
     manifest_file = args.manifest
     if not manifest_file:
-        manifest_file = get_hkml_dir() + '/manifest'
+        manifest_file = os.path.join(get_hkml_dir(), 'manifest')
     mail_list = args.mlist
     since = args.since
 
