@@ -8,7 +8,5 @@
 - Guarantee calling path independence
 - Consider moving manifest and mailing list argument to hkml common arguments
 - Tag mails (Just create a git repo for each tag and pick each commit)
-- Reduce mbox parsing overhead
- - do read and parse mbox on demand
 - List mail threads
 - Redesign mail class to be more modular and git independent
