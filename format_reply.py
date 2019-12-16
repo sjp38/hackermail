@@ -13,6 +13,9 @@ def format_reply(mbox_parsed):
     msgid = _hkml.get_mbox_field(mbox_parsed, 'message-id')
     if msgid:
         print("In-Reply-To: %s" % msgid)
+    cc = _hkml.get_mbox_field(mbox_parsed, 'to')
+    if cc:
+        print("Cc: %s" % cc)
     cc = _hkml.get_mbox_field(mbox_parsed, 'cc')
     if cc:
         print("Cc: %s" % cc)
