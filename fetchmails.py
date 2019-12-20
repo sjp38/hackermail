@@ -8,8 +8,10 @@ import _hkml
 
 def set_argparser(parser):
     _hkml.set_manifest_mlist_options(parser, mlist_nargs='+')
+    parser.add_argument('--quiet', '-q', default=False, action='store_true',
+            help='Work silently.')
 
-def fetch_mail(manifest_file, mail_lists):
+def fetch_mail(manifest_file, mail_lists, quiet=False):
     manifest = _hkml.get_manifest(manifest_file)
     if not manifest:
         print("Cannot open manifest file %s" % manifest_file)
@@ -27,8 +29,12 @@ def fetch_mail(manifest_file, mail_lists):
                 cmd = 'git clone --mirror %s %s' % (git_url, local_path)
             else:
                 cmd = 'git --git-dir=%s remote update' % local_path
-            print(cmd)
-            subprocess.call(cmd.split())
+            if not quiet:
+                print(cmd)
+                subprocess.call(cmd.split())
+            else:
+                with open(os.devnull, 'w') as f:
+                    subprocess.call(cmd.split(), stdout=f)
 
 def main(args=None):
     if not args:
@@ -40,7 +46,8 @@ def main(args=None):
     if not manifest_file:
         manifest_file = _hkml.get_hkml_dir() + '/manifest'
     mail_lists = args.mlist
-    fetch_mail(manifest_file, mail_lists)
+    quiet = args.quiet
+    fetch_mail(manifest_file, mail_lists, quiet)
 
 if __name__ == '__main__':
     main()
