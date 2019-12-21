@@ -5,6 +5,29 @@ Fast and decentralized CLI mail client for mailing lists that dedicated for
 hacking project discussions (e.g., Linux Kernel Mailing Lists).
 
 
+Configuration
+=============
+
+
+Manifest File
+-------------
+
+First, you need a manifest file.  The file should describe where you can fetch
+the mails, name of mailing lists, and the relative path to the git repository
+for each mailing list in json format.  A sample manifest file for the linux
+kernel mailing list is provided by 'manifests/lore.js'.
+
+
+Configuration Directory
+-----------------------
+
+Hackermail needs a directory to contain its metadata, as similar to git
+configurations.  Hackermail assumes the directory is named as '.hkm' and placed
+in current directory, the hkml executable file placed directory, or your home
+directory.  You can also explicitly set the path using 'HKML_DIR' environment
+variable or '--hkml_dir' command option.
+
+
 Author
 ======
 
