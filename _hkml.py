@@ -176,7 +176,7 @@ def filter_mails(args):
                 "--since=%s" % since]
 
         if args.author:
-            cmd += ['--author', args.author]
+            cmd += ['--author=%s'% args.author]
 
         mails_to_show = []
         threads = {} # orig_subject -> mails (latest comes first)
