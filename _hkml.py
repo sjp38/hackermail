@@ -115,6 +115,13 @@ def mail_list_repo_paths(mail_list, manifest):
             paths.append(path)
     return paths
 
+def fetched_mail_lists():
+    archive_dir = os.path.join(get_hkml_dir(), 'archives')
+    mail_dirs = subprocess.check_output(['ls', archive_dir]).decode(
+            'utf-8').strip().split('\n')
+    return [x for x in mail_dirs if os.path.isdir(
+        os.path.join(archive_dir, x))]
+
 def mail_list_data_paths(mail_list, manifest):
     repo_paths = mail_list_repo_paths(mail_list, manifest)
     mdir_paths = []

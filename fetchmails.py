@@ -7,7 +7,7 @@ import subprocess
 import _hkml
 
 def set_argparser(parser):
-    _hkml.set_manifest_mlist_options(parser, mlist_nargs='+')
+    _hkml.set_manifest_mlist_options(parser, mlist_nargs='*')
     parser.add_argument('--quiet', '-q', default=False, action='store_true',
             help='Work silently.')
 
@@ -46,6 +46,8 @@ def main(args=None):
     if not manifest_file:
         manifest_file = _hkml.get_hkml_dir() + '/manifest'
     mail_lists = args.mlist
+    if not mail_lists:
+        mail_lists = _hkml.fetched_mail_lists()
     quiet = args.quiet
     fetch_mail(manifest_file, mail_lists, quiet)
 
