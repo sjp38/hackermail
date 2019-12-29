@@ -3,6 +3,8 @@
 import argparse
 import datetime
 import subprocess
+import sys
+import tempfile
 
 import _hkml
 
@@ -82,11 +84,17 @@ def main(args=None):
 
     mails_to_show, threads = _hkml.filter_mails(args)
 
-    if len(mails_to_show) == 1:
-        show_mail(mails_to_show[0], show_lore_link)
-    else:
-        show_mails(mails_to_show, pr_git_id, nr_cols_in_line, threads,
-                nr_skip_mails)
+    tmp_path = tempfile.mkstemp()[1]
+    with open(tmp_path, 'w') as tmp_file:
+        sys.stdout = tmp_file
+
+        if len(mails_to_show) == 1:
+            show_mail(mails_to_show[0], show_lore_link)
+        else:
+            show_mails(mails_to_show, pr_git_id, nr_cols_in_line, threads,
+                    nr_skip_mails)
+    subprocess.call(['less', tmp_path])
+    os.remove(tmp_path)
 
 if __name__ == '__main__':
     main()

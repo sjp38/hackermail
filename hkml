@@ -7,7 +7,6 @@ import format_reply
 import os
 import subprocess
 import sys
-import tempfile
 
 import _hkml
 
@@ -44,15 +43,7 @@ if not args.command:
     exit(1)
 
 if args.command == 'ls':
-    tmp_path = tempfile.mkstemp()[1]
-    with open(tmp_path, 'w') as tmp_file:
-        sys.stdout = tmp_file
-
-        lsmails.main(args)
-
-        tmp_file.flush()
-        subprocess.call(['less', tmp_path])
-    os.remove(tmp_path)
+    lsmails.main(args)
 elif args.command == 'fetch':
     fetchmails.main(args)
 elif args.command == 'format_reply':
