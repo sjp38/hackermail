@@ -104,7 +104,7 @@ def get_manifest(manifest_file):
     try:
         with open(manifest_file) as f:
             manifest = json.load(f)
-    except FileNotFoundError:
+    except:
         return None
     return manifest
 
