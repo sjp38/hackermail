@@ -2,11 +2,14 @@
 
 import argparse
 import datetime
+import os
 import subprocess
 import sys
 import tempfile
+import time
 
 import _hkml
+import fetchmails
 
 def pr_line_wrap(line, len_indent, nr_cols):
     words = line.split(' ')
@@ -65,6 +68,8 @@ def set_argparser(parser=None):
             help='Print lore link for the <index> mail.')
     parser.add_argument('--skip', metavar='nr_skips', type=int, default=0,
             help='Skips first <nr_skips> mails')
+    parser.add_argument('--livestream', action='store_true',
+            help='List mails in livestream.')
 
 def main(args=None):
     if not args:
@@ -76,6 +81,25 @@ def main(args=None):
     pr_git_id = args.gitid
     show_lore_link = args.lore
     nr_skip_mails = args.skip
+    livestream = args.livestream
+
+    # TODO: Clean up
+    if livestream:
+        while True:
+            args.quiet = False
+            if not args.manifest:
+                args.manifest = os.path.join(_hkml.get_hkml_dir(), 'manifest')
+            fetchmails.fetch_mail(args.manifest, [args.mlist], True)
+            mails_to_show, threads = _hkml.filter_mails(args)
+            show_mails(mails_to_show, pr_git_id, nr_cols_in_line, threads,
+                    nr_skip_mails)
+            if not mails_to_show or nr_skip_mails == len(mails_to_show):
+                sys.stdout.write('.')
+                sys.stdout.flush()
+            else:
+                print('')
+            nr_skip_mails = len(mails_to_show)
+            time.sleep(10)
 
     if show_lore_link and idx_of_mail == None:
         print("--lore option works with index argument only.\n")
