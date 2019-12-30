@@ -122,6 +122,31 @@ def fetched_mail_lists():
     return [x for x in mail_dirs if os.path.isdir(
         os.path.join(archive_dir, x))]
 
+def fetch_mail(manifest_file, mail_lists, quiet=False):
+    manifest = get_manifest(manifest_file)
+    if not manifest:
+        print("Cannot open manifest file %s" % manifest_file)
+        parser.print_help()
+        exit(1)
+
+    site = manifest['site']
+    for mlist in mail_lists:
+        repo_paths = mail_list_repo_paths(mlist, manifest)
+        local_paths = mail_list_data_paths(mlist, manifest)
+        for idx, repo_path in enumerate(repo_paths):
+            git_url = '%s%s' % (site, repo_path)
+            local_path = local_paths[idx]
+            if not os.path.isdir(local_path):
+                cmd = 'git clone --mirror %s %s' % (git_url, local_path)
+            else:
+                cmd = 'git --git-dir=%s remote update' % local_path
+            if not quiet:
+                print(cmd)
+                subprocess.call(cmd.split())
+            else:
+                with open(os.devnull, 'w') as f:
+                    subprocess.call(cmd.split(), stdout=f)
+
 def mail_list_data_paths(mail_list, manifest):
     repo_paths = mail_list_repo_paths(mail_list, manifest)
     mdir_paths = []

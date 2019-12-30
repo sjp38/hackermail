@@ -9,7 +9,6 @@ import tempfile
 import time
 
 import _hkml
-import fetchmails
 
 def pr_line_wrap(line, len_indent, nr_cols):
     words = line.split(' ')
@@ -89,7 +88,7 @@ def main(args=None):
             args.quiet = False
             if not args.manifest:
                 args.manifest = os.path.join(_hkml.get_hkml_dir(), 'manifest')
-            fetchmails.fetch_mail(args.manifest, [args.mlist], True)
+            _hkml.fetch_mail(args.manifest, [args.mlist], True)
             mails_to_show, threads = _hkml.filter_mails(args)
             show_mails(mails_to_show, pr_git_id, nr_cols_in_line, threads,
                     nr_skip_mails)
