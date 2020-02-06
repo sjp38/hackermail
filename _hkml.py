@@ -126,7 +126,6 @@ def fetch_mail(manifest_file, mail_lists, quiet=False):
     manifest = get_manifest(manifest_file)
     if not manifest:
         print("Cannot open manifest file %s" % manifest_file)
-        parser.print_help()
         exit(1)
 
     site = manifest['site']
@@ -193,7 +192,6 @@ def filter_mails(args):
     manifest = get_manifest(manifest_file)
     if not manifest:
         print("Cannot open manifest file %s" % manifest_file)
-        parser.print_help()
         exit(1)
 
     lines = []
