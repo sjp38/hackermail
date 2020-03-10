@@ -269,7 +269,7 @@ def set_mail_search_options(parser, mlist_nargs='?'):
             help='Message Id of the mail to show.')
     parser.add_argument('--author', metavar='msgid', type=str,
             help='Author of the mails.')
-    parser.add_argument('index', metavar='idx', type=int, nargs='?',
+    parser.add_argument('--index', '-i', metavar='idx', type=int,
             help='Index of the mail to format reply for.')
 
 def get_mbox_field(parsed, tag):
