@@ -34,8 +34,6 @@ def set_argparser(parser=None):
     _hkml.set_mail_search_options(parser)
     parser.add_argument('--mbox_file', metavar='mboxfile', type=str,
             help='Mbox format file of the mail to format reply for.')
-    parser.add_argument('--stdin', action='store_true',
-            help='Mbox format content is received via stdin.')
 
 def main(args=None):
     if not args:
@@ -43,19 +41,19 @@ def main(args=None):
         set_argparser(parser)
         args = parser.parse_args()
 
-    if args.stdin:
-        parsed = _hkml.parse_mbox(sys.stdin.read())
-        format_reply(parsed)
-        exit(0)
-
     if args.mbox_file:
         with open(args.mbox_file, 'r') as f:
             parsed = _hkml.parse_mbox(f.read())
             format_reply(parsed)
         exit(0)
 
-    mails_to_show, threads = _hkml.filter_mails(args)
-    format_reply(mails_to_show[0].get_mbox_parsed_field())
+    if args.manifest and args.mlist:
+        mails_to_show, threads = _hkml.filter_mails(args)
+        format_reply(mails_to_show[0].get_mbox_parsed_field())
+        exit(0)
+
+    parsed = _hkml.parse_mbox(sys.stdin.read())
+    format_reply(parsed)
 
 if __name__ == '__main__':
     main()
