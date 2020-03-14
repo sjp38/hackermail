@@ -176,6 +176,29 @@ def filter_tags(mail, tags_to_hide, tags_to_show):
             return False
     return True
 
+def get_mails_from_git(manifest, mail_list, since, author=None):
+    lines = []
+    mdirs = mail_list_data_paths(mail_list, manifest)
+    if not mdirs:
+        print("Mailing list '%s' in manifest '%s' not found." % (
+            mail_list, manifest_file))
+        exit(1)
+    for mdir in mdirs:
+        cmd = ["git", "--git-dir=%s" % mdir, "log",
+                '--date=iso-strict', '--pretty=%h %ad %s (%an)',
+                "--since=%s" % since]
+        if author:
+            cmd += ['--author=%s'% author]
+        lines += cmd_lines_output(cmd)
+
+    mails = []
+    for line in lines:
+        fields = line.split()
+        if len(fields) < 3:
+            continue
+        mails.append(Mail(fields[0], mdir, fields[1], fields[2:]))
+    return mails
+
 def filter_mails(args):
     manifest_file = args.manifest
     if not manifest_file:
@@ -192,28 +215,11 @@ def filter_mails(args):
         print("Cannot open manifest file %s" % manifest_file)
         exit(1)
 
-    lines = []
-    mdirs = mail_list_data_paths(mail_list, manifest)
-    if not mdirs:
-        print("Mailing list '%s' in manifest '%s' not found." % (
-            mail_list, manifest_file))
-        exit(1)
-    for mdir in mdirs:
-        cmd = ["git", "--git-dir=%s" % mdir, "log",
-                '--date=iso-strict', '--pretty=%h %ad %s (%an)',
-                "--since=%s" % since]
-        if args.author:
-            cmd += ['--author=%s'% args.author]
-        lines += cmd_lines_output(cmd)
+    mails = get_mails_from_git(manifest, mail_list, since, args.author)
 
     mails_to_show = []
     threads = {} # orig_subject -> mails (latest comes first)
-    for line in lines:
-        fields = line.split()
-        if len(fields) < 3:
-            continue
-        mail = Mail(fields[0], mdir, fields[1], fields[2:])
-
+    for mail in mails:
         if msgid and mail.get_mbox_parsed('message-id') != ('<%s>' % msgid):
             continue
 
