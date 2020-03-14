@@ -157,7 +157,7 @@ def valid_to_show(mail, tags_to_hide, tags_to_show):
     has_tag = False
     if tags_to_hide:
         for tag in tags_to_hide:
-            if tag in mail.tags:
+            if tag.lower() in mail.tags:
                 has_tag = True
                 break
         if has_tag:
@@ -165,7 +165,7 @@ def valid_to_show(mail, tags_to_hide, tags_to_show):
 
     if tags_to_show:
         for tag in tags_to_show:
-            if tag in mail.tags:
+            if tag.lower() in mail.tags:
                 has_tag = True
                 break
         if not has_tag:
