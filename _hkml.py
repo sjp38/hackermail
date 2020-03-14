@@ -157,7 +157,7 @@ def mail_list_data_paths(mail_list, manifest):
         mdir_paths.append(os.path.join(get_hkml_dir(), 'archives' + path))
     return mdir_paths
 
-def valid_to_show(mail, tags_to_hide, tags_to_show):
+def filter_tags(mail, tags_to_hide, tags_to_show):
     has_tag = False
     if tags_to_hide:
         for tag in tags_to_hide:
@@ -214,10 +214,10 @@ def filter_mails(args):
             continue
         mail = Mail(fields[0], mdir, fields[1], fields[2:])
 
-        if msgid and mail.get_mbox_parsed('message-id') != ( '<%s>' % msgid):
+        if msgid and mail.get_mbox_parsed('message-id') != ('<%s>' % msgid):
             continue
 
-        if not valid_to_show(mail, tags_to_hide, tags_to_show):
+        if not filter_tags(mail, tags_to_hide, tags_to_show):
             continue
 
         # Shows only latest reply for given mail
