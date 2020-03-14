@@ -6,6 +6,12 @@ import os
 import subprocess
 import sys
 
+def cmd_str_output(cmd):
+    return subprocess.check_output(cmd).decode('utf-8').strip()
+
+def cmd_lines_output(cmd):
+    return cmd_str_output(cmd).split('\n')
+
 class Mail:
     gitid = None
     gitdir = None
@@ -47,8 +53,7 @@ class Mail:
     def get_raw_content(self):
         cmd = ["git", "--git-dir=%s" % self.gitdir,
                 'show', '%s:m' % self.gitid]
-        self.mbox = subprocess.run(cmd,
-                stdout=subprocess.PIPE).stdout.decode( 'utf-8').strip()
+        self.mbox = cmd_str_output(cmd)
 
     def set_mbox_parsed(self):
         if not self.mbox:
@@ -117,8 +122,7 @@ def mail_list_repo_paths(mail_list, manifest):
 
 def fetched_mail_lists():
     archive_dir = os.path.join(get_hkml_dir(), 'archives')
-    mail_dirs = subprocess.check_output(['ls', archive_dir]).decode(
-            'utf-8').strip().split('\n')
+    mail_dirs = cmd_lines_output(['ls', archive_dir])
     return [x for x in mail_dirs if os.path.isdir(
         os.path.join(archive_dir, x))]
 
@@ -200,7 +204,7 @@ def filter_mails(args):
                 "--since=%s" % since]
         if args.author:
             cmd += ['--author=%s'% args.author]
-        lines += subprocess.check_output(cmd).decode('utf-8').strip().split('\n')
+        lines += cmd_lines_output(cmd)
 
     mails_to_show = []
     threads = {} # orig_subject -> mails (latest comes first)
