@@ -15,7 +15,7 @@ class Mail:
     def get_field(self, key):
         return self.fields[key]
 
-    def set_fields(self, key, val):
+    def set_field(self, key, val):
         self.fields[key] = val
 
 class HackerMail:
