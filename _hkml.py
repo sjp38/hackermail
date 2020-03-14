@@ -179,12 +179,8 @@ def filter_mails(args):
     mail_list = args.mlist
     since = args.since
 
-    tags_to_show = []
-    tags_to_hide = []
-    if args.show:
-        tags_to_show = args.show.split(',')
-    if args.hide:
-        tags_to_hide = args.hide.split(',')
+    tags_to_show = args.show
+    tags_to_hide = args.hide
     msgid = args.msgid
 
     idx_of_mail = args.index
@@ -261,9 +257,9 @@ def set_mail_search_options(parser, mlist_nargs='?'):
     parser.add_argument('--since', metavar='since', type=str,
             default=DEFAULT_SINCE,
             help='Show mails more recent than a specific date.')
-    parser.add_argument('--show', metavar='tags', type=str,
+    parser.add_argument('--show', metavar='tags', type=str, nargs='+',
             help='Tags seperated by comma.  Show mails having the tags.')
-    parser.add_argument('--hide', metavar='tag', type=str,
+    parser.add_argument('--hide', metavar='tag', type=str, nargs='+',
             help='Tags seperated by comma.  Hide mails having the tags.')
     parser.add_argument('--msgid', metavar='msgid', type=str,
             help='Message Id of the mail to show.')
