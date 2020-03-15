@@ -64,9 +64,9 @@ class Mail:
         tag = tag.lower()
         # this might set from git log
         if tag == 'subject' and self.git_subject:
-            return self.subject
+            return self.git_subject
         if tag == 'date' and self.git_date:
-            return self.date
+            return self.git_date
 
         if not self.__mbox_parsed:
             self.__set_mbox_parsed()
