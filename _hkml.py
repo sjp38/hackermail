@@ -50,6 +50,10 @@ class Mail:
                     series[1].isdigit()):
                 self.series = [int(x) for x in series]
 
+    def __init__(self, mbox):
+        self.mbox = mbox
+        self.set_mbox_parsed()
+
     def get_raw_content(self):
         cmd = ["git", "--git-dir=%s" % self.gitdir,
                 'show', '%s:m' % self.gitid]
