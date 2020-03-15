@@ -92,6 +92,13 @@ class Mail:
         self.__mbox_parsed = parsed
 
     def get_field(self, tag):
+        tag = tag.lower()
+        # this might set from git log
+        if tag == 'subject' and self.git_subject:
+            return self.subject
+        if tag == 'date' and self.git_date:
+            return self.date
+
         if not self.__mbox_parsed:
             self.set_mbox_parsed()
 
