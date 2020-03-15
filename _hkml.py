@@ -23,7 +23,9 @@ class Mail:
     __mbox_parsed = None
     mbox = None
 
-    def __init__(self, gitid, gitdir, date, subject_fields):
+    @classmethod
+    def from_gitlog(cls, gitid, gitdir, date, subject_fields):
+        self = cls()
         self.gitid = gitid
         self.gitdir = gitdir
         self.date = date
@@ -49,30 +51,26 @@ class Mail:
             if (len(series) == 2 and series[0].isdigit() and
                     series[1].isdigit()):
                 self.series = [int(x) for x in series]
+        return self
 
-    def __init__(self, mbox):
+    @classmethod
+    def from_mbox(cls, mbox):
+        self = cls()
         self.mbox = mbox
         self.set_mbox_parsed()
-
-    def get_raw_content(self):
-        cmd = ["git", "--git-dir=%s" % self.gitdir,
-                'show', '%s:m' % self.gitid]
-        self.mbox = cmd_str_output(cmd)
+        return self
 
     def set_mbox_parsed(self):
         if not self.mbox:
-            self.get_raw_content()
+            cmd = ["git", "--git-dir=%s" % self.gitdir,
+                    'show', '%s:m' % self.gitid]
+            self.mbox = cmd_str_output(cmd)
         self.__mbox_parsed = parse_mbox(self.mbox)
 
     def get_mbox_parsed(self, tag):
         if not self.__mbox_parsed:
             self.set_mbox_parsed()
         return get_mbox_field(self.__mbox_parsed, tag)
-
-    def get_mbox_parsed_field(self):
-        if not self.__mbox_parsed:
-            self.set_mbox_parsed()
-        return self.__mbox_parsed
 
 __hkml_dir = None
 
@@ -200,7 +198,7 @@ def get_mails_from_git(manifest, mail_list, since, author=None):
         fields = line.split()
         if len(fields) < 3:
             continue
-        mails.append(Mail(fields[0], mdir, fields[1], fields[2:]))
+        mails.append(Mail.from_gitlog(fields[0], mdir, fields[1], fields[2:]))
     return mails
 
 def filter_mails(args):
