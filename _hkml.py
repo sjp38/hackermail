@@ -62,6 +62,9 @@ class Mail:
 
     def set_mbox_parsed(self):
         if not self.mbox:
+            if not self.gitdir or not self.gitid:
+                print('cannot get mbox')
+                exit(1)
             cmd = ["git", "--git-dir=%s" % self.gitdir,
                     'show', '%s:m' % self.gitid]
             self.mbox = cmd_str_output(cmd)
