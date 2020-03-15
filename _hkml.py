@@ -57,10 +57,28 @@ class Mail:
     def from_mbox(cls, mbox):
         self = cls()
         self.mbox = mbox
-        self.set_mbox_parsed()
+        self.__set_mbox_parsed()
         return self
 
-    def set_mbox_parsed(self):
+    def get_field(self, tag):
+        tag = tag.lower()
+        # this might set from git log
+        if tag == 'subject' and self.git_subject:
+            return self.subject
+        if tag == 'date' and self.git_date:
+            return self.date
+
+        if not self.__mbox_parsed:
+            self.__set_mbox_parsed()
+
+        if tag == 'body':
+            return self.__mbox_parsed['body']
+        heads = self.__mbox_parsed['header']
+        if tag in heads:
+            return heads[tag]
+        return None
+
+    def __set_mbox_parsed(self):
         if not self.mbox:
             if not self.gitdir or not self.gitid:
                 print('cannot get mbox')
@@ -90,24 +108,6 @@ class Mail:
         parsed['body'] = '\n'.join(mbox_lines[idx:])
 
         self.__mbox_parsed = parsed
-
-    def get_field(self, tag):
-        tag = tag.lower()
-        # this might set from git log
-        if tag == 'subject' and self.git_subject:
-            return self.subject
-        if tag == 'date' and self.git_date:
-            return self.date
-
-        if not self.__mbox_parsed:
-            self.set_mbox_parsed()
-
-        if tag == 'body':
-            return self.__mbox_parsed['body']
-        heads = self.__mbox_parsed['header']
-        if tag in heads:
-            return heads[tag]
-        return None
 
 __hkml_dir = None
 
