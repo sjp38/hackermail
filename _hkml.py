@@ -57,7 +57,7 @@ class Mail:
     def from_mbox(cls, mbox):
         self = cls()
         self.mbox = mbox
-        self.__set_mbox_parsed()
+        self.__parse_mbox()
         return self
 
     def get_field(self, tag):
@@ -69,7 +69,7 @@ class Mail:
             return self.git_date
 
         if not self.__mbox_parsed:
-            self.__set_mbox_parsed()
+            self.__parse_mbox()
 
         if tag == 'body':
             return self.__mbox_parsed['body']
@@ -78,7 +78,7 @@ class Mail:
             return heads[tag]
         return None
 
-    def __set_mbox_parsed(self):
+    def __parse_mbox(self):
         if not self.mbox:
             if not self.gitdir or not self.gitid:
                 print('cannot get mbox')
