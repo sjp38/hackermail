@@ -43,8 +43,7 @@ def main(args=None):
 
     if args.mbox_file:
         with open(args.mbox_file, 'r') as f:
-            parsed = _hkml.parse_mbox(f.read())
-            format_reply(parsed)
+            format_reply(_hkml.Mail(f.read()).get_mbox_parsed_field())
         exit(0)
 
     if args.manifest and args.mlist:
@@ -52,8 +51,7 @@ def main(args=None):
         format_reply(mails_to_show[0].get_mbox_parsed_field())
         exit(0)
 
-    parsed = _hkml.parse_mbox(sys.stdin.read())
-    format_reply(parsed)
+    format_reply(_hkml.Mail(sys.stdin.read()).get_mbox_parsed_field())
 
 if __name__ == '__main__':
     main()
