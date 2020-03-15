@@ -44,14 +44,14 @@ def show_mails(mails_to_show, pr_git_id, nr_cols_in_line, threads, nr_skips):
 
         # date: <YYYY-MM-DD>T<HH>:<MM>:<SS>+<UTC offset>
         #       e.g., 2019-09-30T09:57:38+08:00
-        date = '/'.join(mail.date.split('T')[0].split('-')[1:])
+        date = '/'.join(mail.git_date.split('T')[0].split('-')[1:])
         prefix_fields = ["[%04d]" % idx, date]
         if pr_git_id:
             prefix_fields.append(mail.gitid)
         prefix_fields.append(indent)
         prefix = ' '.join(prefix_fields)
 
-        line = mail.subject
+        line = mail.git_subject
         if len(threads[mail.orig_subject]) > 1:
             line += " (%d+ msgs) " % (len(threads[mail.orig_subject]) - 1)
 

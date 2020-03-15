@@ -15,8 +15,8 @@ def cmd_lines_output(cmd):
 class Mail:
     gitid = None
     gitdir = None
-    date = None
-    subject = None
+    git_date = None
+    git_subject = None
     orig_subject = None
     tags = None
     series = None
@@ -28,9 +28,9 @@ class Mail:
         self = cls()
         self.gitid = gitid
         self.gitdir = gitdir
-        self.date = date
-        self.subject = ' '.join(subject_fields)
-        self.orig_subject = self.subject
+        self.git_date = date
+        self.git_subject = ' '.join(subject_fields)
+        self.orig_subject = self.git_subject
         self.tags = []
 
         re_depth = 0
