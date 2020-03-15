@@ -65,12 +65,40 @@ class Mail:
             cmd = ["git", "--git-dir=%s" % self.gitdir,
                     'show', '%s:m' % self.gitid]
             self.mbox = cmd_str_output(cmd)
-        self.__mbox_parsed = parse_mbox(self.mbox)
+
+        in_header = True
+        head_fields = {}
+        mbox_lines = self.mbox.split('\n')
+        for idx, line in enumerate(mbox_lines):
+            if in_header:
+                if line and line[0] in [' ', '\t'] and key:
+                    head_fields[key] += ' %s' % line.strip()
+                    continue
+                line = line.strip()
+                key = line.split(':')[0].lower()
+                if key:
+                    head_fields[key] = line[len(key) + 2:]
+                elif line == '':
+                    in_header = False
+                continue
+            break
+        parsed = {}
+        parsed['header'] = head_fields
+        parsed['body'] = '\n'.join(mbox_lines[idx:])
+
+        self.__mbox_parsed = parsed
 
     def get_mbox_parsed(self, tag):
         if not self.__mbox_parsed:
             self.set_mbox_parsed()
-        return get_mbox_field(self.__mbox_parsed, tag)
+
+        tag = tag.lower()
+        if tag == 'body':
+            return self.__mbox_parsed['body']
+        heads = self.__mbox_parsed['header']
+        if tag in heads:
+            return heads[tag]
+        return None
 
 __hkml_dir = None
 
@@ -276,33 +304,3 @@ def set_mail_search_options(parser, mlist_nargs='?'):
     parser.add_argument('--index', '-i', metavar='idx', type=int,
             help='Index of the mail to format reply for.')
 
-def get_mbox_field(parsed, tag):
-    tag = tag.lower()
-    if tag == 'body':
-        return parsed['body']
-    heads = parsed['header']
-    if tag in heads:
-        return heads[tag]
-    return None
-
-def parse_mbox(mbox):
-    in_header = True
-    head_fields = {}
-    mbox_lines = mbox.split('\n')
-    for idx, line in enumerate(mbox_lines):
-        if in_header:
-            if line and line[0] in [' ', '\t'] and key:
-                head_fields[key] += ' %s' % line.strip()
-                continue
-            line = line.strip()
-            key = line.split(':')[0].lower()
-            if key:
-                head_fields[key] = line[len(key) + 2:]
-            elif line == '':
-                in_header = False
-            continue
-        break
-    parsed = {}
-    parsed['header'] = head_fields
-    parsed['body'] = '\n'.join(mbox_lines[idx:])
-    return parsed
