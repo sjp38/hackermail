@@ -46,7 +46,7 @@ def main(args=None):
             format_reply(_hkml.Mail.from_mbox(f.read()))
         exit(0)
 
-    if args.manifest and args.mlist:
+    if args.mlist:
         mails_to_show, threads = _hkml.filter_mails(args)
         format_reply(mails_to_show[0])
         exit(0)
