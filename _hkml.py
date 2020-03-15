@@ -91,11 +91,10 @@ class Mail:
 
         self.__mbox_parsed = parsed
 
-    def get_mbox_parsed(self, tag):
+    def get_field(self, tag):
         if not self.__mbox_parsed:
             self.set_mbox_parsed()
 
-        tag = tag.lower()
         if tag == 'body':
             return self.__mbox_parsed['body']
         heads = self.__mbox_parsed['header']
@@ -253,7 +252,7 @@ def filter_mails(args):
     mails_to_show = []
     threads = {} # orig_subject -> mails (latest comes first)
     for mail in mails:
-        if msgid and mail.get_mbox_parsed('message-id') != ('<%s>' % msgid):
+        if msgid and mail.get_field('message-id') != ('<%s>' % msgid):
             continue
 
         if not filter_tags(mail, tags_to_hide, tags_to_show):

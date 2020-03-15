@@ -7,26 +7,26 @@ import sys
 import _hkml
 
 def format_reply(mail):
-    subject = mail.get_mbox_parsed('subject')
+    subject = mail.get_field('subject')
     if subject:
         print("Subject: Re: %s" % subject)
-    msgid = mail.get_mbox_parsed('message-id')
+    msgid = mail.get_field('message-id')
     if msgid:
         print("In-Reply-To: %s" % msgid)
-    cc = mail.get_mbox_parsed('to')
+    cc = mail.get_field('to')
     if cc:
         print("Cc: %s" % cc)
-    cc = mail.get_mbox_parsed('cc')
+    cc = mail.get_field('cc')
     if cc:
         print("Cc: %s" % cc)
-    from_ = mail.get_mbox_parsed('from')
+    from_ = mail.get_field('from')
     if from_:
         print("To: %s" % from_)
     print("")
-    date = mail.get_mbox_parsed('date')
+    date = mail.get_field('date')
     if date and from_:
         print("On %s %s wrote:\n" % (date, from_))
-    body = mail.get_mbox_parsed('body')
+    body = mail.get_field('body')
     for line in body.split('\n'):
         print("> %s" % line)
 
