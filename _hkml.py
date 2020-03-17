@@ -71,12 +71,7 @@ class Mail:
         if not self.__mbox_parsed:
             self.__parse_mbox()
 
-        if tag == 'body':
-            return self.__mbox_parsed['body']
-        heads = self.__mbox_parsed['header']
-        if tag in heads:
-            return heads[tag]
-        return None
+        return self.__mbox_parsed[tag]
 
     def __parse_mbox(self):
         if not self.mbox:
@@ -88,23 +83,21 @@ class Mail:
             self.mbox = cmd_str_output(cmd)
 
         in_header = True
-        head_fields = {}
+        parsed = {}
         mbox_lines = self.mbox.split('\n')
         for idx, line in enumerate(mbox_lines):
             if in_header:
                 if line and line[0] in [' ', '\t'] and key:
-                    head_fields[key] += ' %s' % line.strip()
+                    parsed[key] += ' %s' % line.strip()
                     continue
                 line = line.strip()
                 key = line.split(':')[0].lower()
                 if key:
-                    head_fields[key] = line[len(key) + 2:]
+                    parsed[key] = line[len(key) + 2:]
                 elif line == '':
                     in_header = False
                 continue
             break
-        parsed = {}
-        parsed['header'] = head_fields
         parsed['body'] = '\n'.join(mbox_lines[idx:])
 
         self.__mbox_parsed = parsed
