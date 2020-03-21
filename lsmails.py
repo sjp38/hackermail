@@ -90,33 +90,18 @@ def nr_replies_of(mail):
     return nr
 
 def show_mails(mails_to_show, pr_git_id, nr_cols_in_line, threads, nr_skips,
-        show_threads_form, collapse_threads):
-    if show_threads_form:
-        threads = threads_of(mails_to_show)
-        for mail in threads:
-            if collapse_threads:
-                suffix = ' (%d+ msgs) ' % nr_replies_of(mail)
-                pr_mail_subject(mail, 0, nr_skips, pr_git_id, nr_cols_in_line,
-                        suffix)
-            else:
-                pr_thread_mail(mail, 0, nr_skips, pr_git_id, nr_cols_in_line)
-        return
-
-    for idx, mail in enumerate(mails_to_show):
-        depth = 0
-        if (mail.series and mail.series[0] > 0) or ('reply' in mail.tags):
-            depth = 1
-
-        suffix = ''
-        if len(threads[mail.orig_subject]) > 1:
-            suffix = " (%d+ msgs) " % (len(threads[mail.orig_subject]) - 1)
-        pr_mail_subject(mail, depth, nr_skips, pr_git_id, nr_cols_in_line,
-                suffix)
+        collapse_threads):
+    threads = threads_of(mails_to_show)
+    for mail in threads:
+        if collapse_threads:
+            suffix = ' (%d+ msgs) ' % nr_replies_of(mail)
+            pr_mail_subject(mail, 0, nr_skips, pr_git_id, nr_cols_in_line,
+                    suffix)
+        else:
+            pr_thread_mail(mail, 0, nr_skips, pr_git_id, nr_cols_in_line)
 
 def set_argparser(parser=None):
     _hkml.set_mail_search_options(parser, mlist_nargs=None)
-    parser.add_argument('--threads', action='store_true',
-            help='Print in threads format')
     parser.add_argument('--collapse', action='store_true',
             help='Collapse threads')
     parser.add_argument('--open', action='store_true',
@@ -158,7 +143,6 @@ def main(args=None):
         set_argparser(parser)
         args = parser.parse_args()
 
-    show_threads_form = args.threads
     collapse_threads = args.collapse
     open_mail = args.open
     nr_cols_in_line = args.cols
@@ -187,7 +171,7 @@ def main(args=None):
             show_mail(mails_to_show[0], show_lore_link)
         else:
             show_mails(mails_to_show, pr_git_id, nr_cols_in_line, threads,
-                    nr_skip_mails, show_threads_form, collapse_threads)
+                    nr_skip_mails, collapse_threads)
     subprocess.call(['less', tmp_path])
     os.remove(tmp_path)
 
