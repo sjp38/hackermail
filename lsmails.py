@@ -124,7 +124,7 @@ def do_livestream(args):
         if not args.manifest:
             args.manifest = os.path.join(_hkml.get_hkml_dir(), 'manifest')
         _hkml.fetch_mail(args.manifest, [args.mlist], True)
-        mails_to_show, threads = _hkml.filter_mails(args)
+        mails_to_show = _hkml.filter_mails(args)
         show_mails(mails_to_show, args.gitid, args.cols, nr_skip_mails, False)
         if not mails_to_show or nr_skip_mails == len(mails_to_show):
             sys.stdout.write('.')
@@ -160,7 +160,7 @@ def main(args=None):
         parser.print_help()
         exit(1)
 
-    mails_to_show, threads = _hkml.filter_mails(args)
+    mails_to_show = _hkml.filter_mails(args)
 
     tmp_path = tempfile.mkstemp()[1]
     with open(tmp_path, 'w') as tmp_file:

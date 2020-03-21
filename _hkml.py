@@ -256,7 +256,6 @@ def filter_mails(args):
     mails = get_mails_from_git(manifest, mail_list, since, args.author)
 
     mails_to_show = []
-    threads = {} # orig_subject -> mails (latest comes first)
     for mail in mails:
         if msgid and mail.get_field('message-id') != ('<%s>' % msgid):
             continue
@@ -264,23 +263,12 @@ def filter_mails(args):
         if not filter_tags(mail, tags_to_hide, tags_to_show):
             continue
 
-        # Shows only latest reply for given mail
-        if mail.orig_subject in threads:
-            threads[mail.orig_subject].append(mail)
-            if not 'reply' in mail.tags:
-                latest_reply = threads[mail.orig_subject][0]
-                if latest_reply in mails_to_show:
-                    mails_to_show.remove(latest_reply)
-                    mails_to_show.append(mail)
-            continue
-        threads[mail.orig_subject] = [mail]
-
         mails_to_show.append(mail)
 
     mails_to_show.reverse()
     if idx_of_mail:
         mails_to_show = [mails_to_show[idx_of_mail]]
-    return mails_to_show, threads
+    return mails_to_show
 
 def set_manifest_mlist_options(parser, mlist_nargs='?'):
     parser.add_argument('--manifest', metavar='manifest', type=str,
