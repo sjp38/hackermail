@@ -32,8 +32,9 @@ def show_mail(mail, show_lore_link):
         if value:
             print("%s: %s" % (head, value))
     print("\n%s" % mail.get_field('body'))
-    if show_lore_link and msgid != '':
-        print("\nhttps://lore.kernel.org/r/%s\n" % msgid)
+    if show_lore_link:
+        print("\nhttps://lore.kernel.org/r/%s\n" %
+                mail.get_field('message-id'))
 
 def threads_of(mails):
     by_msgids = {}
