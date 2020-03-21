@@ -10,8 +10,9 @@ import time
 
 import _hkml
 
-def pr_line_wrap(line, len_indent, nr_cols):
-    words = line.split(' ')
+def pr_line_wrap(prefix, line, nr_cols):
+    len_indent = len(prefix)
+    words = [prefix] + line.split(' ')
     line = ""
     words_to_print = []
     for w in words:
@@ -63,8 +64,7 @@ def pr_mail_subject(mail, depth, pr_git_id, nr_cols, suffix=''):
     indent = ' ' * 4 * depth
     prefix_fields.append(indent)
     prefix = ' '.join(prefix_fields)
-    pr_line_wrap(prefix + mail.get_field('subject') + suffix, len(prefix),
-            nr_cols)
+    pr_line_wrap(prefix, mail.get_field('subject') + suffix, nr_cols)
 
 def pr_thread_mail(mail, depth, pr_git_id, nr_cols):
     pr_mail_subject(mail, depth, pr_git_id, nr_cols)
