@@ -49,18 +49,33 @@ def threads_of(mails):
             orig_mail.replies.append(mail)
     return threads
 
-def pr_thread_mail(mail, depth):
-    indent = '    ' * depth
-    print('%s%s' % (indent, mail.get_field('subject')))
+idx = 0
+def pr_mail_subject(mail, depth, pr_git_id, nr_cols):
+    global idx
+
+    prefix_fields = []
+    index = '[%04d]' % idx
+    idx += 1
+    date = '/'.join(mail.git_date.split('T')[0].split('-')[1:])
+    prefix_fields += [index, date]
+    if pr_git_id:
+        prefix_fields.append(mail.gitid)
+    indent = ' ' * 4 * depth
+    prefix_fields.append(indent)
+    prefix = ' '.join(prefix_fields)
+    pr_line_wrap(prefix + mail.get_field('subject'), len(prefix), nr_cols)
+
+def pr_thread_mail(mail, depth, pr_git_id, nr_cols):
+    pr_mail_subject(mail, depth, pr_git_id, nr_cols)
     for re in mail.replies:
-        pr_thread_mail(re, depth + 1)
+        pr_thread_mail(re, depth + 1, pr_git_id, nr_cols)
 
 def show_mails(mails_to_show, pr_git_id, nr_cols_in_line, threads, nr_skips,
         show_threads_form):
     if show_threads_form:
         threads = threads_of(mails_to_show)
         for mail in threads:
-            pr_thread_mail(mail, 0)
+            pr_thread_mail(mail, 0, pr_git_id, nr_cols_in_line)
         return
     for idx, mail in enumerate(mails_to_show):
         if idx < nr_skips:
