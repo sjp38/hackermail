@@ -118,6 +118,8 @@ def set_argparser(parser=None):
             help='list mails in livestream')
 
 def do_livestream(args):
+    global idx
+
     nr_skip_mails = args.skip
     while True:
         args.quiet = False
@@ -131,6 +133,7 @@ def do_livestream(args):
             sys.stdout.flush()
         else:
             print('')
+        idx = 0
         nr_skip_mails = len(mails_to_show)
         time.sleep(10)
 
