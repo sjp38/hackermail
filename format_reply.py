@@ -31,7 +31,6 @@ def format_reply(mail):
         print("> %s" % line)
 
 def set_argparser(parser=None):
-    _hkml.set_mail_search_options(parser)
     parser.add_argument('--mbox_file', metavar='mboxfile', type=str,
             help='Mbox format file of the mail to format reply for.')
 
@@ -44,11 +43,6 @@ def main(args=None):
     if args.mbox_file:
         with open(args.mbox_file, 'r') as f:
             format_reply(_hkml.Mail.from_mbox(f.read()))
-        exit(0)
-
-    if args.mlist:
-        mails_to_show, threads = _hkml.filter_mails(args)
-        format_reply(mails_to_show[0])
         exit(0)
 
     format_reply(_hkml.Mail.from_mbox(sys.stdin.read()))
