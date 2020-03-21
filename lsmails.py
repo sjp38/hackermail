@@ -50,7 +50,7 @@ def threads_of(mails):
     return threads
 
 idx = 0
-def pr_mail_subject(mail, depth, pr_git_id, nr_cols):
+def pr_mail_subject(mail, depth, pr_git_id, nr_cols, suffix=''):
     global idx
 
     prefix_fields = []
@@ -63,7 +63,8 @@ def pr_mail_subject(mail, depth, pr_git_id, nr_cols):
     indent = ' ' * 4 * depth
     prefix_fields.append(indent)
     prefix = ' '.join(prefix_fields)
-    pr_line_wrap(prefix + mail.get_field('subject'), len(prefix), nr_cols)
+    pr_line_wrap(prefix + mail.get_field('subject') + suffix, len(prefix),
+            nr_cols)
 
 def pr_thread_mail(mail, depth, pr_git_id, nr_cols):
     pr_mail_subject(mail, depth, pr_git_id, nr_cols)
@@ -77,27 +78,18 @@ def show_mails(mails_to_show, pr_git_id, nr_cols_in_line, threads, nr_skips,
         for mail in threads:
             pr_thread_mail(mail, 0, pr_git_id, nr_cols_in_line)
         return
+
     for idx, mail in enumerate(mails_to_show):
         if idx < nr_skips:
             continue
-        indent = ""
+        depth = 0
         if (mail.series and mail.series[0] > 0) or ('reply' in mail.tags):
-            indent = "    "
+            depth = 1
 
-        # date: <YYYY-MM-DD>T<HH>:<MM>:<SS>+<UTC offset>
-        #       e.g., 2019-09-30T09:57:38+08:00
-        date = '/'.join(mail.git_date.split('T')[0].split('-')[1:])
-        prefix_fields = ["[%04d]" % idx, date]
-        if pr_git_id:
-            prefix_fields.append(mail.gitid)
-        prefix_fields.append(indent)
-        prefix = ' '.join(prefix_fields)
-
-        line = mail.git_subject
+        suffix = ''
         if len(threads[mail.orig_subject]) > 1:
-            line += " (%d+ msgs) " % (len(threads[mail.orig_subject]) - 1)
-
-        pr_line_wrap(prefix + line, len(prefix), nr_cols_in_line)
+            suffix = " (%d+ msgs) " % (len(threads[mail.orig_subject]) - 1)
+        pr_mail_subject(mail, depth, pr_git_id, nr_cols_in_line, suffix)
 
 def set_argparser(parser=None):
     _hkml.set_mail_search_options(parser, mlist_nargs=None)
