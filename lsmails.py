@@ -51,6 +51,7 @@ def threads_of(mails):
             orig_mail.replies.append(mail)
     return threads
 
+open_mail = False
 idx = 0
 def pr_mail_subject(mail, depth, nr_skips, pr_git_id, nr_cols, suffix=''):
     global idx
@@ -73,6 +74,9 @@ def pr_mail_subject(mail, depth, nr_skips, pr_git_id, nr_cols, suffix=''):
     if depth and subject.lower().startswith('re: '):
         subject = subject[4:]
     pr_line_wrap(prefix, subject + suffix, nr_cols)
+    if open_mail:
+        print('')
+        show_mail(mail, True)
 
 def pr_thread_mail(mail, depth, nr_skips, pr_git_id, nr_cols):
     pr_mail_subject(mail, depth, nr_skips, pr_git_id, nr_cols)
@@ -115,6 +119,8 @@ def set_argparser(parser=None):
             help='Print in threads format')
     parser.add_argument('--collapse', action='store_true',
             help='Collapse threads')
+    parser.add_argument('--open', action='store_true',
+            help='Show the content of the <index>th mail')
     parser.add_argument('--cols', metavar='cols', type=int, default=130,
             help='Number of columns for each line.')
     parser.add_argument('--gitid', action='store_true',
@@ -145,6 +151,8 @@ def do_livestream(args):
         time.sleep(10)
 
 def main(args=None):
+    global open_mail
+
     if not args:
         parser = argparse.ArgumentParser()
         set_argparser(parser)
@@ -152,6 +160,7 @@ def main(args=None):
 
     show_threads_form = args.threads
     collapse_threads = args.collapse
+    open_mail = args.open
     nr_cols_in_line = args.cols
     pr_git_id = args.gitid
     show_lore_link = args.lore
