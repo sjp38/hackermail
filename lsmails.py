@@ -51,8 +51,12 @@ def threads_of(mails):
     return threads
 
 idx = 0
-def pr_mail_subject(mail, depth, pr_git_id, nr_cols, suffix=''):
+def pr_mail_subject(mail, depth, nr_skips, pr_git_id, nr_cols, suffix=''):
     global idx
+
+    if idx < nr_skips:
+        idx += 1
+        return
 
     prefix_fields = []
     index = '[%04d]' % idx
@@ -69,22 +73,20 @@ def pr_mail_subject(mail, depth, pr_git_id, nr_cols, suffix=''):
         subject = subject[4:]
     pr_line_wrap(prefix, subject + suffix, nr_cols)
 
-def pr_thread_mail(mail, depth, pr_git_id, nr_cols):
-    pr_mail_subject(mail, depth, pr_git_id, nr_cols)
+def pr_thread_mail(mail, depth, nr_skips, pr_git_id, nr_cols):
+    pr_mail_subject(mail, depth, nr_skips, pr_git_id, nr_cols)
     for re in mail.replies:
-        pr_thread_mail(re, depth + 1, pr_git_id, nr_cols)
+        pr_thread_mail(re, depth + 1, nr_skips, pr_git_id, nr_cols)
 
 def show_mails(mails_to_show, pr_git_id, nr_cols_in_line, threads, nr_skips,
         show_threads_form):
     if show_threads_form:
         threads = threads_of(mails_to_show)
         for mail in threads:
-            pr_thread_mail(mail, 0, pr_git_id, nr_cols_in_line)
+            pr_thread_mail(mail, 0, nr_skips, pr_git_id, nr_cols_in_line)
         return
 
     for idx, mail in enumerate(mails_to_show):
-        if idx < nr_skips:
-            continue
         depth = 0
         if (mail.series and mail.series[0] > 0) or ('reply' in mail.tags):
             depth = 1
@@ -92,7 +94,8 @@ def show_mails(mails_to_show, pr_git_id, nr_cols_in_line, threads, nr_skips,
         suffix = ''
         if len(threads[mail.orig_subject]) > 1:
             suffix = " (%d+ msgs) " % (len(threads[mail.orig_subject]) - 1)
-        pr_mail_subject(mail, depth, pr_git_id, nr_cols_in_line, suffix)
+        pr_mail_subject(mail, depth, nr_skips, pr_git_id, nr_cols_in_line,
+                suffix)
 
 def set_argparser(parser=None):
     _hkml.set_mail_search_options(parser, mlist_nargs=None)
