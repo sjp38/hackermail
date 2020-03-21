@@ -22,6 +22,10 @@ class Mail:
     series = None
     __mbox_parsed = None
     mbox = None
+    replies = None
+
+    def __init__(self):
+        self.replies = []
 
     @classmethod
     def from_gitlog(cls, gitid, gitdir, date, subject_fields):
@@ -71,6 +75,8 @@ class Mail:
         if not self.__mbox_parsed:
             self.__parse_mbox()
 
+        if not tag in self.__mbox_parsed:
+            return None
         return self.__mbox_parsed[tag]
 
     def __parse_mbox(self):
