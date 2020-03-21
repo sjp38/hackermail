@@ -89,7 +89,7 @@ def nr_replies_of(mail):
         nr += nr_replies_of(re)
     return nr
 
-def show_mails(mails_to_show, pr_git_id, nr_cols_in_line, threads, nr_skips,
+def show_mails(mails_to_show, pr_git_id, nr_cols_in_line, nr_skips,
         collapse_threads):
     threads = threads_of(mails_to_show)
     for mail in threads:
@@ -125,8 +125,7 @@ def do_livestream(args):
             args.manifest = os.path.join(_hkml.get_hkml_dir(), 'manifest')
         _hkml.fetch_mail(args.manifest, [args.mlist], True)
         mails_to_show, threads = _hkml.filter_mails(args)
-        show_mails(mails_to_show, args.gitid, args.cols, threads,
-                nr_skip_mails, False)
+        show_mails(mails_to_show, args.gitid, args.cols, nr_skip_mails, False)
         if not mails_to_show or nr_skip_mails == len(mails_to_show):
             sys.stdout.write('.')
             sys.stdout.flush()
@@ -170,7 +169,7 @@ def main(args=None):
         if len(mails_to_show) == 1:
             show_mail(mails_to_show[0], show_lore_link)
         else:
-            show_mails(mails_to_show, pr_git_id, nr_cols_in_line, threads,
+            show_mails(mails_to_show, pr_git_id, nr_cols_in_line,
                     nr_skip_mails, collapse_threads)
     subprocess.call(['less', tmp_path])
     os.remove(tmp_path)
