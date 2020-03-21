@@ -246,7 +246,6 @@ def filter_mails(args):
     tags_to_show = args.show
     tags_to_hide = args.hide
     msgid = args.msgid
-    idx_of_mail = args.index
 
     manifest = get_manifest(manifest_file)
     if not manifest:
@@ -266,8 +265,6 @@ def filter_mails(args):
         mails_to_show.append(mail)
 
     mails_to_show.reverse()
-    if idx_of_mail:
-        mails_to_show = [mails_to_show[idx_of_mail]]
     return mails_to_show
 
 def set_manifest_mlist_options(parser, mlist_nargs='?'):
@@ -297,6 +294,3 @@ def set_mail_search_options(parser, mlist_nargs='?'):
             help='Message Id of the mail to show.')
     parser.add_argument('--author', metavar='msgid', type=str,
             help='Author of the mails.')
-    parser.add_argument('--index', '-i', metavar='idx', type=int,
-            help='Index of the mail to format reply for.')
-
