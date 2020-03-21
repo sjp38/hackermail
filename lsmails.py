@@ -103,19 +103,19 @@ def show_mails(mails_to_show, pr_git_id, nr_cols_in_line, nr_skips,
 def set_argparser(parser=None):
     _hkml.set_mail_search_options(parser, mlist_nargs=None)
     parser.add_argument('--collapse', action='store_true',
-            help='Collapse threads')
-    parser.add_argument('--open', action='store_true',
-            help='Show the content of the <index>th mail')
+            help='collapse threads')
+    parser.add_argument('--open', '-o', action='store_true',
+            help='show the content of the <index>th mail')
+    parser.add_argument('--skip', '-s', metavar='nr_skips', type=int, default=0,
+            help='skips first <nr_skips> mails')
     parser.add_argument('--cols', metavar='cols', type=int, default=130,
-            help='Number of columns for each line.')
+            help='number of columns for each line')
     parser.add_argument('--gitid', action='store_true',
-            help='Print git id of each mail')
+            help='print git id of each mail')
     parser.add_argument('--lore', action='store_true',
-            help='Print lore link for the <index> mail.')
-    parser.add_argument('--skip', metavar='nr_skips', type=int, default=0,
-            help='Skips first <nr_skips> mails')
+            help='print lore link for the <index> mail')
     parser.add_argument('--livestream', action='store_true',
-            help='List mails in livestream.')
+            help='list mails in livestream')
 
 def do_livestream(args):
     nr_skip_mails = args.skip
