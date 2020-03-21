@@ -64,7 +64,10 @@ def pr_mail_subject(mail, depth, pr_git_id, nr_cols, suffix=''):
     indent = ' ' * 4 * depth
     prefix_fields.append(indent)
     prefix = ' '.join(prefix_fields)
-    pr_line_wrap(prefix, mail.get_field('subject') + suffix, nr_cols)
+    subject = mail.get_field('subject')
+    if depth and subject.lower().startswith('re: '):
+        subject = subject[4:]
+    pr_line_wrap(prefix, subject + suffix, nr_cols)
 
 def pr_thread_mail(mail, depth, pr_git_id, nr_cols):
     pr_mail_subject(mail, depth, pr_git_id, nr_cols)
