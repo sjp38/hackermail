@@ -114,28 +114,6 @@ def set_argparser(parser=None):
             help='print git id of each mail')
     parser.add_argument('--lore', action='store_true',
             help='print lore link for the <index> mail')
-    parser.add_argument('--livestream', action='store_true',
-            help='list mails in livestream')
-
-def do_livestream(args):
-    global idx
-
-    nr_skip_mails = args.skip
-    while True:
-        args.quiet = False
-        if not args.manifest:
-            args.manifest = os.path.join(_hkml.get_hkml_dir(), 'manifest')
-        _hkml.fetch_mail(args.manifest, [args.mlist], True)
-        mails_to_show = _hkml.filter_mails(args)
-        show_mails(mails_to_show, args.gitid, args.cols, nr_skip_mails, False)
-        if not mails_to_show or nr_skip_mails == len(mails_to_show):
-            sys.stdout.write('.')
-            sys.stdout.flush()
-        else:
-            print('')
-        idx = 0
-        nr_skip_mails = len(mails_to_show)
-        time.sleep(10)
 
 def main(args=None):
     global open_mail
@@ -151,12 +129,6 @@ def main(args=None):
     pr_git_id = args.gitid
     show_lore_link = args.lore
     nr_skip_mails = args.skip
-    livestream = args.livestream
-
-    # TODO: Clean up
-    if livestream:
-        do_livestream(args)
-        return
 
     if show_lore_link and idx_of_mail == None:
         print("--lore option works with index argument only.\n")
