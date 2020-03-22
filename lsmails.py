@@ -100,8 +100,99 @@ def show_mails(mails_to_show, pr_git_id, nr_cols_in_line, nr_skips,
         else:
             pr_thread_mail(mail, 0, nr_skips, pr_git_id, nr_cols_in_line)
 
+def filter_tags(mail, tags_to_hide, tags_to_show):
+    has_tag = False
+    if tags_to_hide:
+        for tag in tags_to_hide:
+            if tag.lower() in mail.tags:
+                has_tag = True
+                break
+        if has_tag:
+            return False
+
+    if tags_to_show:
+        for tag in tags_to_show:
+            if tag.lower() in mail.tags:
+                has_tag = True
+                break
+        if not has_tag:
+            return False
+    return True
+
+def get_mails_from_git(manifest, mail_list, since, author=None):
+    lines = []
+    mdirs = _hkml.mail_list_data_paths(mail_list, manifest)
+    if not mdirs:
+        print("Mailing list '%s' in manifest '%s' not found." % (
+            mail_list, manifest_file))
+        exit(1)
+    for mdir in mdirs:
+        cmd = ["git", "--git-dir=%s" % mdir, "log",
+                '--date=iso-strict', '--pretty=%h %ad %s (%an)',
+                "--since=%s" % since]
+        if author:
+            cmd += ['--author=%s'% author]
+        lines += _hkml.cmd_lines_output(cmd)
+
+    mails = []
+    for line in lines:
+        fields = line.split()
+        if len(fields) < 3:
+            continue
+        mails.append(_hkml.Mail.from_gitlog(
+            fields[0], mdir, fields[1], fields[2:]))
+    return mails
+
+def filter_mails(args):
+    manifest_file = args.manifest
+    if not manifest_file:
+        manifest_file = os.path.join(_hkml.get_hkml_dir(), 'manifest')
+    mail_list = args.mlist
+    since = args.since
+    tags_to_show = args.show
+    tags_to_hide = args.hide
+    msgid = args.msgid
+
+    manifest = _hkml.get_manifest(manifest_file)
+    if not manifest:
+        print("Cannot open manifest file %s" % manifest_file)
+        exit(1)
+
+    mails = get_mails_from_git(manifest, mail_list, since, args.author)
+
+    mails_to_show = []
+    for mail in mails:
+        if msgid and mail.get_field('message-id') != ('<%s>' % msgid):
+            continue
+
+        if not filter_tags(mail, tags_to_hide, tags_to_show):
+            continue
+
+        mails_to_show.append(mail)
+
+    mails_to_show.reverse()
+    return mails_to_show
+
+def set_mail_search_options(parser, mlist_nargs='?'):
+    DEFAULT_SINCE = datetime.datetime.now() - datetime.timedelta(days=3)
+    DEFAULT_SINCE = "%s-%s-%s" % (DEFAULT_SINCE.year, DEFAULT_SINCE.month,
+                DEFAULT_SINCE.day)
+
+    _hkml.set_manifest_mlist_options(parser, mlist_nargs)
+    parser.add_argument('--since', metavar='since', type=str,
+            default=DEFAULT_SINCE,
+            help='Show mails more recent than a specific date.')
+    parser.add_argument('--show', metavar='tags', type=str, nargs='+',
+            help='Tags seperated by comma.  Show mails having the tags.')
+    parser.add_argument('--hide', metavar='tag', type=str, nargs='+',
+            help='Tags seperated by comma.  Hide mails having the tags.')
+    parser.add_argument('--msgid', metavar='msgid', type=str,
+            help='Message Id of the mail to show.')
+    parser.add_argument('--author', metavar='msgid', type=str,
+            help='Author of the mails.')
+
 def set_argparser(parser=None):
-    _hkml.set_mail_search_options(parser, mlist_nargs=None)
+    set_mail_search_options(parser, mlist_nargs=None)
     parser.add_argument('--collapse', action='store_true',
             help='collapse threads')
     parser.add_argument('--open', '-o', action='store_true',
@@ -135,7 +226,7 @@ def main(args=None):
         parser.print_help()
         exit(1)
 
-    mails_to_show = _hkml.filter_mails(args)
+    mails_to_show = filter_mails(args)
 
     tmp_path = tempfile.mkstemp()[1]
     with open(tmp_path, 'w') as tmp_file:
