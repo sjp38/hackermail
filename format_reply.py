@@ -31,7 +31,7 @@ def format_reply(mail):
         print("> %s" % line)
 
 def set_argparser(parser=None):
-    parser.add_argument('--mbox_file', metavar='mboxfile', type=str,
+    parser.add_argument('mbox_file', metavar='mboxfile', type=str, nargs='?',
             help='Mbox format file of the mail to format reply for.')
 
 def main(args=None):
