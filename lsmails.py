@@ -181,15 +181,15 @@ def set_argparser(parser=None):
     _hkml.set_manifest_mlist_options(parser, None)
     parser.add_argument('--since', metavar='since', type=str,
             default=DEFAULT_SINCE,
-            help='Show mails more recent than a specific date.')
+            help='show mails more recent than a specific date')
     parser.add_argument('--show', metavar='tags', type=str, nargs='+',
-            help='Tags seperated by comma.  Show mails having the tags.')
+            help='show mails having these tags')
     parser.add_argument('--hide', metavar='tag', type=str, nargs='+',
-            help='Tags seperated by comma.  Hide mails having the tags.')
+            help='hide mails having these tags')
     parser.add_argument('--msgid', metavar='msgid', type=str,
-            help='Message Id of the mail to show.')
+            help='show only the mail of the message id')
     parser.add_argument('--author', metavar='msgid', type=str,
-            help='Author of the mails.')
+            help='show only mails from the author')
 
     parser.add_argument('--collapse', action='store_true',
             help='collapse threads')
