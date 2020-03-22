@@ -173,12 +173,12 @@ def filter_mails(args):
     mails_to_show.reverse()
     return mails_to_show
 
-def set_mail_search_options(parser, mlist_nargs='?'):
+def set_argparser(parser=None):
     DEFAULT_SINCE = datetime.datetime.now() - datetime.timedelta(days=3)
     DEFAULT_SINCE = "%s-%s-%s" % (DEFAULT_SINCE.year, DEFAULT_SINCE.month,
                 DEFAULT_SINCE.day)
 
-    _hkml.set_manifest_mlist_options(parser, mlist_nargs)
+    _hkml.set_manifest_mlist_options(parser, None)
     parser.add_argument('--since', metavar='since', type=str,
             default=DEFAULT_SINCE,
             help='Show mails more recent than a specific date.')
@@ -191,8 +191,6 @@ def set_mail_search_options(parser, mlist_nargs='?'):
     parser.add_argument('--author', metavar='msgid', type=str,
             help='Author of the mails.')
 
-def set_argparser(parser=None):
-    set_mail_search_options(parser, mlist_nargs=None)
     parser.add_argument('--collapse', action='store_true',
             help='collapse threads')
     parser.add_argument('--open', '-o', action='store_true',
