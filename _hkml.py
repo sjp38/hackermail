@@ -144,6 +144,9 @@ def get_hkml_dir():
     return __hkml_dir
 
 def get_manifest(manifest_file):
+    if not manifest_file:
+        manifest_file = os.path.join(get_hkml_dir(), 'manifest')
+
     try:
         with open(manifest_file) as f:
             manifest = json.load(f)

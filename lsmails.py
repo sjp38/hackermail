@@ -144,18 +144,15 @@ def get_mails_from_git(manifest, mail_list, since, author=None):
     return mails
 
 def filter_mails(args):
-    manifest_file = args.manifest
-    if not manifest_file:
-        manifest_file = os.path.join(_hkml.get_hkml_dir(), 'manifest')
     mail_list = args.mlist
     since = args.since
     tags_to_show = args.show
     tags_to_hide = args.hide
     msgid = args.msgid
 
-    manifest = _hkml.get_manifest(manifest_file)
+    manifest = _hkml.get_manifest(args.manifest)
     if not manifest:
-        print("Cannot open manifest file %s" % manifest_file)
+        print("Cannot open manifest file %s" % args.manifest)
         exit(1)
 
     mails = get_mails_from_git(manifest, mail_list, since, args.author)

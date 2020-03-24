@@ -17,10 +17,8 @@ def main(args=None):
         set_argparser(parser)
         args = parser.parse_args()
 
-    manifest_file = args.manifest
-    if not manifest_file:
-        manifest_file = os.path.join(_hkml.get_hkml_dir(), 'manifest')
     mail_lists = args.mlist
+    manifest_file = args.manifest
     if not mail_lists:
         mail_lists = _hkml.fetched_mail_lists()
     quiet = args.quiet
