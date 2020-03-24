@@ -94,7 +94,7 @@ def show_mails(mails_to_show, pr_git_id, nr_cols_in_line, nr_skips,
     threads = threads_of(mails_to_show)
     for mail in threads:
         if collapse_threads:
-            suffix = ' (%d+ msgs) ' % nr_replies_of(mail)
+            suffix = ' (%d+ msgs)' % nr_replies_of(mail)
             pr_mail_subject(mail, 0, nr_skips, pr_git_id, nr_cols_in_line,
                     suffix)
         else:
