@@ -216,11 +216,6 @@ def main(args=None):
     show_lore_link = args.lore
     nr_skip_mails = args.skip
 
-    if show_lore_link and idx_of_mail == None:
-        print("--lore option works with index argument only.\n")
-        parser.print_help()
-        exit(1)
-
     mails_to_show = filter_mails(args)
 
     tmp_path = tempfile.mkstemp()[1]
