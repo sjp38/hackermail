@@ -26,7 +26,7 @@ def pr_line_wrap(prefix, line, nr_cols):
                 words_to_print = [' ' * len_indent + words_to_print[-1]]
     print(' '.join(words_to_print))
 
-def show_mail(mail, show_lore_link):
+def show_mail(mail):
     for head in ['Date', 'Subject', 'Message-Id', 'From', 'To', 'CC']:
         value = mail.get_field(head)
         if value:
@@ -51,6 +51,7 @@ def threads_of(mails):
             orig_mail.replies.append(mail)
     return threads
 
+show_lore_link = False
 open_mail = False
 idx = 0
 def pr_mail_subject(mail, depth, nr_skips, pr_git_id, nr_cols, suffix=''):
@@ -76,7 +77,7 @@ def pr_mail_subject(mail, depth, nr_skips, pr_git_id, nr_cols, suffix=''):
     pr_line_wrap(prefix, subject + suffix, nr_cols)
     if open_mail:
         print('')
-        show_mail(mail, True)
+        show_mail(mail)
 
 def pr_thread_mail(mail, depth, nr_skips, pr_git_id, nr_cols):
     pr_mail_subject(mail, depth, nr_skips, pr_git_id, nr_cols)
@@ -202,6 +203,7 @@ def set_argparser(parser=None):
             help='print lore link for the <index> mail')
 
 def main(args=None):
+    global show_lore_link
     global open_mail
 
     if not args:
@@ -223,7 +225,7 @@ def main(args=None):
         sys.stdout = tmp_file
 
         if len(mails_to_show) == 1:
-            show_mail(mails_to_show[0], show_lore_link)
+            show_mail(mails_to_show[0])
         else:
             show_mails(mails_to_show, pr_git_id, nr_cols_in_line,
                     nr_skip_mails, collapse_threads)
