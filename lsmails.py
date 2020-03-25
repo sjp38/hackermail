@@ -74,6 +74,9 @@ def pr_mail_subject(mail, depth, nr_skips, pr_git_id, nr_cols, suffix=''):
     subject = mail.get_field('subject')
     if depth and subject.lower().startswith('re: '):
         subject = subject[4:]
+    if show_lore_link:
+        suffix += ' https://lore.kernel.org/r/%s' % (
+                mail.get_field('message-id')[1:-1])
     pr_line_wrap(prefix, subject + suffix, nr_cols)
     if open_mail:
         print('')
