@@ -11,9 +11,7 @@ import time
 import _hkml
 
 def pr_line_wrap(prefix, line, nr_cols):
-    len_indent = len(prefix)
     words = [prefix] + line.split(' ')
-    line = ""
     words_to_print = []
     for w in words:
         words_to_print.append(w)
@@ -23,7 +21,7 @@ def pr_line_wrap(prefix, line, nr_cols):
                 print(words_to_print[0])
             else:
                 print(' '.join(words_to_print[:-1]))
-                words_to_print = [' ' * len_indent + words_to_print[-1]]
+                words_to_print = [' ' * (len(prefix) + 1) + words_to_print[-1]]
     print(' '.join(words_to_print))
 
 def show_mail(mail):
