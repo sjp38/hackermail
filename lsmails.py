@@ -10,6 +10,9 @@ import time
 
 import _hkml
 
+def lore_url(mail):
+    return 'https://lore.kernel.org/r/%s' % mail.get_field('message-id')[1:-1]
+
 def pr_line_wrap(prefix, line, nr_cols):
     words = [prefix] + line.split(' ')
     words_to_print = []
@@ -31,8 +34,7 @@ def show_mail(mail):
             print("%s: %s" % (head, value))
     print("\n%s" % mail.get_field('body'))
     if show_lore_link:
-        print("\nhttps://lore.kernel.org/r/%s\n" %
-                mail.get_field('message-id')[1:-1])
+        print('\n%s\n' % lore_url(mail))
 
 def threads_of(mails):
     by_msgids = {}
@@ -73,8 +75,7 @@ def pr_mail_subject(mail, depth, nr_skips, pr_git_id, nr_cols, suffix=''):
     if depth and subject.lower().startswith('re: '):
         subject = subject[4:]
     if show_lore_link:
-        suffix += ' https://lore.kernel.org/r/%s' % (
-                mail.get_field('message-id')[1:-1])
+        suffix += ' %s' % lore_url(mail)
     pr_line_wrap(prefix, subject + suffix, nr_cols)
     if open_mail:
         print('')
