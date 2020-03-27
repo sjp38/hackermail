@@ -43,7 +43,7 @@ def main(args=None):
     if args.mbox_file:
         with open(args.mbox_file, 'r') as f:
             format_reply(_hkml.Mail.from_mbox(f.read()))
-        exit(0)
+        return
 
     format_reply(_hkml.Mail.from_mbox(sys.stdin.read()))
 
