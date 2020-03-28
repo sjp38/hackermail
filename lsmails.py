@@ -155,7 +155,7 @@ def get_mails_from_git(manifest, mail_list, since, author=None):
         exit(1)
     for mdir in mdirs:
         cmd = ["git", "--git-dir=%s" % mdir, "log",
-                '--date=iso-strict', '--pretty=%h %ad %s (%an)',
+                '--date=iso-strict', '--pretty=%h %ad %s',
                 "--since=%s" % since]
         if author:
             cmd += ['--author=%s'% author]
