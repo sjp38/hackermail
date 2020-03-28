@@ -72,11 +72,11 @@ def pr_mail_subject(mail, depth, suffix=''):
     range_end = -1
     if ls_range:
         range_start = ls_range[0]
-        range_end = ls_range[1]
+        range_end = range_start + ls_range[1]
     if range_start != -1 and idx < range_start:
         idx += 1
         return
-    if range_end != -1 and idx >= ls_range[1]:
+    if range_end != -1 and idx >= range_end:
         return
 
     prefix_fields = []
@@ -217,8 +217,9 @@ def set_argparser(parser=None):
             help='collapse threads')
     parser.add_argument('--open', '-o', action='store_true',
             help='show the content of the <index>th mail')
-    parser.add_argument('--range', '-r', metavar='<range>', type=int, nargs=2,
-            help='show mails in [start:end) range indexes')
+    parser.add_argument('--range', '-r', metavar='<start len>',
+            type=int, nargs=2,
+            help='show mails of indexes in given range [start, start + len) ')
     parser.add_argument('--cols', metavar='cols', type=int,
             default=nr_cols_in_line, help='number of columns for each line')
     parser.add_argument('--gitid', action='store_true',
