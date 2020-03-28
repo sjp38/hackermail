@@ -16,6 +16,7 @@ nr_cols_in_line = 130
 collapse_threads = False
 show_lore_link = False
 open_mail = False
+ls_range = None
 
 def lore_url(mail):
     return 'https://lore.kernel.org/r/%s' % mail.get_field('message-id')[1:-1]
@@ -59,15 +60,18 @@ def threads_of(mails):
     return threads
 
 idx = 0
-def pr_mail_subject(mail, depth, nr_skips, suffix=''):
+def pr_mail_subject(mail, depth, suffix=''):
     global idx
     global pr_git_id
     global nr_cols_in_line
     global open_mail
+    global ls_range
 
     nr_cols = nr_cols_in_line
-    if idx < nr_skips:
+    if ls_range and idx < ls_range[0]:
         idx += 1
+        return
+    if ls_range and idx >= ls_range[1]:
         return
 
     prefix_fields = []
@@ -90,10 +94,10 @@ def pr_mail_subject(mail, depth, nr_skips, suffix=''):
         print('')
         show_mail(mail)
 
-def pr_thread_mail(mail, depth, nr_skips):
-    pr_mail_subject(mail, depth, nr_skips)
+def pr_thread_mail(mail, depth):
+    pr_mail_subject(mail, depth)
     for re in mail.replies:
-        pr_thread_mail(re, depth + 1, nr_skips)
+        pr_thread_mail(re, depth + 1)
 
 def nr_replies_of(mail):
     nr = len(mail.replies)
@@ -101,7 +105,7 @@ def nr_replies_of(mail):
         nr += nr_replies_of(re)
     return nr
 
-def show_mails(mails_to_show, nr_skips):
+def show_mails(mails_to_show):
     global collapse_threads
 
     threads = threads_of(mails_to_show)
@@ -110,9 +114,9 @@ def show_mails(mails_to_show, nr_skips):
     for mail in threads:
         if collapse_threads:
             suffix = ' (%d+ msgs)' % nr_replies_of(mail)
-            pr_mail_subject(mail, 0, nr_skips, suffix)
+            pr_mail_subject(mail, 0, suffix)
         else:
-            pr_thread_mail(mail, 0, nr_skips)
+            pr_thread_mail(mail, 0)
 
 def filter_tags(mail, tags_to_hide, tags_to_show):
     has_tag = False
@@ -208,8 +212,8 @@ def set_argparser(parser=None):
             help='collapse threads')
     parser.add_argument('--open', '-o', action='store_true',
             help='show the content of the <index>th mail')
-    parser.add_argument('--skip', '-s', metavar='nr_skips', type=int, default=0,
-            help='skips first <nr_skips> mails')
+    parser.add_argument('--range', '-r', metavar='<range>', type=int, nargs=2,
+            help='show mails in [start:end) range indexes')
     parser.add_argument('--cols', metavar='cols', type=int,
             default=nr_cols_in_line, help='number of columns for each line')
     parser.add_argument('--gitid', action='store_true',
@@ -224,6 +228,7 @@ def main(args=None):
     global pr_git_id
     global nr_cols_in_line
     global collapse_threads
+    global ls_range
 
     if not args:
         parser = argparse.ArgumentParser()
@@ -235,7 +240,7 @@ def main(args=None):
     nr_cols_in_line = args.cols
     pr_git_id = args.gitid
     show_lore_link = args.lore
-    nr_skip_mails = args.skip
+    ls_range = args.range
     descend = args.descend
 
     mails_to_show = filter_mails(args)
@@ -247,7 +252,7 @@ def main(args=None):
         if len(mails_to_show) == 1:
             show_mail(mails_to_show[0])
         else:
-            show_mails(mails_to_show, nr_skip_mails)
+            show_mails(mails_to_show)
     subprocess.call(['less', tmp_path])
     os.remove(tmp_path)
 
