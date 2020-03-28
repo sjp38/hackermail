@@ -12,7 +12,7 @@ import _hkml
 
 descend = False
 pr_git_id = False
-nr_cols_in_line = 130
+nr_cols_in_line = 100
 collapse_threads = False
 show_lore_link = False
 open_mail = False
