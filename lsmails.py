@@ -112,14 +112,17 @@ def nr_replies_of(mail):
 
 def show_mails(mails_to_show):
     global collapse_threads
+    global idx
 
     threads = threads_of(mails_to_show)
     if descend:
         threads.reverse()
     for mail in threads:
         if collapse_threads:
-            suffix = ' (%d+ msgs)' % nr_replies_of(mail)
+            nr_replies = nr_replies_of(mail)
+            suffix = ' (%d+ msgs)' % nr_replies
             pr_mail_subject(mail, 0, suffix)
+            idx += nr_replies
         else:
             pr_thread_mail(mail, 0)
 
