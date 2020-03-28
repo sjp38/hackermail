@@ -10,6 +10,8 @@ import time
 
 import _hkml
 
+descend = False
+
 def lore_url(mail):
     return 'https://lore.kernel.org/r/%s' % mail.get_field('message-id')[1:-1]
 
@@ -95,6 +97,8 @@ def nr_replies_of(mail):
 def show_mails(mails_to_show, pr_git_id, nr_cols_in_line, nr_skips,
         collapse_threads):
     threads = threads_of(mails_to_show)
+    if descend:
+        threads.reverse()
     for mail in threads:
         if collapse_threads:
             suffix = ' (%d+ msgs)' % nr_replies_of(mail)
@@ -191,6 +195,8 @@ def set_argparser(parser=None):
     parser.add_argument('--author', metavar='msgid', type=str,
             help='show only mails from the author')
 
+    parser.add_argument('--descend', action='store_true',
+            help='list threads in descending order')
     parser.add_argument('--collapse', action='store_true',
             help='collapse threads')
     parser.add_argument('--open', '-o', action='store_true',
@@ -207,6 +213,7 @@ def set_argparser(parser=None):
 def main(args=None):
     global show_lore_link
     global open_mail
+    global descend
 
     if not args:
         parser = argparse.ArgumentParser()
@@ -219,6 +226,7 @@ def main(args=None):
     pr_git_id = args.gitid
     show_lore_link = args.lore
     nr_skip_mails = args.skip
+    descend = args.descend
 
     mails_to_show = filter_mails(args)
 
