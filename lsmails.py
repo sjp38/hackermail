@@ -14,6 +14,8 @@ descend = False
 pr_git_id = False
 nr_cols_in_line = 130
 collapse_threads = False
+show_lore_link = False
+open_mail = False
 
 def lore_url(mail):
     return 'https://lore.kernel.org/r/%s' % mail.get_field('message-id')[1:-1]
@@ -56,13 +58,12 @@ def threads_of(mails):
             orig_mail.replies.append(mail)
     return threads
 
-show_lore_link = False
-open_mail = False
 idx = 0
 def pr_mail_subject(mail, depth, nr_skips, suffix=''):
     global idx
     global pr_git_id
     global nr_cols_in_line
+    global open_mail
 
     nr_cols = nr_cols_in_line
     if idx < nr_skips:
