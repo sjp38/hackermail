@@ -68,10 +68,15 @@ def pr_mail_subject(mail, depth, suffix=''):
     global ls_range
 
     nr_cols = nr_cols_in_line
-    if ls_range and idx < ls_range[0]:
+    range_start = -1
+    range_end = -1
+    if ls_range:
+        range_start = ls_range[0]
+        range_end = ls_range[1]
+    if range_start != -1 and idx < range_start:
         idx += 1
         return
-    if ls_range and idx >= ls_range[1]:
+    if range_end != -1 and idx >= ls_range[1]:
         return
 
     prefix_fields = []
