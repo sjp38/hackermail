@@ -72,7 +72,8 @@ def pr_mail_subject(mail, depth, suffix=''):
     range_end = -1
     if ls_range:
         range_start = ls_range[0]
-        range_end = range_start + ls_range[1]
+        if ls_range[1] != -1:
+            range_end = range_start + ls_range[1]
     if range_start != -1 and idx < range_start:
         idx += 1
         return
