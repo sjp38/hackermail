@@ -100,32 +100,37 @@ def pr_mail_subject(mail, depth, suffix=''):
         print('')
         show_mail(mail)
 
-def pr_thread_mail(mail, depth):
-    pr_mail_subject(mail, depth)
-    for re in mail.replies:
-        pr_thread_mail(re, depth + 1)
-
 def nr_replies_of(mail):
     nr = len(mail.replies)
     for re in mail.replies:
         nr += nr_replies_of(re)
     return nr
 
+def pr_thread_mail(mail, depth):
+    global idx
+
+    if collapse_threads:
+        if depth != 0:
+            return
+        else:
+            nr_replies = nr_replies_of(mail)
+            suffix = ' (%d+ msgs)' % nr_replies
+            pr_mail_subject(mail, 0, suffix)
+            idx += nr_replies
+            return
+
+    pr_mail_subject(mail, depth)
+    for re in mail.replies:
+        pr_thread_mail(re, depth + 1)
+
 def show_mails(mails_to_show):
     global collapse_threads
-    global idx
 
     threads = threads_of(mails_to_show)
     if descend:
         threads.reverse()
     for mail in threads:
-        if collapse_threads:
-            nr_replies = nr_replies_of(mail)
-            suffix = ' (%d+ msgs)' % nr_replies
-            pr_mail_subject(mail, 0, suffix)
-            idx += nr_replies
-        else:
-            pr_thread_mail(mail, 0)
+        pr_thread_mail(mail, 0)
 
 def filter_tags(mail, tags_to_hide, tags_to_show):
     has_tag = False
