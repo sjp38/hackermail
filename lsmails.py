@@ -59,9 +59,7 @@ def threads_of(mails):
             orig_mail.replies.append(mail)
     return threads
 
-idx = 0
-def pr_mail_subject(mail, depth, suffix=''):
-    global idx
+def pr_mail_subject(mail, depth, suffix, idx):
     global pr_git_id
     global nr_cols_in_line
     global open_mail
@@ -75,14 +73,12 @@ def pr_mail_subject(mail, depth, suffix=''):
         if ls_range[1] != -1:
             range_end = range_start + ls_range[1]
     if range_start != -1 and idx < range_start:
-        idx += 1
         return
     if range_end != -1 and idx >= range_end:
         return
 
     prefix_fields = []
     index = '[%04d]' % idx
-    idx += 1
     date = '/'.join(mail.git_date.split('T')[0].split('-')[1:])
     prefix_fields += [index, date]
     if pr_git_id:
@@ -106,22 +102,21 @@ def nr_replies_of(mail):
         nr += nr_replies_of(re)
     return nr
 
+idx = 0
 def pr_thread_mail(mail, depth):
     global idx
 
+    idx_increment = 1
+    suffix = ''
     if collapse_threads:
-        if depth != 0:
-            return
-        else:
-            nr_replies = nr_replies_of(mail)
-            suffix = ' (%d+ msgs)' % nr_replies
-            pr_mail_subject(mail, 0, suffix)
-            idx += nr_replies
-            return
-
-    pr_mail_subject(mail, depth)
-    for re in mail.replies:
-        pr_thread_mail(re, depth + 1)
+        nr_replies = nr_replies_of(mail)
+        suffix = ' (%d+ msgs)' % nr_replies
+        idx_increment += nr_replies
+    pr_mail_subject(mail, depth, suffix, idx)
+    idx += idx_increment
+    if not collapse_threads:
+        for re in mail.replies:
+            pr_thread_mail(re, depth + 1)
 
 def show_mails(mails_to_show):
     global collapse_threads
