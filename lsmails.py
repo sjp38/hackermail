@@ -259,10 +259,7 @@ def main(args=None):
     with open(tmp_path, 'w') as tmp_file:
         sys.stdout = tmp_file
 
-        if len(mails_to_show) == 1:
-            show_mail(mails_to_show[0])
-        else:
-            show_mails(mails_to_show)
+        show_mails(mails_to_show)
     subprocess.call(['less', tmp_path])
     os.remove(tmp_path)
 
