@@ -13,9 +13,9 @@ def format_reply(mail):
     msgid = mail.get_field('message-id')
     if msgid:
         print("In-Reply-To: %s" % msgid)
-    cc = mail.get_field('to')
-    if cc:
-        print("Cc: %s" % cc)
+    to = mail.get_field('to')
+    if to:
+        print("Cc: %s" % to)
     cc = mail.get_field('cc')
     if cc:
         print("Cc: %s" % cc)
