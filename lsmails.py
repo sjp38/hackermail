@@ -63,19 +63,8 @@ def pr_mail_subject(mail, depth, suffix, idx):
     global pr_git_id
     global nr_cols_in_line
     global open_mail
-    global ls_range
 
     nr_cols = nr_cols_in_line
-    range_start = -1
-    range_end = -1
-    if ls_range:
-        range_start = ls_range[0]
-        if ls_range[1] != -1:
-            range_end = range_start + ls_range[1]
-    if range_start != -1 and idx < range_start:
-        return
-    if range_end != -1 and idx >= range_end:
-        return
 
     prefix_fields = []
     index = '[%04d]' % idx
@@ -105,6 +94,18 @@ def nr_replies_of(mail):
 mail_idx = 0
 def pr_thread_mail(mail, depth):
     global mail_idx
+    global ls_range
+
+    range_start = -1
+    range_end = -1
+    if ls_range:
+        range_start = ls_range[0]
+        if ls_range[1] != -1:
+            range_end = range_start + ls_range[1]
+    if range_start != -1 and mail_idx < range_start:
+        return
+    if range_end != -1 and mail_idx >= range_end:
+        return
 
     idx_increment = 1
     suffix = ''
@@ -112,8 +113,10 @@ def pr_thread_mail(mail, depth):
         nr_replies = nr_replies_of(mail)
         suffix = ' (%d+ msgs)' % nr_replies
         idx_increment += nr_replies
+
     pr_mail_subject(mail, depth, suffix, mail_idx)
     mail_idx += idx_increment
+
     if not collapse_threads:
         for re in mail.replies:
             pr_thread_mail(re, depth + 1)
