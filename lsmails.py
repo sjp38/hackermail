@@ -96,13 +96,11 @@ def pr_thread_mail(mail, depth):
     global mail_idx
     global ls_range
 
-    range_start = -1
+    range_start = ls_range[0]
     range_end = -1
-    if ls_range:
-        range_start = ls_range[0]
-        if ls_range[1] != -1:
-            range_end = range_start + ls_range[1]
-    if range_start != -1 and mail_idx < range_start:
+    if ls_range[1] != -1:
+        range_end = range_start + ls_range[1]
+    if mail_idx < range_start:
         return
     if range_end != -1 and mail_idx >= range_end:
         return
@@ -222,7 +220,7 @@ def set_argparser(parser=None):
             help='collapse threads')
     parser.add_argument('--open', '-o', action='store_true',
             help='show the content of the <index>th mail')
-    parser.add_argument('--range', '-r', metavar='<start len>',
+    parser.add_argument('--range', '-r', metavar='<start len>', default=[0,-1],
             type=int, nargs=2,
             help='show mails of indexes in given range [start, start + len) ')
     parser.add_argument('--cols', metavar='cols', type=int,
