@@ -97,12 +97,10 @@ def pr_mails_thread(mail, depth):
     global ls_range
 
     range_start = ls_range[0]
-    range_end = -1
-    if ls_range[1] != -1:
-        range_end = range_start + ls_range[1]
+    range_len = ls_range[1]
     if mail_idx < range_start:
         return
-    if range_end != -1 and mail_idx >= range_end:
+    if range_len != -1 and mail_idx >= range_start + range_len:
         return
 
     idx_increment = 1
