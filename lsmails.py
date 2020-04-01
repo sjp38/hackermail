@@ -91,38 +91,34 @@ def nr_replies_of(mail):
         nr += nr_replies_of(re)
     return nr
 
-mail_idx = 0
-def pr_mails_thread(mail, depth):
-    global mail_idx
+def pr_mails_thread(mail, mail_idx, depth):
     global ls_range
 
-    range_start = ls_range[0]
-    range_len = ls_range[1]
-    if mail_idx < range_start:
-        return
-    if range_len != -1 and mail_idx >= range_start + range_len:
-        return
+    nr_printed = 1
 
-    idx_increment = 1
     suffix = ''
     if collapse_threads:
         nr_replies = nr_replies_of(mail)
         suffix = ' (%d+ msgs)' % nr_replies
-        idx_increment += nr_replies
+        nr_printed += nr_replies
 
-    pr_mail_subject(mail, depth, suffix, mail_idx)
-    mail_idx += idx_increment
+    range_start = ls_range[0]
+    range_len = ls_range[1]
+    if mail_idx >= range_start and (range_len == -1 or mail_idx < range_start + range_len):
+        pr_mail_subject(mail, depth, suffix, mail_idx)
 
     if not collapse_threads:
         for re in mail.replies:
-            pr_mails_thread(re, depth + 1)
+            nr_printed += pr_mails_thread(re, mail_idx + nr_printed, depth + 1)
+    return nr_printed
 
 def show_mails(mails_to_show):
     threads = threads_of(mails_to_show)
     if descend:
         threads.reverse()
+    index = 0
     for mail in threads:
-        pr_mails_thread(mail, 0)
+        index += pr_mails_thread(mail, index, 0)
 
 def filter_tags(mail, tags_to_hide, tags_to_show):
     has_tag = False
