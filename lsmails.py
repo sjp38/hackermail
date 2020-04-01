@@ -35,7 +35,7 @@ def pr_line_wrap(prefix, line, nr_cols):
                 words_to_print = [' ' * (len(prefix) + 1) + words_to_print[-1]]
     print(' '.join(words_to_print))
 
-def show_mail(mail):
+def pr_mail_content(mail):
     for head in ['Date', 'Subject', 'Message-Id', 'From', 'To', 'CC']:
         value = mail.get_field(head)
         if value:
@@ -83,7 +83,7 @@ def pr_mail_subject(mail, depth, suffix, idx):
     pr_line_wrap(prefix, subject + suffix, nr_cols)
     if open_mail:
         print('')
-        show_mail(mail)
+        pr_mail_content(mail)
 
 def nr_replies_of(mail):
     nr = len(mail.replies)
@@ -92,7 +92,7 @@ def nr_replies_of(mail):
     return nr
 
 mail_idx = 0
-def pr_thread_mail(mail, depth):
+def pr_mails_thread(mail, depth):
     global mail_idx
     global ls_range
 
@@ -117,14 +117,14 @@ def pr_thread_mail(mail, depth):
 
     if not collapse_threads:
         for re in mail.replies:
-            pr_thread_mail(re, depth + 1)
+            pr_mails_thread(re, depth + 1)
 
 def show_mails(mails_to_show):
     threads = threads_of(mails_to_show)
     if descend:
         threads.reverse()
     for mail in threads:
-        pr_thread_mail(mail, 0)
+        pr_mails_thread(mail, 0)
 
 def filter_tags(mail, tags_to_hide, tags_to_show):
     has_tag = False
