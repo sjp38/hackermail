@@ -119,7 +119,10 @@ def show_mails(mails_to_show):
     for mail in threads:
         index += pr_mails_thread(mail, index, 0)
 
-def filter_tags(mail, tags_to_hide, tags_to_show):
+def filter_tags(mail, tags):
+    tags_to_show = tags[0]
+    tags_to_hide = tags[1]
+
     has_tag = False
     if tags_to_hide:
         for tag in tags_to_hide:
@@ -162,26 +165,20 @@ def get_mails_from_git(manifest, mail_list, since, author=None):
             fields[0], mdir, fields[1], fields[2:]))
     return mails
 
-def filter_mails(args):
-    mail_list = args.mlist
-    since = args.since
-    tags_to_show = args.show
-    tags_to_hide = args.hide
-    msgid = args.msgid
-
-    manifest = _hkml.get_manifest(args.manifest)
+def filter_mails(manifest, mail_list, since, tags, msgid, author):
+    manifest = _hkml.get_manifest(manifest)
     if not manifest:
-        print("Cannot open manifest file %s" % args.manifest)
+        print("Cannot open manifest file")
         exit(1)
 
-    mails = get_mails_from_git(manifest, mail_list, since, args.author)
+    mails = get_mails_from_git(manifest, mail_list, since, author)
 
     mails_to_show = []
     for mail in mails:
         if msgid and mail.get_field('message-id') != ('<%s>' % msgid):
             continue
 
-        if not filter_tags(mail, tags_to_hide, tags_to_show):
+        if not filter_tags(mail, tags):
             continue
 
         mails_to_show.append(mail)
@@ -245,7 +242,8 @@ def main(args=None):
     ls_range = args.range
     descend = args.descend
 
-    mails_to_show = filter_mails(args)
+    mails_to_show = filter_mails(args.manifest, args.mlist, args.since,
+            [args.show, args.hide], args.msgid, args.author)
 
     tmp_path = tempfile.mkstemp()[1]
     with open(tmp_path, 'w') as tmp_file:
