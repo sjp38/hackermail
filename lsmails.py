@@ -245,12 +245,13 @@ def main(args=None):
     mails_to_show = filter_mails(args.manifest, args.mlist, args.since,
             [args.show, args.hide], args.msgid, args.author)
 
-    tmp_path = tempfile.mkstemp()[1]
+    fd, tmp_path = tempfile.mkstemp(prefix='hackermail')
     with open(tmp_path, 'w') as tmp_file:
         sys.stdout = tmp_file
 
         show_mails(mails_to_show)
     subprocess.call(['less', tmp_path])
+    close(fd)
     os.remove(tmp_path)
 
 if __name__ == '__main__':
