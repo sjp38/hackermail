@@ -102,9 +102,8 @@ def pr_mails_thread(mail, mail_idx, depth):
         suffix = ' (%d+ msgs)' % nr_replies
         nr_printed += nr_replies
 
-    range_start = ls_range[0]
-    range_len = ls_range[1]
-    if mail_idx >= range_start and (range_len == -1 or mail_idx < range_start + range_len):
+    if mail_idx >= ls_range[0] and (ls_range[1] == -1 or
+            mail_idx < ls_range[0] + ls_range[1]):
         pr_mail_subject(mail, depth, suffix, mail_idx)
 
     if not collapse_threads:
