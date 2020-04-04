@@ -206,7 +206,7 @@ def set_argparser(parser=None):
 
     parser.add_argument('--descend', action='store_true',
             help='list threads in descending order')
-    parser.add_argument('--collapse', action='store_true',
+    parser.add_argument('--collapse', '-c', action='store_true',
             help='collapse threads')
     parser.add_argument('--open', '-o', action='store_true',
             help='show the content of the <index>th mail')
