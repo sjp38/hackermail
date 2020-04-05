@@ -8,7 +8,7 @@ import sys
 
 def cmd_str_output(cmd):
     try:
-        return subprocess.check_output(cmd).decode('utf-8').strip()
+        return subprocess.check_output(cmd).decode('cp437').strip()
     except UnicodeDecodeError as e:
         print('could not decode cmd (%s) output: %s' % (cmd, e))
         return ''
