@@ -251,7 +251,7 @@ def main(args=None):
 
         show_mails(mails_to_show)
     subprocess.call(['less', tmp_path])
-    close(fd)
+    os.close(fd)
     os.remove(tmp_path)
 
 if __name__ == '__main__':
