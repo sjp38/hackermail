@@ -7,7 +7,11 @@ import subprocess
 import sys
 
 def cmd_str_output(cmd):
-    return subprocess.check_output(cmd).decode('utf-8').strip()
+    try:
+        return subprocess.check_output(cmd).decode('utf-8').strip()
+    except UnicodeDecodeError as e:
+        print('could not decode cmd (%s) output: %s' % (cmd, e))
+        return ''
 
 def cmd_lines_output(cmd):
     return cmd_str_output(cmd).split('\n')
