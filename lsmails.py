@@ -75,7 +75,8 @@ def pr_mail_subject(mail, depth, suffix, idx):
     indent = ' ' * 4 * depth
     prefix_fields.append(indent)
     prefix = ' '.join(prefix_fields)
-    subject = mail.get_field('subject')
+    subject = '%s (%s)' % (mail.get_field('subject'),
+            ' '.join(mail.get_field('from').split()[0:-1]))
     if depth and subject.lower().startswith('re: '):
         subject = subject[4:]
     if show_lore_link:
