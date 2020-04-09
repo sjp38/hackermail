@@ -94,6 +94,7 @@ def nr_replies_of(mail):
 
 def pr_mails_thread(mail, mail_idx, depth):
     global ls_range
+    global open_mail
 
     nr_printed = 1
 
@@ -103,6 +104,8 @@ def pr_mails_thread(mail, mail_idx, depth):
         suffix = ' (%d+ msgs)' % nr_replies
         nr_printed += nr_replies
 
+    if ls_range[1] == 1:
+        open_mail = True
     if mail_idx >= ls_range[0] and (ls_range[1] == -1 or
             mail_idx < ls_range[0] + ls_range[1]):
         pr_mail_subject(mail, depth, suffix, mail_idx)
