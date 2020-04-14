@@ -9,26 +9,26 @@ import _hkml
 def format_reply(mail):
     subject = mail.get_field('subject')
     if subject:
-        print("Subject: Re: %s" % subject)
+        print('Subject: Re: %s' % subject)
     msgid = mail.get_field('message-id')
     if msgid:
-        print("In-Reply-To: %s" % msgid)
+        print('In-Reply-To: %s' % msgid)
     to = mail.get_field('to')
     if to:
-        print("Cc: %s" % to)
+        print('Cc: %s' % to)
     cc = mail.get_field('cc')
     if cc:
-        print("Cc: %s" % cc)
+        print('Cc: %s' % cc)
     from_ = mail.get_field('from')
     if from_:
-        print("To: %s" % from_)
-    print("")
+        print('To: %s' % from_)
+    print('')
     date = mail.get_field('date')
     if date and from_:
-        print("On %s %s wrote:\n" % (date, from_))
+        print('On %s %s wrote:\n' % (date, from_))
     body = mail.get_field('body')
     for line in body.split('\n'):
-        print("> %s" % line)
+        print('> %s' % line)
 
 def set_argparser(parser=None):
     parser.add_argument('mbox_file', metavar='mboxfile', type=str, nargs='?',
