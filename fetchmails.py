@@ -9,7 +9,7 @@ import _hkml
 def fetch_mail(manifest_file, mail_lists, quiet=False):
     manifest = _hkml.get_manifest(manifest_file)
     if not manifest:
-        print("Cannot open manifest file %s" % manifest_file)
+        print('Cannot open manifest file %s' % manifest_file)
         exit(1)
 
     site = manifest['site']

@@ -89,7 +89,7 @@ class Mail:
             if not self.gitdir or not self.gitid:
                 print('cannot get mbox')
                 exit(1)
-            cmd = ["git", "--git-dir=%s" % self.gitdir,
+            cmd = ['git', '--git-dir=%s' % self.gitdir,
                     'show', '%s:m' % self.gitid]
             self.mbox = cmd_str_output(cmd)
 
@@ -119,7 +119,7 @@ def set_hkml_dir(path=None):
     global __hkml_dir
     if path:
         if not os.path.exists(path):
-            sys.stderr.write("Given hkml_dir %s does not exists\n" % path)
+            sys.stderr.write('Given hkml_dir %s does not exists\n' % path)
             exit(1)
         __hkml_dir = path
         return

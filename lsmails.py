@@ -39,8 +39,8 @@ def pr_mail_content(mail):
     for head in ['Date', 'Subject', 'Message-Id', 'From', 'To', 'CC']:
         value = mail.get_field(head)
         if value:
-            print("%s: %s" % (head, value))
-    print("\n%s" % mail.get_field('body'))
+            print('%s: %s' % (head, value))
+    print('\n%s' % mail.get_field('body'))
     if show_lore_link:
         print('\n%s\n' % lore_url(mail))
 
@@ -153,9 +153,9 @@ def get_mails_from_git(manifest, mail_list, since, author=None):
             mail_list, manifest_file))
         exit(1)
     for mdir in mdirs:
-        cmd = ["git", "--git-dir=%s" % mdir, "log",
+        cmd = ['git', '--git-dir=%s' % mdir, 'log',
                 '--date=iso-strict', '--pretty=%h %ad %s',
-                "--since=%s" % since]
+                '--since=%s' % since]
         if author:
             cmd += ['--author=%s'% author]
         lines += _hkml.cmd_lines_output(cmd)
@@ -172,7 +172,7 @@ def get_mails_from_git(manifest, mail_list, since, author=None):
 def filter_mails(manifest, mail_list, since, tags, msgid, author):
     manifest = _hkml.get_manifest(manifest)
     if not manifest:
-        print("Cannot open manifest file")
+        print('Cannot open manifest file')
         exit(1)
 
     mails = get_mails_from_git(manifest, mail_list, since, author)
@@ -192,7 +192,7 @@ def filter_mails(manifest, mail_list, since, tags, msgid, author):
 
 def set_argparser(parser=None):
     DEFAULT_SINCE = datetime.datetime.now() - datetime.timedelta(days=3)
-    DEFAULT_SINCE = "%s-%s-%s" % (DEFAULT_SINCE.year, DEFAULT_SINCE.month,
+    DEFAULT_SINCE = '%s-%s-%s' % (DEFAULT_SINCE.year, DEFAULT_SINCE.month,
                 DEFAULT_SINCE.day)
 
     _hkml.set_manifest_mlist_options(parser, None)
