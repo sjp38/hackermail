@@ -10,6 +10,7 @@ import time
 
 import _hkml
 
+new_threads_only = False
 descend = False
 pr_git_id = False
 nr_cols_in_line = 100
@@ -99,6 +100,9 @@ def pr_mails_thread(mail, mail_idx, depth):
     nr_printed = 1
 
     suffix = ''
+    if new_threads_only and mail.get_field('in-reply-to'):
+        nr_replies = nr_replies_of(mail)
+        return nr_printed + nr_replies
     if collapse_threads:
         nr_replies = nr_replies_of(mail)
         suffix = ' (%d+ msgs)' % nr_replies
@@ -207,6 +211,8 @@ def set_argparser(parser=None):
             help='show only the mail of the message id')
     parser.add_argument('--author', metavar='msgid', type=str,
             help='show only mails from the author')
+    parser.add_argument('--new', action='store_true',
+            help='list new threads only')
 
     parser.add_argument('--descend', action='store_true',
             help='list threads in descending order')
@@ -225,6 +231,7 @@ def set_argparser(parser=None):
             help='print lore link for the <index> mail')
 
 def main(args=None):
+    global new_threads_only
     global show_lore_link
     global open_mail
     global descend
@@ -238,6 +245,7 @@ def main(args=None):
         set_argparser(parser)
         args = parser.parse_args()
 
+    new_threads_only = args.new
     collapse_threads = args.collapse
     open_mail = args.open
     nr_cols_in_line = args.cols
