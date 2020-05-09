@@ -82,10 +82,10 @@ def pr_mail_subject(mail, depth, suffix, idx):
         subject = subject[4:]
     if show_lore_link:
         suffix += ' %s' % lore_url(mail)
-    pr_line_wrap(prefix, subject + suffix, nr_cols)
     if open_mail:
-        print('')
         pr_mail_content(mail)
+    else:
+        pr_line_wrap(prefix, subject + suffix, nr_cols)
 
 def nr_replies_of(mail):
     nr = len(mail.replies)
