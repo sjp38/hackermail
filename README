@@ -11,6 +11,31 @@ archives.
 [1] https://public-inbox.org/design_notes.html
 
 
+Quick Start
+===========
+
+The first step should be:
+
+    $ ./hkml -h
+
+
+List mailis in linux-mm mailing list sent in last three days:
+
+    $ ./hkml fetch --manifest ./manifests/lore.js
+    $ ./hkml ls linux-mm --manifest ./manifests/lore.js
+
+Read the content of 5th mail in the list:
+
+    $ ./hkml ls linux-mm --manifest ./manifests/lore.js --range 5 1
+
+Send a reply to the mail:
+
+    $ ./hkml ls linux-mm --manifest ./manifests/lore.js --range 5 1 > orig.eml
+    $ ./hkml format-reply orig.eml > reply.eml
+    /* Now open reply.eml, write your reply on it */
+    $ ./hkml send reply.eml
+
+
 Configuration
 =============
 
