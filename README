@@ -1,8 +1,14 @@
 hackermail
 ==========
 
-hackermail is a decentralized CLI mail client for hacking project discussion
-mailing lists (e.g., Linux Kernel Mailing Lists).
+hackermail is a mail client for hackers who collaborate using mailing lists.
+Using hackermail, you can read mails from specific mailing list archives and
+write mails to others.
+
+For now, hackermail supports only public-inbox[1] managed mailing list
+archives.
+
+[1] https://public-inbox.org/design_notes.html
 
 
 Configuration
