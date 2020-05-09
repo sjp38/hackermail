@@ -14,11 +14,6 @@ archives.
 Quick Start
 ===========
 
-The first step should be:
-
-    $ ./hkml -h
-
-
 List mailis in linux-mm mailing list sent in last three days:
 
     $ ./hkml fetch --manifest ./manifests/lore.js
