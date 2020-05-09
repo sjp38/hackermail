@@ -26,7 +26,7 @@ Read the content of 5th mail in the list:
 Send a reply to the mail:
 
     $ ./hkml ls linux-mm --manifest ./manifests/lore.js --range 5 1 > orig.eml
-    $ ./hkml format-reply orig.eml > reply.eml
+    $ ./hkml format_reply orig.eml > reply.eml
     /* write your reply on 'reply.eml' with your favorite text editor */
     $ ./hkml send reply.eml
 
