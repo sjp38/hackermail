@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 
 import argparse
+import os
+import subprocess
+import sys
+
 import fetchmails
 import lsmails
 import format_reply
-import os
 import send
-import subprocess
-import sys
 
 import _hkml
 
