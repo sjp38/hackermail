@@ -36,27 +36,32 @@ Send a reply to the mail:
     $ ./hkml send reply.eml
 
 
-Configuration
-=============
+Working Directory
+=================
+
+Hackermail needs a directory to save the fetched mails and its metadata.  You
+may think this as something similar to .git directory of git.
+
+You can explicitly set the path using 'HKML_DIR' environment variable or
+'--hkml_dir' command option.  If the path is not specified, hackermail assumes
+the directory is named as '.hkm' and placed under current directory, the hkml
+executable file placed directory, or your home directory and try to find it.
 
 
 Manifest File
--------------
+=============
 
-First, you need a manifest file.  The file should describe where you can fetch
-the mails, name of mailing lists, and the relative path to the git repository
-for each mailing list in json format.  A sample manifest file for the linux
-kernel mailing list is provided by 'manifests/lore.js'.
+hackermail manifest file describes from where in the internet the mails you
+want to read can be fetched, name of the mailing lists archived in the site,
+and the site-relative path to the git repositories for each mailing list in
+json format.  It's very similar to that of lore[1].  A sample manifest file for
+the linux kernel mailing lists is located at 'manifests/lore.js'.
 
+You can explicitly set the path using '--manifest' option of relevant
+subcommands.  If it is not specified, hackermail assumes it is placed under the
+working directory in name of 'manifest' and try to find it.
 
-Configuration Directory
------------------------
-
-Hackermail needs a directory to contain its metadata, as similar to git's .git
-directory.  Hackermail assumes the directory is named as '.hkm' and placed
-under current directory, the hkml executable file placed directory, or your
-home directory.  You can also explicitly set the path using 'HKML_DIR'
-environment variable or '--hkml_dir' command option.
+[1] https://www.kernel.org/lore.html
 
 
 Author
