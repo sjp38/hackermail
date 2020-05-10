@@ -1,5 +1,6 @@
 - README writeup
 - Tag mails (Just create a git repo for each tag and pick each commit)
-- init subcommand: Init the working directory with given manifest
 - send: Support stdin, validate content
 - format_mail: unify with format_reply
+- Implement init subcommand: Init the working directory with given manifest
+- Implement manifest subcommand: Help manifest managing
