@@ -29,6 +29,8 @@ parser.add_argument('--hkml_dir', metavar='hkml dir', type=str,
 subparsers = parser.add_subparsers(title='command', dest='command',
         metavar='<command>')
 
+parser_init = subparsers.add_parser('init', help = 'initialize working dir')
+
 parser_ls = subparsers.add_parser('ls', help = 'list mails')
 lsmails.set_argparser(parser_ls)
 
@@ -51,7 +53,9 @@ if not args.command:
     parser.print_help()
     exit(1)
 
-if args.command == 'ls':
+if args.command == 'init':
+    os.mkdir('.hkm')
+elif args.command == 'ls':
     lsmails.main(args)
 elif args.command == 'fetch':
     fetchmails.main(args)
