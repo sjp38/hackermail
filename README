@@ -17,7 +17,7 @@ Quick Start
 
 List mailis in linux-mm mailing list which are sent within last three days:
 
-    $ ./hkml fetch --manifest ./manifests/lore.js
+    $ ./hkml fetch --manifest ./manifests/lore.js linux-mm
     $ ./hkml ls linux-mm --manifest ./manifests/lore.js
 
 Read the content of 5th mail in the list:
