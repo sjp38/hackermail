@@ -220,9 +220,9 @@ def set_argparser(parser=None):
             help='collapse threads')
     parser.add_argument('--open', '-o', action='store_true',
             help='show the content of the <index>th mail')
-    parser.add_argument('--range', '-r', metavar='<start len>', default=[0,-1],
-            type=int, nargs=2,
-            help='show mails of indexes in given range [start, start + len) ')
+    parser.add_argument('--range', '-r', metavar='<number>', default=[0,-1],
+            type=int, nargs='+',
+            help='show mails of indexes in given range')
     parser.add_argument('--cols', metavar='cols', type=int,
             default=nr_cols_in_line, help='number of columns for each line')
     parser.add_argument('--gitid', action='store_true',
@@ -253,6 +253,9 @@ def main(args=None):
     show_lore_link = args.lore
     ls_range = args.range
     descend = args.descend
+
+    if len(ls_range) == 1:
+        ls_range.append(1)
 
     mails_to_show = filter_mails(args.manifest, args.mlist, args.since,
             [args.show, args.hide], args.msgid, args.author)
