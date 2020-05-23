@@ -177,7 +177,7 @@ def set_manifest_mlist_options(parser, mlist_nargs='?'):
     parser.add_argument('--manifest', metavar='manifest', type=str,
             help='Manifesto file in grok\'s format plus site field.')
     if not mlist_nargs:
-        parser.add_argument('mlist', metavar='mailing list', type=str,
+        parser.add_argument('mlist', metavar='<mailing list>', type=str,
                 help='Mailing list to show.')
     else:
         parser.add_argument('mlist', metavar='mailing list', type=str,
