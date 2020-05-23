@@ -109,10 +109,12 @@ def pr_mails_thread(mail, mail_idx, depth):
         nr_printed += nr_replies
 
     if len(ls_range) == 2:
-        if ls_range[1] == 1:
+        start = ls_range[0]
+        len_ = ls_range[1]
+        end = start + len_
+        if len_ == 1:
             open_mail = True
-        if mail_idx >= ls_range[0] and (ls_range[1] == -1 or
-                mail_idx < ls_range[0] + ls_range[1]):
+        if mail_idx >= start and (len_ == -1 or mail_idx < end):
             pr_mail_subject(mail, depth, suffix, mail_idx)
     elif mail_idx in ls_range:
             pr_mail_subject(mail, depth, suffix, mail_idx)
