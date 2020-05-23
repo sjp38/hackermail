@@ -18,6 +18,7 @@ collapse_threads = False
 show_lore_link = False
 open_mail = False
 ls_range = None
+show_thread_of = None
 
 def lore_url(mail):
     return 'https://lore.kernel.org/r/%s' % mail.get_field('message-id')[1:-1]
@@ -124,10 +125,26 @@ def pr_mails_thread(mail, mail_idx, depth):
             nr_printed += pr_mails_thread(re, mail_idx + nr_printed, depth + 1)
     return nr_printed
 
+def thread_index_range(mail_index, threads):
+    index = 0
+    for mail in threads:
+        sz_thread = nr_replies_of(mail) + 1
+        if mail_index >= index and mail_index < index + sz_thread:
+            return [index, sz_thread]
+        index += sz_thread
+    return [0, 0]
+
 def show_mails(mails_to_show):
+    global show_thread_of
+    global ls_range
+
     threads = threads_of(mails_to_show)
     if descend:
         threads.reverse()
+
+    if show_thread_of != None:
+        ls_range = thread_index_range(show_thread_of, threads)
+
     index = 0
     for mail in threads:
         index += pr_mails_thread(mail, index, 0)
@@ -218,6 +235,8 @@ def set_argparser(parser=None):
             help='show only mails from the author')
     parser.add_argument('--new', action='store_true',
             help='list new threads only')
+    parser.add_argument('--thread', metavar='index', type=int,
+            help='list thread of specific mail')
 
     parser.add_argument('--descend', action='store_true',
             help='list threads in descending order')
@@ -244,6 +263,7 @@ def main(args=None):
     global nr_cols_in_line
     global collapse_threads
     global ls_range
+    global show_thread_of
 
     if not args:
         parser = argparse.ArgumentParser()
@@ -257,6 +277,7 @@ def main(args=None):
     pr_git_id = args.gitid
     show_lore_link = args.lore
     ls_range = args.range
+    show_thread_of = args.thread
     descend = args.descend
 
     if len(ls_range) == 1:
