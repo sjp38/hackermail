@@ -134,6 +134,27 @@ def thread_index_range(mail_index, threads):
         index += sz_thread
     return [0, 0]
 
+def msgid_to_index(msgid, threads, start_index=0):
+    idx = 0
+    for mail in threads:
+        if mail.get_field('message-id')[1:-1] == msgid:
+            return True, start_index + idx
+        idx += 1
+        found, answer = msgid_to_index(msgid, mail.replies, start_index + idx)
+        if found:
+            return True, answer
+        idx += answer
+    return False, idx
+
+def index_of_mail_descr(desc, threads):
+    try:
+        return int(desc)
+    except:
+        found, idx = msgid_to_index(desc, threads)
+        if not found:
+            return -1
+        return idx
+
 def show_mails(mails_to_show):
     global show_thread_of
     global ls_range
@@ -143,7 +164,11 @@ def show_mails(mails_to_show):
         threads.reverse()
 
     if show_thread_of != None:
-        ls_range = thread_index_range(show_thread_of, threads)
+        show_thread_of = index_of_mail_descr(show_thread_of, threads)
+        if show_thread_of == -1:
+            ls_range = [0, 0]
+        else:
+            ls_range = thread_index_range(show_thread_of, threads)
 
     index = 0
     for mail in threads:
@@ -235,7 +260,7 @@ def set_argparser(parser=None):
             help='show only mails from the author')
     parser.add_argument('--new', action='store_true',
             help='list new threads only')
-    parser.add_argument('--thread', metavar='index', type=int,
+    parser.add_argument('--thread', metavar='index', type=str,
             help='list thread of specific mail')
 
     parser.add_argument('--descend', action='store_true',
