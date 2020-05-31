@@ -125,13 +125,17 @@ def pr_mails_thread(mail, mail_idx, depth):
             nr_printed += pr_mails_thread(re, mail_idx + nr_printed, depth + 1)
     return nr_printed
 
-def thread_index_range(mail_index, threads):
-    index = 0
-    for mail in threads:
-        sz_thread = nr_replies_of(mail) + 1
-        if mail_index >= index and mail_index < index + sz_thread:
-            return [index, sz_thread]
-        index += sz_thread
+def root_of_thread(mail, by_msgids):
+    in_reply_to = mail.get_field('in-reply-to')
+    if not in_reply_to in by_msgids:
+        return mail
+
+    return root_of_thread(by_msgids[in_reply_to], by_msgids)
+
+def thread_index_range(pr_idx, by_pr_idx, by_msgids):
+    root = root_of_thread(by_pr_idx[pr_idx], by_msgids)
+    if root:
+        return [root.pridx, nr_replies_of(root) + 1]
     return [0, 0]
 
 def index_of_mail_descr(desc, threads, by_msgids):
@@ -167,7 +171,7 @@ def show_mails(mails_to_show):
         if index == -1:
             ls_range = [0, 0]
         else:
-            ls_range = thread_index_range(index, threads)
+            ls_range = thread_index_range(index, by_pr_idx, by_msgids)
 
     index = 0
     for mail in threads:
