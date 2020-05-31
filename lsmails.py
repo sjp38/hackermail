@@ -148,11 +148,13 @@ def index_of_mail_descr(desc, threads, by_msgids):
             return -1
         return by_msgids[desc].pridx
 
-def index_pr_order(mail, list_):
+def mk_pr_ready(mail, list_, depth=0):
+    """ Make mails to be all ready for print in list"""
     mail.pridx = len(list_)
+    mail.prdepth = depth
     list_.append(mail)
     for mail in mail.replies:
-        index_pr_order(mail, list_)
+        mk_pr_ready(mail, list_, depth + 1)
 
 def show_mails(mails_to_show):
     global show_thread_of
@@ -164,7 +166,7 @@ def show_mails(mails_to_show):
 
     by_pr_idx = []
     for mail in threads:
-        index_pr_order(mail, by_pr_idx)
+        mk_pr_ready(mail, by_pr_idx)
 
     if show_thread_of != None:
         index = index_of_mail_descr(show_thread_of, threads, by_msgids)
