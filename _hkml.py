@@ -174,11 +174,11 @@ def mail_list_data_paths(mail_list, manifest):
     return mdir_paths
 
 def set_manifest_mlist_options(parser, mlist_nargs='?'):
-    parser.add_argument('--manifest', metavar='manifest', type=str,
+    parser.add_argument('--manifest', metavar='<file>', type=str,
             help='Manifesto file in grok\'s format plus site field.')
     if not mlist_nargs:
         parser.add_argument('mlist', metavar='<mailing list>', type=str,
                 help='Mailing list to show.')
     else:
-        parser.add_argument('mlist', metavar='mailing list', type=str,
+        parser.add_argument('mlist', metavar='<mailing list>', type=str,
                 nargs=mlist_nargs, help='Mailing list to show.')

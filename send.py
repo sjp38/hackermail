@@ -6,7 +6,7 @@ import subprocess
 import _hkml
 
 def set_argparser(parser=None):
-    parser.add_argument('mbox_file', metavar='mboxfile',
+    parser.add_argument('mbox_file', metavar='<mboxfile>',
             help='Mbox format file of the mail to send.')
 
 def main(args=None):

@@ -247,20 +247,21 @@ def set_argparser(parser=None):
                 DEFAULT_SINCE.day)
 
     _hkml.set_manifest_mlist_options(parser, None)
-    parser.add_argument('--since', metavar='since', type=str,
+    parser.add_argument('--since', metavar='<date>', type=str,
             default=DEFAULT_SINCE,
             help='show mails more recent than a specific date')
-    parser.add_argument('--show', metavar='tags', type=str, nargs='+',
+    parser.add_argument('--show', metavar='<tag>', type=str, nargs='+',
             help='show mails having these tags')
-    parser.add_argument('--hide', metavar='tag', type=str, nargs='+',
+    parser.add_argument('--hide', metavar='<tag>', type=str, nargs='+',
             help='hide mails having these tags')
-    parser.add_argument('--msgid', metavar='msgid', type=str,
+    parser.add_argument('--msgid', metavar='<message id>', type=str,
             help='show only the mail of the message id')
-    parser.add_argument('--author', metavar='msgid', type=str,
+    parser.add_argument('--author', metavar='<name or email>', type=str,
             help='show only mails from the author')
+
     parser.add_argument('--new', action='store_true',
             help='list new threads only')
-    parser.add_argument('--thread', metavar='index', type=str,
+    parser.add_argument('--thread', metavar='<index or msgid>', type=str,
             help='list thread of specific mail')
 
     parser.add_argument('--descend', action='store_true',
@@ -272,7 +273,7 @@ def set_argparser(parser=None):
     parser.add_argument('--range', '-r', metavar='<number>', default=[0,-1],
             type=int, nargs='+',
             help='show mails of indexes in given range')
-    parser.add_argument('--cols', metavar='cols', type=int,
+    parser.add_argument('--cols', metavar='<int>', type=int,
             default=nr_cols_in_line, help='number of columns for each line')
     parser.add_argument('--gitid', action='store_true',
             help='print git id of each mail')

@@ -22,11 +22,11 @@ def format_mbox(subject, to, cc):
     print('/* write your message here (keep the above blank line) */')
 
 def set_argparser(parser=None):
-    parser.add_argument('--subject', metavar='subject', type=str,
+    parser.add_argument('--subject', metavar='<subject>', type=str,
             help='Subject of the mail.')
-    parser.add_argument('--to', metavar='email address', nargs='+',
+    parser.add_argument('--to', metavar='<email address>', nargs='+',
             help='recipients of the mail')
-    parser.add_argument('--cc', metavar='email address', nargs='+',
+    parser.add_argument('--cc', metavar='<email address>', nargs='+',
             help='cc recipients of the mail')
 
 def main(args=None):
