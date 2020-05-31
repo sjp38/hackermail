@@ -59,7 +59,7 @@ def threads_of(mails):
         else:
             orig_mail = by_msgids[in_reply_to]
             orig_mail.replies.append(mail)
-    return threads
+    return threads, by_msgids
 
 def pr_mail_subject(mail, depth, suffix, idx):
     global pr_git_id
@@ -134,41 +134,40 @@ def thread_index_range(mail_index, threads):
         index += sz_thread
     return [0, 0]
 
-def msgid_to_index(msgid, threads, start_index=0):
-    idx = 0
-    for mail in threads:
-        if mail.get_field('message-id')[1:-1] == msgid:
-            return True, start_index + idx
-        idx += 1
-        found, answer = msgid_to_index(msgid, mail.replies, start_index + idx)
-        if found:
-            return True, answer
-        idx += answer
-    return False, idx
-
-def index_of_mail_descr(desc, threads):
+def index_of_mail_descr(desc, threads, by_msgids):
     try:
         return int(desc)
     except:
-        found, idx = msgid_to_index(desc, threads)
-        if not found:
+        if desc[0] != '<' or desc[-1] != '>':
+            desc = '<%s>' % desc
+        if not desc in by_msgids:
             return -1
-        return idx
+        return by_msgids[desc].pridx
+
+def index_pr_order(mail, list_):
+    mail.pridx = len(list_)
+    list_.append(mail)
+    for mail in mail.replies:
+        index_pr_order(mail, list_)
 
 def show_mails(mails_to_show):
     global show_thread_of
     global ls_range
 
-    threads = threads_of(mails_to_show)
+    threads, by_msgids = threads_of(mails_to_show)
     if descend:
         threads.reverse()
 
+    by_pr_idx = []
+    for mail in threads:
+        index_pr_order(mail, by_pr_idx)
+
     if show_thread_of != None:
-        show_thread_of = index_of_mail_descr(show_thread_of, threads)
-        if show_thread_of == -1:
+        index = index_of_mail_descr(show_thread_of, threads, by_msgids)
+        if index == -1:
             ls_range = [0, 0]
         else:
-            ls_range = thread_index_range(show_thread_of, threads)
+            ls_range = thread_index_range(index, threads)
 
     index = 0
     for mail in threads:
