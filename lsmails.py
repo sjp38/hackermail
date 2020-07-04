@@ -165,13 +165,16 @@ def show_mails(mails_to_show, show_stat):
         threads.reverse()
 
     if show_stat:
+        nr_new_threads = len([m for m in mails_to_show if
+            not m.get_field('in-reply-to')])
         nr_new_patches = len([m for m in mails_to_show
             if not 'reply' in m.tags and 'patch' in m.tags])
         nr_patch_replies = len([m for m in mails_to_show
             if 'reply' in m.tags and 'patch' in m.tags])
-        print('# %d mails, %d threads, %d new patches, %d patch replies)' %
-                (len(mails_to_show), len(threads),
-                    nr_new_patches, nr_patch_replies))
+        print('# %d mails, %d threads, %d new threads' % (len(mails_to_show),
+            len(threads), nr_new_threads))
+        print('# %d new patches, %d patch replies)' % (
+            nr_new_patches, nr_patch_replies))
 
     by_pr_idx = []
     for mail in threads:
