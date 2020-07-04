@@ -156,13 +156,22 @@ def mk_pr_ready(mail, list_, depth=0):
     for mail in mail.replies:
         mk_pr_ready(mail, list_, depth + 1)
 
-def show_mails(mails_to_show):
+def show_mails(mails_to_show, show_stat):
     global show_thread_of
     global ls_range
 
     threads, by_msgids = threads_of(mails_to_show)
     if descend:
         threads.reverse()
+
+    if show_stat:
+        nr_new_patches = len([m for m in mails_to_show
+            if not 'reply' in m.tags and 'patch' in m.tags])
+        nr_patch_replies = len([m for m in mails_to_show
+            if 'reply' in m.tags and 'patch' in m.tags])
+        print('# %d mails, %d threads, %d new patches, %d patch replies)' %
+                (len(mails_to_show), len(threads),
+                    nr_new_patches, nr_patch_replies))
 
     by_pr_idx = []
     for mail in threads:
@@ -284,6 +293,8 @@ def set_argparser(parser=None):
             help='print git id of each mail')
     parser.add_argument('--lore', action='store_true',
             help='print lore link for the <index> mail')
+    parser.add_argument('--stat', action='store_true',
+            help='show stat of the mails')
 
 def main(args=None):
     global new_threads_only
@@ -321,7 +332,7 @@ def main(args=None):
     with open(tmp_path, 'w') as tmp_file:
         sys.stdout = tmp_file
 
-        show_mails(mails_to_show)
+        show_mails(mails_to_show, args.stat)
     subprocess.call(['less', tmp_path])
     os.close(fd)
     os.remove(tmp_path)
