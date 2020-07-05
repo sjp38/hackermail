@@ -173,7 +173,7 @@ def show_mails(mails_to_show, show_stat):
             if m.get_field('in-reply-to') and 'patch' in m.tags])
         print('# %d mails, %d threads, %d new threads' % (len(mails_to_show),
             len(threads), nr_new_threads))
-        print('# %d new patches, %d patch replies)' % (
+        print('# %d new patches, %d patch replies' % (
             nr_new_patches, nr_patch_replies))
 
     by_pr_idx = []
