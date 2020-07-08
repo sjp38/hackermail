@@ -167,14 +167,13 @@ def show_mails(mails_to_show, show_stat):
     if show_stat:
         nr_new_threads = len([m for m in mails_to_show
             if not m.get_field('in-reply-to')])
+        nr_patches = len([m for m in mails_to_show
+            if 'patch' in m.tags and not 'reply' in m.tags])
         nr_new_patches = len([m for m in mails_to_show
             if not m.get_field('in-reply-to') and 'patch' in m.tags])
-        nr_patch_replies = len([m for m in mails_to_show
-            if m.get_field('in-reply-to') and 'patch' in m.tags])
         print('# %d mails, %d threads, %d new threads' % (len(mails_to_show),
             len(threads), nr_new_threads))
-        print('# %d new patches, %d patch replies' % (
-            nr_new_patches, nr_patch_replies))
+        print('# %d patches, %d series' % (nr_patches, nr_new_patches))
 
     by_pr_idx = []
     for mail in threads:
