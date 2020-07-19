@@ -104,7 +104,10 @@ class Mail:
                 line = line.strip()
                 key = line.split(':')[0].lower()
                 if key:
-                    parsed[key] = line[len(key) + 2:]
+                    val = line[len(key) + 2:]
+                    if key == 'message-id':
+                        val = val.split()[0]
+                    parsed[key] = val
                 elif line == '':
                     in_header = False
                 continue
