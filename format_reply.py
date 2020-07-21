@@ -6,6 +6,24 @@ import sys
 
 import _hkml
 
+def git_sendemail_valid_recipients(recipients):
+    """each line should be less than 998 char"""
+    # TODO: Could name contain ','?
+    if len(recipients) < 998:
+        return recipients
+
+    addresses = recipients.split(',')
+    lines = []
+    line = ''
+    for addr in addresses[1:]:
+        if len(line) + len(addr) + len(', ') > 998:
+            lines.append(line)
+            line = '\t'
+        line += '%s,' % addr
+    lines.append(line)
+    lines[-1] = lines[-1][:-1]
+    return '\n'.join(lines)
+
 def format_reply(mail):
     subject = mail.get_field('subject')
     if subject:
@@ -15,9 +33,11 @@ def format_reply(mail):
         print('In-Reply-To: %s' % msgid)
     to = mail.get_field('to')
     if to:
+        to = git_sendemail_valid_recipients(to)
         print('Cc: %s' % to)
     cc = mail.get_field('cc')
     if cc:
+        cc = git_sendemail_valid_recipients(cc)
         print('Cc: %s' % cc)
     from_ = mail.get_field('from')
     if from_:
