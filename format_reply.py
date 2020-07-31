@@ -27,7 +27,10 @@ def git_sendemail_valid_recipients(recipients):
 def format_reply(mail):
     subject = mail.get_field('subject')
     if subject:
-        print('Subject: Re: %s' % subject)
+        prefix = 'Subject: '
+        if subject.split()[0].lower() != 're':
+            prefix += 'Re: '
+        print('%s %s' % (prefix, subject))
     msgid = mail.get_field('message-id')
     if msgid:
         print('In-Reply-To: %s' % msgid)
