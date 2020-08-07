@@ -275,7 +275,7 @@ def set_argparser(parser=None):
     parser.add_argument('--author', metavar='<name or email>', type=str,
             help='show only mails from the author')
 
-    parser.add_argument('--new', action='store_true',
+    parser.add_argument('--new', '-n', action='store_true',
             help='list new threads only')
     parser.add_argument('--thread', metavar='<index or msgid>', type=str,
             help='list thread of specific mail')
