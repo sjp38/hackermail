@@ -47,7 +47,9 @@ parser_send = subparsers.add_parser('send', help = 'send mails')
 send.set_argparser(parser_send)
 
 args = parser.parse_args()
-_hkml.set_hkml_dir(args.hkml_dir)
+
+if args.command != 'init':
+    _hkml.set_hkml_dir(args.hkml_dir)
 
 if not args.command:
     parser.print_help()
