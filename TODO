@@ -4,4 +4,3 @@
 - format_mail: unify with format_reply
 - init subcommand: Add more arguments
 - Implement manifest subcommand: Help manifest managing
-- format reply directly from lore link
