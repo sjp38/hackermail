@@ -6,6 +6,24 @@ import sys
 
 import _hkml
 
+def git_sendemail_valid_recipients(recipients):
+    """each line should be less than 998 char"""
+    # TODO: Could name contain ','?
+    if len(recipients) < 998:
+        return recipients
+
+    addresses = recipients.split(',')
+    lines = []
+    line = ''
+    for addr in addresses[1:]:
+        if len(line) + len(addr) + len(', ') > 998:
+            lines.append(line)
+            line = '\t'
+        line += '%s,' % addr
+    lines.append(line)
+    lines[-1] = lines[-1][:-1]
+    return '\n'.join(lines)
+
 def format_mbox(subject, to, cc, body):
     if not subject:
         subject = '/* write subject here */'
@@ -15,8 +33,10 @@ def format_mbox(subject, to, cc, body):
         cc = ['/* wrtite cc recipients here */']
     print('Subject: %s' % subject)
     for addr in to:
+        addr = git_sendemail_valid_recipients(addr)
         print('To: %s' % addr)
     for addr in cc:
+        addr = git_sendemail_valid_recipients(addr)
         print('Cc: %s' % addr)
     print('')
     if not body:
