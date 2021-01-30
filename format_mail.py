@@ -8,6 +8,8 @@ import _hkml
 
 def git_sendemail_valid_recipients(recipients):
     """each line should be less than 998 char"""
+    if not recipients:
+        return ''
     # TODO: Could name contain ','?
     if len(recipients) < 998:
         return recipients

@@ -5,53 +5,28 @@ import subprocess
 import sys
 
 import _hkml
-
-def git_sendemail_valid_recipients(recipients):
-    """each line should be less than 998 char"""
-    # TODO: Could name contain ','?
-    if len(recipients) < 998:
-        return recipients
-
-    addresses = recipients.split(',')
-    lines = []
-    line = ''
-    for addr in addresses[1:]:
-        if len(line) + len(addr) + len(', ') > 998:
-            lines.append(line)
-            line = '\t'
-        line += '%s,' % addr
-    lines.append(line)
-    lines[-1] = lines[-1][:-1]
-    return '\n'.join(lines)
+import format_mail
 
 def format_reply(mail):
     subject = mail.get_field('subject')
-    if subject:
-        prefix = 'Subject: '
-        if subject.split()[0].lower() != 're:':
-            prefix += 'Re: '
-        print('%s%s' % (prefix, subject))
-    msgid = mail.get_field('message-id')
-    if msgid:
-        print('In-Reply-To: %s' % msgid)
-    to = mail.get_field('to')
-    if to:
-        to = git_sendemail_valid_recipients(to)
-        print('Cc: %s' % to)
-    cc = mail.get_field('cc')
-    if cc:
-        cc = git_sendemail_valid_recipients(cc)
-        print('Cc: %s' % cc)
-    from_ = mail.get_field('from')
-    if from_:
-        print('To: %s' % from_)
-    print('')
+    if subject and subject.split()[0].lower() != 're:':
+        subject = 'Re: %s' % subject
+
+    in_reply_to = mail.get_field('message-id')
+    cc = [x for x in [mail.get_field('to'), mail.get_field('cc')] if x]
+    to = [mail.get_field('from')]
+
+    body_lines = []
     date = mail.get_field('date')
-    if date and from_:
-        print('On %s %s wrote:\n' % (date, from_))
+    if date and to[0]:
+        body_lines.append('On %s %s wrote:' % (date, to[0]))
+        body_lines.append('')
     body = mail.get_field('body')
     for line in body.split('\n'):
-        print('> %s' % line)
+        body_lines.append('> %s' % line)
+    body = '\n'.join(body_lines)
+
+    format_mail.format_mbox(subject, in_reply_to, to, cc, body)
 
 def set_argparser(parser=None):
     parser.add_argument('mbox_file', metavar='<file>', type=str, nargs='?',
