@@ -6,7 +6,7 @@ import sys
 
 import _hkml
 
-def format_mbox(subject, to, cc):
+def format_mbox(subject, to, cc, body):
     if not subject:
         subject = '/* write subject here */'
     if not to:
@@ -19,7 +19,9 @@ def format_mbox(subject, to, cc):
     for addr in cc:
         print('Cc: %s' % addr)
     print('')
-    print('/* write your message here (keep the above blank line) */')
+    if not body:
+        body = '/* write your message here (keep the above blank line) */'
+    print(body)
 
 def set_argparser(parser=None):
     parser.add_argument('--subject', metavar='<subject>', type=str,
@@ -28,6 +30,8 @@ def set_argparser(parser=None):
             help='recipients of the mail')
     parser.add_argument('--cc', metavar='<email address>', nargs='+',
             help='cc recipients of the mail')
+    parser.add_argument('--body', metavar='<body>',
+            help='body message of the mail')
 
 def main(args=None):
     if not args:
@@ -35,7 +39,7 @@ def main(args=None):
         set_argparser(parser)
         args = parser.parse_args()
 
-    format_mbox(args.subject, args.to, args.cc)
+    format_mbox(args.subject, args.to, args.cc, args.body)
 
 if __name__ == '__main__':
     main()
