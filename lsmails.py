@@ -212,7 +212,7 @@ def filter_tags(mail, tags):
             return False
     return True
 
-def get_mails_from_git(manifest, mail_list, since, author=None):
+def get_mails_from_git(manifest, mail_list, since, author, keyword):
     lines = []
     mdirs = _hkml.mail_list_data_paths(mail_list, manifest)
     if not mdirs:
@@ -232,17 +232,19 @@ def get_mails_from_git(manifest, mail_list, since, author=None):
         fields = line.split()
         if len(fields) < 3:
             continue
-        mails.append(_hkml.Mail.from_gitlog(
-            fields[0], mdir, fields[1], fields[2:]))
+        mail = _hkml.Mail.from_gitlog(fields[0], mdir, fields[1], fields[2:])
+        if keyword and not keyword in mail.get_field('body'):
+                continue
+        mails.append(mail)
     return mails
 
-def filter_mails(manifest, mail_list, since, tags, msgid, author):
+def filter_mails(manifest, mail_list, since, tags, msgid, author, keyword):
     manifest = _hkml.get_manifest(manifest)
     if not manifest:
         print('Cannot open manifest file')
         exit(1)
 
-    mails = get_mails_from_git(manifest, mail_list, since, author)
+    mails = get_mails_from_git(manifest, mail_list, since, author, keyword)
 
     mails_to_show = []
     for mail in mails:
@@ -274,6 +276,8 @@ def set_argparser(parser=None):
             help='show only the mail of the message id')
     parser.add_argument('--author', metavar='<name or email>', type=str,
             help='show only mails from the author')
+    parser.add_argument('--contains', metavar='<keyword>', type=str,
+            help='list mails containing the keyword in their body')
 
     parser.add_argument('--new', '-n', action='store_true',
             help='list new threads only')
@@ -328,7 +332,7 @@ def main(args=None):
         ls_range.append(1)
 
     mails_to_show = filter_mails(args.manifest, args.mlist, args.since,
-            [args.show, args.hide], args.msgid, args.author)
+            [args.show, args.hide], args.msgid, args.author, args.contains)
 
     fd, tmp_path = tempfile.mkstemp(prefix='hackermail')
     with open(tmp_path, 'w') as tmp_file:
