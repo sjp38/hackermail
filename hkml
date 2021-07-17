@@ -48,7 +48,7 @@ send.set_argparser(parser_send)
 
 args = parser.parse_args()
 
-if args.command != 'init':
+if args.command in ['fetch', 'ls']:
     _hkml.set_hkml_dir(args.hkml_dir)
 
 if not args.command:
