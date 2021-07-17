@@ -212,6 +212,15 @@ def filter_tags(mail, tags):
             return False
     return True
 
+def git_log_output_line_to_mail(line, mdir, keyword):
+    fields = line.split()
+    if len(fields) < 3:
+        return None
+    mail = _hkml.Mail.from_gitlog(fields[0], mdir, fields[1], fields[2:])
+    if keyword and not keyword in mail.get_field('body'):
+        return None
+    return mail
+
 def get_mails_from_git(manifest, mail_list, since, author, keyword):
     lines = []
     mdirs = _hkml.mail_list_data_paths(mail_list, manifest)
@@ -219,23 +228,20 @@ def get_mails_from_git(manifest, mail_list, since, author, keyword):
         print("Mailing list '%s' in manifest '%s' not found." % (
             mail_list, manifest_file))
         exit(1)
+
+    mails = []
     for mdir in mdirs:
         cmd = ['git', '--git-dir=%s' % mdir, 'log',
                 '--date=iso-strict', '--pretty=%h %ad %s',
                 '--since=%s' % since]
         if author:
             cmd += ['--author=%s'% author]
-        lines += _hkml.cmd_lines_output(cmd)
+        lines = _hkml.cmd_lines_output(cmd)
 
-    mails = []
-    for line in lines:
-        fields = line.split()
-        if len(fields) < 3:
-            continue
-        mail = _hkml.Mail.from_gitlog(fields[0], mdir, fields[1], fields[2:])
-        if keyword and not keyword in mail.get_field('body'):
-                continue
-        mails.append(mail)
+        for line in lines:
+            mail = git_log_output_line_to_mail(line, mdir, keyword)
+            if mail:
+                mails.append(mail)
     return mails
 
 def filter_mails(manifest, mail_list, since, tags, msgid, author, keyword):
