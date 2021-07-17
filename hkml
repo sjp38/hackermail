@@ -6,9 +6,10 @@ import subprocess
 import sys
 
 import fetchmails
-import lsmails
 import format_mail
 import format_reply
+import lsmails
+import manifest
 import send
 
 import _hkml
@@ -46,6 +47,9 @@ format_reply.set_argparser(parser_fmtre)
 parser_send = subparsers.add_parser('send', help = 'send mails')
 send.set_argparser(parser_send)
 
+parser_manifest = subparsers.add_parser('manifest', help = 'print manifest')
+manifest.set_argparser(parser_manifest)
+
 args = parser.parse_args()
 
 if args.command in ['fetch', 'ls']:
@@ -67,3 +71,5 @@ elif args.command == 'format_reply':
     format_reply.main(args)
 elif args.command == 'send':
     send.main(args)
+elif args.command == 'manifest':
+    manifest.main(args)

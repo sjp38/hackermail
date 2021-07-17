@@ -177,9 +177,12 @@ def mail_list_data_paths(mail_list, manifest):
         mdir_paths.append(os.path.join(get_hkml_dir(), 'archives' + path))
     return mdir_paths
 
-def set_manifest_mlist_options(parser, mlist_nargs='?'):
+def set_manifest_option(parser):
     parser.add_argument('--manifest', metavar='<file>', type=str,
             help='Manifesto file in grok\'s format plus site field.')
+
+def set_manifest_mlist_options(parser, mlist_nargs='?'):
+    set_manifest_option(parser)
     if not mlist_nargs:
         parser.add_argument('mlist', metavar='<mailing list>', type=str,
                 help='Mailing list to show.')
