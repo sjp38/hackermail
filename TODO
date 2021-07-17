@@ -1,3 +1,4 @@
 - Tag mails (Just create a git repo for each tag and pick each commit)
 - init subcommand: Add more arguments
 - Implement manifest subcommand: Help manifest managing
+- Let it works without 'init' when it is ok.
