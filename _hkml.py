@@ -11,7 +11,6 @@ def cmd_str_output(cmd):
     try:
         return output.decode('utf-8').strip()
     except UnicodeDecodeError as e:
-        print('could not decode cmd (%s) output: %s' % (cmd, e))
         return output.decode('cp437').strip()
 
 def cmd_lines_output(cmd):
