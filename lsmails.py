@@ -39,7 +39,11 @@ def pr_line_wrap(prefix, line, nr_cols):
     print(' '.join(words_to_print))
 
 def pr_mail_content_via_lore(mail_url):
-    from_lore = _hkml.cmd_lines_output(['w3m', '-dump', mail_url])[3:]
+    try:
+        from_lore = _hkml.cmd_lines_output(['w3m', '-dump', mail_url])[3:]
+    except:
+        sys.stderr.write('\'w3m\' invocation failed.\n')
+        exit(1)
     divide_line = '━' * 79
     for line in from_lore:
         if line.strip() == divide_line:
