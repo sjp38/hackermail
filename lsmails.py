@@ -304,7 +304,7 @@ def set_argparser(parser=None):
     parser.add_argument('--gitid', action='store_true',
             help='print git id of each mail')
     parser.add_argument('--lore', action='store_true',
-            help='print lore link for the <index> mail')
+            help='print lore link for mails')
     parser.add_argument('--stat', action='store_true',
             help='show stat of the mails')
 
