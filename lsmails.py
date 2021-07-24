@@ -17,6 +17,7 @@ nr_cols_in_line = 100
 collapse_threads = False
 show_lore_link = False
 open_mail = False
+open_mail_via_lore = False
 ls_range = None
 show_thread_of = None
 
@@ -37,7 +38,19 @@ def pr_line_wrap(prefix, line, nr_cols):
                 words_to_print = [' ' * (len(prefix) + 1) + words_to_print[-1]]
     print(' '.join(words_to_print))
 
-def pr_mail_content(mail):
+def pr_mail_content_via_lore(mail_url):
+    from_lore = _hkml.cmd_lines_output(['w3m', '-dump', mail_url])[3:]
+    divide_line = '━' * 79
+    for line in from_lore:
+        if line.strip() == divide_line:
+            break
+        print(line)
+
+def pr_mail_content(mail, use_lore):
+    if use_lore:
+        pr_mail_content_via_lore(lore_url(mail))
+        return
+
     for head in ['Date', 'Subject', 'Message-Id', 'From', 'To', 'CC']:
         value = mail.get_field(head)
         if value:
@@ -84,7 +97,7 @@ def pr_mail_subject(mail, depth, suffix, idx):
     if show_lore_link:
         suffix += ' %s' % lore_url(mail)
     if open_mail:
-        pr_mail_content(mail)
+        pr_mail_content(mail, open_mail_via_lore)
     else:
         pr_line_wrap(prefix, subject + suffix, nr_cols)
 
@@ -305,6 +318,8 @@ def set_argparser(parser=None):
             help='print git id of each mail')
     parser.add_argument('--lore', action='store_true',
             help='print lore link for mails')
+    parser.add_argument('--lore_read', action='store_true',
+            help='fetch body of mail from the lore')
     parser.add_argument('--stat', action='store_true',
             help='show stat of the mails')
 
@@ -312,6 +327,7 @@ def main(args=None):
     global new_threads_only
     global show_lore_link
     global open_mail
+    global open_mail_via_lore
     global descend
     global pr_git_id
     global nr_cols_in_line
@@ -327,6 +343,7 @@ def main(args=None):
     new_threads_only = args.new
     collapse_threads = args.collapse
     open_mail = args.open
+    open_mail_via_lore = args.lore_read
     nr_cols_in_line = args.cols
     pr_git_id = args.gitid
     show_lore_link = args.lore
