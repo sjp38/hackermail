@@ -322,6 +322,8 @@ def set_argparser(parser=None):
             help='fetch body of mail from the lore')
     parser.add_argument('--stat', action='store_true',
             help='show stat of the mails')
+    parser.add_argument('--no_pager', action='store_true',
+            help='print to stdout instead of using the pager')
 
 def main(args=None):
     global new_threads_only
@@ -357,14 +359,18 @@ def main(args=None):
     mails_to_show = filter_mails(args.manifest, args.mlist, args.since,
             [args.show, args.hide], args.msgid, args.author, args.contains)
 
-    fd, tmp_path = tempfile.mkstemp(prefix='hackermail')
-    with open(tmp_path, 'w') as tmp_file:
+    if not args.no_pager:
+        fd, tmp_path = tempfile.mkstemp(prefix='hackermail')
+        tmp_file = open(tmp_path, 'w')
         sys.stdout = tmp_file
 
-        show_mails(mails_to_show, args.stat)
-    subprocess.call(['less', tmp_path])
-    os.close(fd)
-    os.remove(tmp_path)
+    show_mails(mails_to_show, args.stat)
+
+    if not args.no_pager:
+        subprocess.call(['less', tmp_path])
+        tmp_file.close()
+        os.close(fd)
+        os.remove(tmp_path)
 
 if __name__ == '__main__':
     main()
