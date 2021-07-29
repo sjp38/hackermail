@@ -364,6 +364,7 @@ def main(args=None):
             [args.show, args.hide], args.msgid, args.author, args.contains)
 
     if not args.no_pager:
+        orig_stdout = sys.stdout
         fd, tmp_path = tempfile.mkstemp(prefix='hackermail')
         tmp_file = open(tmp_path, 'w')
         sys.stdout = tmp_file
@@ -371,9 +372,10 @@ def main(args=None):
     show_mails(mails_to_show, args.stat)
 
     if not args.no_pager:
-        subprocess.call(['less', tmp_path])
+        sys.stdout = orig_stdout
         tmp_file.close()
         os.close(fd)
+        subprocess.call(['less', tmp_path])
         os.remove(tmp_path)
 
 if __name__ == '__main__':
