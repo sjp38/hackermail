@@ -2,3 +2,4 @@
 - init subcommand: Add more arguments
 - Implement manifest subcommand: Help manifest managing
 - ls: Fetch mail from lore if it seems encrypted, automatically
+- ls: Decode base64 body
