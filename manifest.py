@@ -1,13 +1,21 @@
 #!/usr/bin/env python3
 
 import argparse
+import json
 
 import _hkml
 
 def set_argparser(parser):
     _hkml.set_manifest_option(parser)
+    parser.add_argument('action', metavar='<action>', nargs='?',
+            choices=['list', 'convert_public_inbox_manifest'], default='list',
+            help='action to do: list or convert_public_inbox_manifest')
     parser.add_argument('--mlists', metavar='<mailing list name>', nargs='+',
             help='print manifest entries for specific mailing lists')
+    parser.add_argument('--public_inbox_manifest', metavar='<file>',
+            help='public inbox manifest which want to convert for hackermail')
+    parser.add_argument('--site', metavar='<url>',
+            help='site to fetch mail archives')
 
 def need_to_print(key, depth, mlists):
     if depth > 0:
@@ -45,7 +53,16 @@ def main(args=None):
         set_argparser(parser)
         args = parser.parse_args()
 
-    pr_directory(_hkml.get_manifest(args.manifest), args.mlists)
+    if args.action == 'list':
+        pr_directory(_hkml.get_manifest(args.manifest), args.mlists)
+    elif args.action == 'convert_public_inbox_manifest':
+        if not args.public_inbox_manifest or not args.site:
+            print('--public_inbox_manifest or --site is not set')
+            exit(1)
+        with open(args.public_inbox_manifest) as f:
+            manifest = json.load(f)
+        manifest['site'] = args.site
+        print(json.dumps(manifest))
 
 if __name__ == '__main__':
     main()
