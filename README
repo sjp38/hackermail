@@ -2,8 +2,8 @@ hackermail
 ==========
 
 hackermail is a mail client for hackers who collaborate using mailing lists.
-Using hackermail, you can read mails from specific mailing list archives and
-write mails to others.
+Using hackermail, you can fetch mailing list archives, read mails in those, and
+write replies or new mails.
 
 For now, hackermail supports only public-inbox[1] managed mailing list
 archives.  Linux Kernel Mailing Lists (LKML)[2] are good examples.
@@ -23,19 +23,19 @@ List mailis in linux-mm mailing list which are sent within last three days:
 
 Read the content of 5th mail in the list:
 
-    $ ./hkml ls linux-mm --manifest ./manifests/lore.js --range 5 1
+    $ ./hkml ls linux-mm --manifest ./manifests/lore.js --range 5
 
 Send a reply to the mail:
 
-    $ ./hkml ls linux-mm --manifest ./manifests/lore.js --range 5 1 > orig.eml
+    $ ./hkml ls linux-mm --manifest ./manifests/lore.js --range 5 > orig.eml
     $ ./hkml format_reply orig.eml > reply.eml
-    /* write your reply on 'reply.eml' with your favorite text editor */
+    $ # Write your reply on 'reply.eml' with your favorite text editor
     $ ./hkml send reply.eml
 
 Write a mail to the mailing list:
 
     $ ./hkml format_mail --cc linux-mm@kvack.org > mail.eml
-    /* write your mail on 'mail.eml' with your favirote text editor */
+    $ # write your mail on 'mail.eml' with your favirote text editor
     $ ./hkml send mail.eml
 
 For more detail,
@@ -62,11 +62,13 @@ hackermail manifest file describes from where in the internet the mails you
 want to read can be fetched, name of the mailing lists archived in the site,
 and the site-relative path to the git repositories for each mailing list in
 json format.  It's very similar to that of lore[1].  A sample manifest file for
-the linux kernel mailing lists is located at 'manifests/lore.js'.
+the linux kernel mailing lists is located at 'manifests/lore.js'.  It's
+retrieved from https://lore.kernel.org/manifest.js.gz and modified a little bit
+for hackermail.
 
-You can explicitly set the path using '--manifest' option of relevant
-subcommands.  If it is not specified, hackermail assumes it is placed under the
-working directory in name of 'manifest' and try to find it.
+You can explicitly set the path to the manifest file using '--manifest' option
+of relevant subcommands.  If it is not specified, hackermail assumes it is
+placed under the working directory in name of 'manifest' and try to find it.
 
 [1] https://www.kernel.org/lore.html
 
