@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import base64
 import datetime
 import json
 import os
@@ -113,6 +114,10 @@ class Mail:
                 continue
             break
         parsed['body'] = '\n'.join(mbox_lines[idx:])
+
+        encoding_key = 'Content-Transfer-Encoding'
+        if encoding_key in parsed and parsed[encoding_key] == 'base64':
+            parsed['body'] = base64.b64decode(parsed['body']).decode()
 
         self.__mbox_parsed = parsed
 
