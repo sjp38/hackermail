@@ -52,7 +52,7 @@ class Mail:
             self.tags.append('reply')
             self.orig_subject = ' '.join(subject_fields[re_depth:])
 
-        if self.orig_subject[0] == '[':
+        if len(self.orig_subject) > 0 and self.orig_subject[0] == '[':
             tag = self.orig_subject[1:].split(']')[0].strip().lower()
             self.tags += tag.split()
 
