@@ -115,7 +115,7 @@ class Mail:
             break
         parsed['body'] = '\n'.join(mbox_lines[idx:])
 
-        encoding_key = 'Content-Transfer-Encoding'
+        encoding_key = 'Content-Transfer-Encoding'.lower()
         if encoding_key in parsed and parsed[encoding_key] == 'base64':
             parsed['body'] = base64.b64decode(parsed['body']).decode()
 
