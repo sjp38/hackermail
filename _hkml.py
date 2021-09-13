@@ -117,7 +117,10 @@ class Mail:
 
         encoding_key = 'Content-Transfer-Encoding'.lower()
         if encoding_key in parsed and parsed[encoding_key] == 'base64':
-            parsed['body'] = base64.b64decode(parsed['body']).decode()
+            try:
+                parsed['body'] = base64.b64decode(parsed['body']).decode()
+            except:
+                pass
 
         self.__mbox_parsed = parsed
 
