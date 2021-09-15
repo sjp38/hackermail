@@ -122,6 +122,11 @@ class Mail:
             except:
                 pass
 
+        if 'date' in parsed:
+            tokens = parsed['date'].split()
+            if tokens[-2:] == ['[thread', 'overview]']:
+                parsed['date'] = ' '.join(tokens[:-2])
+
         self.__mbox_parsed = parsed
 
 __hkml_dir = None
