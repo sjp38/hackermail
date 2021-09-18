@@ -326,7 +326,7 @@ def set_argparser(parser=None):
             help='fetch body of mail from the lore')
     parser.add_argument('--stat', action='store_true',
             help='show stat of the mails')
-    parser.add_argument('--no_pager', action='store_true',
+    parser.add_argument('--stdout', action='store_true',
             help='print to stdout instead of using the pager')
 
 def main(args=None):
@@ -363,7 +363,7 @@ def main(args=None):
     mails_to_show = filter_mails(args.manifest, args.mlist, args.since,
             [args.show, args.hide], args.msgid, args.author, args.contains)
 
-    if not args.no_pager:
+    if not args.stdout:
         orig_stdout = sys.stdout
         fd, tmp_path = tempfile.mkstemp(prefix='hackermail')
         tmp_file = open(tmp_path, 'w')
@@ -371,7 +371,7 @@ def main(args=None):
 
     show_mails(mails_to_show, args.stat)
 
-    if not args.no_pager:
+    if not args.stdout:
         sys.stdout = orig_stdout
         tmp_file.close()
         os.close(fd)
