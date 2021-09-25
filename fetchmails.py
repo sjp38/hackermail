@@ -10,7 +10,7 @@ def get_epoch_from_git_path(git_path):
     # git_path is, e.g., '.../0.git'
     return int(git_path.split('/')[-1].split('.git')[0])
 
-def fetch_mail(manifest_file, mail_lists, quiet=False, recent_only=False):
+def fetch_mail(manifest_file, mail_lists, quiet=False, epochs=1):
     manifest = _hkml.get_manifest(manifest_file)
     if not manifest:
         print('Cannot open manifest file (%s)' % manifest_file)
@@ -18,11 +18,10 @@ def fetch_mail(manifest_file, mail_lists, quiet=False, recent_only=False):
 
     site = manifest['site']
     for mlist in mail_lists:
-        repo_paths = _hkml.mail_list_repo_paths(mlist, manifest)
-        local_paths = _hkml.mail_list_data_paths(mlist, manifest)
-        if recent_only:
-            repo_paths = [sorted(repo_paths, key=get_epoch_from_git_path)[-1]]
-            local_paths = [sorted(local_paths, key=get_epoch_from_git_path)[-1]]
+        repo_paths = sorted(_hkml.mail_list_repo_paths(mlist, manifest),
+                key=get_epoch_from_git_path)[-1 * epochs:]
+        local_paths = sorted(_hkml.mail_list_data_paths(mlist, manifest),
+                key=get_epoch_from_git_path)[-1 * epochs:]
 
         for idx, repo_path in enumerate(repo_paths):
             git_url = '%s%s' % (site, repo_path)
@@ -48,8 +47,8 @@ def set_argparser(parser):
     _hkml.set_manifest_mlist_options(parser, mlist_nargs='*')
     parser.add_argument('--quiet', '-q', default=False, action='store_true',
             help='Work silently.')
-    parser.add_argument('--all_epochs', action='store_true',
-            help='Fetch all epochs of the mailing lists')
+    parser.add_argument('--epochs', type=int, default=1,
+            help='Number of last epochs to fetch (0 for all)')
 
 def main(args=None):
     if not args:
@@ -65,7 +64,7 @@ def main(args=None):
         print('mail lists to fetch is not specified')
         exit(1)
     quiet = args.quiet
-    fetch_mail(manifest_file, mail_lists, quiet, args.all_epochs == False)
+    fetch_mail(manifest_file, mail_lists, quiet, args.epochs)
 
 if __name__ == '__main__':
     main()
