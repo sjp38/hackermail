@@ -48,8 +48,8 @@ def set_argparser(parser):
     _hkml.set_manifest_mlist_options(parser, mlist_nargs='*')
     parser.add_argument('--quiet', '-q', default=False, action='store_true',
             help='Work silently.')
-    parser.add_argument('--recent_only', action='store_true',
-            help='Fetch recent mails only')
+    parser.add_argument('--all_epochs', action='store_true',
+            help='Fetch all epochs of the mailing lists')
 
 def main(args=None):
     if not args:
@@ -65,7 +65,7 @@ def main(args=None):
         print('mail lists to fetch is not specified')
         exit(1)
     quiet = args.quiet
-    fetch_mail(manifest_file, mail_lists, quiet, args.recent_only)
+    fetch_mail(manifest_file, mail_lists, quiet, args.all_epochs == False)
 
 if __name__ == '__main__':
     main()
