@@ -41,7 +41,7 @@ def fetch_mail(manifest_file, mail_lists, quiet=False, recent_only=False):
 def fetched_mail_lists():
     archive_dir = os.path.join(_hkml.get_hkml_dir(), 'archives')
     mail_dirs = _hkml.cmd_lines_output(['ls', archive_dir])
-    return [x for x in mail_dirs if os.path.isdir(
+    return [x for x in mail_dirs if x != '' and os.path.isdir(
         os.path.join(archive_dir, x))]
 
 def set_argparser(parser):
@@ -61,6 +61,9 @@ def main(args=None):
     manifest_file = args.manifest
     if not mail_lists:
         mail_lists = fetched_mail_lists()
+    if not mail_lists:
+        print('mail lists to fetch is not specified')
+        exit(1)
     quiet = args.quiet
     fetch_mail(manifest_file, mail_lists, quiet, args.recent_only)
 
