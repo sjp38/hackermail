@@ -154,9 +154,12 @@ def set_hkml_dir(path=None):
     if home_dir and os.path.exists(home_dir):
         __hkml_dir = home_dir
     if not __hkml_dir:
-        sys.stderr.write("Couldn't get hkml dir;\n")
-        sys.stderr.write("Tried '%s', '%s', '%s' and '%s'\n" %
-                (env_dir, cwd_dir, bin_dir, home_dir))
+        sys.stderr.write('hkml metadata directory is not found from\n')
+        sys.stderr.write('    \'$HKML_DIR\' (%s),\n' % env_dir)
+        sys.stderr.write('    current directory (%s),\n' % cwd_dir)
+        sys.stderr.write('    \'hkml\' binary directory (%s), and\n' % cwd_dir)
+        sys.stderr.write('    your home directory (%s)\n' % cwd_dir)
+        sys.stderr.write('have you forgot running \'hkml init\'?\n')
         exit(1)
 
 def get_hkml_dir():
