@@ -19,9 +19,9 @@ def fetch_mail(manifest_file, mail_lists, quiet=False, epochs=1):
     site = manifest['site']
     for mlist in mail_lists:
         repo_paths = sorted(_hkml.mail_list_repo_paths(mlist, manifest),
-                key=get_epoch_from_git_path)[-1 * epochs:]
+                key=get_epoch_from_git_path, reverse=True)[:epochs]
         local_paths = sorted(_hkml.mail_list_data_paths(mlist, manifest),
-                key=get_epoch_from_git_path)[-1 * epochs:]
+                key=get_epoch_from_git_path, reverse=True)[:epochs]
 
         for idx, repo_path in enumerate(repo_paths):
             git_url = '%s%s' % (site, repo_path)
@@ -48,7 +48,7 @@ def set_argparser(parser):
     parser.add_argument('--quiet', '-q', default=False, action='store_true',
             help='Work silently.')
     parser.add_argument('--epochs', type=int, default=1,
-            help='Number of last epochs to fetch (0 for all)')
+            help='Minimum number of last epochs to fetch')
 
 def main(args=None):
     if not args:
