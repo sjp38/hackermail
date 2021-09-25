@@ -238,9 +238,14 @@ def git_log_output_line_to_mail(line, mdir, keyword):
         return None
     return mail
 
+def get_epoch_from_git_path(git_path):
+    # git_path is, e.g., '.../0.git'
+    return int(git_path.split('/')[-1].split('.git')[0])
+
 def get_mails_from_git(manifest, mail_list, since, author, keyword):
     lines = []
-    mdirs = _hkml.mail_list_data_paths(mail_list, manifest)
+    mdirs = sorted(_hkml.mail_list_data_paths(mail_list, manifest),
+            key=get_epoch_from_git_path, reverse=True)
     if not mdirs:
         print("Mailing list '%s' in manifest '%s' not found." % (
             mail_list, manifest_file))
@@ -248,6 +253,8 @@ def get_mails_from_git(manifest, mail_list, since, author, keyword):
 
     mails = []
     for mdir in mdirs:
+        if not os.path.isdir(mdir):
+            break
         cmd = ['git', '--git-dir=%s' % mdir, 'log',
                 '--date=iso-strict', '--pretty=%h %ad %s',
                 '--since=%s' % since]
