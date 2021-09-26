@@ -6,10 +6,6 @@ import subprocess
 
 import _hkml
 
-def get_epoch_from_git_path(git_path):
-    # git_path is, e.g., '.../0.git'
-    return int(git_path.split('/')[-1].split('.git')[0])
-
 def fetch_mail(manifest_file, mail_lists, quiet=False, epochs=1):
     manifest = _hkml.get_manifest(manifest_file)
     if not manifest:
@@ -18,10 +14,8 @@ def fetch_mail(manifest_file, mail_lists, quiet=False, epochs=1):
 
     site = manifest['site']
     for mlist in mail_lists:
-        repo_paths = sorted(_hkml.mail_list_repo_paths(mlist, manifest),
-                key=get_epoch_from_git_path, reverse=True)[:epochs]
-        local_paths = sorted(_hkml.mail_list_data_paths(mlist, manifest),
-                key=get_epoch_from_git_path, reverse=True)[:epochs]
+        repo_paths = _hkml.mail_list_repo_paths(mlist, manifest)[:epochs]
+        local_paths = _hkml.mail_list_data_paths(mlist, manifest)[:epochs]
 
         for idx, repo_path in enumerate(repo_paths):
             git_url = '%s%s' % (site, repo_path)

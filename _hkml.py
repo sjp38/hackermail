@@ -178,19 +178,32 @@ def get_manifest(manifest_file):
         return None
     return manifest
 
+def __get_epoch_from_git_path(git_path):
+    # git_path is, e.g., '.../0.git'
+    return int(os.path.basename(git_path).split('.git')[0])
+
 def mail_list_repo_paths(mail_list, manifest):
+    '''Returns git trees in the manifest for the given mailing lists.
+
+    Note that the paths are sorted by the epochs of the git trees in
+    descsending order.'''
     paths = []
     for path in manifest:
         if path.startswith('/%s/' % mail_list):
             paths.append(path)
-    return paths
+    return sorted(paths, key=__get_epoch_from_git_path, reverse=True)
 
 def mail_list_data_paths(mail_list, manifest):
+    '''Returns git trees in this machine for the given mailing lists.
+
+    Note that the paths are sorted by the epochs of the git trees in
+    descsending order.'''
+
     repo_paths = mail_list_repo_paths(mail_list, manifest)
     mdir_paths = []
     for path in repo_paths:
         mdir_paths.append(os.path.join(get_hkml_dir(), 'archives' + path))
-    return mdir_paths
+    return sorted(mdir_paths, key=__get_epoch_from_git_path, reverse=True)
 
 def set_manifest_option(parser):
     parser.add_argument('--manifest', metavar='<file>', type=str,
