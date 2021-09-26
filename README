@@ -12,10 +12,10 @@ archives.  Linux Kernel Mailing Lists (LKML)[2] are good examples.
 [2] https://www.kernel.org/lore.html
 
 
-Quick Start
-===========
+Quick Tutorials
+===============
 
-List mailis in linux-mm mailing list which are sent within last three days:
+List mails in linux-mm mailing list which were sent within last three days:
 
     $ ./hkml init
     $ ./hkml fetch --manifest ./manifests/lore.js linux-mm
@@ -29,7 +29,7 @@ Send a reply to the mail:
 
     $ ./hkml ls linux-mm --manifest ./manifests/lore.js --range 5 > orig.eml
     $ ./hkml format_reply orig.eml > reply.eml
-    $ # Write your reply on 'reply.eml' with your favorite text editor
+    $ # Write your reply in 'reply.eml' with your favorite text editor
     $ ./hkml send reply.eml
 
 Write a mail to the mailing list:
@@ -47,12 +47,13 @@ Working Directory
 =================
 
 Hackermail needs a directory to save the fetched mails and its metadata.  You
-may think this as something similar to .git directory of git.
+may think this as something similar to '.git' directory of git.
 
-You can explicitly set the path using 'HKML_DIR' environment variable or
-'--hkml_dir' command option.  If the path is not specified, hackermail assumes
-the directory is named as '.hkm' and placed under current directory, the hkml
-executable file placed directory, or your home directory and try to find it.
+You can explicitly set the path to the directory using 'HKML_DIR' environment
+variable, or '--hkml_dir' command option.  If the path is not specified,
+hackermail assumes the directory is named as '.hkm' and placed under current
+directory, the 'hkml' executable file placed directory, or your home directory
+and try to find it.
 
 
 Manifest File
