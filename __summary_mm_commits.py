@@ -16,18 +16,30 @@ def main():
         mails.append(mail)
 
     added = []
+    removed = []
     for mail in mails:
         tokens = mail.split()[2:]
         if len(tokens) < 9:
             continue
         symbol = tokens[0]
         patch = tokens[1]
-        action = tokens[2:5]
-        if action == ['added', 'to', '-mm']:
+        action = tokens[2:6]
+        if action == ['added', 'to', '-mm', 'tree']:
             added.append(patch)
+        if action == ['removed' 'from', '-mm', 'tree']:
+            removed.append(patch)
 
     print('added patches')
+    print('-------------')
+    print()
     for patch in added:
+        print(patch)
+
+    print()
+    print('removed patches')
+    print('---------------')
+    print()
+    for patch in removed:
         print(patch)
 
 if __name__ == '__main__':
