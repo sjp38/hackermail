@@ -42,5 +42,8 @@ def main():
     for patch in removed:
         print(patch)
 
+    print()
+    print('%d added, %d removed' % (len(added), len(removed)))
+
 if __name__ == '__main__':
     main()
