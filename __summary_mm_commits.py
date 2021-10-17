@@ -22,7 +22,7 @@ def main():
         if len(tokens) < 9:
             continue
         symbol = tokens[0]
-        patch = tokens[1]
+        patch = tokens[1].split('.patch')[0]
         action = tokens[2:6]
         if action == ['added', 'to', '-mm', 'tree']:
             added.append(patch)
