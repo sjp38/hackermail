@@ -2,6 +2,20 @@
 
 import sys
 
+'''
+mails to parse
+
+incoming
+mmotm 2021-10-05-19-53 uploaded
++ mm-damon-dbgfs-support-physical-memory-monitoring.patch added to -mm tree
+[to-be-updated] aa-bbb-ccc-blah.patch removed from -mm tree
+[obsolete] aaa.patch removed from -mm tree
+[withdrawn] blah-blah.patch removed from -mm tree
+[nacked] memblock-neaten-logging.patch removed from -mm tree
+[folded-merged] aa-bb-cc.patch removed from -mm tree
+[merged] aa-bb-cc.patch removed from -mm tree
+'''
+
 def main():
     msg = sys.stdin.read()
     mails = []
