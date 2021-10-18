@@ -33,9 +33,8 @@ def fetch_mail(manifest_file, mail_lists, quiet=False, epochs=1):
 
 def fetched_mail_lists():
     archive_dir = os.path.join(_hkml.get_hkml_dir(), 'archives')
-    mail_dirs = _hkml.cmd_lines_output(['ls', archive_dir])
-    return [x for x in mail_dirs if x != '' and os.path.isdir(
-        os.path.join(archive_dir, x))]
+    return [d for d in os.listdir(archive_dir)
+            if os.path.isdir(os.path.join(archive_dir, d))]
 
 def set_argparser(parser):
     _hkml.set_manifest_mlist_options(parser, mlist_nargs='*')
