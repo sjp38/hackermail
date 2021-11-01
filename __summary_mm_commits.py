@@ -30,6 +30,16 @@ expected inputs are for example:
               msgs)
 '''
 
+class MmCommits:
+    date = None
+    action = None
+    patch_title = None
+
+    def __init__(self, date, action, patch_title):
+        self.date = date
+        self.action = action
+        self.patch_title = patch_title
+
 def parse_mails(msg, print_each):
     mails = []
     mail = ''
@@ -43,9 +53,14 @@ def parse_mails(msg, print_each):
         mails.append(mail)
 
     added = []
-    removed = {}
+    removed = []
+    actions = {}
     for mail in mails:
-        tokens = mail.split()[2:]
+        tokens = mail.split()
+        if len(tokens) < 2:
+            continue
+        date = tokens[1]
+        tokens = tokens[2:]
         if len(tokens) < 9:
             continue
         tag = tokens[0]
@@ -54,29 +69,30 @@ def parse_mails(msg, print_each):
         if tag == '+' and action == 'added to -mm tree':
             if print_each:
                 print(mail)
-            added.append(patch)
+            added.append(MmCommits(date, 'added', patch))
+            actions['added'] = True
         if action == 'removed from -mm tree':
             if print_each:
                 print(mail)
-            if not tag in removed:
-                removed[tag] = []
-            removed[tag].append(patch)
-    return added, removed
+            removed.append(MmCommits(date, tag, patch))
+            actions[tag] = True
+    return added, removed, actions
 
-def pr_parsed_changes(added, removed):
+def pr_parsed_changes(added, removed, actions):
     print('added patches')
     print('-------------')
     print()
-    for patch in added:
-        print(patch)
+    for commit in added:
+        print(commit.patch_title)
 
     print()
     print('removed patches')
     print('---------------')
     print()
-    for tag in removed:
-        for patch in removed[tag]:
-            print('%s %s' % (tag, patch))
+    for action in actions:
+        commits = [x for x in removed if x.action == action]
+        for commit in commits:
+            print('%s %s' % (commit.action, commit.patch_title))
 
 def main():
     parser = argparse.ArgumentParser()
@@ -84,16 +100,13 @@ def main():
             help='Print mm patch insertion/deletion in time line')
     args = parser.parse_args()
 
-    added, removed = parse_mails(sys.stdin.read(), args.in_time)
+    added, removed, actions = parse_mails(sys.stdin.read(), args.in_time)
 
     if not args.in_time:
-        pr_parsed_changes(added, removed)
+        pr_parsed_changes(added, removed, actions)
 
-    nr_removes = 0
-    for tag in removed:
-        nr_removes += len(removed[tag])
     print()
-    print('%d added, %d removed' % (len(added), nr_removes))
+    print('%d added, %d removed' % (len(added), len(removed)))
 
 if __name__ == '__main__':
     main()
