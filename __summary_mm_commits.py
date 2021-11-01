@@ -30,13 +30,7 @@ expected inputs are for example:
               msgs)
 '''
 
-def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--in_time', action='store_true',
-            help='Print mm patch insertion/deletion in time line')
-    args = parser.parse_args()
-
-    msg = sys.stdin.read()
+def parse_mails(msg, print_each):
     mails = []
     mail = ''
     for line in msg.split('\n'):
@@ -58,30 +52,42 @@ def main():
         patch = tokens[1].split('.patch')[0]
         action = ' '.join(tokens[2:6])
         if tag == '+' and action == 'added to -mm tree':
-            if args.in_time:
+            if print_each:
                 print(mail)
             added.append(patch)
         if action == 'removed from -mm tree':
-            if args.in_time:
+            if print_each:
                 print(mail)
             if not tag in removed:
                 removed[tag] = []
             removed[tag].append(patch)
+    return added, removed
+
+def pr_parsed_changes(added, removed):
+    print('added patches')
+    print('-------------')
+    print()
+    for patch in added:
+        print(patch)
+
+    print()
+    print('removed patches')
+    print('---------------')
+    print()
+    for tag in removed:
+        for patch in removed[tag]:
+            print('%s %s' % (tag, patch))
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--in_time', action='store_true',
+            help='Print mm patch insertion/deletion in time line')
+    args = parser.parse_args()
+
+    added, removed = parse_mails(sys.stdin.read(), args.in_time)
 
     if not args.in_time:
-        print('added patches')
-        print('-------------')
-        print()
-        for patch in added:
-            print(patch)
-
-        print()
-        print('removed patches')
-        print('---------------')
-        print()
-        for tag in removed:
-            for patch in removed[tag]:
-                print('%s %s' % (tag, patch))
+        pr_parsed_changes(added, removed)
 
     nr_removes = 0
     for tag in removed:
