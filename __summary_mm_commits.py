@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import argparse
 import sys
 
 '''
@@ -17,6 +18,11 @@ mmotm 2021-10-05-19-53 uploaded
 '''
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--in_time', action='store_true',
+            help='Print mm patch insertion/deletion in time line')
+    args = parser.parse_args()
+
     msg = sys.stdin.read()
     mails = []
     mail = ''
@@ -39,25 +45,30 @@ def main():
         patch = tokens[1].split('.patch')[0]
         action = ' '.join(tokens[2:6])
         if tag == '+' and action == 'added to -mm tree':
+            if args.in_time:
+                print(mail)
             added.append(patch)
         if action == 'removed from -mm tree':
+            if args.in_time:
+                print(mail)
             if not tag in removed:
                 removed[tag] = []
             removed[tag].append(patch)
 
-    print('added patches')
-    print('-------------')
-    print()
-    for patch in added:
-        print(patch)
+    if not args.in_time:
+        print('added patches')
+        print('-------------')
+        print()
+        for patch in added:
+            print(patch)
 
-    print()
-    print('removed patches')
-    print('---------------')
-    print()
-    for tag in removed:
-        for patch in removed[tag]:
-            print('%s %s' % (tag, patch))
+        print()
+        print('removed patches')
+        print('---------------')
+        print()
+        for tag in removed:
+            for patch in removed[tag]:
+                print('%s %s' % (tag, patch))
 
     nr_removes = 0
     for tag in removed:
