@@ -40,7 +40,7 @@ class MmCommits:
         self.action = action
         self.patch_title = patch_title
 
-def parse_mails(msg, print_each):
+def parse_mails(msg):
     mails = []
     mail = ''
     for line in msg.split('\n'):
@@ -67,13 +67,9 @@ def parse_mails(msg, print_each):
         patch = tokens[1].split('.patch')[0]
         action = ' '.join(tokens[2:6])
         if tag == '+' and action == 'added to -mm tree':
-            if print_each:
-                print(mail)
             added.append(MmCommits(date, 'added', patch))
             actions['added'] = True
         if action == 'removed from -mm tree':
-            if print_each:
-                print(mail)
             removed.append(MmCommits(date, tag, patch))
             actions[tag] = True
     return added, removed, actions
@@ -119,16 +115,13 @@ def pr_parsed_changes(added, removed, actions, daily):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--in_time', action='store_true',
-            help='Print mm patch insertion/deletion in time line')
     parser.add_argument('--daily', action='store_true',
             help='Print daily')
     args = parser.parse_args()
 
-    added, removed, actions = parse_mails(sys.stdin.read(), args.in_time)
+    added, removed, actions = parse_mails(sys.stdin.read())
 
-    if not args.in_time:
-        pr_parsed_changes(added, removed, actions, args.daily)
+    pr_parsed_changes(added, removed, actions, args.daily)
 
 if __name__ == '__main__':
     main()
