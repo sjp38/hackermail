@@ -15,6 +15,19 @@ mmotm 2021-10-05-19-53 uploaded
 [nacked] memblock-neaten-logging.patch removed from -mm tree
 [folded-merged] aa-bb-cc.patch removed from -mm tree
 [merged] aa-bb-cc.patch removed from -mm tree
+
+expected inputs are for example:
+
+[0000] 10/29  + crash_dump-fix-boolreturncocci-warning.patch added to -mm tree () (0+
+              msgs)
+[0001] 10/29  + crash_dump-remove-duplicate-include-in-crash_dumph.patch added to -mm tree
+              () (0+ msgs)
+[0002] 10/29  + seq_file-fix-passing-wrong-private-data.patch added to -mm tree () (0+
+              msgs)
+[0003] 10/29  + mm-damon-remove-return-value-from-before_terminate-callback.patch added to
+              -mm tree () (0+ msgs)
+[0004] 10/29  + scripts-gdb-handle-split-debug-for-vmlinux.patch added to -mm tree () (0+
+              msgs)
 '''
 
 def main():
