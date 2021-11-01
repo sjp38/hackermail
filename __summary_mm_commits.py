@@ -78,7 +78,7 @@ def parse_mails(msg, print_each):
             actions[tag] = True
     return added, removed, actions
 
-def pr_parsed_changes(added, removed, actions):
+def __pr_parsed_changes(added, removed, actions):
     print('added patches')
     print('-------------')
     print()
@@ -94,19 +94,41 @@ def pr_parsed_changes(added, removed, actions):
         for commit in commits:
             print('%s %s' % (commit.action, commit.patch_title))
 
+    print()
+    print('%d added, %d removed' % (len(added), len(removed)))
+
+def pr_parsed_changes(added, removed, actions, daily):
+    if not daily:
+        __pr_parsed_changes(added, removed, actions)
+
+    days = {}
+    for commit in added + removed:
+        days[commit.date] = True
+
+    for day in sorted(days.keys()):
+        print(day)
+        print('=' * len(day))
+        print()
+        daily_added = [x for x in added if x.date == day]
+        daily_removed = [x for x in removed if x.date == day]
+        daily_actions = {}
+        for c in daily_removed:
+            daily_actions[c.action] = True
+        __pr_parsed_changes(daily_added, daily_removed, daily_actions)
+        print()
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--in_time', action='store_true',
             help='Print mm patch insertion/deletion in time line')
+    parser.add_argument('--daily', action='store_true',
+            help='Print daily')
     args = parser.parse_args()
 
     added, removed, actions = parse_mails(sys.stdin.read(), args.in_time)
 
     if not args.in_time:
-        pr_parsed_changes(added, removed, actions)
-
-    print()
-    print('%d added, %d removed' % (len(added), len(removed)))
+        pr_parsed_changes(added, removed, actions, args.daily)
 
 if __name__ == '__main__':
     main()
