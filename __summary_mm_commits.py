@@ -96,6 +96,7 @@ def __pr_parsed_changes(added, removed, actions):
 def pr_parsed_changes(added, removed, actions, daily):
     if not daily:
         __pr_parsed_changes(added, removed, actions)
+        return
 
     days = {}
     for commit in added + removed:
