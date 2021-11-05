@@ -116,13 +116,13 @@ def pr_parsed_changes(added, removed, actions, daily):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--daily', action='store_true',
-            help='Print daily')
+    parser.add_argument('--total', action='store_true',
+            help='Print in total, not daily')
     args = parser.parse_args()
 
     added, removed, actions = parse_mails(sys.stdin.read())
 
-    pr_parsed_changes(added, removed, actions, args.daily)
+    pr_parsed_changes(added, removed, actions, not args.total)
 
 if __name__ == '__main__':
     main()
