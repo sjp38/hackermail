@@ -9,6 +9,7 @@ import tempfile
 import time
 
 import _hkml
+import fetchmails
 
 new_threads_only = False
 descend = False
@@ -330,6 +331,8 @@ def set_argparser(parser=None):
             help='show stat of the mails')
     parser.add_argument('--stdout', action='store_true',
             help='print to stdout instead of using the pager')
+    parser.add_argument('--fetch', action='store_true',
+            help='fetch mails before listing')
 
 def main(args=None):
     global new_threads_only
@@ -347,6 +350,11 @@ def main(args=None):
         parser = argparse.ArgumentParser()
         set_argparser(parser)
         args = parser.parse_args()
+
+    if args.fetch:
+        args.quiet = False
+        args.epochs=1
+        fetchmails.main(args)
 
     new_threads_only = args.new
     collapse_threads = args.collapse
