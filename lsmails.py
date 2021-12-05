@@ -380,9 +380,10 @@ def main(args=None):
             args.quiet = False
             args.epochs=1
             fetchmails.main(args)
+            args.mlist = args.mlist[0]
 
 
-        mails_to_show = filter_mails(args.manifest, args.mlist[0], args.since,
+        mails_to_show = filter_mails(args.manifest, args.mlist, args.since,
                 [args.show, args.hide], args.msgid, args.author, args.contains)
 
         if not args.stdout:
