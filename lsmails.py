@@ -333,6 +333,8 @@ def set_argparser(parser=None):
             help='print to stdout instead of using the pager')
     parser.add_argument('--fetch', action='store_true',
             help='fetch mails before listing')
+    parser.add_argument('--live', action='store_true',
+            help='continuously fetch and show the mails')
 
 def main(args=None):
     global new_threads_only
@@ -351,10 +353,9 @@ def main(args=None):
         set_argparser(parser)
         args = parser.parse_args()
 
-    if args.fetch:
-        args.quiet = False
-        args.epochs=1
-        fetchmails.main(args)
+    if args.live:
+        args.fetch = True
+        args.stdout = True
 
     new_threads_only = args.new
     collapse_threads = args.collapse
@@ -379,7 +380,16 @@ def main(args=None):
         tmp_file = open(tmp_path, 'w')
         sys.stdout = tmp_file
 
-    show_mails(mails_to_show, args.stat)
+    while True:
+        if args.fetch:
+            args.quiet = False
+            args.epochs=1
+            fetchmails.main(args)
+
+        show_mails(mails_to_show, args.stat)
+        if not args.live:
+            break
+        time.sleep(5)
 
     if not args.stdout:
         sys.stdout = orig_stdout
