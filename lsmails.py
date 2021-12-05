@@ -373,15 +373,6 @@ def main(args=None):
     if len(ls_range) == 1:
         ls_range.append(1)
 
-    mails_to_show = filter_mails(args.manifest, args.mlist, args.since,
-            [args.show, args.hide], args.msgid, args.author, args.contains)
-
-    if not args.stdout:
-        orig_stdout = sys.stdout
-        fd, tmp_path = tempfile.mkstemp(prefix='hackermail')
-        tmp_file = open(tmp_path, 'w')
-        sys.stdout = tmp_file
-
     repeated = 0
     while True:
         if args.fetch:
@@ -389,6 +380,16 @@ def main(args=None):
             args.quiet = False
             args.epochs=1
             fetchmails.main(args)
+
+
+        mails_to_show = filter_mails(args.manifest, args.mlist[0], args.since,
+                [args.show, args.hide], args.msgid, args.author, args.contains)
+
+        if not args.stdout:
+            orig_stdout = sys.stdout
+            fd, tmp_path = tempfile.mkstemp(prefix='hackermail')
+            tmp_file = open(tmp_path, 'w')
+            sys.stdout = tmp_file
 
         show_mails(mails_to_show, args.stat)
         repeated += 1
