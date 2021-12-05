@@ -385,6 +385,7 @@ def main(args=None):
     repeated = 0
     while True:
         if args.fetch:
+            args.mlist = [args.mlist]
             args.quiet = False
             args.epochs=1
             fetchmails.main(args)
