@@ -333,8 +333,9 @@ def set_argparser(parser=None):
             help='print to stdout instead of using the pager')
     parser.add_argument('--fetch', action='store_true',
             help='fetch mails before listing')
-    parser.add_argument('--live', action='store_true',
-            help='continuously fetch and show the mails')
+    parser.add_argument('--repeat', metavar='<int>', type=int, nargs=2,
+            default=[0, 1],
+            help='delay (seconds) and count for repeated runs')
 
 def main(args=None):
     global new_threads_only
@@ -353,10 +354,6 @@ def main(args=None):
         set_argparser(parser)
         args = parser.parse_args()
 
-    if args.live:
-        args.fetch = True
-        args.stdout = True
-
     new_threads_only = args.new
     collapse_threads = args.collapse
     open_mail = args.open
@@ -367,6 +364,11 @@ def main(args=None):
     ls_range = args.range
     show_thread_of = args.thread
     descend = args.descend
+    repeat_delay, repeat_count = args.repeat
+
+    if repeat_count > 1:
+        args.fetch = True
+        args.stdout = True
 
     if len(ls_range) == 1:
         ls_range.append(1)
@@ -380,6 +382,7 @@ def main(args=None):
         tmp_file = open(tmp_path, 'w')
         sys.stdout = tmp_file
 
+    repeated = 0
     while True:
         if args.fetch:
             args.quiet = False
@@ -387,9 +390,10 @@ def main(args=None):
             fetchmails.main(args)
 
         show_mails(mails_to_show, args.stat)
-        if not args.live:
+        repeated += 1
+        if repeated >= args.repeat[1]:
             break
-        time.sleep(5)
+        time.sleep(args.repeat[0])
 
     if not args.stdout:
         sys.stdout = orig_stdout
