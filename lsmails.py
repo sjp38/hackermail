@@ -394,9 +394,9 @@ def main(args=None):
 
         show_mails(mails_to_show, args.stat)
         repeated += 1
-        if repeated >= args.repeat[1]:
+        if repeated >= repeat_count:
             break
-        time.sleep(args.repeat[0])
+        time.sleep(repeat_delay)
 
     if not args.stdout:
         sys.stdout = orig_stdout
