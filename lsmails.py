@@ -366,7 +366,7 @@ def main(args=None):
     descend = args.descend
     repeat_delay, repeat_count = args.repeat
 
-    if repeat_count > 1:
+    if repeat_count != 1:
         args.fetch = True
         args.stdout = True
 
@@ -394,7 +394,7 @@ def main(args=None):
 
         show_mails(mails_to_show, args.stat)
         repeated += 1
-        if repeated >= repeat_count:
+        if repeat_count != 0 and repeated >= repeat_count:
             break
         time.sleep(repeat_delay)
 
