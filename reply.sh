@@ -12,6 +12,13 @@ echo
 read -rp "Will send above mail.  Okay? [y/N] " answer
 if [ ! "$answer" = "y" ]
 then
+	read -rp "Leave the reply message? [Y/n] " answer
+	if [ "$answer" = "n" ]
+	then
+		rm "$reply_file"
+	else
+		echo "your reply message is at $reply_file"
+	fi
 	exit
 fi
 
