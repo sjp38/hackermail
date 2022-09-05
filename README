@@ -71,7 +71,7 @@ to be used for hackermail, as below.
     $ gzip -d manifest.js.gz
     $ ./hkml manifest convert_public_inbox_manifest \
                     --public_inbox_manifest ./manifest.js \
-                    --site https://lore.kernel.org > manifest/lore.js
+                    --site https://lore.kernel.org > manifests/lore.js
 
 You can explicitly set the path to the manifest file using '--manifest' option
 of relevant subcommands.  If it is not specified, hackermail assumes it is
