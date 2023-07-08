@@ -65,13 +65,15 @@ and the site-relative path to the git repositories for each mailing list in
 json format.  It's very similar to that of lore[1].  A sample manifest file for
 the linux kernel mailing lists is located at 'manifests/lore.js'.  It's
 retrieved from https://lore.kernel.org/manifest.js.gz and modified a little bit
-to be used for hackermail, as below.
+to be used for hackermail, as below.  Instead of manually typing below
+commands, you can also use 'update_lore_manifest.sh'.
 
     $ wget https://lore.kernel.org/manifest.js.gz
     $ gzip -d manifest.js.gz
     $ ./hkml manifest convert_public_inbox_manifest \
                     --public_inbox_manifest ./manifest.js \
                     --site https://lore.kernel.org > manifests/lore.js
+
 
 You can explicitly set the path to the manifest file using '--manifest' option
 of relevant subcommands.  If it is not specified, hackermail assumes it is
