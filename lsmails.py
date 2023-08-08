@@ -230,16 +230,19 @@ def filter_tags(mail, tags):
             return False
     return True
 
-def git_log_output_line_to_mail(line, mdir, keyword):
+def git_log_output_line_to_mail(line, mdir, subject_keyword, body_keyword):
     fields = line.split()
     if len(fields) < 3:
         return None
     mail = _hkml.Mail.from_gitlog(fields[0], mdir, fields[1], fields[2:])
-    if keyword and not keyword in mail.get_field('body'):
+    if subject_keyword and not subject_keyword in mail.get_field('subject'):
+        return None
+    if body_keyword and not body_keyword in mail.get_field('body'):
         return None
     return mail
 
-def get_mails_from_git(manifest, mail_list, since, author, keyword):
+def get_mails_from_git(manifest, mail_list, since, author, subject_keyword,
+        body_keyword):
     lines = []
     mdirs = _hkml.mail_list_data_paths(mail_list, manifest)
     if not mdirs:
@@ -259,18 +262,21 @@ def get_mails_from_git(manifest, mail_list, since, author, keyword):
         lines = _hkml.cmd_lines_output(cmd)
 
         for line in lines:
-            mail = git_log_output_line_to_mail(line, mdir, keyword)
+            mail = git_log_output_line_to_mail(line, mdir, subject_keyword,
+                    body_keyword)
             if mail:
                 mails.append(mail)
     return mails
 
-def filter_mails(manifest, mail_list, since, tags, msgid, author, keyword):
+def filter_mails(manifest, mail_list, since, tags, msgid, author,
+        subject_keyword, body_keyword):
     manifest = _hkml.get_manifest(manifest)
     if not manifest:
         print('Cannot open manifest file')
         exit(1)
 
-    mails = get_mails_from_git(manifest, mail_list, since, author, keyword)
+    mails = get_mails_from_git(manifest, mail_list, since, author,
+            subject_keyword, body_keyword)
 
     mails_to_show = []
     for mail in mails:
@@ -302,6 +308,8 @@ def set_argparser(parser=None):
             help='show only the mail of the message id')
     parser.add_argument('--author', metavar='<name or email>', type=str,
             help='show only mails from the author')
+    parser.add_argument('--subject_contains', metavar='<words>', type=str,
+            help='list mails containing the keyword in their subject')
     parser.add_argument('--contains', metavar='<keyword>', type=str,
             help='list mails containing the keyword in their body')
 
@@ -384,7 +392,8 @@ def main(args=None):
 
 
         mails_to_show = filter_mails(args.manifest, args.mlist, args.since,
-                [args.show, args.hide], args.msgid, args.author, args.contains)
+                [args.show, args.hide], args.msgid, args.author,
+                args.subject_contains, args.contains)
 
         if not args.stdout:
             orig_stdout = sys.stdout
