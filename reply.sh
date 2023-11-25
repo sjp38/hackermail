@@ -4,7 +4,7 @@ bindir=$(dirname "$0")
 
 reply_file=$(mktemp hkml-reply-XXXX)
 
-xclip -o | "$bindir/hkml" format_reply > "$reply_file"
+xclip -o -sel clip | "$bindir/hkml" format_reply > "$reply_file"
 vi "$reply_file"
 
 cat "$reply_file"
