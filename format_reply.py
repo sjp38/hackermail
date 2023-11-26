@@ -7,7 +7,7 @@ import sys
 import _hkml
 import format_mail
 
-def format_reply(mail):
+def format_pr_reply(mail):
     subject = mail.get_field('subject')
     if subject and subject.split()[0].lower() != 're:':
         subject = 'Re: %s' % subject
@@ -47,7 +47,7 @@ def main(args=None):
         mbox = _hkml.cmd_str_output(['curl', args.mbox_url])
     else:
         mbox = sys.stdin.read()
-    format_reply(_hkml.Mail.from_mbox(mbox))
+    format_pr_reply(_hkml.Mail.from_mbox(mbox))
 
 if __name__ == '__main__':
     main()
