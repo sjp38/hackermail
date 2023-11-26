@@ -26,26 +26,31 @@ def git_sendemail_valid_recipients(recipients):
     lines[-1] = lines[-1][:-1]
     return '\n'.join(lines)
 
-def format_pr_mbox(subject, in_reply_to, to, cc, body):
+def format_mbox(subject, in_reply_to, to, cc, body):
+    lines = []
     if not subject:
         subject = '/* write subject here */'
     if not to:
         to = ['/* write recipients here */']
     if not cc:
         cc = ['/* wrtite cc recipients here */']
-    print('Subject: %s' % subject)
+    lines.append('Subject: %s' % subject)
     if in_reply_to:
-        print('In-Reply-To: %s' % in_reply_to)
+        lines.append('In-Reply-To: %s' % in_reply_to)
     for addr in to:
         addr = git_sendemail_valid_recipients(addr)
-        print('To: %s' % addr)
+        lines.append('To: %s' % addr)
     for addr in cc:
         addr = git_sendemail_valid_recipients(addr)
-        print('Cc: %s' % addr)
-    print('')
+        lines.append('Cc: %s' % addr)
+    lines.append('')
     if not body:
         body = '/* write your message here (keep the above blank line) */'
-    print(body)
+    lines.append(body)
+    return '\n'.join(lines)
+
+def format_pr_mbox(subject, in_reply_to, to, cc, body):
+    print(format_mbox(subject, in_reply_to, to, cc, body))
 
 def set_argparser(parser=None):
     parser.add_argument('--subject', metavar='<subject>', type=str,
