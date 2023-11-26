@@ -26,7 +26,10 @@ def format_pr_reply(mail):
         body_lines.append('> %s' % line)
     body = '\n'.join(body_lines)
 
-    format_mail.format_pr_mbox(subject, in_reply_to, to, cc, body)
+    return format_mail.format_mbox(subject, in_reply_to, to, cc, body)
+
+def format_pr_reply(mail):
+    print(format_reply(mail))
 
 def set_argparser(parser=None):
     parser.add_argument('mbox_file', metavar='<file>', type=str, nargs='?',
