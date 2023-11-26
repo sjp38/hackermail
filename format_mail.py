@@ -49,9 +49,6 @@ def format_mbox(subject, in_reply_to, to, cc, body):
     lines.append(body)
     return '\n'.join(lines)
 
-def format_pr_mbox(subject, in_reply_to, to, cc, body):
-    print(format_mbox(subject, in_reply_to, to, cc, body))
-
 def set_argparser(parser=None):
     parser.add_argument('--subject', metavar='<subject>', type=str,
             help='Subject of the mail.')
@@ -70,7 +67,8 @@ def main(args=None):
         set_argparser(parser)
         args = parser.parse_args()
 
-    format_pr_mbox(args.subject, args.in_reply_to, args.to, args.cc, args.body)
+    print(format_mbox(args.subject, args.in_reply_to, args.to, args.cc,
+        args.body))
 
 if __name__ == '__main__':
     main()
