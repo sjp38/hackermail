@@ -17,17 +17,17 @@ Quick Tutorials
 
 List mails in linux-mm mailing list which were sent within last three days:
 
-    $ ./hkml init
-    $ ./hkml fetch --manifest ./manifests/lore.js linux-mm
-    $ ./hkml ls linux-mm --manifest ./manifests/lore.js
+    $ ./hkml init --manifest ./manifests/lore.js
+    $ ./hkml fetch linux-mm
+    $ ./hkml ls linux-mm --fetch
 
 Read the content of 5th mail in the list:
 
-    $ ./hkml ls linux-mm --manifest ./manifests/lore.js --range 5
+    $ ./hkml ls linux-mm --range 5
 
 Send a reply to the mail:
 
-    $ ./hkml ls linux-mm --manifest ./manifests/lore.js --range 5 --reply
+    $ ./hkml ls linux-mm --range 5 --reply
 
 Write a mail to the mailing list:
 
