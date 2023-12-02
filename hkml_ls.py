@@ -79,7 +79,7 @@ def threads_of(mails):
             orig_mail.replies.append(mail)
     return threads, by_msgids
 
-def pr_mail_subject(mail, depth, suffix, idx, lines):
+def pr_mail(mail, depth, suffix, idx, lines):
     global pr_git_id
     global nr_cols_in_line
     global open_mail
@@ -136,9 +136,9 @@ def pr_mails_thread(mail, mail_idx, depth, ls_range, lines):
         if len_ == 1:
             open_mail = True
         if mail_idx >= start and (len_ == -1 or mail_idx < end):
-            pr_mail_subject(mail, depth, suffix, mail_idx, lines)
+            pr_mail(mail, depth, suffix, mail_idx, lines)
     elif mail_idx in ls_range:
-            pr_mail_subject(mail, depth, suffix, mail_idx, lines)
+            pr_mail(mail, depth, suffix, mail_idx, lines)
 
     if not collapse_threads:
         for re in mail.replies:
