@@ -298,7 +298,9 @@ def set_argparser(parser=None):
     DEFAULT_SINCE = '%s-%s-%s' % (DEFAULT_SINCE.year, DEFAULT_SINCE.month,
                 DEFAULT_SINCE.day)
 
-    _hkml.set_manifest_mlist_options(parser, None)
+    _hkml.set_manifest_option(parser)
+    parser.add_argument('mlist', metavar='<mailing list>',
+            help='Mailing list to show.')
     parser.add_argument('--since', metavar='<date>', type=str,
             default=DEFAULT_SINCE,
             help='show mails more recent than a specific date')
