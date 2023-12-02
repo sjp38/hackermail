@@ -27,7 +27,7 @@ show_thread_of = None
 def lore_url(mail):
     return 'https://lore.kernel.org/r/%s' % mail.get_field('message-id')[1:-1]
 
-def pr_line_wrap(prefix, line, nr_cols):
+def pr_line_wrap(prefix, line, nr_cols, lines):
     words = [prefix] + line.split(' ')
     words_to_print = []
     for w in words:
@@ -35,13 +35,13 @@ def pr_line_wrap(prefix, line, nr_cols):
         line_len = len(' '.join(words_to_print))
         if line_len > nr_cols:
             if len(words_to_print) == 1:
-                print(words_to_print[0])
+                lines.append(words_to_print[0])
             else:
-                print(' '.join(words_to_print[:-1]))
+                lines.append(' '.join(words_to_print[:-1]))
                 words_to_print = [' ' * (len(prefix) + 1) + words_to_print[-1]]
-    print(' '.join(words_to_print))
+    lines.append(' '.join(words_to_print))
 
-def pr_mail_content_via_lore(mail_url):
+def pr_mail_content_via_lore(mail_url, lines):
     try:
         from_lore = _hkml.cmd_lines_output(['w3m', '-dump', mail_url])[3:]
     except:
@@ -51,20 +51,20 @@ def pr_mail_content_via_lore(mail_url):
     for line in from_lore:
         if line.strip() == divide_line:
             break
-        print(line)
+        lines.append(line)
 
-def pr_mail_content(mail, use_lore):
+def pr_mail_content(mail, use_lore, lines):
     if use_lore:
-        pr_mail_content_via_lore(lore_url(mail))
+        pr_mail_content_via_lore(lore_url(mail), lines)
         return
 
     for head in ['Date', 'Subject', 'Message-Id', 'From', 'To', 'CC']:
         value = mail.get_field(head)
         if value:
-            print('%s: %s' % (head, value))
-    print('\n%s' % mail.get_field('body'))
+            lines.append('%s: %s' % (head, value))
+    lines.append('\n%s' % mail.get_field('body'))
     if show_lore_link:
-        print('\n%s\n' % lore_url(mail))
+        lines.append('\n%s\n' % lore_url(mail))
 
 def threads_of(mails):
     by_msgids = {}
@@ -81,7 +81,7 @@ def threads_of(mails):
             orig_mail.replies.append(mail)
     return threads, by_msgids
 
-def pr_mail_subject(mail, depth, suffix, idx):
+def pr_mail_subject(mail, depth, suffix, idx, lines):
     global pr_git_id
     global nr_cols_in_line
     global open_mail
@@ -107,9 +107,9 @@ def pr_mail_subject(mail, depth, suffix, idx):
     if show_lore_link:
         suffix += ' %s' % lore_url(mail)
     if open_mail:
-        pr_mail_content(mail, open_mail_via_lore)
+        pr_mail_content(mail, open_mail_via_lore, lines)
     else:
-        pr_line_wrap(prefix, subject + suffix, nr_cols)
+        pr_line_wrap(prefix, subject + suffix, nr_cols, lines)
 
 def nr_replies_of(mail):
     nr = len(mail.replies)
@@ -117,7 +117,7 @@ def nr_replies_of(mail):
         nr += nr_replies_of(re)
     return nr
 
-def pr_mails_thread(mail, mail_idx, depth):
+def pr_mails_thread(mail, mail_idx, depth, lines):
     global ls_range
     global open_mail
 
@@ -139,13 +139,14 @@ def pr_mails_thread(mail, mail_idx, depth):
         if len_ == 1:
             open_mail = True
         if mail_idx >= start and (len_ == -1 or mail_idx < end):
-            pr_mail_subject(mail, depth, suffix, mail_idx)
+            pr_mail_subject(mail, depth, suffix, mail_idx, lines)
     elif mail_idx in ls_range:
-            pr_mail_subject(mail, depth, suffix, mail_idx)
+            pr_mail_subject(mail, depth, suffix, mail_idx, lines)
 
     if not collapse_threads:
         for re in mail.replies:
-            nr_printed += pr_mails_thread(re, mail_idx + nr_printed, depth + 1)
+            nr_printed += pr_mails_thread(
+                    re, mail_idx + nr_printed, depth + 1, lines)
     return nr_printed
 
 def root_of_thread(mail, by_msgids):
@@ -179,9 +180,11 @@ def mk_pr_ready(mail, list_, depth=0):
     for mail in mail.replies:
         mk_pr_ready(mail, list_, depth + 1)
 
-def show_mails(mails_to_show, show_stat):
+def mails_to_str(mails_to_show, show_stat):
     global show_thread_of
     global ls_range
+
+    lines = []
 
     threads, by_msgids = threads_of(mails_to_show)
     if descend:
@@ -194,9 +197,9 @@ def show_mails(mails_to_show, show_stat):
             if 'patch' in m.tags and not 'reply' in m.tags])
         nr_new_patches = len([m for m in mails_to_show
             if not m.get_field('in-reply-to') and 'patch' in m.tags])
-        print('# %d mails, %d threads, %d new threads' % (len(mails_to_show),
-            len(threads), nr_new_threads))
-        print('# %d patches, %d series' % (nr_patches, nr_new_patches))
+        lines.append('# %d mails, %d threads, %d new threads' %
+                (len(mails_to_show), len(threads), nr_new_threads))
+        lines.append('# %d patches, %d series' % (nr_patches, nr_new_patches))
 
     by_pr_idx = []
     for mail in threads:
@@ -211,7 +214,9 @@ def show_mails(mails_to_show, show_stat):
 
     index = 0
     for mail in threads:
-        index += pr_mails_thread(mail, index, 0)
+        index += pr_mails_thread(mail, index, 0, lines)
+
+    return '\n'.join(lines)
 
 def filter_tags(mail, tags):
     tags_to_show = tags[0]
@@ -405,38 +410,33 @@ def main(args=None):
         with open(args.mlist, 'r') as f:
             mails_to_show = [_hkml.Mail.from_mbox(f.read())]
 
-    if not args.stdout:
-        orig_stdout = sys.stdout
-        fd, tmp_path = tempfile.mkstemp(prefix='hackermail')
-        tmp_file = open(tmp_path, 'w')
-        sys.stdout = tmp_file
+    to_show = mails_to_str(mails_to_show, args.stat)
 
-    show_mails(mails_to_show, args.stat)
+    if args.stdout:
+        print(to_show)
+        return
 
-    if not args.stdout:
-        sys.stdout = orig_stdout
-        tmp_file.close()
-        os.close(fd)
-        if args.reply == False:
-            subprocess.call(['less', tmp_path])
-            os.remove(tmp_path)
-            exit(0)
+    if args.reply == True:
+        orig_mbox = to_show
+        reply_mbox_str = hkml_format_reply.format_reply(
+                _hkml.Mail.from_mbox(orig_mbox))
+        fd, reply_tmp_path = tempfile.mkstemp(prefix='hkml_reply_')
+        with open(reply_tmp_path, 'w') as f:
+            f.write(reply_mbox_str)
+        if subprocess.call(['vim', reply_tmp_path]) != 0:
+            print('editing the reply failed.  The draft is at %s' %
+                    reply_tmp_path)
+            exit(1)
+        hkml_send.send_mail(reply_tmp_path, get_confirm=True)
+        os.remove(reply_tmp_path)
+        return
 
-        if args.reply == True:
-            with open(tmp_path, 'r') as f:
-                orig_mbox = f.read()
-            os.remove(tmp_path)
-            reply_mbox_str = hkml_format_reply.format_reply(
-                    _hkml.Mail.from_mbox(orig_mbox))
-            fd, reply_tmp_path = tempfile.mkstemp(prefix='hkml_reply_')
-            with open(reply_tmp_path, 'w') as f:
-                f.write(reply_mbox_str)
-            if subprocess.call(['vim', reply_tmp_path]) != 0:
-                print('editing the reply failed.  The draft is at %s' %
-                        reply_tmp_path)
-                exit(1)
-            hkml_send.send_mail(reply_tmp_path, get_confirm=True)
-            os.remove(reply_tmp_path)
+    fd, tmp_path = tempfile.mkstemp(prefix='hackermail')
+    with open(tmp_path, 'w') as f:
+        f.write(to_show)
+    subprocess.call(['less', tmp_path])
+    os.remove(tmp_path)
+    exit(0)
 
 if __name__ == '__main__':
     main()
