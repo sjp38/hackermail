@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 
 import argparse
+import os
 import subprocess
 import sys
+import tempfile
 
 import _hkml
 
@@ -60,6 +62,8 @@ def set_argparser(parser=None):
             help='cc recipients of the mail')
     parser.add_argument('--body', metavar='<body>',
             help='body message of the mail')
+    parser.add_argument('--open_editor', action='store_true',
+            help='open a text editor for the mail')
 
 def main(args=None):
     if not args:
@@ -67,8 +71,21 @@ def main(args=None):
         set_argparser(parser)
         args = parser.parse_args()
 
-    print(format_mbox(args.subject, args.in_reply_to, args.to, args.cc,
-        args.body))
+    mbox = format_mbox(args.subject, args.in_reply_to, args.to, args.cc,
+        args.body)
+
+    if args.open_editor:
+        fd, tmp_path = tempfile.mkstemp(prefix='hkml_mail_')
+        with open(tmp_path, 'w') as f:
+            f.write(mbox)
+        if subprocess.call(['vim', tmp_path]) != 0:
+            print('writing mail with editor failed')
+            exit(1)
+        with open(tmp_path, 'r') as f:
+            mbox = f.read()
+        os.remove(tmp_path)
+
+    print(mbox)
 
 if __name__ == '__main__':
     main()
