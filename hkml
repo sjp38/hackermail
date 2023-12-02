@@ -9,9 +9,9 @@ import hkml_init
 import format_reply
 import hkml_fetch
 import hkml_ls
+import hkml_send
 import hkml_write
 import manifest
-import send
 
 import _hkml
 
@@ -47,7 +47,7 @@ parser_fmtre = subparsers.add_parser('format_reply', help = 'format reply')
 format_reply.set_argparser(parser_fmtre)
 
 parser_send = subparsers.add_parser('send', help = 'send mails')
-send.set_argparser(parser_send)
+hkml_send.set_argparser(parser_send)
 
 parser_manifest = subparsers.add_parser('manifest', help = 'print manifest')
 manifest.set_argparser(parser_manifest)
@@ -71,7 +71,7 @@ elif args.command == 'write':
     hkml_write.main(args)
 elif args.command == 'format_reply':
     format_reply.main(args)
-elif args.command == 'send':
-    send.main(args)
+elif args.command == 'hkml_send':
+    hkml_send.main(args)
 elif args.command == 'manifest':
     manifest.main(args)
