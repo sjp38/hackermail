@@ -9,8 +9,8 @@ import tempfile
 import time
 
 import _hkml
-import fetchmails
 import format_reply
+import hkml_fetch
 
 new_threads_only = False
 descend = False
@@ -399,7 +399,7 @@ def main(args=None):
             args.mlist = [args.mlist]
             args.quiet = False
             args.epochs=1
-            fetchmails.main(args)
+            hkml_fetch.main(args)
             args.mlist = args.mlist[0]
 
 

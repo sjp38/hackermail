@@ -6,8 +6,8 @@ import subprocess
 import sys
 
 import hkml_init
-import fetchmails
 import format_reply
+import hkml_fetch
 import hkml_write
 import lsmails
 import manifest
@@ -35,7 +35,7 @@ parser_init = subparsers.add_parser('init', help = 'initialize working dir')
 hkml_init.set_argparser(parser_init)
 
 parser_fetch = subparsers.add_parser('fetch', help = 'fetch mails')
-fetchmails.set_argparser(parser_fetch)
+hkml_fetch.set_argparser(parser_fetch)
 
 parser_ls = subparsers.add_parser('ls', help = 'list mails')
 lsmails.set_argparser(parser_ls)
@@ -60,7 +60,7 @@ if args.command == 'init':
 elif args.command == 'ls':
     lsmails.main(args)
 elif args.command == 'fetch':
-    fetchmails.main(args)
+    hkml_fetch.main(args)
 elif args.command == 'write':
     hkml_write.main(args)
 elif args.command == 'manifest':
