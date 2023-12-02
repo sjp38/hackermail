@@ -15,8 +15,8 @@ archives.  Linux Kernel Mailing Lists (LKML)[2] are good examples.
 Quick Tutorials
 ===============
 
-List mails in damon@lists.linux.dev mailing list which were sent within last
-three days:
+List mails in damon mailing list (https://lore.kernel.org/damon) which were
+sent within last three days:
 
     $ ./hkml init --manifest ./manifests/lore.js
     $ ./hkml ls damon --fetch
