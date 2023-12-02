@@ -71,7 +71,7 @@ elif args.command == 'write':
     hkml_write.main(args)
 elif args.command == 'format_reply':
     hkml_format_reply.main(args)
-elif args.command == 'hkml_send':
+elif args.command == 'send':
     hkml_send.main(args)
 elif args.command == 'manifest':
     manifest.main(args)
