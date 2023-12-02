@@ -10,6 +10,7 @@ import time
 
 import _hkml
 import fetchmails
+import format_reply
 
 new_threads_only = False
 descend = False
@@ -344,6 +345,8 @@ def set_argparser(parser=None):
     parser.add_argument('--repeat', metavar='<int>', type=int, nargs=2,
             default=[0, 1],
             help='delay (seconds) and count for repeated runs')
+    parser.add_argument('--reply', action='store_true',
+            help='reply to the selected mail')
 
 def main(args=None):
     global new_threads_only
@@ -373,6 +376,15 @@ def main(args=None):
     show_thread_of = args.thread
     descend = args.descend
     repeat_delay, repeat_count = args.repeat
+
+    if args.reply == True:
+        if repeat_count != 1:
+            print('cannot repeat with reply')
+            exit(1)
+        if len(ls_range) != 1:
+            print('cannot reply to multiple mails')
+            exit(1)
+        args.stdout = False
 
     if repeat_count != 1:
         args.fetch = True
@@ -411,8 +423,36 @@ def main(args=None):
         sys.stdout = orig_stdout
         tmp_file.close()
         os.close(fd)
-        subprocess.call(['less', tmp_path])
-        os.remove(tmp_path)
+        if args.reply == False:
+            subprocess.call(['less', tmp_path])
+            os.remove(tmp_path)
+            exit(0)
+
+        if args.reply == True:
+            with open(tmp_path, 'r') as f:
+                orig_mbox = f.read()
+            os.remove(tmp_path)
+            reply_mbox_str = format_reply.format_reply(
+                    _hkml.Mail.from_mbox(orig_mbox))
+            fd, reply_tmp_path = tempfile.mkstemp(prefix='hkml_reply_')
+            with open(reply_tmp_path, 'w') as f:
+                f.write(reply_mbox_str)
+            if subprocess.call(['vim', reply_tmp_path]) != 0:
+                print('editing the reply failed.  The draft is at %s' %
+                        reply_tmp_path)
+                exit(1)
+            with open(reply_tmp_path, 'r') as f:
+                print(f.read())
+            answer = input('Will send above mail.  Okay? [y/N] ')
+            if answer.lower() != 'y':
+                answer = input('Leave the draft reply message? [Y/n] ')
+                if answer.lower() == 'n':
+                    os.remove(reply_tmp_path)
+                else:
+                    print('Your draft reply message is at %s' % reply_tmp_path)
+                exit(0)
+            _hkml.cmd_str_output(['git', 'send-email', reply_tmp_path])
+            os.remove(reply_tmp_path)
 
 if __name__ == '__main__':
     main()
