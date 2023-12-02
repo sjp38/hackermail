@@ -5,7 +5,7 @@ import subprocess
 import sys
 
 import _hkml
-import format_mail
+import hkml_write
 
 def format_reply(mail):
     subject = mail.get_field('subject')
@@ -26,7 +26,7 @@ def format_reply(mail):
         body_lines.append('> %s' % line)
     body = '\n'.join(body_lines)
 
-    return format_mail.format_mbox(subject, in_reply_to, to, cc, body)
+    return hkml_write.format_mbox(subject, in_reply_to, to, cc, body)
 
 def set_argparser(parser=None):
     parser.add_argument('mbox_file', metavar='<file>', type=str, nargs='?',
