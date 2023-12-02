@@ -37,7 +37,9 @@ def fetched_mail_lists():
             if os.path.isdir(os.path.join(archive_dir, d))]
 
 def set_argparser(parser):
-    _hkml.set_manifest_mlist_options(parser, mlist_nargs='*')
+    _hkml.set_manifest_option(parser)
+    parser.add_argument('mlist', metavar='<mailing list>', nargs='*',
+            help='mailing list to fetch.')
     parser.add_argument('--quiet', '-q', default=False, action='store_true',
             help='Work silently.')
     parser.add_argument('--epochs', type=int, default=1,
