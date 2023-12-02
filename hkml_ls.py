@@ -9,7 +9,7 @@ import tempfile
 import time
 
 import _hkml
-import format_reply
+import hkml_format_reply
 import hkml_fetch
 
 new_threads_only = False
@@ -432,7 +432,7 @@ def main(args=None):
             with open(tmp_path, 'r') as f:
                 orig_mbox = f.read()
             os.remove(tmp_path)
-            reply_mbox_str = format_reply.format_reply(
+            reply_mbox_str = hkml_format_reply.format_reply(
                     _hkml.Mail.from_mbox(orig_mbox))
             fd, reply_tmp_path = tempfile.mkstemp(prefix='hkml_reply_')
             with open(reply_tmp_path, 'w') as f:
