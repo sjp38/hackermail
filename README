@@ -18,7 +18,6 @@ Quick Tutorials
 List mails in linux-mm mailing list which were sent within last three days:
 
     $ ./hkml init --manifest ./manifests/lore.js
-    $ ./hkml fetch linux-mm
     $ ./hkml ls linux-mm --fetch
 
 Read the content of 5th mail in the list:
