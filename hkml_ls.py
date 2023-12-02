@@ -90,7 +90,10 @@ def pr_mail_subject(mail, depth, suffix, idx):
 
     prefix_fields = []
     index = '[%04d]' % idx
-    date = '/'.join(mail.git_date.split('T')[0].split('-')[1:])
+    if mail.git_date != None:
+        date = '/'.join(mail.git_date.split('T')[0].split('-')[1:])
+    else:
+        date = mail.get_field('date')
     prefix_fields += [index, date]
     if pr_git_id:
         prefix_fields.append(mail.gitid)
@@ -301,8 +304,8 @@ def set_argparser(parser=None):
                 DEFAULT_SINCE.day)
 
     _hkml.set_manifest_option(parser)
-    parser.add_argument('mlist', metavar='<mailing list>',
-            help='Mailing list to show.')
+    parser.add_argument('mlist', metavar='<mailing list or mbox file>',
+            help='Mailing list or mbox file to show.')
     parser.add_argument('--since', metavar='<date>', type=str,
             default=DEFAULT_SINCE,
             help='show mails more recent than a specific date')
@@ -398,14 +401,22 @@ def main(args=None):
     if len(ls_range) == 1:
         ls_range.append(1)
 
+    mlist_is_file = False
+    if os.path.isfile(args.mlist):
+        mlist_is_file = True
+
     repeated = 0
     while True:
-        if args.fetch:
-            hkml_fetch.fetch_mail(args.manifest, [args.mlist], False, 1)
+        if not mlist_is_file:
+            if args.fetch:
+                hkml_fetch.fetch_mail(args.manifest, [args.mlist], False, 1)
 
-        mails_to_show = filter_mails(args.manifest, args.mlist, args.since,
-                [args.show, args.hide], args.msgid, args.author,
-                args.subject_contains, args.contains)
+            mails_to_show = filter_mails(args.manifest, args.mlist, args.since,
+                    [args.show, args.hide], args.msgid, args.author,
+                    args.subject_contains, args.contains)
+        else:
+            with open(args.mlist, 'r') as f:
+                mails_to_show = [_hkml.Mail.from_mbox(f.read())]
 
         if not args.stdout:
             orig_stdout = sys.stdout
