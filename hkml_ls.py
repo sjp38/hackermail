@@ -11,6 +11,7 @@ import time
 import _hkml
 import hkml_format_reply
 import hkml_fetch
+import hkml_send
 
 new_threads_only = False
 descend = False
@@ -441,17 +442,7 @@ def main(args=None):
                 print('editing the reply failed.  The draft is at %s' %
                         reply_tmp_path)
                 exit(1)
-            with open(reply_tmp_path, 'r') as f:
-                print(f.read())
-            answer = input('Will send above mail.  Okay? [y/N] ')
-            if answer.lower() != 'y':
-                answer = input('Leave the draft reply message? [Y/n] ')
-                if answer.lower() == 'n':
-                    os.remove(reply_tmp_path)
-                else:
-                    print('Your draft reply message is at %s' % reply_tmp_path)
-                exit(0)
-            _hkml.cmd_str_output(['git', 'send-email', reply_tmp_path])
+            hkml_send.send_mail(reply_tmp_path, get_confirm=True)
             os.remove(reply_tmp_path)
 
 if __name__ == '__main__':
