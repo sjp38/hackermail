@@ -8,7 +8,7 @@ write replies or new mails.
 For now, hackermail supports only public-inbox[1] managed mailing list
 archives.  Linux Kernel Mailing Lists (LKML)[2] are good examples.
 
-[1] https://public-inbox.org/design_notes.html
+[1] https://public-inbox.org/design_notes.html<br>
 [2] https://www.kernel.org/lore.html
 
 
