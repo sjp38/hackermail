@@ -399,12 +399,7 @@ def main(args=None):
     repeated = 0
     while True:
         if args.fetch:
-            args.mlist = [args.mlist]
-            args.quiet = False
-            args.epochs=1
-            hkml_fetch.main(args)
-            args.mlist = args.mlist[0]
-
+            hkml_fetch.fetch_mail(args.manifest, [args.mlist], False, 1)
 
         mails_to_show = filter_mails(args.manifest, args.mlist, args.since,
                 [args.show, args.hide], args.msgid, args.author,
