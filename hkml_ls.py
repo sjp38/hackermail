@@ -350,9 +350,6 @@ def set_argparser(parser=None):
             help='print to stdout instead of using the pager')
     parser.add_argument('--fetch', action='store_true',
             help='fetch mails before listing')
-    parser.add_argument('--repeat', metavar='<int>', type=int, nargs=2,
-            default=[0, 1],
-            help='delay (seconds) and count for repeated runs')
     parser.add_argument('--reply', action='store_true',
             help='reply to the selected mail')
 
@@ -383,20 +380,12 @@ def main(args=None):
     ls_range = args.range
     show_thread_of = args.thread
     descend = args.descend
-    repeat_delay, repeat_count = args.repeat
 
     if args.reply == True:
-        if repeat_count != 1:
-            print('cannot repeat with reply')
-            exit(1)
         if len(ls_range) != 1:
             print('cannot reply to multiple mails')
             exit(1)
         args.stdout = False
-
-    if repeat_count != 1:
-        args.fetch = True
-        args.stdout = True
 
     if len(ls_range) == 1:
         ls_range.append(1)
@@ -405,30 +394,24 @@ def main(args=None):
     if os.path.isfile(args.mlist):
         mlist_is_file = True
 
-    repeated = 0
-    while True:
-        if not mlist_is_file:
-            if args.fetch:
-                hkml_fetch.fetch_mail(args.manifest, [args.mlist], False, 1)
+    if not mlist_is_file:
+        if args.fetch:
+            hkml_fetch.fetch_mail(args.manifest, [args.mlist], False, 1)
 
-            mails_to_show = filter_mails(args.manifest, args.mlist, args.since,
-                    [args.show, args.hide], args.msgid, args.author,
-                    args.subject_contains, args.contains)
-        else:
-            with open(args.mlist, 'r') as f:
-                mails_to_show = [_hkml.Mail.from_mbox(f.read())]
+        mails_to_show = filter_mails(args.manifest, args.mlist, args.since,
+                [args.show, args.hide], args.msgid, args.author,
+                args.subject_contains, args.contains)
+    else:
+        with open(args.mlist, 'r') as f:
+            mails_to_show = [_hkml.Mail.from_mbox(f.read())]
 
-        if not args.stdout:
-            orig_stdout = sys.stdout
-            fd, tmp_path = tempfile.mkstemp(prefix='hackermail')
-            tmp_file = open(tmp_path, 'w')
-            sys.stdout = tmp_file
+    if not args.stdout:
+        orig_stdout = sys.stdout
+        fd, tmp_path = tempfile.mkstemp(prefix='hackermail')
+        tmp_file = open(tmp_path, 'w')
+        sys.stdout = tmp_file
 
-        show_mails(mails_to_show, args.stat)
-        repeated += 1
-        if repeat_count != 0 and repeated >= repeat_count:
-            break
-        time.sleep(repeat_delay)
+    show_mails(mails_to_show, args.stat)
 
     if not args.stdout:
         sys.stdout = orig_stdout
