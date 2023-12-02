@@ -21,7 +21,6 @@ collapse_threads = False
 show_lore_link = False
 open_mail = False
 open_mail_via_lore = False
-ls_range = None
 
 def lore_url(mail):
     return 'https://lore.kernel.org/r/%s' % mail.get_field('message-id')[1:-1]
@@ -116,8 +115,7 @@ def nr_replies_of(mail):
         nr += nr_replies_of(re)
     return nr
 
-def pr_mails_thread(mail, mail_idx, depth, lines):
-    global ls_range
+def pr_mails_thread(mail, mail_idx, depth, ls_range, lines):
     global open_mail
 
     nr_printed = 1
@@ -145,7 +143,7 @@ def pr_mails_thread(mail, mail_idx, depth, lines):
     if not collapse_threads:
         for re in mail.replies:
             nr_printed += pr_mails_thread(
-                    re, mail_idx + nr_printed, depth + 1, lines)
+                    re, mail_idx + nr_printed, depth + 1, ls_range, lines)
     return nr_printed
 
 def root_of_thread(mail, by_msgids):
@@ -179,9 +177,7 @@ def mk_pr_ready(mail, list_, depth=0):
     for mail in mail.replies:
         mk_pr_ready(mail, list_, depth + 1)
 
-def mails_to_str(mails_to_show, show_stat, show_thread_of):
-    global ls_range
-
+def mails_to_str(mails_to_show, show_stat, show_thread_of, ls_range):
     lines = []
 
     threads, by_msgids = threads_of(mails_to_show)
@@ -212,7 +208,7 @@ def mails_to_str(mails_to_show, show_stat, show_thread_of):
 
     index = 0
     for mail in threads:
-        index += pr_mails_thread(mail, index, 0, lines)
+        index += pr_mails_thread(mail, index, 0, ls_range, lines)
 
     return '\n'.join(lines)
 
@@ -407,7 +403,7 @@ def main(args=None):
             mails_to_show = [_hkml.Mail.from_mbox(f.read())]
 
     show_thread_of = args.thread
-    to_show = mails_to_str(mails_to_show, args.stat, show_thread_of)
+    to_show = mails_to_str(mails_to_show, args.stat, show_thread_of, ls_range)
 
     if args.stdout:
         print(to_show)
