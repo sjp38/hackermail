@@ -75,3 +75,6 @@ elif args.command == 'send':
     hkml_send.main(args)
 elif args.command == 'manifest':
     manifest.main(args)
+else:
+    print('wrong command (%s)' % args.command)
+    exit(1)
