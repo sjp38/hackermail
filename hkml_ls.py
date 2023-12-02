@@ -240,7 +240,7 @@ def git_log_output_line_to_mail(line, mdir, subject_keyword, body_keyword):
     subject = line[subject_offset:]
     if subject_keyword and not subject_keyword in subject:
         return None
-    mail = _hkml.Mail.from_gitlog(fields[0], mdir, fields[1], fields[2:])
+    mail = _hkml.Mail.from_gitlog(fields[0], mdir, fields[1], subject)
     if body_keyword and not body_keyword in mail.get_field('body'):
         return None
     return mail

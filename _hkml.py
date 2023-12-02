@@ -33,16 +33,17 @@ class Mail:
         self.replies = []
 
     @classmethod
-    def from_gitlog(cls, gitid, gitdir, date, subject_fields):
+    def from_gitlog(cls, gitid, gitdir, date, subject):
         self = cls()
         self.gitid = gitid
         self.gitdir = gitdir
         self.git_date = date
-        self.git_subject = ' '.join(subject_fields)
+        self.git_subject = subject
         self.orig_subject = self.git_subject
         self.tags = []
 
         re_depth = 0
+        subject_fields = subject.split()
         for f in subject_fields:
             if f.lower() == 're:':
                 re_depth += 1
