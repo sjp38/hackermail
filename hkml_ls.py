@@ -22,7 +22,6 @@ show_lore_link = False
 open_mail = False
 open_mail_via_lore = False
 ls_range = None
-show_thread_of = None
 
 def lore_url(mail):
     return 'https://lore.kernel.org/r/%s' % mail.get_field('message-id')[1:-1]
@@ -180,8 +179,7 @@ def mk_pr_ready(mail, list_, depth=0):
     for mail in mail.replies:
         mk_pr_ready(mail, list_, depth + 1)
 
-def mails_to_str(mails_to_show, show_stat):
-    global show_thread_of
+def mails_to_str(mails_to_show, show_stat, show_thread_of):
     global ls_range
 
     lines = []
@@ -368,7 +366,6 @@ def main(args=None):
     global nr_cols_in_line
     global collapse_threads
     global ls_range
-    global show_thread_of
 
     if not args:
         parser = argparse.ArgumentParser()
@@ -383,7 +380,6 @@ def main(args=None):
     pr_git_id = args.gitid
     show_lore_link = args.lore
     ls_range = args.range
-    show_thread_of = args.thread
     descend = args.descend
 
     if args.reply == True:
@@ -410,7 +406,8 @@ def main(args=None):
         with open(args.mlist, 'r') as f:
             mails_to_show = [_hkml.Mail.from_mbox(f.read())]
 
-    to_show = mails_to_str(mails_to_show, args.stat)
+    show_thread_of = args.thread
+    to_show = mails_to_str(mails_to_show, args.stat, show_thread_of)
 
     if args.stdout:
         print(to_show)
