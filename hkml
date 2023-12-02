@@ -40,7 +40,7 @@ lsmails.set_argparser(parser_ls)
 parser_fetch = subparsers.add_parser('fetch', help = 'fetch mails')
 fetchmails.set_argparser(parser_fetch)
 
-parser_fmtml = subparsers.add_parser('format_mail', help = 'format a mail')
+parser_fmtml = subparsers.add_parser('write', help = 'write a mail')
 format_mail.set_argparser(parser_fmtml)
 
 parser_fmtre = subparsers.add_parser('format_reply', help = 'format reply')
@@ -67,7 +67,7 @@ elif args.command == 'ls':
     lsmails.main(args)
 elif args.command == 'fetch':
     fetchmails.main(args)
-elif args.command == 'format_mail':
+elif args.command == 'write':
     format_mail.main(args)
 elif args.command == 'format_reply':
     format_reply.main(args)

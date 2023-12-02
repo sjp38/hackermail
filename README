@@ -30,7 +30,7 @@ Send a reply to the mail:
 
 Write a mail to the mailing list, and send:
 
-    $ ./hkml format_mail --cc linux-mm@kvack.org --open_editor --send
+    $ ./hkml write --cc linux-mm@kvack.org --open_editor --send
 
 For more detail,
 
