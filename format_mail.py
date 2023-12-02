@@ -64,6 +64,8 @@ def set_argparser(parser=None):
             help='body message of the mail')
     parser.add_argument('--open_editor', action='store_true',
             help='open a text editor for the mail')
+    parser.add_argument('--send', action='store_true',
+            help='send the mail')
 
 def main(args=None):
     if not args:
@@ -86,6 +88,15 @@ def main(args=None):
         os.remove(tmp_path)
 
     print(mbox)
+
+    if args.send:
+        answer = input('Will send above mail.  Okay? [y/N] ')
+        if answer.lower() != 'y':
+            exit(0)
+        fd, tmp_path = tempfile.mkstemp(prefix='hkml_mail_')
+        with open(tmp_path, 'w') as f:
+            f.write(mbox)
+        _hkml.cmd_str_output(['git', 'send-email', tmp_path])
 
 if __name__ == '__main__':
     main()
