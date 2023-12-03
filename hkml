@@ -8,7 +8,7 @@ import sys
 import hkml_init
 import hkml_fetch
 import hkml_format_reply
-import hkml_ls
+import hkml_read
 import hkml_send
 import hkml_write
 import manifest
@@ -37,8 +37,8 @@ hkml_init.set_argparser(parser_init)
 parser_fetch = subparsers.add_parser('fetch', help = 'fetch mails')
 hkml_fetch.set_argparser(parser_fetch)
 
-parser_ls = subparsers.add_parser('ls', help = 'list mails')
-hkml_ls.set_argparser(parser_ls)
+parser_read = subparsers.add_parser('read', help = 'read mails')
+hkml_read.set_argparser(parser_read)
 
 parser_fmtml = subparsers.add_parser('write', help = 'write a mail')
 hkml_write.set_argparser(parser_fmtml)
@@ -54,7 +54,7 @@ manifest.set_argparser(parser_manifest)
 
 args = parser.parse_args()
 
-if args.command in ['fetch', 'ls']:
+if args.command in ['fetch', 'read']:
     _hkml.set_hkml_dir(args.hkml_dir)
 
 if not args.command:
@@ -63,8 +63,8 @@ if not args.command:
 
 if args.command == 'init':
     hkml_init.main(args)
-elif args.command == 'ls':
-    hkml_ls.main(args)
+elif args.command == 'read':
+    hkml_read.main(args)
 elif args.command == 'fetch':
     hkml_fetch.main(args)
 elif args.command == 'write':

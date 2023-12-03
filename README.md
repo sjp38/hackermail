@@ -15,19 +15,19 @@ archives.  Linux Kernel Mailing Lists (LKML)[2] are good examples.
 Quick Tutorials
 ===============
 
-List mails in damon mailing list (https://lore.kernel.org/damon) which were
+Read mails in damon mailing list (https://lore.kernel.org/damon) which were
 sent within last three days:
 
     $ ./hkml init --manifest ./manifests/lore.js
-    $ ./hkml ls damon --fetch
+    $ ./hkml read damon --fetch
 
 Read the content of 5th mail in the list:
 
-    $ ./hkml ls damon --range 5
+    $ ./hkml read damon --range 5
 
 Send a reply to the mail:
 
-    $ ./hkml ls damon --range 5 --reply
+    $ ./hkml read damon --range 5 --reply
 
 Write a mail to the mailing list, and send:
 
