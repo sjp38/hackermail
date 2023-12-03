@@ -6,7 +6,6 @@ import os
 import subprocess
 import sys
 import tempfile
-import time
 
 import _hkml
 import hkml_format_reply
