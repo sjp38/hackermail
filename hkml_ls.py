@@ -382,7 +382,6 @@ def main(args=None):
         if len(ls_range) != 1:
             print('cannot reply to multiple mails')
             exit(1)
-        args.stdout = False
 
     if len(ls_range) == 1:
         ls_range.append(1)
@@ -405,13 +404,6 @@ def main(args=None):
     show_thread_of = args.thread
     to_show = mails_to_str(mails_to_show, args.stat, show_thread_of, ls_range)
 
-    if len(to_show.split('\n')) < os.get_terminal_size().lines:
-        args.stdout = True
-
-    if args.stdout:
-        print(to_show)
-        return
-
     if args.reply == True:
         orig_mbox = to_show
         reply_mbox_str = hkml_format_reply.format_reply(
@@ -425,6 +417,13 @@ def main(args=None):
             exit(1)
         hkml_send.send_mail(reply_tmp_path, get_confirm=True)
         os.remove(reply_tmp_path)
+        return
+
+    if len(to_show.split('\n')) < os.get_terminal_size().lines:
+        args.stdout = True
+
+    if args.stdout:
+        print(to_show)
         return
 
     fd, tmp_path = tempfile.mkstemp(prefix='hackermail')
