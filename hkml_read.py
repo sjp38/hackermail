@@ -361,7 +361,6 @@ def main(args=None):
     global pr_git_id
     global nr_cols_in_line
     global collapse_threads
-    global ls_range
 
     if not args:
         parser = argparse.ArgumentParser()
