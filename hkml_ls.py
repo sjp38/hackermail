@@ -405,6 +405,9 @@ def main(args=None):
     show_thread_of = args.thread
     to_show = mails_to_str(mails_to_show, args.stat, show_thread_of, ls_range)
 
+    if len(to_show.split('\n')) < os.get_terminal_size().lines:
+        args.stdout = True
+
     if args.stdout:
         print(to_show)
         return
