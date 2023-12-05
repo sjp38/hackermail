@@ -384,7 +384,10 @@ def main(args=None):
     if len(ls_range) == 1:
         ls_range.append(1)
 
-    if os.path.isfile(args.source):
+    if args.source == 'clipboard':
+        mbox_str = _hkml.cmd_str_output(['xclip', '-o', '-sel', 'clip'])
+        mails_to_show = [_hkml.Mail.from_mbox(mbox_str)]
+    elif os.path.isfile(args.source):
         with open(args.source, 'r') as f:
             mails_to_show = [_hkml.Mail.from_mbox(f.read())]
     else:
