@@ -302,8 +302,8 @@ def set_argparser(parser=None):
                 DEFAULT_SINCE.day)
 
     _hkml.set_manifest_option(parser)
-    parser.add_argument('mlist', metavar='<mailing list or mbox file>',
-            help='Mailing list or mbox file to show.')
+    parser.add_argument('source', metavar='<source of mails>',
+            help='Source of mails to read (mailing list or mbox file).')
     parser.add_argument('--since', metavar='<date>', type=str,
             default=DEFAULT_SINCE,
             help='show mails more recent than a specific date')
@@ -385,18 +385,18 @@ def main(args=None):
         ls_range.append(1)
 
     mlist_is_file = False
-    if os.path.isfile(args.mlist):
+    if os.path.isfile(args.source):
         mlist_is_file = True
 
     if not mlist_is_file:
         if args.fetch:
-            hkml_fetch.fetch_mail(args.manifest, [args.mlist], False, 1)
+            hkml_fetch.fetch_mail(args.manifest, [args.source], False, 1)
 
-        mails_to_show = filter_mails(args.manifest, args.mlist, args.since,
+        mails_to_show = filter_mails(args.manifest, args.source, args.since,
                 [args.show, args.hide], args.msgid, args.author,
                 args.subject_contains, args.contains)
     else:
-        with open(args.mlist, 'r') as f:
+        with open(args.source, 'r') as f:
             mails_to_show = [_hkml.Mail.from_mbox(f.read())]
 
     show_thread_of = args.thread
