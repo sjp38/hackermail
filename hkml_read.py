@@ -384,20 +384,16 @@ def main(args=None):
     if len(ls_range) == 1:
         ls_range.append(1)
 
-    mlist_is_file = False
     if os.path.isfile(args.source):
-        mlist_is_file = True
-
-    if not mlist_is_file:
+        with open(args.source, 'r') as f:
+            mails_to_show = [_hkml.Mail.from_mbox(f.read())]
+    else:
         if args.fetch:
             hkml_fetch.fetch_mail(args.manifest, [args.source], False, 1)
 
         mails_to_show = filter_mails(args.manifest, args.source, args.since,
                 [args.show, args.hide], args.msgid, args.author,
                 args.subject_contains, args.contains)
-    else:
-        with open(args.source, 'r') as f:
-            mails_to_show = [_hkml.Mail.from_mbox(f.read())]
 
     show_thread_of = args.thread
     to_show = mails_to_str(mails_to_show, args.stat, show_thread_of, ls_range)
