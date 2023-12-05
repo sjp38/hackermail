@@ -303,7 +303,12 @@ def set_argparser(parser=None):
 
     _hkml.set_manifest_option(parser)
     parser.add_argument('source', metavar='<source of mails>',
-            help='Source of mails to read (mailing list or mbox file).')
+            help='  '.join([
+            'Source of mails to read.  Could be one of following types.',
+            'Name of a mailing list in the manifest file.',
+            'Path to mbox file in the local filesyste.',
+            'Special keyword, \'clipboard\'.',
+            '\'clipboard\' means mbox string in the clipboard.']))
     parser.add_argument('--since', metavar='<date>', type=str,
             default=DEFAULT_SINCE,
             help='show mails more recent than a specific date')
