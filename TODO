@@ -1,3 +1,4 @@
+- Use mailbox module (message.get_payload(decode=True).decode())
 - read: Support more mail source
   - message id
   - lore link
