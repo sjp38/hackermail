@@ -1,3 +1,7 @@
+- read: Support more sort method
+  - Sort without thread
+  - Sort by latest reply to the thread
+  - Sort by number of replies to the thread
 - Use mailbox module (message.get_payload(decode=True).decode())
 - read: Support more mail source
   - message id
