@@ -190,6 +190,8 @@ def sort_threads(threads, sort_threads_by):
         return
     if sort_threads_by == 'last_date':
         threads.sort(key=lambda t: last_reply_date(t, None))
+    elif sort_threads_by == 'nr_replies':
+        threads.sort(key=lambda t: nr_replies_of(t))
 
 def mails_to_str(mails_to_show, show_stat, show_thread_of, ls_range, descend,
         sort_threads_by):
@@ -373,7 +375,8 @@ def set_argparser(parser=None):
     parser.add_argument('--reply', action='store_true',
             help='reply to the selected mail')
     parser.add_argument('--sort_threads_by',
-            choices=['first_date', 'last_date'], default='first_date',
+            choices=['first_date', 'last_date', 'nr_replies'],
+            default='first_date',
             help='threads sort field')
 
 def main(args=None):
