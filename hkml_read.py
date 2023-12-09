@@ -13,7 +13,6 @@ import hkml_fetch
 import hkml_send
 
 new_threads_only = False
-descend = False
 pr_git_id = False
 nr_cols_in_line = int(os.get_terminal_size().columns * 9 / 10)
 collapse_threads = False
@@ -176,7 +175,7 @@ def mk_pr_ready(mail, list_, depth=0):
     for mail in mail.replies:
         mk_pr_ready(mail, list_, depth + 1)
 
-def mails_to_str(mails_to_show, show_stat, show_thread_of, ls_range):
+def mails_to_str(mails_to_show, show_stat, show_thread_of, ls_range, descend):
     lines = []
 
     threads, by_msgids = threads_of(mails_to_show)
@@ -361,7 +360,6 @@ def main(args=None):
     global show_lore_link
     global open_mail
     global open_mail_via_lore
-    global descend
     global pr_git_id
     global nr_cols_in_line
     global collapse_threads
@@ -379,7 +377,6 @@ def main(args=None):
     pr_git_id = args.gitid
     show_lore_link = args.lore
     ls_range = args.range
-    descend = args.descend
 
     if args.reply == True:
         if len(ls_range) != 1:
@@ -404,7 +401,8 @@ def main(args=None):
                 args.subject_contains, args.contains)
 
     show_thread_of = args.thread
-    to_show = mails_to_str(mails_to_show, args.stat, show_thread_of, ls_range)
+    to_show = mails_to_str(mails_to_show, args.stat, show_thread_of, ls_range,
+            args.descend)
 
     if args.reply == True:
         orig_mbox = to_show
