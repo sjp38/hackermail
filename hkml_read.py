@@ -185,12 +185,12 @@ def last_reply_date(mail, prev_last_date):
         prev_last_date = last_reply_date(reply, prev_last_date)
     return prev_last_date
 
-def sort_threads(threads, sort_threads_by):
-    if sort_threads_by == 'first_date':
+def sort_threads(threads, category):
+    if category == 'first_date':
         return
-    if sort_threads_by == 'last_date':
+    if category == 'last_date':
         threads.sort(key=lambda t: last_reply_date(t, None))
-    elif sort_threads_by == 'nr_replies':
+    elif category == 'nr_replies':
         threads.sort(key=lambda t: nr_replies_of(t))
 
 def mails_to_str(mails_to_show, show_stat, show_thread_of, ls_range, descend,
@@ -198,7 +198,8 @@ def mails_to_str(mails_to_show, show_stat, show_thread_of, ls_range, descend,
     lines = []
 
     threads, by_msgids = threads_of(mails_to_show)
-    sort_threads(threads, sort_threads_by)
+    for sort_category in sort_threads_by:
+        sort_threads(threads, sort_category)
     if descend:
         threads.reverse()
 
@@ -374,9 +375,9 @@ def set_argparser(parser=None):
             help='fetch mails before listing')
     parser.add_argument('--reply', action='store_true',
             help='reply to the selected mail')
-    parser.add_argument('--sort_threads_by',
+    parser.add_argument('--sort_threads_by', nargs='+',
             choices=['first_date', 'last_date', 'nr_replies'],
-            default='first_date',
+            default=['first_date'],
             help='threads sort field')
 
 def main(args=None):
