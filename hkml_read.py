@@ -175,10 +175,28 @@ def mk_pr_ready(mail, list_, depth=0):
     for mail in mail.replies:
         mk_pr_ready(mail, list_, depth + 1)
 
-def mails_to_str(mails_to_show, show_stat, show_thread_of, ls_range, descend):
+def last_reply_date(mail, prev_last_date):
+    if len(mail.replies) == 0:
+        if prev_last_date == None or prev_last_date < mail.git_date:
+            return mail.git_date
+        return prev_last_date
+
+    for reply in mail.replies:
+        prev_last_date = last_reply_date(reply, prev_last_date)
+    return prev_last_date
+
+def sort_threads(threads, sort_threads_by):
+    if sort_threads_by == 'first_date':
+        return
+    if sort_threads_by == 'last_date':
+        threads.sort(key=lambda t: last_reply_date(t, None))
+
+def mails_to_str(mails_to_show, show_stat, show_thread_of, ls_range, descend,
+        sort_threads_by):
     lines = []
 
     threads, by_msgids = threads_of(mails_to_show)
+    sort_threads(threads, sort_threads_by)
     if descend:
         threads.reverse()
 
@@ -354,6 +372,9 @@ def set_argparser(parser=None):
             help='fetch mails before listing')
     parser.add_argument('--reply', action='store_true',
             help='reply to the selected mail')
+    parser.add_argument('--sort_threads_by',
+            choices=['first_date', 'last_date'], default='first_date',
+            help='threads sort field')
 
 def main(args=None):
     global new_threads_only
@@ -402,7 +423,7 @@ def main(args=None):
 
     show_thread_of = args.thread
     to_show = mails_to_str(mails_to_show, args.stat, show_thread_of, ls_range,
-            args.descend)
+            args.descend, args.sort_threads_by)
 
     if args.reply == True:
         orig_mbox = to_show
