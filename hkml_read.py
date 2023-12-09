@@ -185,6 +185,17 @@ def last_reply_date(mail, prev_last_date):
         prev_last_date = last_reply_date(reply, prev_last_date)
     return prev_last_date
 
+def nr_comments(mail):
+    nr_comments = nr_replies_of(mail)
+    # date format: %y-%m-%dT%H:%M:%S...
+    # In some cases such as patchset, no every reply is comment.  Consider
+    # first level replies that sent in same tens of minute as non-comment.
+    orig_date = mail.git_date[:15]
+    for reply in mail.replies:
+        if reply.git_date[:15] == orig_date:
+            nr_comments -= 1
+    return nr_comments
+
 def sort_threads(threads, category):
     if category == 'first_date':
         return
@@ -192,6 +203,8 @@ def sort_threads(threads, category):
         threads.sort(key=lambda t: last_reply_date(t, None))
     elif category == 'nr_replies':
         threads.sort(key=lambda t: nr_replies_of(t))
+    elif category == 'nr_comments':
+        threads.sort(key=lambda t: nr_comments(t))
 
 def mails_to_str(mails_to_show, show_stat, show_thread_of, ls_range, descend,
         sort_threads_by):
@@ -376,7 +389,7 @@ def set_argparser(parser=None):
     parser.add_argument('--reply', action='store_true',
             help='reply to the selected mail')
     parser.add_argument('--sort_threads_by', nargs='+',
-            choices=['first_date', 'last_date', 'nr_replies'],
+            choices=['first_date', 'last_date', 'nr_replies', 'nr_comments'],
             default=['first_date'],
             help='threads sort field')
 
