@@ -3,6 +3,7 @@
 import base64
 import datetime
 import json
+import mailbox
 import os
 import subprocess
 import sys
@@ -114,14 +115,22 @@ class Mail:
                     in_header = False
                 continue
             break
-        parsed['body'] = '\n'.join(mbox_lines[idx:])
+        try:
+            # 'm' doesn't have start 'From' line in some case.  Add a fake one.
+            mbox_str = '\n'.join(['From mboxrd@z Thu Jan  1 00:00:00 1970',
+                self.mbox])
+            parsed['body'] = mailbox.Message(
+                    mbox_str).get_payload(decode=True).decode()
+        except:
+            # Still decode() could fail due to encoding
+            parsed['body'] = '\n'.join(mbox_lines[idx:])
 
-        encoding_key = 'Content-Transfer-Encoding'.lower()
-        if encoding_key in parsed and parsed[encoding_key] == 'base64':
-            try:
-                parsed['body'] = base64.b64decode(parsed['body']).decode()
-            except:
-                pass
+            encoding_key = 'Content-Transfer-Encoding'.lower()
+            if encoding_key in parsed and parsed[encoding_key] == 'base64':
+                try:
+                    parsed['body'] = base64.b64decode(parsed['body']).decode()
+                except:
+                    pass
 
         if 'date' in parsed:
             tokens = parsed['date'].split()
