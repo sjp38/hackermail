@@ -3,5 +3,6 @@
 - read: Support more mail source
   - message id
   - lore link
+- read: Support exporting mails (for faster re-read)
 - Tag mails (Just create a git repo for each tag and pick each commit)
 - Implement manifest subcommand: Help manifest managing
