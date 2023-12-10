@@ -281,8 +281,8 @@ def git_log_output_line_to_mail(line, mdir, subject_keyword, body_keyword):
         return None
     return mail
 
-def get_mails_from_git(manifest, mail_list, since, author, subject_keyword,
-        body_keyword):
+def get_mails_from_git(manifest, mail_list, since, until, author,
+        subject_keyword, body_keyword):
     lines = []
     mdirs = _hkml.mail_list_data_paths(mail_list, manifest)
     if not mdirs:
@@ -297,6 +297,8 @@ def get_mails_from_git(manifest, mail_list, since, author, subject_keyword,
         cmd = ['git', '--git-dir=%s' % mdir, 'log',
                 '--date=iso-strict', '--pretty=%h %ad %s',
                 '--since=%s' % since]
+        if until:
+            cmd += ['--until=%s' % until]
         if author:
             cmd += ['--author=%s'% author]
         lines = _hkml.cmd_lines_output(cmd)
@@ -308,14 +310,14 @@ def get_mails_from_git(manifest, mail_list, since, author, subject_keyword,
                 mails.append(mail)
     return mails
 
-def filter_mails(manifest, mail_list, since, tags, msgid, author,
+def filter_mails(manifest, mail_list, since, until, tags, msgid, author,
         subject_keyword, body_keyword):
     manifest = _hkml.get_manifest(manifest)
     if not manifest:
         print('Cannot open manifest file')
         exit(1)
 
-    mails = get_mails_from_git(manifest, mail_list, since, author,
+    mails = get_mails_from_git(manifest, mail_list, since, until, author,
             subject_keyword, body_keyword)
 
     mails_to_show = []
@@ -346,6 +348,8 @@ def set_argparser(parser=None):
             '\'clipboard\' means mbox string in the clipboard.']))
     parser.add_argument('--since', metavar='<date>', type=str,
             default=DEFAULT_SINCE,
+            help='show mails more recent than a specific date')
+    parser.add_argument('--until', metavar='<date>', type=str,
             help='show mails more recent than a specific date')
     parser.add_argument('--show', metavar='<tag>', type=str, nargs='+',
             help='show mails having these tags')
@@ -436,7 +440,8 @@ def main(args=None):
         if args.fetch:
             hkml_fetch.fetch_mail(args.manifest, [args.source], False, 1)
 
-        mails_to_show = filter_mails(args.manifest, args.source, args.since,
+        mails_to_show = filter_mails(args.manifest, args.source,
+                args.since, args.until,
                 [args.show, args.hide], args.msgid, args.author,
                 args.subject_contains, args.contains)
 
