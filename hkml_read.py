@@ -17,7 +17,7 @@ pr_git_id = False
 nr_cols_in_line = int(os.get_terminal_size().columns * 9 / 10)
 collapse_threads = False
 show_lore_link = False
-open_mail = False
+open_mail_idxs = None
 open_mail_via_lore = False
 
 def lore_url(mail):
@@ -80,7 +80,7 @@ def threads_of(mails):
 def pr_mail(mail, depth, suffix, idx, lines):
     global pr_git_id
     global nr_cols_in_line
-    global open_mail
+    global open_mail_idxs
 
     nr_cols = nr_cols_in_line
 
@@ -102,7 +102,7 @@ def pr_mail(mail, depth, suffix, idx, lines):
         subject = subject[4:]
     if show_lore_link:
         suffix += ' %s' % lore_url(mail)
-    if open_mail:
+    if open_mail_idxs and idx in open_mail_idxs:
         pr_mail_content(mail, open_mail_via_lore, lines)
     else:
         pr_line_wrap(prefix, subject + suffix, nr_cols, lines)
@@ -114,7 +114,7 @@ def nr_replies_of(mail):
     return nr
 
 def pr_mails_thread(mail, mail_idx, depth, ls_range, lines):
-    global open_mail
+    global open_mail_idxs
 
     nr_printed = 1
 
@@ -132,7 +132,7 @@ def pr_mails_thread(mail, mail_idx, depth, ls_range, lines):
         len_ = ls_range[1]
         end = start + len_
         if len_ == 1:
-            open_mail = True
+            open_mail_idxs = [start]
         if mail_idx >= start and (len_ == -1 or mail_idx < end):
             pr_mail(mail, depth, suffix, mail_idx, lines)
     elif mail_idx in ls_range:
@@ -367,7 +367,7 @@ def set_argparser(parser=None):
             help='list threads in descending order')
     parser.add_argument('--collapse', '-c', action='store_true',
             help='collapse threads')
-    parser.add_argument('--open', '-o', action='store_true',
+    parser.add_argument('--open', '-o', type=int, nargs='+',
             help='show the content of the <index>th mail')
     parser.add_argument('--range', '-r', metavar='<number>', default=[0,-1],
             type=int, nargs='+',
@@ -396,7 +396,7 @@ def set_argparser(parser=None):
 def main(args=None):
     global new_threads_only
     global show_lore_link
-    global open_mail
+    global open_mail_idxs
     global open_mail_via_lore
     global pr_git_id
     global nr_cols_in_line
@@ -409,7 +409,7 @@ def main(args=None):
 
     new_threads_only = args.new
     collapse_threads = args.collapse
-    open_mail = args.open
+    open_mail_idxs = args.open
     open_mail_via_lore = args.lore_read
     nr_cols_in_line = args.cols
     pr_git_id = args.gitid
