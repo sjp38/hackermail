@@ -77,6 +77,13 @@ def threads_of(mails):
             orig_mail.replies.append(mail)
     return threads, by_msgids
 
+def should_open_mail(mail_idx, open_mail_idxs):
+    if open_mail_idxs is None:
+        return False
+    if open_mail_idxs == []:
+        return True
+    return mail_idx in open_mail_idxs
+
 def pr_mail(mail, depth, suffix, idx, lines, pr_subject):
     global pr_git_id
     global nr_cols_in_line
@@ -102,7 +109,7 @@ def pr_mail(mail, depth, suffix, idx, lines, pr_subject):
         subject = subject[4:]
     if show_lore_link:
         suffix += ' %s' % lore_url(mail)
-    if open_mail_idxs and idx in open_mail_idxs:
+    if should_open_mail(idx, open_mail_idxs):
         if pr_subject:
             pr_line_wrap(prefix, subject + suffix, nr_cols, lines)
         pr_mail_content(mail, open_mail_via_lore, lines)
@@ -373,7 +380,7 @@ def set_argparser(parser=None):
             help='list threads in descending order')
     parser.add_argument('--collapse', '-c', action='store_true',
             help='collapse threads')
-    parser.add_argument('--open', '-o', type=int, nargs='+',
+    parser.add_argument('--open', '-o', type=int, nargs='*',
             help='show the content of the <index>th mail')
     parser.add_argument('--range', '-r', metavar='<number>', default=[0,-1],
             type=int, nargs='+',
