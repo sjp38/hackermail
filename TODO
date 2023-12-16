@@ -10,5 +10,6 @@
   - Let collapsing only some
   - Let thread wins collapse
   - Support mbox having multiple mails
+  - Support fetching mail since root of a thread
 - Tag mails (Just create a git repo for each tag and pick each commit)
 - Implement manifest subcommand: Help manifest managing
