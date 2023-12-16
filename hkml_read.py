@@ -122,7 +122,16 @@ def nr_replies_of(mail):
         nr += nr_replies_of(re)
     return nr
 
-def pr_mails_thread(mail, mail_idx, depth, ls_range, lines):
+def should_collapse(mail_idx, collapse_threads, expand_threads):
+    if not collapse_threads:
+        return False
+    if expand_threads is None:
+        return True
+    if expand_threads == []:
+        return False
+    return not mail_idx in expand_threads
+
+def pr_mails_thread(mail, mail_idx, depth, ls_range, expand_threads, lines):
     global open_mail_idxs
 
     nr_printed = 1
@@ -131,7 +140,7 @@ def pr_mails_thread(mail, mail_idx, depth, ls_range, lines):
     if new_threads_only and mail.get_field('in-reply-to'):
         nr_replies = nr_replies_of(mail)
         return nr_printed + nr_replies
-    if collapse_threads:
+    if should_collapse(mail_idx, collapse_threads, expand_threads):
         nr_replies = nr_replies_of(mail)
         suffix = ' (%d+ msgs)' % nr_replies
         nr_printed += nr_replies
@@ -147,10 +156,11 @@ def pr_mails_thread(mail, mail_idx, depth, ls_range, lines):
     elif mail_idx in ls_range:
             pr_mail(mail, depth, suffix, mail_idx, lines, len(ls_range) > 1)
 
-    if not collapse_threads:
+    if not should_collapse(mail_idx, collapse_threads, expand_threads):
         for re in mail.replies:
             nr_printed += pr_mails_thread(
-                    re, mail_idx + nr_printed, depth + 1, ls_range, lines)
+                    re, mail_idx + nr_printed, depth + 1, ls_range,
+                    expand_threads, lines)
     return nr_printed
 
 def root_of_thread(mail, by_msgids):
@@ -216,7 +226,7 @@ def sort_threads(threads, category):
         threads.sort(key=lambda t: nr_comments(t))
 
 def mails_to_str(mails_to_show, show_stat, show_thread_of, ls_range, descend,
-        sort_threads_by):
+        sort_threads_by, expand_threads):
     lines = []
 
     threads, by_msgids = threads_of(mails_to_show)
@@ -249,7 +259,8 @@ def mails_to_str(mails_to_show, show_stat, show_thread_of, ls_range, descend,
 
     index = 0
     for mail in threads:
-        index += pr_mails_thread(mail, index, 0, ls_range, lines)
+        index += pr_mails_thread(mail, index, 0, ls_range, expand_threads,
+                lines)
 
     return '\n'.join(lines)
 
@@ -380,6 +391,8 @@ def set_argparser(parser=None):
             help='list threads in descending order')
     parser.add_argument('--collapse', '-c', action='store_true',
             help='collapse threads')
+    parser.add_argument('--expand', type=int, nargs='*',
+            help='expand threads')
     parser.add_argument('--open', '-o', type=int, nargs='*',
             help='show the content of the <index>th mail')
     parser.add_argument('--range', '-r', metavar='<number>', default=[0,-1],
@@ -454,7 +467,7 @@ def main(args=None):
 
     show_thread_of = args.thread
     to_show = mails_to_str(mails_to_show, args.stat, show_thread_of, ls_range,
-            args.descend, args.sort_threads_by)
+            args.descend, args.sort_threads_by, args.expand)
 
     if args.reply == True:
         orig_mbox = to_show
