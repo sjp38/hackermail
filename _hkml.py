@@ -139,6 +139,12 @@ class Mail:
 
         self.__mbox_parsed = parsed
 
+def read_mbox_file(filepath):
+    mails = []
+    for message in mailbox.mbox(filepath):
+        mails.append(Mail.from_mbox('%s' % message))
+    return mails
+
 __hkml_dir = None
 
 def set_hkml_dir(path=None):
