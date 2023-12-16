@@ -2,6 +2,7 @@
 
 import argparse
 import datetime
+import mailbox
 import os
 import subprocess
 import sys
@@ -454,8 +455,10 @@ def main(args=None):
         mbox_str = _hkml.cmd_str_output(['xclip', '-o', '-sel', 'clip'])
         mails_to_show = [_hkml.Mail.from_mbox(mbox_str)]
     elif os.path.isfile(args.source):
-        with open(args.source, 'r') as f:
-            mails_to_show = [_hkml.Mail.from_mbox(f.read())]
+        mbox = mailbox.mbox(args.source)
+        mails_to_show = []
+        for msg in mbox:
+            mails_to_show.append(_hkml.Mail.from_mbox('%s' % msg))
     else:
         if args.fetch:
             hkml_fetch.fetch_mail(args.manifest, [args.source], False, 1)
