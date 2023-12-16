@@ -1,8 +1,14 @@
-- read: Support more sort method
-  - Sort without thread
-- read: Support more mail source
-  - message id
-  - lore link
-- read: Support exporting mails (for faster re-read)
+- read
+  - List mails without thread
+  - Mail source types extension
+    - message id
+    - lore link
+  - Export mails
+  - Cache recent thread-constructed data
+  - Use email.utils.parsedate() to parse real time
+  - Let opening all
+  - Let collapsing only some
+  - Let thread wins collapse
+  - Support mbox having multiple mails
 - Tag mails (Just create a git repo for each tag and pick each commit)
 - Implement manifest subcommand: Help manifest managing
