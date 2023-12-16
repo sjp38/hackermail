@@ -420,6 +420,8 @@ def set_argparser(parser=None):
             help='threads sort field')
     parser.add_argument('--export', metavar='<file>',
             help='export fetched mails to a file')
+    parser.add_argument('--hot', action='store_true',
+            help='show latest and hot threds first')
 
 def main(args=None):
     global new_threads_only
@@ -434,6 +436,10 @@ def main(args=None):
         parser = argparse.ArgumentParser()
         set_argparser(parser)
         args = parser.parse_args()
+
+    if args.hot:
+        args.descend = True
+        args.sort_threads_by = ['last_date', 'nr_comments']
 
     new_threads_only = args.new
     collapse_threads = args.collapse
