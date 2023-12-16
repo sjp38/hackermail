@@ -145,6 +145,14 @@ def read_mbox_file(filepath):
         mails.append(Mail.from_mbox('%s' % message))
     return mails
 
+def export_mails(mails, export_file):
+    with open(export_file, 'w') as f:
+        for mail in mails:
+            if mail.mbox is None:
+                mail.get_field('message-id')
+            f.write('\n'.join(
+                ['From mboxrd@z Thu Jan  1 00:00:00 1970', mail.mbox,'']))
+
 __hkml_dir = None
 
 def set_hkml_dir(path=None):
