@@ -299,8 +299,7 @@ def get_mails_from_git(manifest, mail_list, since, until, author,
     lines = []
     mdirs = _hkml.mail_list_data_paths(mail_list, manifest)
     if not mdirs:
-        print("Mailing list '%s' in manifest '%s' not found." % (
-            mail_list, manifest_file))
+        print("Mailing list '%s' in manifest not found." % mail_list)
         exit(1)
 
     mails = []
