@@ -203,12 +203,10 @@ def last_reply_date(mail, prev_last_date):
 
 def nr_comments(mail):
     nr_comments = nr_replies_of(mail)
-    # date format: %y-%m-%dT%H:%M:%S...
-    # In some cases such as patchset, no every reply is comment.  Consider
-    # first level replies that sent in same tens of minute as non-comment.
-    orig_date = mail.git_date[:15]
+    # Treat replies posted within 5 minutes as not comments, but mails sent
+    # together by the author, probably the patchset case.
     for reply in mail.replies:
-        if reply.git_date[:15] == orig_date:
+        if (reply.date - mail.date).seconds < 300:
             nr_comments -= 1
     return nr_comments
 
