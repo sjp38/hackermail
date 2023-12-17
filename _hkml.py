@@ -2,6 +2,7 @@
 
 import base64
 import datetime
+import email.utils
 import json
 import mailbox
 import os
@@ -22,6 +23,7 @@ class Mail:
     gitid = None
     gitdir = None
     git_date = None
+    date = None
     git_subject = None
     orig_subject = None
     tags = None
@@ -39,6 +41,7 @@ class Mail:
         self.gitid = gitid
         self.gitdir = gitdir
         self.git_date = date
+        self.date = datetime.datetime.fromisoformat(date).astimezone()
         self.git_subject = subject
         self.orig_subject = self.git_subject
         self.tags = []
@@ -69,6 +72,9 @@ class Mail:
         self = cls()
         self.mbox = mbox
         self.__parse_mbox()
+        date_str = self.get_field('date')
+        self.date = datetime.datetime.fromtimestamp(
+                email.utils.mktime_tz(email.utils.parsedate_tz(date_str)))
         return self
 
     def get_field(self, tag):
