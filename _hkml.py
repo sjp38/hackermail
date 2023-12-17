@@ -169,10 +169,11 @@ class Mail:
         self.__mbox_parsed = parsed
 
 def read_mbox_file(filepath):
-    if filepath[-5:] == '.json':
+    if filepath[-5:] != '.mbox':
         with open(filepath, 'r') as f:
             kvpairs = json.load(f)
             return [Mail.from_kvpairs(kvp) for kvp in kvpairs]
+
     mails = []
     for message in mailbox.mbox(filepath):
         mail = Mail.from_mbox('%s' % message)
@@ -182,7 +183,7 @@ def read_mbox_file(filepath):
     return mails
 
 def export_mails(mails, export_file):
-    if export_file[-5:] == '.json':
+    if export_file[-5:] != '.mbox':
         with open(export_file, 'w') as f:
             json.dump([m.to_kvpairs() for m in mails], f, indent=4)
         return
