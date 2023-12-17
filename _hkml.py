@@ -22,8 +22,8 @@ def cmd_lines_output(cmd):
 class Mail:
     gitid = None
     gitdir = None
+    subject = None
     date = None
-    git_subject = None
     tags = None
     series = None
     __mbox_parsed = None
@@ -34,7 +34,7 @@ class Mail:
         self.replies = []
 
     def set_tags_series(self):
-        subject = self.git_subject
+        subject = self.subject
         tag_start_idx = subject.find('[')
         if tag_start_idx == -1:
             return
@@ -57,7 +57,7 @@ class Mail:
         self.gitid = gitid
         self.gitdir = gitdir
         self.date = datetime.datetime.fromisoformat(date).astimezone()
-        self.git_subject = subject
+        self.subject = subject
         self.tags = []
 
         self.set_tags_series()
@@ -71,7 +71,7 @@ class Mail:
         date_str = self.get_field('date')
         self.date = datetime.datetime.fromtimestamp(
                 email.utils.mktime_tz(email.utils.parsedate_tz(date_str)))
-        self.git_subject = self.get_field('subject')
+        self.subject = self.get_field('subject')
         self.tags = []
         self.set_tags_series()
         return self
@@ -79,8 +79,8 @@ class Mail:
     def get_field(self, tag):
         tag = tag.lower()
         # this might set from git log
-        if tag == 'subject' and self.git_subject:
-            return self.git_subject
+        if tag == 'subject' and self.subject:
+            return self.subject
 
         if not self.__mbox_parsed:
             self.__parse_mbox()
