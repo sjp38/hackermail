@@ -24,7 +24,6 @@ class Mail:
     gitdir = None
     date = None
     git_subject = None
-    orig_subject = None
     tags = None
     series = None
     __mbox_parsed = None
@@ -41,7 +40,7 @@ class Mail:
         self.gitdir = gitdir
         self.date = datetime.datetime.fromisoformat(date).astimezone()
         self.git_subject = subject
-        self.orig_subject = self.git_subject
+        orig_subject = self.git_subject
         self.tags = []
 
         re_depth = 0
@@ -53,10 +52,10 @@ class Mail:
                 break
         if re_depth > 0:
             self.tags.append('reply')
-            self.orig_subject = ' '.join(subject_fields[re_depth:])
+            orig_subject = ' '.join(subject_fields[re_depth:])
 
-        if len(self.orig_subject) > 0 and self.orig_subject[0] == '[':
-            tag = self.orig_subject[1:].split(']')[0].strip().lower()
+        if len(orig_subject) > 0 and orig_subject[0] == '[':
+            tag = orig_subject[1:].split(']')[0].strip().lower()
             self.tags += tag.split()
 
             series = self.tags[-1].split('/')
