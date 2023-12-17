@@ -2,7 +2,6 @@
 
 import argparse
 import datetime
-import email.utils
 import os
 import subprocess
 import sys
@@ -94,17 +93,7 @@ def pr_mail(mail, depth, suffix, idx, lines, pr_subject):
 
     prefix_fields = []
     index = '[%04d]' % idx
-    date_str = mail.get_field('date')
-    try:
-        # maybe it is git_date (iso-strict)
-        date = datetime.datetime.fromisoformat(date_str).astimezone()
-    except:
-        # maybe it is retrieved from the mail
-        date = datetime.datetime.fromtimestamp(
-                email.utils.mktime_tz(
-                    email.utils.parsedate_tz(date_str)))
-
-    date = '%d/%d' % (date.month, date.day)
+    date = '%d/%d' % (mail.date.month, mail.date.day)
     prefix_fields += [index, date]
     if pr_git_id:
         prefix_fields.append(mail.gitid)
