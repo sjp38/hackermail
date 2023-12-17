@@ -32,6 +32,7 @@ class Mail:
 
     def __init__(self):
         self.replies = []
+        self.tags = []
 
     def set_tags_series(self):
         subject = self.subject
@@ -58,8 +59,6 @@ class Mail:
         self.gitdir = gitdir
         self.date = datetime.datetime.fromisoformat(date).astimezone()
         self.subject = subject
-        self.tags = []
-
         self.set_tags_series()
         return self
 
