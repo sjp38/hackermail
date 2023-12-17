@@ -34,7 +34,7 @@ class Mail:
         self.replies = []
 
     def set_tags_series(self):
-        subject = self.subject
+        subject = self.git_subject
         tag_start_idx = subject.find('[')
         if tag_start_idx == -1:
             return
@@ -71,6 +71,9 @@ class Mail:
         date_str = self.get_field('date')
         self.date = datetime.datetime.fromtimestamp(
                 email.utils.mktime_tz(email.utils.parsedate_tz(date_str)))
+        self.git_subject = self.get_field('subject')
+        self.tags = []
+        self.set_tags_series()
         return self
 
     def get_field(self, tag):
