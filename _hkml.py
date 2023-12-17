@@ -78,6 +78,29 @@ class Mail:
         self.set_tags_series()
         return self
 
+    @classmethod
+    def from_kvpairs(cls, kvpairs):
+        self = cls()
+        self.gitid = kvpairs['gitid']
+        self.gitdir = kvpairs['gitdir']
+        self.subject = kvpairs['subject']
+        self.mbox = kvpairs['mbox']
+        self.__parse_mbox()
+        date_str = self.get_field('date')
+        self.date = datetime.datetime.fromtimestamp(
+                email.utils.mktime_tz(email.utils.parsedate_tz(date_str)))
+        return self
+
+    def to_kvpairs(self):
+        if self.mbox == None:
+            # ensure mbox is set.  TODO: don't parse it unnecessarily
+            self.get_field('message-id')
+        return {
+                'gitid': self.gitid,
+                'gitdir': self.gitdir,
+                'subject': self.subject,
+                'mbox': self.mbox}
+
     def get_field(self, tag):
         tag = tag.lower()
         # this might set from git log
@@ -146,6 +169,10 @@ class Mail:
         self.__mbox_parsed = parsed
 
 def read_mbox_file(filepath):
+    if filepath[-5:] == '.json':
+        with open(filepath, 'r') as f:
+            kvpairs = json.load(f)
+            return [Mail.from_kvpairs(kvp) for kvp in kvpairs]
     mails = []
     for message in mailbox.mbox(filepath):
         mail = Mail.from_mbox('%s' % message)
@@ -155,6 +182,11 @@ def read_mbox_file(filepath):
     return mails
 
 def export_mails(mails, export_file):
+    if export_file[-5:] == '.json':
+        with open(export_file, 'w') as f:
+            json.dump([m.to_kvpairs() for m in mails], f, indent=4)
+        return
+
     with open(export_file, 'w') as f:
         for mail in mails:
             if mail.mbox is None:
