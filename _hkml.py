@@ -135,6 +135,7 @@ class Mail:
                 except:
                     pass
 
+        # for lore-pasted string case
         if 'date' in parsed:
             tokens = parsed['date'].split()
             if tokens[-2:] == ['[thread', 'overview]']:
