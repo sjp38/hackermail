@@ -40,28 +40,23 @@ class Mail:
         self.gitdir = gitdir
         self.date = datetime.datetime.fromisoformat(date).astimezone()
         self.git_subject = subject
-        orig_subject = self.git_subject
         self.tags = []
 
-        re_depth = 0
-        subject_fields = subject.split()
-        for f in subject_fields:
-            if f.lower() == 're:':
-                re_depth += 1
-            else:
-                break
-        if re_depth > 0:
-            self.tags.append('reply')
-            orig_subject = ' '.join(subject_fields[re_depth:])
+        tag_start_idx = subject.find('[')
+        if tag_start_idx == -1:
+            return self
 
-        if len(orig_subject) > 0 and orig_subject[0] == '[':
-            tag = orig_subject[1:].split(']')[0].strip().lower()
-            self.tags += tag.split()
+        tag_end_idx = subject.find(']')
+        if tag_end_idx == -1 or tag_end_idx < tag_start_idx:
+            return self
 
-            series = self.tags[-1].split('/')
-            if (len(series) == 2 and series[0].isdigit() and
-                    series[1].isdigit()):
-                self.series = [int(x) for x in series]
+        tag = subject[tag_start_idx + 1: tag_end_idx].strip().lower()
+        self.tags += tag.split()
+
+        series = self.tags[-1].split('/')
+        if (len(series) == 2 and series[0].isdigit() and
+                series[1].isdigit()):
+            self.series = [int(x) for x in series]
         return self
 
     @classmethod
