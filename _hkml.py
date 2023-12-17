@@ -57,7 +57,16 @@ class Mail:
         self = cls()
         self.gitid = gitid
         self.gitdir = gitdir
-        self.date = datetime.datetime.fromisoformat(date).astimezone()
+        try:
+            self.date = datetime.datetime.fromisoformat(date).astimezone()
+        except:
+            # maybe lower version of python.
+            # the input 'date' may have UTC offset with hour separator, like
+            # '+05:00', while strptime() '%z' expoects no such separator.  Make
+            # it compatible.
+            date = '%s%s' % (date[:-3], date[-2:])
+            self.date = datetime.datetime.strptime(
+                    date, '%Y-%m-%dT%H:%M:%S%z').astimezone()
         self.subject = subject
         self.set_tags_series()
         return self
