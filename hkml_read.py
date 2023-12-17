@@ -193,8 +193,8 @@ def mk_pr_ready(mail, list_, depth=0):
 
 def last_reply_date(mail, prev_last_date):
     if len(mail.replies) == 0:
-        if prev_last_date == None or prev_last_date < mail.git_date:
-            return mail.git_date
+        if prev_last_date == None or prev_last_date < mail.date:
+            return mail.date
         return prev_last_date
 
     for reply in mail.replies:
