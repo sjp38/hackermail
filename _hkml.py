@@ -22,7 +22,6 @@ def cmd_lines_output(cmd):
 class Mail:
     gitid = None
     gitdir = None
-    git_date = None
     date = None
     git_subject = None
     orig_subject = None
@@ -40,7 +39,6 @@ class Mail:
         self = cls()
         self.gitid = gitid
         self.gitdir = gitdir
-        self.git_date = date
         self.date = datetime.datetime.fromisoformat(date).astimezone()
         self.git_subject = subject
         self.orig_subject = self.git_subject
@@ -82,8 +80,6 @@ class Mail:
         # this might set from git log
         if tag == 'subject' and self.git_subject:
             return self.git_subject
-        if tag == 'date' and self.git_date:
-            return self.git_date
 
         if not self.__mbox_parsed:
             self.__parse_mbox()
