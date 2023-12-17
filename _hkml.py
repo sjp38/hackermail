@@ -68,10 +68,13 @@ class Mail:
         self.mbox = mbox
         self.__parse_mbox()
         date_str = self.get_field('date')
+        if date_str == None:
+            return None
         self.date = datetime.datetime.fromtimestamp(
                 email.utils.mktime_tz(email.utils.parsedate_tz(date_str)))
         self.subject = self.get_field('subject')
-        self.tags = []
+        if self.subject == None:
+            return None
         self.set_tags_series()
         return self
 
@@ -145,7 +148,10 @@ class Mail:
 def read_mbox_file(filepath):
     mails = []
     for message in mailbox.mbox(filepath):
-        mails.append(Mail.from_mbox('%s' % message))
+        mail = Mail.from_mbox('%s' % message)
+        if mail is None:
+            continue
+        mails.append(mail)
     return mails
 
 def export_mails(mails, export_file):
