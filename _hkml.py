@@ -33,6 +33,24 @@ class Mail:
     def __init__(self):
         self.replies = []
 
+    def set_tags_series(self):
+        subject = self.subject
+        tag_start_idx = subject.find('[')
+        if tag_start_idx == -1:
+            return
+
+        tag_end_idx = subject.find(']')
+        if tag_end_idx == -1 or tag_end_idx < tag_start_idx:
+            return
+
+        tag = subject[tag_start_idx + 1: tag_end_idx].strip().lower()
+        self.tags += tag.split()
+
+        series = self.tags[-1].split('/')
+        if (len(series) == 2 and series[0].isdigit() and
+                series[1].isdigit()):
+            self.series = [int(x) for x in series]
+
     @classmethod
     def from_gitlog(cls, gitid, gitdir, date, subject):
         self = cls()
@@ -42,21 +60,7 @@ class Mail:
         self.git_subject = subject
         self.tags = []
 
-        tag_start_idx = subject.find('[')
-        if tag_start_idx == -1:
-            return self
-
-        tag_end_idx = subject.find(']')
-        if tag_end_idx == -1 or tag_end_idx < tag_start_idx:
-            return self
-
-        tag = subject[tag_start_idx + 1: tag_end_idx].strip().lower()
-        self.tags += tag.split()
-
-        series = self.tags[-1].split('/')
-        if (len(series) == 2 and series[0].isdigit() and
-                series[1].isdigit()):
-            self.series = [int(x) for x in series]
+        self.set_tags_series()
         return self
 
     @classmethod
