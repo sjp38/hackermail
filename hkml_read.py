@@ -14,7 +14,11 @@ import hkml_send
 
 new_threads_only = False
 pr_git_id = False
-nr_cols_in_line = int(os.get_terminal_size().columns * 9 / 10)
+try:
+    nr_cols_in_line = int(os.get_terminal_size().columns * 9 / 10)
+except OSError as e:
+    # maybe user is doing pipe
+    nr_cols_in_line = 80
 collapse_threads = False
 show_lore_link = False
 open_mail_idxs = None
@@ -488,8 +492,12 @@ def main(args=None):
         os.remove(reply_tmp_path)
         return
 
-    if len(to_show.split('\n')) < os.get_terminal_size().lines:
-        args.stdout = True
+    try:
+        if len(to_show.split('\n')) < os.get_terminal_size().lines:
+            args.stdout = True
+    except OSError as e:
+        # maybe the user is using pipe to the output
+        pass
 
     if args.stdout:
         print(to_show)
