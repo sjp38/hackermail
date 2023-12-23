@@ -11,7 +11,7 @@ import hkml_format_reply
 import hkml_read
 import hkml_send
 import hkml_write
-import manifest
+import hkml_manifest
 import hkml_cache
 
 import _hkml
@@ -51,7 +51,7 @@ parser_send = subparsers.add_parser('send', help = 'send mails')
 hkml_send.set_argparser(parser_send)
 
 parser_manifest = subparsers.add_parser('manifest', help = 'print manifest')
-manifest.set_argparser(parser_manifest)
+hkml_manifest.set_argparser(parser_manifest)
 
 parser_cache = subparsers.add_parser('cache', help = 'manage cache')
 hkml_cache.set_argparser(parser_cache)
@@ -78,7 +78,7 @@ elif args.command == 'format_reply':
 elif args.command == 'send':
     hkml_send.main(args)
 elif args.command == 'manifest':
-    manifest.main(args)
+    hkml_manifest.main(args)
 elif args.command == 'cache':
     hkml_cache.main(args)
 else:
