@@ -12,6 +12,7 @@ import hkml_read
 import hkml_send
 import hkml_write
 import manifest
+import hkml_cache
 
 import _hkml
 
@@ -52,6 +53,9 @@ hkml_send.set_argparser(parser_send)
 parser_manifest = subparsers.add_parser('manifest', help = 'print manifest')
 manifest.set_argparser(parser_manifest)
 
+parser_cache = subparsers.add_parser('cache', help = 'manage cache')
+hkml_cache.set_argparser(parser_cache)
+
 args = parser.parse_args()
 
 if args.command in ['fetch', 'read']:
@@ -75,6 +79,8 @@ elif args.command == 'send':
     hkml_send.main(args)
 elif args.command == 'manifest':
     manifest.main(args)
+elif args.command == 'cache':
+    hkml_cache.main(args)
 else:
     print('wrong command (%s)' % args.command)
     exit(1)

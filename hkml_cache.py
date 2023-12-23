@@ -1,3 +1,4 @@
+import argparse
 import json
 import os
 
@@ -40,7 +41,15 @@ def write_mails_cache_file():
     with open(cache_path, 'w') as f:
         json.dump(mails_cache, f, indent=4)
 
-def main():
+def set_argparser(parser):
+    return
+
+def main(args=None):
+    if not args:
+        parser = argparse.ArgumentParser()
+        set_argparser(parser)
+        args = parser.parse_args()
+
     cache_path = os.path.join(_hkml.get_hkml_dir(), 'mails_cache')
     if not os.path.isfile(cache_path):
         print('no cache exist')
