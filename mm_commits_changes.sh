@@ -38,4 +38,4 @@ since=$(date --date="-$duration_days day" +%Y-%m-%d)
 bindir=$(dirname "$0")
 
 "$bindir/hkml" read mm-commits -cn --since "$since" --fetch | \
-	"$bindir/__summary_mm_commits.py" | less
+	"$bindir/__summary_mm_commits.py"
