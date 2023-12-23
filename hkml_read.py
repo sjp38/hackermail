@@ -8,6 +8,7 @@ import sys
 import tempfile
 
 import _hkml
+import _hkml_cache
 import hkml_format_reply
 import hkml_fetch
 import hkml_send
@@ -500,6 +501,7 @@ def main(args=None):
         f.write(to_show)
     subprocess.call(['less', tmp_path])
     os.remove(tmp_path)
+    _hkml_cache.write_mails_cache_file()
     exit(0)
 
 if __name__ == '__main__':
