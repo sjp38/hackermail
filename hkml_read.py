@@ -426,7 +426,6 @@ def main(args=None):
     global show_lore_link
     global open_mail_via_lore
     global nr_cols_in_line
-    global collapse_threads
 
     if not args:
         parser = argparse.ArgumentParser()
