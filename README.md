@@ -21,9 +21,9 @@ sent within last three days:
     $ ./hkml init --manifest ./manifests/lore.js
     $ ./hkml read damon --fetch
 
-Read the content of 5th mail in the list:
+Read the content of 5th mail on the list:
 
-    $ ./hkml read damon --range 5
+    $ ./hkml read damon --open 5
 
 Send a reply to the mail:
 
