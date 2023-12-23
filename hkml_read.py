@@ -12,7 +12,6 @@ import hkml_format_reply
 import hkml_fetch
 import hkml_send
 
-pr_git_id = False
 try:
     nr_cols_in_line = int(os.get_terminal_size().columns * 9 / 10)
 except OSError as e:
@@ -86,8 +85,7 @@ def should_open_mail(mail_idx, open_mail_idxs):
         return True
     return mail_idx in open_mail_idxs
 
-def pr_mail(mail, depth, suffix, idx, lines, pr_subject):
-    global pr_git_id
+def pr_mail(mail, depth, suffix, idx, lines, pr_subject, pr_git_id):
     global nr_cols_in_line
     global open_mail_idxs
 
@@ -131,7 +129,7 @@ def should_collapse(mail_idx, collapse_threads, expand_threads):
     return not mail_idx in expand_threads
 
 def pr_mails_thread(mail, mail_idx, depth, ls_range, new_threads_only,
-                    collapse_threads, expand_threads, lines):
+                    collapse_threads, expand_threads, pr_git_id, lines):
     global open_mail_idxs
 
     nr_printed = 1
@@ -152,15 +150,17 @@ def pr_mails_thread(mail, mail_idx, depth, ls_range, new_threads_only,
         if len_ == 1:
             open_mail_idxs = [start]
         if mail_idx >= start and (len_ == -1 or mail_idx < end):
-            pr_mail(mail, depth, suffix, mail_idx, lines, len_ > 1)
+            pr_mail(mail, depth, suffix, mail_idx, lines, len_ > 1, pr_git_id)
     elif mail_idx in ls_range:
-            pr_mail(mail, depth, suffix, mail_idx, lines, len(ls_range) > 1)
+            pr_mail(mail, depth, suffix, mail_idx, lines, len(ls_range) > 1,
+                    pr_git_id)
 
     if not should_collapse(mail_idx, collapse_threads, expand_threads):
         for re in mail.replies:
             nr_printed += pr_mails_thread(
                     re, mail_idx + nr_printed, depth + 1, ls_range,
-                    new_threads_only, collapse_threads, expand_threads, lines)
+                    new_threads_only, collapse_threads, expand_threads,
+                    pr_git_id, lines)
     return nr_printed
 
 def root_of_thread(mail, by_msgids):
@@ -224,7 +224,8 @@ def sort_threads(threads, category):
         threads.sort(key=lambda t: nr_comments(t))
 
 def mails_to_str(mails_to_show, show_stat, show_thread_of, ls_range, descend,
-        sort_threads_by, new_threads_only, collapse_threads, expand_threads):
+        sort_threads_by, new_threads_only, collapse_threads, expand_threads,
+        pr_git_id):
     lines = []
 
     threads, by_msgids = threads_of(mails_to_show)
@@ -259,7 +260,7 @@ def mails_to_str(mails_to_show, show_stat, show_thread_of, ls_range, descend,
     for mail in threads:
         index += pr_mails_thread(
                 mail, index, 0, ls_range,
-                new_threads_only, collapse_threads, expand_threads,
+                new_threads_only, collapse_threads, expand_threads, pr_git_id,
                 lines)
 
     return '\n'.join(lines)
@@ -426,7 +427,6 @@ def main(args=None):
     global show_lore_link
     global open_mail_idxs
     global open_mail_via_lore
-    global pr_git_id
     global nr_cols_in_line
     global collapse_threads
 
@@ -442,7 +442,6 @@ def main(args=None):
     open_mail_idxs = args.open
     open_mail_via_lore = args.lore_read
     nr_cols_in_line = args.cols
-    pr_git_id = args.gitid
     show_lore_link = args.lore
     ls_range = args.range
 
@@ -476,7 +475,7 @@ def main(args=None):
         args.collapse = False
     to_show = mails_to_str(mails_to_show, args.stat, show_thread_of, ls_range,
             args.descend, args.sort_threads_by,
-            args.new, args.collapse, args.expand)
+            args.new, args.collapse, args.expand, args.gitid)
 
     if args.reply == True:
         orig_mbox = to_show
