@@ -426,6 +426,7 @@ def main(args=None):
     if args.hot:
         args.descend = True
         args.sort_threads_by = ['last_date', 'nr_comments']
+        args.collapse = True
 
     nr_cols_in_line = args.cols
     if nr_cols_in_line is None:
