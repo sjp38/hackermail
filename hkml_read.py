@@ -12,7 +12,6 @@ import hkml_format_reply
 import hkml_fetch
 import hkml_send
 
-new_threads_only = False
 pr_git_id = False
 try:
     nr_cols_in_line = int(os.get_terminal_size().columns * 9 / 10)
@@ -131,7 +130,7 @@ def should_collapse(mail_idx, collapse_threads, expand_threads):
         return False
     return not mail_idx in expand_threads
 
-def pr_mails_thread(mail, mail_idx, depth, ls_range,
+def pr_mails_thread(mail, mail_idx, depth, ls_range, new_threads_only,
                     collapse_threads, expand_threads, lines):
     global open_mail_idxs
 
@@ -161,7 +160,7 @@ def pr_mails_thread(mail, mail_idx, depth, ls_range,
         for re in mail.replies:
             nr_printed += pr_mails_thread(
                     re, mail_idx + nr_printed, depth + 1, ls_range,
-                    collapse_threads, expand_threads, lines)
+                    new_threads_only, collapse_threads, expand_threads, lines)
     return nr_printed
 
 def root_of_thread(mail, by_msgids):
@@ -225,7 +224,7 @@ def sort_threads(threads, category):
         threads.sort(key=lambda t: nr_comments(t))
 
 def mails_to_str(mails_to_show, show_stat, show_thread_of, ls_range, descend,
-        sort_threads_by, collapse_threads, expand_threads):
+        sort_threads_by, new_threads_only, collapse_threads, expand_threads):
     lines = []
 
     threads, by_msgids = threads_of(mails_to_show)
@@ -259,7 +258,8 @@ def mails_to_str(mails_to_show, show_stat, show_thread_of, ls_range, descend,
     index = 0
     for mail in threads:
         index += pr_mails_thread(
-                mail, index, 0, ls_range, collapse_threads, expand_threads,
+                mail, index, 0, ls_range,
+                new_threads_only, collapse_threads, expand_threads,
                 lines)
 
     return '\n'.join(lines)
@@ -423,7 +423,6 @@ def set_argparser(parser=None):
             help='show latest and hot threds first')
 
 def main(args=None):
-    global new_threads_only
     global show_lore_link
     global open_mail_idxs
     global open_mail_via_lore
@@ -440,7 +439,6 @@ def main(args=None):
         args.descend = True
         args.sort_threads_by = ['last_date', 'nr_comments']
 
-    new_threads_only = args.new
     open_mail_idxs = args.open
     open_mail_via_lore = args.lore_read
     nr_cols_in_line = args.cols
@@ -477,7 +475,8 @@ def main(args=None):
     if show_thread_of != None:
         args.collapse = False
     to_show = mails_to_str(mails_to_show, args.stat, show_thread_of, ls_range,
-            args.descend, args.sort_threads_by, args.collapse, args.expand)
+            args.descend, args.sort_threads_by,
+            args.new, args.collapse, args.expand)
 
     if args.reply == True:
         orig_mbox = to_show
