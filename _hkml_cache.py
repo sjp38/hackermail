@@ -5,6 +5,7 @@ import _hkml
 
 # dict having gitid/gitdir as key, Mail kvpairs as value
 mails_cache = None
+need_file_update = False
 
 def read_mail_from_cache(gitid, gitdir):
     global mails_cache
@@ -24,13 +25,17 @@ def read_mail_from_cache(gitid, gitdir):
 
 def write_mail_to_cache(mail):
     global mails_cache
+    global need_file_update
 
     key = '%s/%s' % (mail.gitid, mail.gitdir)
     if key in mails_cache:
         return
     mails_cache[key] = mail.to_kvpairs()
+    need_file_update = True
 
 def write_mails_cache_file():
+    if not need_file_update:
+        return
     cache_path = os.path.join(_hkml.get_hkml_dir(), 'mails_cache')
     with open(cache_path, 'w') as f:
         json.dump(mails_cache, f, indent=4)
