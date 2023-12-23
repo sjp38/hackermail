@@ -19,7 +19,6 @@ try:
 except OSError as e:
     # maybe user is doing pipe
     nr_cols_in_line = 80
-collapse_threads = False
 show_lore_link = False
 open_mail_idxs = None
 open_mail_via_lore = False
@@ -132,7 +131,8 @@ def should_collapse(mail_idx, collapse_threads, expand_threads):
         return False
     return not mail_idx in expand_threads
 
-def pr_mails_thread(mail, mail_idx, depth, ls_range, expand_threads, lines):
+def pr_mails_thread(mail, mail_idx, depth, ls_range,
+                    collapse_threads, expand_threads, lines):
     global open_mail_idxs
 
     nr_printed = 1
@@ -161,7 +161,7 @@ def pr_mails_thread(mail, mail_idx, depth, ls_range, expand_threads, lines):
         for re in mail.replies:
             nr_printed += pr_mails_thread(
                     re, mail_idx + nr_printed, depth + 1, ls_range,
-                    expand_threads, lines)
+                    collapse_threads, expand_threads, lines)
     return nr_printed
 
 def root_of_thread(mail, by_msgids):
@@ -225,7 +225,7 @@ def sort_threads(threads, category):
         threads.sort(key=lambda t: nr_comments(t))
 
 def mails_to_str(mails_to_show, show_stat, show_thread_of, ls_range, descend,
-        sort_threads_by, expand_threads):
+        sort_threads_by, collapse_threads, expand_threads):
     lines = []
 
     threads, by_msgids = threads_of(mails_to_show)
@@ -258,7 +258,8 @@ def mails_to_str(mails_to_show, show_stat, show_thread_of, ls_range, descend,
 
     index = 0
     for mail in threads:
-        index += pr_mails_thread(mail, index, 0, ls_range, expand_threads,
+        index += pr_mails_thread(
+                mail, index, 0, ls_range, collapse_threads, expand_threads,
                 lines)
 
     return '\n'.join(lines)
@@ -440,7 +441,6 @@ def main(args=None):
         args.sort_threads_by = ['last_date', 'nr_comments']
 
     new_threads_only = args.new
-    collapse_threads = args.collapse
     open_mail_idxs = args.open
     open_mail_via_lore = args.lore_read
     nr_cols_in_line = args.cols
@@ -475,9 +475,9 @@ def main(args=None):
 
     show_thread_of = args.thread
     if show_thread_of != None:
-        collapse_threads = False
+        args.collapse = False
     to_show = mails_to_str(mails_to_show, args.stat, show_thread_of, ls_range,
-            args.descend, args.sort_threads_by, args.expand)
+            args.descend, args.sort_threads_by, args.collapse, args.expand)
 
     if args.reply == True:
         orig_mbox = to_show
