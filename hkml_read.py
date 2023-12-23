@@ -12,12 +12,6 @@ import hkml_format_reply
 import hkml_fetch
 import hkml_send
 
-try:
-    nr_cols_in_line = int(os.get_terminal_size().columns * 9 / 10)
-except OSError as e:
-    # maybe user is doing pipe
-    nr_cols_in_line = 80
-
 def lore_url(mail):
     return 'https://lore.kernel.org/r/%s' % mail.get_field('message-id')[1:-1]
 
@@ -83,11 +77,7 @@ def should_open_mail(mail_idx, open_mail_idxs):
     return mail_idx in open_mail_idxs
 
 def pr_mail(mail, depth, suffix, idx, lines, pr_subject, pr_git_id,
-            open_mail_idxs, show_lore_link, open_mail_via_lore):
-    global nr_cols_in_line
-
-    nr_cols = nr_cols_in_line
-
+            open_mail_idxs, show_lore_link, open_mail_via_lore, nr_cols):
     prefix_fields = []
     index = '[%04d]' % idx
     date = '%d/%d' % (mail.date.month, mail.date.day)
@@ -127,7 +117,8 @@ def should_collapse(mail_idx, collapse_threads, expand_threads):
 
 def pr_mails_thread(mail, mail_idx, depth, ls_range, new_threads_only,
                     collapse_threads, expand_threads, pr_git_id,
-                    open_mail_idxs, show_lore_link, open_mail_via_lore, lines):
+                    open_mail_idxs, show_lore_link, open_mail_via_lore,
+                    nr_cols, lines):
     nr_printed = 1
 
     suffix = ''
@@ -147,11 +138,12 @@ def pr_mails_thread(mail, mail_idx, depth, ls_range, new_threads_only,
             open_mail_idxs = [start]
         if mail_idx >= start and (len_ == -1 or mail_idx < end):
             pr_mail(mail, depth, suffix, mail_idx, lines, len_ > 1, pr_git_id,
-                    open_mail_idxs, show_lore_link, open_mail_via_lore)
+                    open_mail_idxs, show_lore_link, open_mail_via_lore,
+                    nr_cols)
     elif mail_idx in ls_range:
             pr_mail(mail, depth, suffix, mail_idx, lines, len(ls_range) > 1,
                     pr_git_id, open_mail_idxs,
-                    show_lore_link, open_mail_via_lore)
+                    show_lore_link, open_mail_via_lore, nr_cols)
 
     if not should_collapse(mail_idx, collapse_threads, expand_threads):
         for re in mail.replies:
@@ -159,7 +151,7 @@ def pr_mails_thread(mail, mail_idx, depth, ls_range, new_threads_only,
                     re, mail_idx + nr_printed, depth + 1, ls_range,
                     new_threads_only, collapse_threads, expand_threads,
                     pr_git_id, open_mail_idxs,
-                    show_lore_link, open_mail_via_lore, lines)
+                    show_lore_link, open_mail_via_lore, nr_cols, lines)
     return nr_printed
 
 def root_of_thread(mail, by_msgids):
@@ -224,7 +216,8 @@ def sort_threads(threads, category):
 
 def mails_to_str(mails_to_show, show_stat, show_thread_of, ls_range, descend,
         sort_threads_by, new_threads_only, collapse_threads, expand_threads,
-        pr_git_id, open_mail_idxs, open_mail_via_lore, show_lore_link):
+        pr_git_id, open_mail_idxs, open_mail_via_lore, show_lore_link,
+                 nr_cols):
     lines = []
 
     threads, by_msgids = threads_of(mails_to_show)
@@ -260,7 +253,8 @@ def mails_to_str(mails_to_show, show_stat, show_thread_of, ls_range, descend,
         index += pr_mails_thread(
                 mail, index, 0, ls_range,
                 new_threads_only, collapse_threads, expand_threads, pr_git_id,
-                open_mail_idxs, show_lore_link, open_mail_via_lore, lines)
+                open_mail_idxs, show_lore_link, open_mail_via_lore, nr_cols,
+                lines)
 
     return '\n'.join(lines)
 
@@ -398,7 +392,7 @@ def set_argparser(parser=None):
             type=int, nargs='+',
             help='show mails of indexes in given range')
     parser.add_argument('--cols', metavar='<int>', type=int,
-            default=nr_cols_in_line, help='number of columns for each line')
+            help='number of columns for each line')
     parser.add_argument('--gitid', action='store_true',
             help='print git id of each mail')
     parser.add_argument('--lore', action='store_true',
@@ -423,8 +417,6 @@ def set_argparser(parser=None):
             help='show latest and hot threds first')
 
 def main(args=None):
-    global nr_cols_in_line
-
     if not args:
         parser = argparse.ArgumentParser()
         set_argparser(parser)
@@ -435,6 +427,13 @@ def main(args=None):
         args.sort_threads_by = ['last_date', 'nr_comments']
 
     nr_cols_in_line = args.cols
+    if nr_cols_in_line is None:
+        try:
+            nr_cols_in_line = int(os.get_terminal_size().columns * 9 / 10)
+        except OSError as e:
+            # maybe user is doing pipe
+            nr_cols_in_line = 80
+
     ls_range = args.range
 
     if args.reply == True:
@@ -468,7 +467,7 @@ def main(args=None):
     to_show = mails_to_str(mails_to_show, args.stat, show_thread_of, ls_range,
             args.descend, args.sort_threads_by,
             args.new, args.collapse, args.expand, args.gitid, args.open,
-            args.lore, args.lore_read)
+            args.lore, args.lore_read, nr_cols_in_line)
 
     if args.reply == True:
         orig_mbox = to_show
