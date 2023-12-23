@@ -467,6 +467,7 @@ def main(args=None):
             args.descend, args.sort_threads_by,
             args.new, args.collapse, args.expand, args.gitid, args.open,
             args.lore, args.lore_read, nr_cols_in_line)
+    hkml_cache.write_mails_cache_file()
 
     if args.reply is not None:
         orig_mbox = to_show
@@ -499,7 +500,6 @@ def main(args=None):
         f.write(to_show)
     subprocess.call(['less', tmp_path])
     os.remove(tmp_path)
-    hkml_cache.write_mails_cache_file()
     exit(0)
 
 if __name__ == '__main__':
