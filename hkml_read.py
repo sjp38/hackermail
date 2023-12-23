@@ -18,7 +18,6 @@ except OSError as e:
     # maybe user is doing pipe
     nr_cols_in_line = 80
 show_lore_link = False
-open_mail_idxs = None
 open_mail_via_lore = False
 
 def lore_url(mail):
@@ -85,9 +84,9 @@ def should_open_mail(mail_idx, open_mail_idxs):
         return True
     return mail_idx in open_mail_idxs
 
-def pr_mail(mail, depth, suffix, idx, lines, pr_subject, pr_git_id):
+def pr_mail(mail, depth, suffix, idx, lines, pr_subject, pr_git_id,
+            open_mail_idxs):
     global nr_cols_in_line
-    global open_mail_idxs
 
     nr_cols = nr_cols_in_line
 
@@ -129,9 +128,8 @@ def should_collapse(mail_idx, collapse_threads, expand_threads):
     return not mail_idx in expand_threads
 
 def pr_mails_thread(mail, mail_idx, depth, ls_range, new_threads_only,
-                    collapse_threads, expand_threads, pr_git_id, lines):
-    global open_mail_idxs
-
+                    collapse_threads, expand_threads, pr_git_id,
+                    open_mail_idxs, lines):
     nr_printed = 1
 
     suffix = ''
@@ -150,17 +148,18 @@ def pr_mails_thread(mail, mail_idx, depth, ls_range, new_threads_only,
         if len_ == 1:
             open_mail_idxs = [start]
         if mail_idx >= start and (len_ == -1 or mail_idx < end):
-            pr_mail(mail, depth, suffix, mail_idx, lines, len_ > 1, pr_git_id)
+            pr_mail(mail, depth, suffix, mail_idx, lines, len_ > 1, pr_git_id,
+                    open_mail_idxs)
     elif mail_idx in ls_range:
             pr_mail(mail, depth, suffix, mail_idx, lines, len(ls_range) > 1,
-                    pr_git_id)
+                    pr_git_id, open_mail_idxs)
 
     if not should_collapse(mail_idx, collapse_threads, expand_threads):
         for re in mail.replies:
             nr_printed += pr_mails_thread(
                     re, mail_idx + nr_printed, depth + 1, ls_range,
                     new_threads_only, collapse_threads, expand_threads,
-                    pr_git_id, lines)
+                    pr_git_id, open_mail_idxs, lines)
     return nr_printed
 
 def root_of_thread(mail, by_msgids):
@@ -225,7 +224,7 @@ def sort_threads(threads, category):
 
 def mails_to_str(mails_to_show, show_stat, show_thread_of, ls_range, descend,
         sort_threads_by, new_threads_only, collapse_threads, expand_threads,
-        pr_git_id):
+        pr_git_id, open_mail_idxs):
     lines = []
 
     threads, by_msgids = threads_of(mails_to_show)
@@ -261,7 +260,7 @@ def mails_to_str(mails_to_show, show_stat, show_thread_of, ls_range, descend,
         index += pr_mails_thread(
                 mail, index, 0, ls_range,
                 new_threads_only, collapse_threads, expand_threads, pr_git_id,
-                lines)
+                open_mail_idxs, lines)
 
     return '\n'.join(lines)
 
@@ -425,7 +424,6 @@ def set_argparser(parser=None):
 
 def main(args=None):
     global show_lore_link
-    global open_mail_idxs
     global open_mail_via_lore
     global nr_cols_in_line
     global collapse_threads
@@ -439,7 +437,6 @@ def main(args=None):
         args.descend = True
         args.sort_threads_by = ['last_date', 'nr_comments']
 
-    open_mail_idxs = args.open
     open_mail_via_lore = args.lore_read
     nr_cols_in_line = args.cols
     show_lore_link = args.lore
@@ -475,7 +472,7 @@ def main(args=None):
         args.collapse = False
     to_show = mails_to_str(mails_to_show, args.stat, show_thread_of, ls_range,
             args.descend, args.sort_threads_by,
-            args.new, args.collapse, args.expand, args.gitid)
+            args.new, args.collapse, args.expand, args.gitid, args.open)
 
     if args.reply == True:
         orig_mbox = to_show
