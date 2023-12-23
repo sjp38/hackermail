@@ -9,7 +9,7 @@ import os
 import subprocess
 import sys
 
-import _hkml_cache
+import hkml_cache
 
 def cmd_str_output(cmd):
     output = subprocess.check_output(cmd)
@@ -56,7 +56,7 @@ class Mail:
 
     @classmethod
     def from_gitlog(cls, gitid, gitdir, date, subject):
-        mail = _hkml_cache.read_mail_from_cache(gitid, gitdir)
+        mail = hkml_cache.read_mail_from_cache(gitid, gitdir)
         if mail != None:
             return mail
         self = cls()
@@ -74,7 +74,7 @@ class Mail:
                     date, '%Y-%m-%dT%H:%M:%S%z').astimezone()
         self.subject = subject
         self.set_tags_series()
-        _hkml_cache.write_mail_to_cache(self)
+        hkml_cache.write_mail_to_cache(self)
         return self
 
     @classmethod
