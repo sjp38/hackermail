@@ -27,7 +27,7 @@ Read the content of 5th mail on the list:
 
 Send a reply to the mail:
 
-    $ ./hkml read damon --range 5 --reply
+    $ ./hkml read damon --reply 5
 
 Write a mail to the mailing list, and send:
 

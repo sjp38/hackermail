@@ -406,7 +406,7 @@ def set_argparser(parser=None):
             help='print to stdout instead of using the pager')
     parser.add_argument('--fetch', action='store_true',
             help='fetch mails before listing')
-    parser.add_argument('--reply', action='store_true',
+    parser.add_argument('--reply', type=int, metavar='<int>',
             help='reply to the selected mail')
     parser.add_argument('--sort_threads_by', nargs='+',
             choices=['first_date', 'last_date', 'nr_replies', 'nr_comments'],
@@ -438,10 +438,8 @@ def main(args=None):
 
     ls_range = args.range
 
-    if args.reply == True:
-        if len(ls_range) != 1:
-            print('cannot reply to multiple mails')
-            exit(1)
+    if args.reply is not None:
+        ls_range = [args.reply]
 
     if len(ls_range) == 1:
         ls_range.append(1)
@@ -471,7 +469,7 @@ def main(args=None):
             args.new, args.collapse, args.expand, args.gitid, args.open,
             args.lore, args.lore_read, nr_cols_in_line)
 
-    if args.reply == True:
+    if args.reply is not None:
         orig_mbox = to_show
         reply_mbox_str = hkml_format_reply.format_reply(
                 _hkml.Mail.from_mbox(orig_mbox))
