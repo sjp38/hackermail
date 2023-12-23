@@ -474,6 +474,8 @@ def main(args=None):
         return _hkml.export_mails(mails_to_show, args.export)
 
     show_thread_of = args.thread
+    if show_thread_of != None:
+        collapse_threads = False
     to_show = mails_to_str(mails_to_show, args.stat, show_thread_of, ls_range,
             args.descend, args.sort_threads_by, args.expand)
 
