@@ -17,7 +17,6 @@ try:
 except OSError as e:
     # maybe user is doing pipe
     nr_cols_in_line = 80
-show_lore_link = False
 open_mail_via_lore = False
 
 def lore_url(mail):
@@ -49,7 +48,7 @@ def pr_mail_content_via_lore(mail_url, lines):
             break
         lines.append(line)
 
-def pr_mail_content(mail, use_lore, lines):
+def pr_mail_content(mail, use_lore, show_lore_link, lines):
     if use_lore:
         pr_mail_content_via_lore(lore_url(mail), lines)
         return
@@ -85,7 +84,7 @@ def should_open_mail(mail_idx, open_mail_idxs):
     return mail_idx in open_mail_idxs
 
 def pr_mail(mail, depth, suffix, idx, lines, pr_subject, pr_git_id,
-            open_mail_idxs):
+            open_mail_idxs, show_lore_link):
     global nr_cols_in_line
 
     nr_cols = nr_cols_in_line
@@ -108,7 +107,7 @@ def pr_mail(mail, depth, suffix, idx, lines, pr_subject, pr_git_id,
     if should_open_mail(idx, open_mail_idxs):
         if pr_subject:
             pr_line_wrap(prefix, subject + suffix, nr_cols, lines)
-        pr_mail_content(mail, open_mail_via_lore, lines)
+        pr_mail_content(mail, open_mail_via_lore, show_lore_link, lines)
     else:
         pr_line_wrap(prefix, subject + suffix, nr_cols, lines)
 
@@ -129,7 +128,7 @@ def should_collapse(mail_idx, collapse_threads, expand_threads):
 
 def pr_mails_thread(mail, mail_idx, depth, ls_range, new_threads_only,
                     collapse_threads, expand_threads, pr_git_id,
-                    open_mail_idxs, lines):
+                    open_mail_idxs, show_lore_link, lines):
     nr_printed = 1
 
     suffix = ''
@@ -149,17 +148,17 @@ def pr_mails_thread(mail, mail_idx, depth, ls_range, new_threads_only,
             open_mail_idxs = [start]
         if mail_idx >= start and (len_ == -1 or mail_idx < end):
             pr_mail(mail, depth, suffix, mail_idx, lines, len_ > 1, pr_git_id,
-                    open_mail_idxs)
+                    open_mail_idxs, show_lore_link)
     elif mail_idx in ls_range:
             pr_mail(mail, depth, suffix, mail_idx, lines, len(ls_range) > 1,
-                    pr_git_id, open_mail_idxs)
+                    pr_git_id, open_mail_idxs, show_lore_link)
 
     if not should_collapse(mail_idx, collapse_threads, expand_threads):
         for re in mail.replies:
             nr_printed += pr_mails_thread(
                     re, mail_idx + nr_printed, depth + 1, ls_range,
                     new_threads_only, collapse_threads, expand_threads,
-                    pr_git_id, open_mail_idxs, lines)
+                    pr_git_id, open_mail_idxs, show_lore_link, lines)
     return nr_printed
 
 def root_of_thread(mail, by_msgids):
@@ -224,7 +223,7 @@ def sort_threads(threads, category):
 
 def mails_to_str(mails_to_show, show_stat, show_thread_of, ls_range, descend,
         sort_threads_by, new_threads_only, collapse_threads, expand_threads,
-        pr_git_id, open_mail_idxs):
+        pr_git_id, open_mail_idxs, show_lore_link):
     lines = []
 
     threads, by_msgids = threads_of(mails_to_show)
@@ -260,7 +259,7 @@ def mails_to_str(mails_to_show, show_stat, show_thread_of, ls_range, descend,
         index += pr_mails_thread(
                 mail, index, 0, ls_range,
                 new_threads_only, collapse_threads, expand_threads, pr_git_id,
-                open_mail_idxs, lines)
+                open_mail_idxs, show_lore_link, lines)
 
     return '\n'.join(lines)
 
@@ -423,7 +422,6 @@ def set_argparser(parser=None):
             help='show latest and hot threds first')
 
 def main(args=None):
-    global show_lore_link
     global open_mail_via_lore
     global nr_cols_in_line
 
@@ -438,7 +436,6 @@ def main(args=None):
 
     open_mail_via_lore = args.lore_read
     nr_cols_in_line = args.cols
-    show_lore_link = args.lore
     ls_range = args.range
 
     if args.reply == True:
@@ -471,7 +468,8 @@ def main(args=None):
         args.collapse = False
     to_show = mails_to_str(mails_to_show, args.stat, show_thread_of, ls_range,
             args.descend, args.sort_threads_by,
-            args.new, args.collapse, args.expand, args.gitid, args.open)
+            args.new, args.collapse, args.expand, args.gitid, args.open,
+            args.lore)
 
     if args.reply == True:
         orig_mbox = to_show
