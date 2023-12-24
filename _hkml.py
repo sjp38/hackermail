@@ -86,7 +86,8 @@ class Mail:
         if date_str == None:
             return None
         self.date = datetime.datetime.fromtimestamp(
-                email.utils.mktime_tz(email.utils.parsedate_tz(date_str)))
+                email.utils.mktime_tz(
+                    email.utils.parsedate_tz(date_str))).astimezone()
         self.subject = self.get_field('subject')
         if self.subject == None:
             return None
@@ -103,7 +104,8 @@ class Mail:
         self.__parse_mbox()
         date_str = self.get_field('date')
         self.date = datetime.datetime.fromtimestamp(
-                email.utils.mktime_tz(email.utils.parsedate_tz(date_str)))
+                email.utils.mktime_tz(
+                    email.utils.parsedate_tz(date_str))).astimezone()
         return self
 
     def to_kvpairs(self):
