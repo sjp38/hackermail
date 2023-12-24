@@ -3,9 +3,6 @@
   - Mail source types extension
     - message id
     - lore link
-  - Cache recent thread-constructed data
-  - Let collapsing only some
-  - Let thread wins collapse
   - Support fetching mail since root of a thread
 - Tag mails (Just create a git repo for each tag and pick each commit)
 - Implement manifest subcommand: Help manifest managing
@@ -14,3 +11,4 @@
 - Subscribe to summary
   (send summary of mails to given mail address in requested time period)
 - Implement cache management feature
+  - Evict mails based on date
