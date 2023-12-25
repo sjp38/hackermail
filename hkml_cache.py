@@ -45,7 +45,7 @@ def write_mails_cache_file():
         return
     cache_path = os.path.join(_hkml.get_hkml_dir(), 'mails_cache')
     with open(cache_path, 'w') as f:
-        json.dump(mails_cache, f, indent=4)
+        json.dump(get_mails_cache(), f, indent=4)
 
 def set_argparser(parser):
     return
