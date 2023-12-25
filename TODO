@@ -12,3 +12,9 @@
   (send summary of mails to given mail address in requested time period)
 - Implement cache management feature
   - Evict mails based on date
+- Cache non-git mails
+  - use message id as the key
+- Provide hkml's id for each mail
+  - cache key
+- Use hkml id for pointing mail
+  - Use it for replying
