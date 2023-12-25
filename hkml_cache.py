@@ -8,6 +8,20 @@ import _hkml
 mails_cache = None
 need_file_update = False
 
+def get_mails_cache():
+    global mails_cache
+
+    if mails_cache is not None:
+        return mails_cache
+
+    cache_path = os.path.join(_hkml.get_hkml_dir(), 'mails_cache')
+    if os.path.isfile(cache_path):
+        with open(cache_path, 'r') as f:
+            mails_cache = json.load(f)
+    else:
+        mails_cache = {}
+    return mails_cache
+
 def read_mail_from_cache(gitid, gitdir):
     global mails_cache
 
