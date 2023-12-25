@@ -64,8 +64,7 @@ def main(args=None):
     cache_stat = os.stat(cache_path)
     print('cache size: %.3f MiB' % (cache_stat.st_size / 1024 / 1024))
 
-    with open(cache_path, 'r') as f:
-        mails_cache = json.load(f)
+    cache = get_mails_cache()
     print('%d mails in cache' % len(mails_cache))
 
 if __name__ == '__main__':
