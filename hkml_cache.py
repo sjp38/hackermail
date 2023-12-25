@@ -31,13 +31,13 @@ def read_mail_from_cache(gitid, gitdir):
     return _hkml.Mail.from_kvpairs(cache[key])
 
 def write_mail_to_cache(mail):
-    global mails_cache
     global need_file_update
 
+    cache = get_mails_cache()
     key = '%s/%s' % (mail.gitid, mail.gitdir)
-    if key in mails_cache:
+    if key in cache:
         return
-    mails_cache[key] = mail.to_kvpairs()
+    cache[key] = mail.to_kvpairs()
     need_file_update = True
 
 def write_mails_cache_file():
