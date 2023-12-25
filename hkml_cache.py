@@ -23,20 +23,12 @@ def get_mails_cache():
     return mails_cache
 
 def read_mail_from_cache(gitid, gitdir):
-    global mails_cache
-
-    if mails_cache is None:
-        cache_path = os.path.join(_hkml.get_hkml_dir(), 'mails_cache')
-        if not os.path.isfile(cache_path):
-            mails_cache = {}
-        else:
-            with open(cache_path, 'r') as f:
-                mails_cache = json.load(f)
+    cache = get_mails_cache()
 
     key = '%s/%s' % (gitid, gitdir)
-    if not key in mails_cache:
+    if not key in cache:
         return None
-    return _hkml.Mail.from_kvpairs(mails_cache['%s/%s' % (gitid, gitdir)])
+    return _hkml.Mail.from_kvpairs(cache[key])
 
 def write_mail_to_cache(mail):
     global mails_cache
