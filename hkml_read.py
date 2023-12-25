@@ -345,6 +345,22 @@ def filter_mails(manifest, mail_list, since, until, tags, msgid, author,
     mails_to_show.reverse()
     return mails_to_show
 
+def get_mails(
+        source, fetch, manifest, since, until, show, hide, msgid, author,
+        subject_contains, contains):
+    if source == 'clipboard':
+        mbox_str = _hkml.cmd_str_output(['xclip', '-o', '-sel', 'clip'])
+        return [_hkml.Mail.from_mbox(mbox_str)]
+    elif os.path.isfile(source):
+        return _hkml.read_mbox_file(source)
+
+    if fetch:
+        hkml_fetch.fetch_mail(manifest, [source], False, 1)
+
+    return filter_mails(
+            manifest, source, since, until, [show, hide], msgid, author,
+            subject_contains, contains)
+
 def set_argparser(parser=None):
     DEFAULT_SINCE = datetime.datetime.now() - datetime.timedelta(days=3)
     DEFAULT_SINCE = '%s-%s-%s' % (DEFAULT_SINCE.year, DEFAULT_SINCE.month,
@@ -444,19 +460,10 @@ def main(args=None):
     if len(ls_range) == 1:
         ls_range.append(1)
 
-    if args.source == 'clipboard':
-        mbox_str = _hkml.cmd_str_output(['xclip', '-o', '-sel', 'clip'])
-        mails_to_show = [_hkml.Mail.from_mbox(mbox_str)]
-    elif os.path.isfile(args.source):
-        mails_to_show = _hkml.read_mbox_file(args.source)
-    else:
-        if args.fetch:
-            hkml_fetch.fetch_mail(args.manifest, [args.source], False, 1)
-
-        mails_to_show = filter_mails(args.manifest, args.source,
-                args.since, args.until,
-                [args.show, args.hide], args.msgid, args.author,
-                args.subject_contains, args.contains)
+    mails_to_show = get_mails(
+            args.source, args.fetch, args.manifest, args.since, args.until,
+            args.show, args.hide, args.msgid, args.author,
+            args.subject_contains, args.contains)
 
     if args.export:
         return _hkml.export_mails(mails_to_show, args.export)
