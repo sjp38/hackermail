@@ -1,4 +1,5 @@
 import argparse
+import datetime
 import json
 import os
 
@@ -47,14 +48,36 @@ def write_mails_cache_file():
     with open(cache_path, 'w') as f:
         json.dump(get_mails_cache(), f, indent=4)
 
+def evict_cached_mails(date_thres):
+    global need_file_update
+
+    date_thres = datetime.datetime.strptime(
+            date_thres, '%Y-%m-%d').astimezone()
+    cache = get_mails_cache()
+    keys_to_del = []
+    for key in cache:
+        mail = _hkml.Mail.from_kvpairs(cache[key])
+        if mail.date < date_thres:
+            keys_to_del.append(key)
+
+    for key in keys_to_del:
+        need_file_update = True
+        del cache[key]
+    write_mails_cache_file()
+
 def set_argparser(parser):
-    return
+    parser.add_argument(
+            '--evict_old', metavar='<%Y-%m-%d>',
+            help='evict cached mails older than the given date')
 
 def main(args=None):
     if not args:
         parser = argparse.ArgumentParser()
         set_argparser(parser)
         args = parser.parse_args()
+
+    if args.evict_old:
+        return evict_cached_mails(args.evict_old)
 
     cache_path = os.path.join(_hkml.get_hkml_dir(), 'mails_cache')
     if not os.path.isfile(cache_path):
