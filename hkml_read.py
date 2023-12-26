@@ -487,7 +487,7 @@ def main(args=None):
     to_show = mails_to_str(mails_to_show, args.stat, args.thread, ls_range,
             args.descend, args.sort_threads_by,
             args.new, args.collapse, args.expand, args.gitid, args.open,
-            args.lore, args.lore_read, nr_cols_in_line)
+            args.lore_read, args.lore, nr_cols_in_line)
     hkml_cache.write_mails_cache_file()
 
     if args.reply is not None:
