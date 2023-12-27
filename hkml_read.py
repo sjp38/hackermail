@@ -81,15 +81,15 @@ def pr_mail(mail, depth, suffix, idx, lines, pr_subject, pr_git_id,
             open_mail_idxs, show_lore_link, open_mail_via_lore, nr_cols):
     prefix_fields = []
     index = '[%04d]' % idx
-    date = mail.date.strftime('%m/%d')
-    prefix_fields += [index, date]
+    prefix_fields += [index]
     if pr_git_id:
         prefix_fields.append(mail.gitid)
     indent = ' ' * 4 * depth
     prefix_fields.append(indent)
     prefix = ' '.join(prefix_fields)
-    subject = '%s (%s)' % (mail.get_field('subject'),
-            ' '.join(mail.get_field('from').split()[0:-1]))
+    subject = '%s (%s, %s)' % (mail.get_field('subject'),
+            ' '.join(mail.get_field('from').split()[0:-1]),
+            mail.date.strftime('%m/%d'))
     if depth and subject.lower().startswith('re: '):
         subject = subject[4:]
     if show_lore_link:
