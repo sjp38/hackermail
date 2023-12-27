@@ -87,13 +87,16 @@ def pr_mail(mail, depth, suffix, idx, lines, pr_subject, pr_git_id,
     indent = ' ' * 4 * depth
     prefix_fields.append(indent)
     prefix = ' '.join(prefix_fields)
-    subject = '%s (%s, %s)' % (mail.get_field('subject'),
-            ' '.join(mail.get_field('from').split()[0:-1]),
-            mail.date.strftime('%m/%d'))
+    subject = '%s' % mail.get_field('subject')
+    suffices = [' '.join(mail.get_field('from').split()[0:-1]),
+                mail.date.strftime('%m/%d %H:%M')]
+    if suffix != '':
+        suffices.append(suffix)
     if depth and subject.lower().startswith('re: '):
         subject = subject[4:]
     if show_lore_link:
-        suffix += ' %s' % lore_url(mail)
+        suffices.append(lore_url(mail))
+    suffix = ' (%s)' % ', '.join(suffices)
     if should_open_mail(idx, open_mail_idxs):
         if pr_subject:
             pr_line_wrap(prefix, subject + suffix, nr_cols, lines)
@@ -128,7 +131,7 @@ def pr_mails_thread(mail, mail_idx, depth, ls_range, new_threads_only,
         return nr_printed + nr_replies
     if should_collapse(mail_idx, collapse_threads, expand_threads):
         nr_replies = nr_replies_of(mail)
-        suffix = ' (%d+ msgs)' % nr_replies
+        suffix = '%d+ msgs' % nr_replies
         nr_printed += nr_replies
 
     if len(ls_range) == 2:
