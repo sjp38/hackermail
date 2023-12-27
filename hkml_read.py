@@ -81,7 +81,7 @@ def pr_mail(mail, depth, suffix, idx, lines, pr_subject, pr_git_id,
             open_mail_idxs, show_lore_link, open_mail_via_lore, nr_cols):
     prefix_fields = []
     index = '[%04d]' % idx
-    date = '%d/%d' % (mail.date.month, mail.date.day)
+    date = mail.date.strftime('%m/%d')
     prefix_fields += [index, date]
     if pr_git_id:
         prefix_fields.append(mail.gitid)
