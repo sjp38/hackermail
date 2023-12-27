@@ -18,16 +18,13 @@ mmotm 2021-10-05-19-53 uploaded
 
 expected inputs are for example:
 
-[0000] 10/29  + crash_dump-fix-boolreturncocci-warning.patch added to -mm tree () (0+
+[0000] + crash_dump-fix-boolreturncocci-warning.patch added to -mm tree
+       (Andrew Morton, 10/29, 0+
               msgs)
-[0001] 10/29  + crash_dump-remove-duplicate-include-in-crash_dumph.patch added to -mm tree
-              () (0+ msgs)
-[0002] 10/29  + seq_file-fix-passing-wrong-private-data.patch added to -mm tree () (0+
-              msgs)
-[0003] 10/29  + mm-damon-remove-return-value-from-before_terminate-callback.patch added to
-              -mm tree () (0+ msgs)
-[0004] 10/29  + scripts-gdb-handle-split-debug-for-vmlinux.patch added to -mm tree () (0+
-              msgs)
+[0001] + crash_dump-remove-duplicate-include-in-crash_dumph.patch added to -mm
+       tree (Andrew Morton, 10/29, 0+ msgs)
+[0002] + seq_file-fix-passing-wrong-private-data.patch added to -mm tree
+       (Andrew Morton, 10/29, 0+ msgs)
 '''
 
 class MmCommits:
@@ -57,10 +54,10 @@ def parse_mails(msg):
     actions = {}
     for mail in mails:
         tokens = mail.split()
-        if len(tokens) < 2:
+        if len(tokens) < 1:
             continue
-        date = tokens[1]
-        tokens = tokens[2:]
+        date = tokens[-4]
+        tokens = tokens[1:]
         if len(tokens) < 9:
             continue
         tag = tokens[0]
