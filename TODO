@@ -14,7 +14,7 @@
   - Evict mails based on date
 - Cache non-git mails
   - use message id as the key
-- Provide hkml's id for each mail
-  - cache key
-- Use hkml id for pointing mail
-  - Use it for replying
+- Make list and index more reliable
+  - Keep the 'read'-constructed list unless source or since are changed, or
+    fetch is requested again.
+- Add 'reply' command based on the list index
