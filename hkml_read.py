@@ -507,7 +507,7 @@ def main(args=None):
     fd, tmp_path = tempfile.mkstemp(prefix='hackermail')
     with open(tmp_path, 'w') as f:
         f.write(to_show)
-    subprocess.call(['less', tmp_path])
+    subprocess.call(['less', '--no-init', tmp_path])
     os.remove(tmp_path)
     exit(0)
 
