@@ -11,6 +11,8 @@ def set_argparser(parser):
     parser.add_argument(
             'mail_idx', metavar='<index>', type=int,
             help='index of the mail to open and read')
+    parser.add_argument(
+            '--stdout', action='store_true', help='print without a pager')
 
 def main(args=None):
     if not args:
@@ -28,6 +30,11 @@ def main(args=None):
 
     lines = []
     hkml_list.pr_mail_content(mail, False, False, lines)
+
+    if args.stdout:
+        print('\n'.join(lines))
+        return
+
     try:
         if len(lines) < os.get_terminal_size().lines:
             print('\n'.join(lines))
