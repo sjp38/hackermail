@@ -41,6 +41,10 @@ Write a mail to the mailing list, and send:
 
     $ ./hkml write --cc damon@lists.linux.dev --send
 
+Export the 2nd, 3rd, and 4th mails on the list to 'exported.mbox' file:
+
+    $ ./hkml export --range 2 5 exported.mbox
+
 For more detail,
 
     $ ./hkml -h
