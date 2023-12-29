@@ -33,7 +33,7 @@ def get_mail(gitid, gitdir):
         return None
     return _hkml.Mail.from_kvpairs(cache[key])
 
-def write_mail_to_cache(mail):
+def set_mail(mail):
     global need_file_update
 
     cache = get_mails_cache()

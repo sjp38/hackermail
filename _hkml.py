@@ -74,7 +74,7 @@ class Mail:
                     date, '%Y-%m-%dT%H:%M:%S%z').astimezone()
         self.subject = subject
         self.set_tags_series()
-        hkml_cache.write_mail_to_cache(self)
+        hkml_cache.set_mail(self)
         return self
 
     @classmethod
