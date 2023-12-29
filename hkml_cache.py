@@ -10,9 +10,9 @@ mails_cache = None
 need_file_update = False
 
 def get_cache_key(gitid=None, gitdir=None, msgid=None):
-    if msgid is not None:
-        return msgid
-    return '%s/%s' % (gitid, gitdir)
+    if gitid is not None:
+        return '%s/%s' % (gitid, gitdir)
+    return msgid
 
 def get_mails_cache():
     global mails_cache
