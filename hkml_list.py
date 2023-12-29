@@ -354,6 +354,12 @@ def filter_mails(manifest, mail_list, since, until, tags, msgid, author,
 def get_mails(
         source, fetch, manifest, since, until, show, hide, msgid, author,
         subject_contains, contains):
+    if source is None:
+        with open(os.path.join(_hkml.get_hkml_dir(), 'mail_idx_to_cache_key'),
+                  'r') as f:
+            keys = json.load(f).values()
+        mails = [hkml_cache.get_mail(key=key) for key in keys]
+        return [m for m in mails if m is not None]
     if source == 'clipboard':
         mbox_str = _hkml.cmd_str_output(['xclip', '-o', '-sel', 'clip'])
         return [_hkml.Mail.from_mbox(mbox_str)]
@@ -373,13 +379,14 @@ def set_argparser(parser=None):
                 DEFAULT_SINCE.day)
 
     _hkml.set_manifest_option(parser)
-    parser.add_argument('source', metavar='<source of mails>',
+    parser.add_argument('source', metavar='<source of mails>', nargs='?',
             help='  '.join([
             'Source of mails to read.  Could be one of following types.',
             'Name of a mailing list in the manifest file.',
             'Path to mbox file in the local filesyste.',
             'Special keyword, \'clipboard\'.',
-            '\'clipboard\' means mbox string in the clipboard.']))
+            '\'clipboard\' means mbox string in the clipboard.',
+            'No argument means last command listed mails.']))
     parser.add_argument('--since', metavar='<date>', type=str,
             default=DEFAULT_SINCE,
             help='show mails more recent than a specific date')
