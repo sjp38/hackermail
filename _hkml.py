@@ -56,7 +56,7 @@ class Mail:
 
     @classmethod
     def from_gitlog(cls, gitid, gitdir, date, subject):
-        mail = hkml_cache.read_mail_from_cache(gitid, gitdir)
+        mail = hkml_cache.get_mail(gitid, gitdir)
         if mail != None:
             return mail
         self = cls()

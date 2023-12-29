@@ -26,7 +26,7 @@ def get_mails_cache():
         mails_cache = {}
     return mails_cache
 
-def read_mail_from_cache(gitid, gitdir):
+def get_mail(gitid, gitdir):
     cache = get_mails_cache()
     key = get_cache_key(gitid, gitdir)
     if not key in cache:
