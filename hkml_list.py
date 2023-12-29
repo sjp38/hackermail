@@ -444,8 +444,6 @@ def set_argparser(parser=None):
             help='print to stdout instead of using the pager')
     parser.add_argument('--fetch', action='store_true',
             help='fetch mails before listing')
-    parser.add_argument('--reply', type=int, metavar='<int>',
-            help='reply to the selected mail')
     parser.add_argument('--sort_threads_by', nargs='+',
             choices=['first_date', 'last_date', 'nr_replies', 'nr_comments'],
             default=['first_date'],
@@ -476,9 +474,6 @@ def main(args=None):
 
     ls_range = args.range
 
-    if args.reply is not None:
-        ls_range = [args.reply]
-
     if len(ls_range) == 1:
         ls_range.append(1)
 
@@ -501,9 +496,6 @@ def main(args=None):
     with open(os.path.join(_hkml.get_hkml_dir(), 'mail_idx_to_cache_key'),
               'w') as f:
         json.dump(mail_idx_to_key, f, indent=4)
-
-    if args.reply is not None:
-        return write_send_reply(to_show)
 
     try:
         if len(to_show.split('\n')) < os.get_terminal_size().lines:
