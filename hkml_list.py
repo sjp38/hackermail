@@ -77,13 +77,11 @@ def should_open_mail(mail_idx, open_mail_idxs):
         return True
     return mail_idx in open_mail_idxs
 
-def pr_mail(mail, depth, suffix, idx, lines, pr_git_id,
+def pr_mail(mail, depth, suffix, idx, lines,
             open_mail_idxs, show_lore_link, open_mail_via_lore, nr_cols):
     prefix_fields = []
     index = '[%04d]' % idx
     prefix_fields += [index]
-    if pr_git_id:
-        prefix_fields.append(mail.gitid)
     indent = ' ' * 4 * depth
     prefix_fields.append(indent)
     prefix = ' '.join(prefix_fields)
@@ -117,7 +115,7 @@ def should_collapse(mail_idx, collapse_threads, expand_threads):
     return not mail_idx in expand_threads
 
 def pr_mails_thread(mail, mail_idx, depth, ls_range, new_threads_only,
-                    collapse_threads, expand_threads, pr_git_id,
+                    collapse_threads, expand_threads,
                     open_mail_idxs, show_lore_link, open_mail_via_lore,
                     nr_cols, mail_idx_to_key, lines):
     nr_printed = 1
@@ -141,12 +139,12 @@ def pr_mails_thread(mail, mail_idx, depth, ls_range, new_threads_only,
         if len_ == 1:
             open_mail_idxs = [start]
         if mail_idx >= start and (len_ == -1 or mail_idx < end):
-            pr_mail(mail, depth, suffix, mail_idx, lines, pr_git_id,
+            pr_mail(mail, depth, suffix, mail_idx, lines,
                     open_mail_idxs, show_lore_link, open_mail_via_lore,
                     nr_cols)
     elif mail_idx in ls_range:
             pr_mail(mail, depth, suffix, mail_idx, lines,
-                    pr_git_id, open_mail_idxs,
+                    open_mail_idxs,
                     show_lore_link, open_mail_via_lore, nr_cols)
 
     if not should_collapse(mail_idx, collapse_threads, expand_threads):
@@ -154,7 +152,7 @@ def pr_mails_thread(mail, mail_idx, depth, ls_range, new_threads_only,
             nr_printed += pr_mails_thread(
                     re, mail_idx + nr_printed, depth + 1, ls_range,
                     new_threads_only, collapse_threads, expand_threads,
-                    pr_git_id, open_mail_idxs,
+                    open_mail_idxs,
                     show_lore_link, open_mail_via_lore, nr_cols,
                     mail_idx_to_key, lines)
     return nr_printed
@@ -221,7 +219,7 @@ def sort_threads(threads, category):
 
 def mails_to_str(mails_to_show, show_stat, show_thread_of, ls_range, descend,
         sort_threads_by, new_threads_only, collapse_threads, expand_threads,
-        pr_git_id, open_mail_idxs, open_mail_via_lore, show_lore_link,
+        open_mail_idxs, open_mail_via_lore, show_lore_link,
                  nr_cols, mail_idx_to_key):
     lines = []
 
@@ -257,7 +255,7 @@ def mails_to_str(mails_to_show, show_stat, show_thread_of, ls_range, descend,
     for mail in threads:
         index += pr_mails_thread(
                 mail, index, 0, ls_range,
-                new_threads_only, collapse_threads, expand_threads, pr_git_id,
+                new_threads_only, collapse_threads, expand_threads,
                 open_mail_idxs, show_lore_link, open_mail_via_lore, nr_cols,
                 mail_idx_to_key, lines)
 
@@ -421,8 +419,6 @@ def set_argparser(parser=None):
             help='show mails of indexes in given range')
     parser.add_argument('--cols', metavar='<int>', type=int,
             help='number of columns for each line')
-    parser.add_argument('--gitid', action='store_true',
-            help='print git id of each mail')
     parser.add_argument('--lore', action='store_true',
             help='print lore link for mails')
     parser.add_argument('--lore_read', action='store_true',
@@ -479,7 +475,7 @@ def main(args=None):
     mail_idx_to_key = {}
     to_show = mails_to_str(mails_to_show, args.stat, args.thread, ls_range,
             args.descend, args.sort_threads_by,
-            args.new, args.collapse, args.expand, args.gitid, args.open,
+            args.new, args.collapse, args.expand, args.open,
             args.lore_read, args.lore, nr_cols_in_line, mail_idx_to_key)
     hkml_cache.writeback_mails()
     with open(os.path.join(_hkml.get_hkml_dir(), 'mail_idx_to_cache_key'),
