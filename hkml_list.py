@@ -433,8 +433,6 @@ def set_argparser(parser=None):
             choices=['first_date', 'last_date', 'nr_replies', 'nr_comments'],
             default=['first_date'],
             help='threads sort field')
-    parser.add_argument('--export', metavar='<file>',
-            help='export fetched mails to a file')
     parser.add_argument('--hot', action='store_true',
             help='show latest and hot threds first')
 
@@ -466,9 +464,6 @@ def main(args=None):
             args.source, args.fetch, args.manifest, args.since, args.until,
             args.show, args.hide, args.msgid, args.author,
             args.subject_contains, args.contains)
-
-    if args.export:
-        return _hkml.export_mails(mails_to_show, args.export)
 
     if args.thread != None:
         args.collapse = False
