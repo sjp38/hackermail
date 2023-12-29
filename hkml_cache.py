@@ -28,9 +28,10 @@ def get_mails_cache():
         mails_cache = {}
     return mails_cache
 
-def get_mail(gitid, gitdir):
+def get_mail(gitid=None, gitdir=None, key=None):
     cache = get_mails_cache()
-    key = get_cache_key(gitid, gitdir)
+    if key is None:
+        key = get_cache_key(gitid, gitdir)
     if not key in cache:
         return None
     return _hkml.Mail.from_kvpairs(cache[key])
