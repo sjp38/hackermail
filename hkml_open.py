@@ -7,6 +7,20 @@ import _hkml
 import hkml_cache
 import hkml_list
 
+def pr_with_pager_if_needed(lines):
+    try:
+        if len(lines) < os.get_terminal_size().lines:
+            print('\n'.join(lines))
+    except OSError as e:
+        # maybe the user is using pipe to the output
+        pass
+
+    fd, tmp_path = tempfile.mkstemp(prefix='hkml_open-')
+    with open(tmp_path, 'w') as f:
+        f.write('\n'.join(lines))
+    subprocess.call(['less', '--no-init', tmp_path])
+    os.remove(tmp_path)
+
 def set_argparser(parser):
     parser.add_argument(
             'mail_idx', metavar='<index>', type=int,
@@ -34,19 +48,7 @@ def main(args=None):
     if args.stdout:
         print('\n'.join(lines))
         return
-
-    try:
-        if len(lines) < os.get_terminal_size().lines:
-            print('\n'.join(lines))
-    except OSError as e:
-        # maybe the user is using pipe to the output
-        pass
-
-    fd, tmp_path = tempfile.mkstemp(prefix='hkml_open-')
-    with open(tmp_path, 'w') as f:
-        f.write('\n'.join(lines))
-    subprocess.call(['less', '--no-init', tmp_path])
-    os.remove(tmp_path)
+    pr_with_pager_if_needed(lines)
 
 if __name__ == 'main__':
     main()
