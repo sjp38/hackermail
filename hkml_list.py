@@ -11,6 +11,7 @@ import tempfile
 import _hkml
 import hkml_cache
 import hkml_fetch
+import hkml_open
 
 def lore_url(mail):
     return 'https://lore.kernel.org/r/%s' % mail.get_field('message-id')[1:-1]
@@ -488,23 +489,10 @@ def main(args=None):
               'w') as f:
         json.dump(mail_idx_to_key, f, indent=4)
 
-    try:
-        if len(to_show.split('\n')) < os.get_terminal_size().lines:
-            args.stdout = True
-    except OSError as e:
-        # maybe the user is using pipe to the output
-        pass
-
     if args.stdout:
         print(to_show)
         return
-
-    fd, tmp_path = tempfile.mkstemp(prefix='hackermail')
-    with open(tmp_path, 'w') as f:
-        f.write(to_show)
-    subprocess.call(['less', '--no-init', tmp_path])
-    os.remove(tmp_path)
-    exit(0)
+    hkml_open.pr_with_pager_if_needed(to_show.split('\n'))
 
 if __name__ == '__main__':
     main()
