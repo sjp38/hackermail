@@ -50,7 +50,7 @@ def writeback_mails():
     with open(cache_path, 'w') as f:
         json.dump(get_mails_cache(), f, indent=4)
 
-def evict_cached_mails(date_thres):
+def evict_mails(date_thres):
     global need_file_update
 
     date_thres = datetime.datetime.strptime(
@@ -78,7 +78,7 @@ def main(args=None):
         args = parser.parse_args()
 
     if args.evict_old:
-        evict_cached_mails(args.evict_old)
+        evict_mails(args.evict_old)
         writeback_mails()
         return
 
