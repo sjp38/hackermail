@@ -62,8 +62,8 @@ def set_argparser(parser=None):
             help='cc recipients of the mail')
     parser.add_argument('--body', metavar='<body>',
             help='body message of the mail')
-    parser.add_argument('--open_editor', action='store_true',
-            help='open a text editor for the mail')
+    parser.add_argument('--format_only', action='store_true',
+            help='print formatted mail template only')
     parser.add_argument('--send', action='store_true',
             help='send the mail')
 
@@ -76,16 +76,19 @@ def main(args=None):
     mbox = format_mbox(args.subject, args.in_reply_to, args.to, args.cc,
         args.body)
 
-    if args.open_editor:
-        fd, tmp_path = tempfile.mkstemp(prefix='hkml_mail_')
-        with open(tmp_path, 'w') as f:
-            f.write(mbox)
-        if subprocess.call(['vim', tmp_path]) != 0:
-            print('writing mail with editor failed')
-            exit(1)
-        with open(tmp_path, 'r') as f:
-            mbox = f.read()
-        os.remove(tmp_path)
+    if args.format_only:
+        print(mbox)
+        return
+
+    fd, tmp_path = tempfile.mkstemp(prefix='hkml_mail_')
+    with open(tmp_path, 'w') as f:
+        f.write(mbox)
+    if subprocess.call(['vim', tmp_path]) != 0:
+        print('writing mail with editor failed')
+        exit(1)
+    with open(tmp_path, 'r') as f:
+        mbox = f.read()
+    os.remove(tmp_path)
 
     print(mbox)
 

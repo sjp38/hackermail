@@ -39,7 +39,7 @@ Send a reply to the 5th mail:
 
 Write a mail to the mailing list, and send:
 
-    $ ./hkml write --cc damon@lists.linux.dev --open_editor --send
+    $ ./hkml write --cc damon@lists.linux.dev --send
 
 For more detail,
 
