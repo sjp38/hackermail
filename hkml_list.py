@@ -385,9 +385,9 @@ def set_argparser(parser=None):
             'No argument means last command listed mails.']))
     parser.add_argument('--since', metavar='<date>', type=str,
             default=DEFAULT_SINCE,
-            help='show mails more recent than a specific date')
+            help='show mails sent after a specific date')
     parser.add_argument('--until', metavar='<date>', type=str,
-            help='show mails more recent than a specific date')
+            help='show mails sent before a specific date')
     parser.add_argument('--show', metavar='<tag>', type=str, nargs='+',
             help='show mails having these tags')
     parser.add_argument('--hide', metavar='<tag>', type=str, nargs='+',
