@@ -88,18 +88,15 @@ def main(args=None):
         exit(1)
     with open(tmp_path, 'r') as f:
         mbox = f.read()
-    os.remove(tmp_path)
 
     print(mbox)
     if not args.send:
+        os.remove(tmp_path)
         return
 
     answer = input('Will send above mail.  Okay? [y/N] ')
     if answer.lower() != 'y':
         exit(0)
-    fd, tmp_path = tempfile.mkstemp(prefix='hkml_mail_')
-    with open(tmp_path, 'w') as f:
-        f.write(mbox)
     _hkml.cmd_str_output(['git', 'send-email', tmp_path])
 
 if __name__ == '__main__':
