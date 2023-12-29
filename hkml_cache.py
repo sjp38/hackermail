@@ -43,7 +43,7 @@ def set_mail(mail):
     cache[key] = mail.to_kvpairs()
     need_file_update = True
 
-def write_mails_cache_file():
+def writeback_mails():
     if not need_file_update:
         return
     cache_path = os.path.join(_hkml.get_hkml_dir(), 'mails_cache')

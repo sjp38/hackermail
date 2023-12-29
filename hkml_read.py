@@ -491,7 +491,7 @@ def main(args=None):
             args.descend, args.sort_threads_by,
             args.new, args.collapse, args.expand, args.gitid, args.open,
             args.lore_read, args.lore, nr_cols_in_line)
-    hkml_cache.write_mails_cache_file()
+    hkml_cache.writeback_mails()
 
     if args.reply is not None:
         return write_send_reply(to_show)
