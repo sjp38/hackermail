@@ -92,6 +92,7 @@ class Mail:
         if self.subject == None:
             return None
         self.set_tags_series()
+        hkml_cache.set_mail(self)
         return self
 
     @classmethod
@@ -106,6 +107,7 @@ class Mail:
         self.date = datetime.datetime.fromtimestamp(
                 email.utils.mktime_tz(
                     email.utils.parsedate_tz(date_str))).astimezone()
+        hkml_cache.set_mail(self)
         return self
 
     def to_kvpairs(self):
