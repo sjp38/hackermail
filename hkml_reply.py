@@ -8,19 +8,6 @@ import hkml_cache
 import hkml_format_reply
 import hkml_send
 
-def write_send_reply(mail):
-    reply_mbox_str = hkml_format_reply.format_reply(mail)
-    fd, reply_tmp_path = tempfile.mkstemp(prefix='hkml_reply_')
-    with open(reply_tmp_path, 'w') as f:
-        f.write(reply_mbox_str)
-    if subprocess.call(['vim', reply_tmp_path]) != 0:
-        print('editing the reply failed.  The draft is at %s' %
-                reply_tmp_path)
-        exit(1)
-    hkml_send.send_mail(reply_tmp_path, get_confirm=True)
-    os.remove(reply_tmp_path)
-    return
-
 def set_argparser(parser):
     parser.add_argument(
             'mail_idx', metavar='<index>', type=int,
@@ -39,7 +26,17 @@ def main(args=None):
     if mail is None:
         print('mail is not cached')
         exit(1)
-    write_send_reply(mail)
+    reply_mbox_str = hkml_format_reply.format_reply(mail)
+    fd, reply_tmp_path = tempfile.mkstemp(prefix='hkml_reply_')
+    with open(reply_tmp_path, 'w') as f:
+        f.write(reply_mbox_str)
+    if subprocess.call(['vim', reply_tmp_path]) != 0:
+        print('editing the reply failed.  The draft is at %s' %
+                reply_tmp_path)
+        exit(1)
+    hkml_send.send_mail(reply_tmp_path, get_confirm=True)
+    os.remove(reply_tmp_path)
+    return
 
 if __name__ == 'main__':
     main()
