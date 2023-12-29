@@ -4,17 +4,8 @@
     - message id
     - lore link
   - Support fetching mail since root of a thread
-- Tag mails (Just create a git repo for each tag and pick each commit)
-- Implement manifest subcommand: Help manifest managing
+- Tag mails (Store the information under .hkm directory in some format)
 - Subscribe to a thread
   (monitor replies and forward the new reply to given mail address)
 - Subscribe to summary
   (send summary of mails to given mail address in requested time period)
-- Implement cache management feature
-  - Evict mails based on date
-- Cache non-git mails
-  - use message id as the key
-- Make list and index more reliable
-  - Keep the 'read'-constructed list unless source or since are changed, or
-    fetch is requested again.
-- Add 'reply' command based on the list index
