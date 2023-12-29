@@ -9,6 +9,7 @@ import hkml_init
 import hkml_fetch
 import hkml_format_reply
 import hkml_list
+import hkml_reply
 import hkml_send
 import hkml_write
 import hkml_manifest
@@ -41,6 +42,9 @@ hkml_fetch.set_argparser(parser_fetch)
 parser_list = subparsers.add_parser('list', help = 'list mails')
 hkml_list.set_argparser(parser_list)
 
+parser_reply = subparsers.add_parser('reply', help = 'reply to a mail')
+hkml_reply.set_argparser(parser_reply)
+
 parser_fmtml = subparsers.add_parser('write', help = 'write a mail')
 hkml_write.set_argparser(parser_fmtml)
 
@@ -71,6 +75,8 @@ elif args.command == 'list':
     hkml_list.main(args)
 elif args.command == 'fetch':
     hkml_fetch.main(args)
+elif args.command == 'reply':
+    hkml_reply.main(args)
 elif args.command == 'write':
     hkml_write.main(args)
 elif args.command == 'format_reply':
