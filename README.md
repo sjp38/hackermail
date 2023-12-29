@@ -45,6 +45,10 @@ Export the 2nd, 3rd, and 4th mails on the list to 'exported.mbox' file:
 
     $ ./hkml export --range 2 5 exported.mbox
 
+List mails in an .mbox file:
+
+    $ ./hkml list exported.mbox
+
 For more detail,
 
     $ ./hkml -h
