@@ -8,7 +8,7 @@ import sys
 import hkml_init
 import hkml_fetch
 import hkml_format_reply
-import hkml_read
+import hkml_list
 import hkml_send
 import hkml_write
 import hkml_manifest
@@ -38,8 +38,8 @@ hkml_init.set_argparser(parser_init)
 parser_fetch = subparsers.add_parser('fetch', help = 'fetch mails')
 hkml_fetch.set_argparser(parser_fetch)
 
-parser_read = subparsers.add_parser('read', help = 'read mails')
-hkml_read.set_argparser(parser_read)
+parser_list = subparsers.add_parser('list', help = 'list mails')
+hkml_list.set_argparser(parser_list)
 
 parser_fmtml = subparsers.add_parser('write', help = 'write a mail')
 hkml_write.set_argparser(parser_fmtml)
@@ -58,7 +58,7 @@ hkml_cache.set_argparser(parser_cache)
 
 args = parser.parse_args()
 
-if args.command in ['fetch', 'read']:
+if args.command in ['fetch', 'list']:
     _hkml.set_hkml_dir(args.hkml_dir)
 
 if not args.command:
@@ -67,8 +67,8 @@ if not args.command:
 
 if args.command == 'init':
     hkml_init.main(args)
-elif args.command == 'read':
-    hkml_read.main(args)
+elif args.command == 'list':
+    hkml_list.main(args)
 elif args.command == 'fetch':
     hkml_fetch.main(args)
 elif args.command == 'write':
