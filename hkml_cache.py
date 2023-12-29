@@ -9,6 +9,9 @@ import _hkml
 mails_cache = None
 need_file_update = False
 
+def get_cache_key(gitid, gitdir):
+    return '%s/%s' % (gitid, gitdir)
+
 def get_mails_cache():
     global mails_cache
 
@@ -25,8 +28,7 @@ def get_mails_cache():
 
 def read_mail_from_cache(gitid, gitdir):
     cache = get_mails_cache()
-
-    key = '%s/%s' % (gitid, gitdir)
+    key = get_cache_key(gitid, gitdir)
     if not key in cache:
         return None
     return _hkml.Mail.from_kvpairs(cache[key])
@@ -35,7 +37,7 @@ def write_mail_to_cache(mail):
     global need_file_update
 
     cache = get_mails_cache()
-    key = '%s/%s' % (mail.gitid, mail.gitdir)
+    key = get_cache_key(mail.gitid, mail.gitdir)
     if key in cache:
         return
     cache[key] = mail.to_kvpairs()
