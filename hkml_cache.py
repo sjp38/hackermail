@@ -9,7 +9,9 @@ import _hkml
 mails_cache = None
 need_file_update = False
 
-def get_cache_key(gitid, gitdir):
+def get_cache_key(gitid=None, gitdir=None, msgid=None):
+    if msgid is not None:
+        return msgid
     return '%s/%s' % (gitid, gitdir)
 
 def get_mails_cache():
