@@ -12,6 +12,7 @@ import hkml_open
 import hkml_reply
 import hkml_send
 import hkml_write
+import hkml_export
 import hkml_manifest
 import hkml_cache
 
@@ -54,6 +55,9 @@ hkml_write.set_argparser(parser_fmtml)
 parser_send = subparsers.add_parser('send', help = 'send mails')
 hkml_send.set_argparser(parser_send)
 
+parser_export = subparsers.add_parser('export', help = 'export mails')
+hkml_export.set_argparser(parser_export)
+
 parser_manifest = subparsers.add_parser('manifest', help = 'print manifest')
 hkml_manifest.set_argparser(parser_manifest)
 
@@ -83,6 +87,8 @@ elif args.command == 'write':
     hkml_write.main(args)
 elif args.command == 'send':
     hkml_send.main(args)
+elif args.command == 'export':
+    hkml_export.main(args)
 elif args.command == 'manifest':
     hkml_manifest.main(args)
 elif args.command == 'cache':
