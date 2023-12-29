@@ -11,6 +11,7 @@ def pr_with_pager_if_needed(lines):
     try:
         if len(lines) < os.get_terminal_size().lines:
             print('\n'.join(lines))
+            return
     except OSError as e:
         # maybe the user is using pipe to the output
         pass
