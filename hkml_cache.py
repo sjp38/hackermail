@@ -65,7 +65,6 @@ def evict_cached_mails(date_thres):
     for key in keys_to_del:
         need_file_update = True
         del cache[key]
-    write_mails_cache_file()
 
 def set_argparser(parser):
     parser.add_argument(
@@ -79,7 +78,9 @@ def main(args=None):
         args = parser.parse_args()
 
     if args.evict_old:
-        return evict_cached_mails(args.evict_old)
+        evict_cached_mails(args.evict_old)
+        writeback_mails()
+        return
 
     cache_path = os.path.join(_hkml.get_hkml_dir(), 'mails_cache')
     if not os.path.isfile(cache_path):
