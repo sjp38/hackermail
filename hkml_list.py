@@ -369,20 +369,6 @@ def get_mails(
             manifest, source, since, until, [show, hide], msgid, author,
             subject_contains, contains)
 
-def write_send_reply(orig_mbox):
-    reply_mbox_str = hkml_format_reply.format_reply(
-            _hkml.Mail.from_mbox(orig_mbox))
-    fd, reply_tmp_path = tempfile.mkstemp(prefix='hkml_reply_')
-    with open(reply_tmp_path, 'w') as f:
-        f.write(reply_mbox_str)
-    if subprocess.call(['vim', reply_tmp_path]) != 0:
-        print('editing the reply failed.  The draft is at %s' %
-                reply_tmp_path)
-        exit(1)
-    hkml_send.send_mail(reply_tmp_path, get_confirm=True)
-    os.remove(reply_tmp_path)
-    return
-
 def set_argparser(parser=None):
     DEFAULT_SINCE = datetime.datetime.now() - datetime.timedelta(days=3)
     DEFAULT_SINCE = '%s-%s-%s' % (DEFAULT_SINCE.year, DEFAULT_SINCE.month,

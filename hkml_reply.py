@@ -1,9 +1,27 @@
 import json
 import os
+import subprocess
+import tempfile
 
 import _hkml
 import hkml_cache
+import hkml_format_reply
 import hkml_list
+import hkml_send
+
+def write_send_reply(orig_mbox):
+    reply_mbox_str = hkml_format_reply.format_reply(
+            _hkml.Mail.from_mbox(orig_mbox))
+    fd, reply_tmp_path = tempfile.mkstemp(prefix='hkml_reply_')
+    with open(reply_tmp_path, 'w') as f:
+        f.write(reply_mbox_str)
+    if subprocess.call(['vim', reply_tmp_path]) != 0:
+        print('editing the reply failed.  The draft is at %s' %
+                reply_tmp_path)
+        exit(1)
+    hkml_send.send_mail(reply_tmp_path, get_confirm=True)
+    os.remove(reply_tmp_path)
+    return
 
 def set_argparser(parser):
     parser.add_argument(
@@ -25,7 +43,7 @@ def main(args=None):
         exit(1)
     lines = []
     hkml_list.pr_mail_content(mail, False, False, lines)
-    hkml_list.write_send_reply('\n'.join(lines))
+    write_send_reply('\n'.join(lines))
 
 if __name__ == 'main__':
     main()
