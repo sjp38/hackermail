@@ -10,9 +10,7 @@ import tempfile
 
 import _hkml
 import hkml_cache
-import hkml_format_reply
 import hkml_fetch
-import hkml_send
 
 def lore_url(mail):
     return 'https://lore.kernel.org/r/%s' % mail.get_field('message-id')[1:-1]
