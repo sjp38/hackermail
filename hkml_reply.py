@@ -6,12 +6,10 @@ import tempfile
 import _hkml
 import hkml_cache
 import hkml_format_reply
-import hkml_list
 import hkml_send
 
-def write_send_reply(orig_mbox):
-    reply_mbox_str = hkml_format_reply.format_reply(
-            _hkml.Mail.from_mbox(orig_mbox))
+def write_send_reply(mail):
+    reply_mbox_str = hkml_format_reply.format_reply(mail)
     fd, reply_tmp_path = tempfile.mkstemp(prefix='hkml_reply_')
     with open(reply_tmp_path, 'w') as f:
         f.write(reply_mbox_str)
@@ -41,9 +39,7 @@ def main(args=None):
     if mail is None:
         print('mail is not cached')
         exit(1)
-    lines = []
-    hkml_list.pr_mail_content(mail, False, False, lines)
-    write_send_reply('\n'.join(lines))
+    write_send_reply(mail)
 
 if __name__ == 'main__':
     main()
