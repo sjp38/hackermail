@@ -39,7 +39,10 @@ def set_mail(mail):
     global need_file_update
 
     cache = get_mails_cache()
-    key = get_cache_key(mail.gitid, mail.gitdir)
+    if mail.gitid is not None and mail.gitdir is not None:
+        key = get_cache_key(mail.gitid, mail.gitdir)
+    else:
+        key = mail.get_field('message-id')
     if key in cache:
         return
     cache[key] = mail.to_kvpairs()
