@@ -21,9 +21,17 @@ sent within last three days:
     $ ./hkml init --manifest ./manifests/lore.js
     $ ./hkml list damon --fetch
 
+Show the list again
+
+    $ ./hkml list
+
 Show the list again, with the content of the 5th mail on the list open:
 
     $ ./hkml list --open 5
+
+Open the fifth mail only, without the list
+
+    $ ./hkml open 5
 
 Send a reply to the 5th mail:
 
