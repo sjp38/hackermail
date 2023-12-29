@@ -28,7 +28,18 @@ def main(args=None):
 
     lines = []
     hkml_list.pr_mail_content(mail, False, False, lines)
-    print('\n'.join(lines))
+    try:
+        if len(lines) < os.get_terminal_size().lines:
+            print('\n'.join(lines))
+    except OSError as e:
+        # maybe the user is using pipe to the output
+        pass
+
+    fd, tmp_path = tempfile.mkstemp(prefix='hkml_open-')
+    with open(tmp_path, 'w') as f:
+        f.write('\n'.join(lines))
+    subprocess.call(['less', '--no-init', tmp_path])
+    os.remove(tmp_path)
 
 if __name__ == 'main__':
     main()
