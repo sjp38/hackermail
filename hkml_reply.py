@@ -12,6 +12,9 @@ def set_argparser(parser):
     parser.add_argument(
             'mail_idx', metavar='<index>', type=int,
             help='index of the mail to reply to')
+    parser.add_argument(
+            '--format_only', action='store_true',
+            help='print formatted reply template only')
 
 def main(args=None):
     if not args:
@@ -27,6 +30,10 @@ def main(args=None):
         print('mail is not cached')
         exit(1)
     reply_mbox_str = hkml_format_reply.format_reply(mail)
+    if args.format_only:
+        print(reply_mbox_str)
+        return
+
     fd, reply_tmp_path = tempfile.mkstemp(prefix='hkml_reply_')
     with open(reply_tmp_path, 'w') as f:
         f.write(reply_mbox_str)
