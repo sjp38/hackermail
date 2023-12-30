@@ -102,7 +102,6 @@ def pr_mails_thread(mail, ls_range, new_threads_only,
     suffix = ''
     if new_threads_only and mail.get_field('in-reply-to'):
         nr_replies = nr_replies_of(mail)
-        return nr_printed + nr_replies
     if should_collapse(mail.pridx, collapse_threads, expand_threads):
         nr_replies = nr_replies_of(mail)
         suffix = '%d+ msgs' % nr_replies
@@ -131,7 +130,6 @@ def pr_mails_thread(mail, ls_range, new_threads_only,
                     open_mail_idxs,
                     show_lore_link, open_mail_via_lore, nr_cols,
                     mail_idx_to_key, lines)
-    return nr_printed
 
 def root_of_thread(mail, by_msgids):
     in_reply_to = mail.get_field('in-reply-to')
