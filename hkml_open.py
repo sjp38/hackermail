@@ -9,8 +9,7 @@ import _hkml
 import hkml_cache
 import hkml_list
 
-def pr_with_pager_if_needed(lines):
-    text = '\n'.join(lines)
+def pr_with_pager_if_needed(text):
     try:
         if text.count('\n') < os.get_terminal_size().lines:
             print(text)
@@ -75,10 +74,11 @@ def main(args=None):
     lines = []
     pr_mail_content(mail, False, False, lines)
 
+    mail_str = '\n'.join(lines)
     if args.stdout:
-        print('\n'.join(lines))
+        print(mail_str)
         return
-    pr_with_pager_if_needed(lines)
+    pr_with_pager_if_needed(mail_str)
 
 if __name__ == 'main__':
     main()

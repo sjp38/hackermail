@@ -456,7 +456,7 @@ def main(args=None):
     if args.stdout:
         print(to_show)
         return
-    hkml_open.pr_with_pager_if_needed(to_show.split('\n'))
+    hkml_open.pr_with_pager_if_needed(to_show)
 
 if __name__ == '__main__':
     main()
