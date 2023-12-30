@@ -104,10 +104,7 @@ def pr_mails_thread(mail, ls_range, new_threads_only,
         nr_replies = nr_replies_of(mail)
         suffix = '%d+ msgs' % nr_replies
 
-    start = ls_range[0]
-    len_ = ls_range[1]
-    end = start + len_
-    if mail.pridx >= start and (len_ == -1 or mail.pridx < end):
+    if mail.pridx in ls_range:
         pr_mail(mail, suffix, lines,
                 open_mail_idxs, show_lore_link, open_mail_via_lore,
                 nr_cols)
@@ -131,8 +128,8 @@ def root_of_thread(mail, by_msgids):
 def thread_index_range(pr_idx, by_pr_idx, by_msgids):
     root = root_of_thread(by_pr_idx[pr_idx], by_msgids)
     if root:
-        return [root.pridx, nr_replies_of(root) + 1]
-    return [0, 0]
+        return range(root.pridx, root.pridx + nr_replies_of(root) + 1)
+    return range(0, 0)
 
 def index_of_mail_descr(desc, threads, by_msgids):
     try:
@@ -209,11 +206,11 @@ def mails_to_str(mails_to_show, show_stat, show_thread_of, descend,
         mk_pr_ready(mail, by_pr_idx)
 
     # Show all by default
-    ls_range = [0, -1]
+    ls_range = range(0, 9999)
     if show_thread_of != None:
         index = index_of_mail_descr(show_thread_of, threads, by_msgids)
         if index == -1:
-            ls_range = [0, 0]
+            ls_range = range(0, 0)
         else:
             ls_range = thread_index_range(index, by_pr_idx, by_msgids)
 
