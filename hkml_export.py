@@ -6,6 +6,19 @@ import os
 import _hkml
 import hkml_cache
 
+def export_mails(mails, export_file):
+    if export_file[-5:] != '.mbox':
+        with open(export_file, 'w') as f:
+            json.dump([m.to_kvpairs() for m in mails], f, indent=4)
+        return
+
+    with open(export_file, 'w') as f:
+        for mail in mails:
+            if mail.mbox is None:
+                mail.get_field('message-id')
+            f.write('\n'.join(
+                ['From mboxrd@z Thu Jan  1 00:00:00 1970', mail.mbox,'']))
+
 def set_argparser(parser):
     parser.add_argument(
             'export_file', metavar='<file>',
@@ -38,7 +51,7 @@ def main(args=None):
                       % idx)
                 continue
             mails.append(mail)
-    return _hkml.export_mails(mails, args.export_file)
+    return export_mails(mails, args.export_file)
 
 if __name__ == '__main__':
     main()

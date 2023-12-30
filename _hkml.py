@@ -202,19 +202,6 @@ def read_mbox_file(filepath):
         mails.append(mail)
     return mails
 
-def export_mails(mails, export_file):
-    if export_file[-5:] != '.mbox':
-        with open(export_file, 'w') as f:
-            json.dump([m.to_kvpairs() for m in mails], f, indent=4)
-        return
-
-    with open(export_file, 'w') as f:
-        for mail in mails:
-            if mail.mbox is None:
-                mail.get_field('message-id')
-            f.write('\n'.join(
-                ['From mboxrd@z Thu Jan  1 00:00:00 1970', mail.mbox,'']))
-
 __hkml_dir = None
 
 def set_hkml_dir(path=None):
