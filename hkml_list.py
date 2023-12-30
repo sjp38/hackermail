@@ -73,7 +73,8 @@ def pr_mail(mail, depth, suffix, idx, lines,
     suffix = ' (%s)' % ', '.join(suffices)
     pr_line_wrap(prefix, subject + suffix, nr_cols, lines)
     if should_open_mail(idx, open_mail_idxs):
-        hkml_open.pr_mail_content(mail, open_mail_via_lore, show_lore_link, lines)
+        lines.append(hkml_open.mail_display_str(mail, open_mail_via_lore,
+                                                show_lore_link))
 
 def nr_replies_of(mail):
     nr = len(mail.replies)

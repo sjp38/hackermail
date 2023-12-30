@@ -38,12 +38,11 @@ def mail_display_str_via_lore(mail_url):
         lines.append(line)
     return '\n'.join(lines)
 
-def pr_mail_content(mail, use_lore, show_lore_link, lines):
+def mail_display_str(mail, use_lore, show_lore_link):
     if use_lore:
-        lines.append(mail_display_str_via_lore(lore_url(mail)))
-        return
+        return mail_display_str_via_lore(lore_url(mail))
 
-    lines.append('Local-Date: %s' % mail.date)
+    lines = ['Local-Date: %s' % mail.date]
     for head in ['Date', 'Subject', 'Message-Id', 'From', 'To', 'CC']:
         value = mail.get_field(head)
         if value:
@@ -51,6 +50,7 @@ def pr_mail_content(mail, use_lore, show_lore_link, lines):
     lines.append('\n%s' % mail.get_field('body'))
     if show_lore_link:
         lines.append('\n%s\n' % lore_url(mail))
+    return '\n'.join(lines)
 
 def set_argparser(parser):
     parser.add_argument(
@@ -73,10 +73,8 @@ def main(args=None):
         print('mail is not cached')
         exit(1)
 
-    lines = []
-    pr_mail_content(mail, False, False, lines)
+    mail_str = mail_display_str(mail, False, False)
 
-    mail_str = '\n'.join(lines)
     if args.stdout:
         print(mail_str)
         return
