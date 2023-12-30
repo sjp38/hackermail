@@ -36,7 +36,7 @@ def get_mail(gitid=None, gitdir=None, key=None):
         key = get_cache_key(gitid, gitdir)
     if not key in cache:
         return None
-    return _hkml.Mail.from_kvpairs(cache[key])
+    return _hkml.Mail(kvpairs=cache[key])
 
 def set_mail(mail):
     global need_file_update
@@ -66,7 +66,7 @@ def evict_mails(date_thres):
     cache = get_mails_cache()
     keys_to_del = []
     for key in cache:
-        mail = _hkml.Mail.from_kvpairs(cache[key])
+        mail = _hkml.Mail(kvpairs=cache[key])
         if mail.date < date_thres:
             keys_to_del.append(key)
 

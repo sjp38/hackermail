@@ -205,7 +205,7 @@ def read_mbox_file(filepath):
     if filepath[-5:] != '.mbox':
         with open(filepath, 'r') as f:
             kvpairs = json.load(f)
-            return [Mail.from_kvpairs(kvp) for kvp in kvpairs]
+            return [Mail(kvpairs=kvp) for kvp in kvpairs]
 
     mails = []
     for message in mailbox.mbox(filepath):
