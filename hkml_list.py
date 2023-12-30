@@ -286,7 +286,7 @@ def get_mails_from_git(manifest, mail_list, since, until, author,
         if not os.path.isdir(mdir):
             break
         cmd = ['git', '--git-dir=%s' % mdir, 'log',
-                '--date=iso-strict', '--pretty=%h %ad %s',
+                '--date=iso-strict', '--pretty=%H %ad %s',
                 '--since=%s' % since]
         if until:
             cmd += ['--until=%s' % until]
