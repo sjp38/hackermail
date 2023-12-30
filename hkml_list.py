@@ -96,14 +96,14 @@ def pr_mails_thread(mail, mail_idx, depth, ls_range, new_threads_only,
                     nr_cols, mail_idx_to_key, lines):
     nr_printed = 1
 
-    mail_idx_to_key[mail_idx] = hkml_cache.get_cache_key(
+    mail_idx_to_key[mail.pridx] = hkml_cache.get_cache_key(
             mail.gitid, mail.gitdir, mail.get_field('message-id'))
 
     suffix = ''
     if new_threads_only and mail.get_field('in-reply-to'):
         nr_replies = nr_replies_of(mail)
         return nr_printed + nr_replies
-    if should_collapse(mail_idx, collapse_threads, expand_threads):
+    if should_collapse(mail.pridx, collapse_threads, expand_threads):
         nr_replies = nr_replies_of(mail)
         suffix = '%d+ msgs' % nr_replies
         nr_printed += nr_replies
@@ -114,19 +114,19 @@ def pr_mails_thread(mail, mail_idx, depth, ls_range, new_threads_only,
         end = start + len_
         if len_ == 1:
             open_mail_idxs = [start]
-        if mail_idx >= start and (len_ == -1 or mail_idx < end):
+        if mail.pridx >= start and (len_ == -1 or mail.pridx < end):
             pr_mail(mail, depth, suffix, lines,
                     open_mail_idxs, show_lore_link, open_mail_via_lore,
                     nr_cols)
-    elif mail_idx in ls_range:
+    elif mail.pridx in ls_range:
             pr_mail(mail, depth, suffix, lines,
                     open_mail_idxs,
                     show_lore_link, open_mail_via_lore, nr_cols)
 
-    if not should_collapse(mail_idx, collapse_threads, expand_threads):
+    if not should_collapse(mail.pridx, collapse_threads, expand_threads):
         for re in mail.replies:
             nr_printed += pr_mails_thread(
-                    re, mail_idx + nr_printed, depth + 1, ls_range,
+                    re, mail.pridx + nr_printed, depth + 1, ls_range,
                     new_threads_only, collapse_threads, expand_threads,
                     open_mail_idxs,
                     show_lore_link, open_mail_via_lore, nr_cols,
