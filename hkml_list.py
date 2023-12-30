@@ -187,6 +187,8 @@ def mails_to_str(mails_to_show, show_stat, show_thread_of, descend,
             ls_range = thread_index_range(index, by_pr_idx, by_msgids)
 
     for mail in by_pr_idx:
+        mail_idx_to_key[mail.pridx] = hkml_cache.get_cache_key(
+                mail.gitid, mail.gitdir, mail.get_field('message-id'))
         if not mail.pridx in ls_range:
             continue
         if new_threads_only and mail.get_field('in-reply-to'):
