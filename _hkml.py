@@ -33,10 +33,6 @@ class Mail:
     mbox = None
     replies = None
 
-    def __init__(self):
-        self.replies = []
-        self.tags = []
-
     def set_tags_series(self):
         subject = self.subject
         tag_start_idx = subject.find('[')
@@ -111,6 +107,22 @@ class Mail:
         self.common_works()
         if self.date is None or self.subject is None:
             return None
+
+    def __init__(self, mbox=None, kvpairs=None):
+        self.replies = []
+        self.tags = []
+
+        if mbox is None and kvpairs is None:
+            return
+
+        if mbox is not None:
+            self.mbox = mbox
+        elif kvpairs is not None:
+            self.gitid = kvpairs['gitid']
+            self.gitdir = kvpairs['gitdir']
+            self.subject = kvpairs['subject']
+            self.mbox = kvpairs['mbox']
+        self.common_works()
 
     def to_kvpairs(self):
         if self.mbox == None:
