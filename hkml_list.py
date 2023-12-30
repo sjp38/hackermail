@@ -90,7 +90,7 @@ def should_collapse(mail_idx, collapse_threads, expand_threads):
         return False
     return not mail_idx in expand_threads
 
-def pr_mails_thread(mail, depth, ls_range, new_threads_only,
+def pr_mails_thread(mail, ls_range, new_threads_only,
                     collapse_threads, expand_threads,
                     open_mail_idxs, show_lore_link, open_mail_via_lore,
                     nr_cols, mail_idx_to_key, lines):
@@ -126,7 +126,7 @@ def pr_mails_thread(mail, depth, ls_range, new_threads_only,
     if not should_collapse(mail.pridx, collapse_threads, expand_threads):
         for re in mail.replies:
             nr_printed += pr_mails_thread(
-                    re, depth + 1, ls_range,
+                    re, ls_range,
                     new_threads_only, collapse_threads, expand_threads,
                     open_mail_idxs,
                     show_lore_link, open_mail_via_lore, nr_cols,
@@ -230,7 +230,7 @@ def mails_to_str(mails_to_show, show_stat, show_thread_of, ls_range, descend,
     index = 0
     for mail in threads:
         index += pr_mails_thread(
-                mail, 0, ls_range,
+                mail, ls_range,
                 new_threads_only, collapse_threads, expand_threads,
                 open_mail_idxs, show_lore_link, open_mail_via_lore, nr_cols,
                 mail_idx_to_key, lines)
