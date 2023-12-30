@@ -193,7 +193,7 @@ def sort_threads(threads, category):
     elif category == 'nr_comments':
         threads.sort(key=lambda t: nr_comments(t))
 
-def mails_to_str(mails_to_show, show_stat, show_thread_of, ls_range, descend,
+def mails_to_str(mails_to_show, show_stat, show_thread_of, descend,
         sort_threads_by, new_threads_only, collapse_threads, expand_threads,
         open_mail_idxs, open_mail_via_lore, show_lore_link,
                  nr_cols, mail_idx_to_key):
@@ -220,6 +220,8 @@ def mails_to_str(mails_to_show, show_stat, show_thread_of, ls_range, descend,
     for mail in threads:
         mk_pr_ready(mail, by_pr_idx)
 
+    # Show all by default
+    ls_range = [0, -1]
     if show_thread_of != None:
         index = index_of_mail_descr(show_thread_of, threads, by_msgids)
         if index == -1:
@@ -432,11 +434,6 @@ def main(args=None):
             # maybe user is doing pipe
             nr_cols_in_line = 80
 
-    ls_range = [0, -1]
-
-    if len(ls_range) == 1:
-        ls_range.append(1)
-
     mails_to_show = get_mails(
             args.source, args.fetch, args.manifest, args.since, args.until,
             args.show, args.hide, args.msgid, args.author,
@@ -445,7 +442,7 @@ def main(args=None):
     if args.thread != None:
         args.collapse = False
     mail_idx_to_key = {}
-    to_show = mails_to_str(mails_to_show, args.stat, args.thread, ls_range,
+    to_show = mails_to_str(mails_to_show, args.stat, args.thread,
             args.descend, args.sort_threads_by,
             args.new, args.collapse, args.expand, args.open,
             args.lore_read, args.lore, nr_cols_in_line, mail_idx_to_key)
