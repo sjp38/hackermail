@@ -105,6 +105,8 @@ class Mail:
         self.mbox = kvpairs['mbox']
         self.__parse_mbox()
         date_str = self.get_field('date')
+        if date_str == None:
+            return None
         self.date = datetime.datetime.fromtimestamp(
                 email.utils.mktime_tz(
                     email.utils.parsedate_tz(date_str))).astimezone()
