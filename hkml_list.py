@@ -394,9 +394,6 @@ def set_argparser(parser=None):
             help='expand threads')
     parser.add_argument('--open', '-o', type=int, nargs='*',
             help='show the content of the <index>th mail')
-    parser.add_argument('--range', '-r', metavar='<number>', default=[0,-1],
-            type=int, nargs='+',
-            help='show mails of indexes in given range')
     parser.add_argument('--cols', metavar='<int>', type=int,
             help='number of columns for each line')
     parser.add_argument('--lore', action='store_true',
@@ -435,7 +432,7 @@ def main(args=None):
             # maybe user is doing pipe
             nr_cols_in_line = 80
 
-    ls_range = args.range
+    ls_range = [0, -1]
 
     if len(ls_range) == 1:
         ls_range.append(1)
