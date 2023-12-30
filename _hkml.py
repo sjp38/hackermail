@@ -103,6 +103,9 @@ class Mail:
         self.set_tags_series()
         hkml_cache.set_mail(self)
 
+    def broken(self):
+        return self.date is None or self.subject is None
+
     def to_kvpairs(self):
         if self.mbox == None:
             # ensure mbox is set.  TODO: don't parse it unnecessarily
@@ -189,7 +192,7 @@ def read_mbox_file(filepath):
     mails = []
     for message in mailbox.mbox(filepath):
         mail = Mail(mbox='%s' % message)
-        if mail.subject is None:
+        if not mail.broken():
             continue
         mails.append(mail)
     return mails
