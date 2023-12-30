@@ -108,6 +108,7 @@ class Mail:
         self.date = datetime.datetime.fromtimestamp(
                 email.utils.mktime_tz(
                     email.utils.parsedate_tz(date_str))).astimezone()
+        self.set_tags_series()
         hkml_cache.set_mail(self)
         return self
 
