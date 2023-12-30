@@ -184,12 +184,16 @@ class Mail:
         self.__mbox_parsed = parsed
 
 def read_mbox_file(filepath):
+    mails = []
     if filepath[-5:] != '.mbox':
         with open(filepath, 'r') as f:
-            kvpairs = json.load(f)
-            return [Mail(kvpairs=kvp) for kvp in kvpairs]
+            for kvp in json.load(f):
+                mail = Mail(kvpairs=kvp)
+                if mail.broken():
+                    continue
+                mails.append(mail)
+            return mails
 
-    mails = []
     for message in mailbox.mbox(filepath):
         mail = Mail(mbox='%s' % message)
         if not mail.broken():
