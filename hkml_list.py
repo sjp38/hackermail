@@ -229,9 +229,8 @@ def mails_to_str(mails_to_show, show_stat, show_thread_of, descend,
         else:
             ls_range = thread_index_range(index, by_pr_idx, by_msgids)
 
-    index = 0
     for mail in threads:
-        index += pr_mails_thread(
+        pr_mails_thread(
                 mail, ls_range,
                 new_threads_only, collapse_threads, expand_threads,
                 open_mail_idxs, show_lore_link, open_mail_via_lore, nr_cols,
