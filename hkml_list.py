@@ -53,7 +53,7 @@ def should_open_mail(mail_idx, open_mail_idxs):
         return True
     return mail_idx in open_mail_idxs
 
-def pr_mail(mail, depth, suffix, lines,
+def pr_mail(mail, suffix, lines,
             open_mail_idxs, show_lore_link, open_mail_via_lore, nr_cols):
     prefix_fields = []
     prefix_fields += ['[%04d]' % mail.pridx]
@@ -115,11 +115,11 @@ def pr_mails_thread(mail, depth, ls_range, new_threads_only,
         if len_ == 1:
             open_mail_idxs = [start]
         if mail.pridx >= start and (len_ == -1 or mail.pridx < end):
-            pr_mail(mail, depth, suffix, lines,
+            pr_mail(mail, suffix, lines,
                     open_mail_idxs, show_lore_link, open_mail_via_lore,
                     nr_cols)
     elif mail.pridx in ls_range:
-            pr_mail(mail, depth, suffix, lines,
+            pr_mail(mail, suffix, lines,
                     open_mail_idxs,
                     show_lore_link, open_mail_via_lore, nr_cols)
 
