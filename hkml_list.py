@@ -31,31 +31,6 @@ def pr_line_wrap(prefix, line, nr_cols, lines):
                 words_to_print = [' ' * (len(prefix) + 1) + words_to_print[-1]]
     lines.append(' '.join(words_to_print))
 
-def pr_mail_content_via_lore(mail_url, lines):
-    try:
-        from_lore = _hkml.cmd_lines_output(['w3m', '-dump', mail_url])[3:]
-    except:
-        sys.stderr.write('\'w3m\' invocation failed.\n')
-        exit(1)
-    divide_line = '━' * 79
-    for line in from_lore:
-        if line.strip() == divide_line:
-            break
-        lines.append(line)
-
-def pr_mail_content(mail, use_lore, show_lore_link, lines):
-    if use_lore:
-        pr_mail_content_via_lore(lore_url(mail), lines)
-        return
-
-    for head in ['Date', 'Subject', 'Message-Id', 'From', 'To', 'CC']:
-        value = mail.get_field(head)
-        if value:
-            lines.append('%s: %s' % (head, value))
-    lines.append('\n%s' % mail.get_field('body'))
-    if show_lore_link:
-        lines.append('\n%s\n' % lore_url(mail))
-
 def threads_of(mails):
     by_msgids = {}
     for mail in mails:
@@ -98,7 +73,7 @@ def pr_mail(mail, depth, suffix, idx, lines,
     suffix = ' (%s)' % ', '.join(suffices)
     pr_line_wrap(prefix, subject + suffix, nr_cols, lines)
     if should_open_mail(idx, open_mail_idxs):
-        pr_mail_content(mail, open_mail_via_lore, show_lore_link, lines)
+        hkml_open.pr_mail_content(mail, open_mail_via_lore, show_lore_link, lines)
 
 def nr_replies_of(mail):
     nr = len(mail.replies)

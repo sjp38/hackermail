@@ -25,6 +25,31 @@ def pr_with_pager_if_needed(lines):
     subprocess.call(['less', '--no-init', tmp_path])
     os.remove(tmp_path)
 
+def pr_mail_content_via_lore(mail_url, lines):
+    try:
+        from_lore = _hkml.cmd_lines_output(['w3m', '-dump', mail_url])[3:]
+    except:
+        sys.stderr.write('\'w3m\' invocation failed.\n')
+        exit(1)
+    divide_line = '━' * 79
+    for line in from_lore:
+        if line.strip() == divide_line:
+            break
+        lines.append(line)
+
+def pr_mail_content(mail, use_lore, show_lore_link, lines):
+    if use_lore:
+        pr_mail_content_via_lore(lore_url(mail), lines)
+        return
+
+    for head in ['Date', 'Subject', 'Message-Id', 'From', 'To', 'CC']:
+        value = mail.get_field(head)
+        if value:
+            lines.append('%s: %s' % (head, value))
+    lines.append('\n%s' % mail.get_field('body'))
+    if show_lore_link:
+        lines.append('\n%s\n' % lore_url(mail))
+
 def set_argparser(parser):
     parser.add_argument(
             'mail_idx', metavar='<index>', type=int,
@@ -47,7 +72,7 @@ def main(args=None):
         exit(1)
 
     lines = []
-    hkml_list.pr_mail_content(mail, False, False, lines)
+    pr_mail_content(mail, False, False, lines)
 
     if args.stdout:
         print('\n'.join(lines))
