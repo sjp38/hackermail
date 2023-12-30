@@ -74,21 +74,6 @@ class Mail:
         hkml_cache.set_mail(self)
         return self
 
-    def common_works(self):
-        self.__parse_mbox()
-        date_str = self.get_field('date')
-        if date_str == None:
-            self.date = None
-            return
-        self.date = datetime.datetime.fromtimestamp(
-                email.utils.mktime_tz(
-                    email.utils.parsedate_tz(date_str))).astimezone()
-        self.subject = self.get_field('subject')
-        if self.subject == None:
-            return
-        self.set_tags_series()
-        hkml_cache.set_mail(self)
-
     def __init__(self, mbox=None, kvpairs=None):
         self.replies = []
         self.tags = []
@@ -103,7 +88,20 @@ class Mail:
             self.gitdir = kvpairs['gitdir']
             self.subject = kvpairs['subject']
             self.mbox = kvpairs['mbox']
-        self.common_works()
+
+        self.__parse_mbox()
+        date_str = self.get_field('date')
+        if date_str == None:
+            self.date = None
+            return
+        self.date = datetime.datetime.fromtimestamp(
+                email.utils.mktime_tz(
+                    email.utils.parsedate_tz(date_str))).astimezone()
+        self.subject = self.get_field('subject')
+        if self.subject == None:
+            return
+        self.set_tags_series()
+        hkml_cache.set_mail(self)
 
     def to_kvpairs(self):
         if self.mbox == None:
