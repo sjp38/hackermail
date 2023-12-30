@@ -24,7 +24,8 @@ def pr_with_pager_if_needed(text):
     subprocess.call(['less', '--no-init', tmp_path])
     os.remove(tmp_path)
 
-def pr_mail_content_via_lore(mail_url, lines):
+def mail_display_str_via_lore(mail_url):
+    lines = []
     try:
         from_lore = _hkml.cmd_lines_output(['w3m', '-dump', mail_url])[3:]
     except:
@@ -35,10 +36,11 @@ def pr_mail_content_via_lore(mail_url, lines):
         if line.strip() == divide_line:
             break
         lines.append(line)
+    return '\n'.join(lines)
 
 def pr_mail_content(mail, use_lore, show_lore_link, lines):
     if use_lore:
-        pr_mail_content_via_lore(lore_url(mail), lines)
+        lines.append(mail_display_str_via_lore(lore_url(mail)))
         return
 
     lines.append('Local-Date: %s' % mail.date)
