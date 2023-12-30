@@ -89,25 +89,6 @@ class Mail:
         self.set_tags_series()
         hkml_cache.set_mail(self)
 
-    @classmethod
-    def from_mbox(cls, mbox):
-        self = cls()
-        self.mbox = mbox
-        self.common_works()
-        if self.date is None or self.subject is None:
-            return None
-
-    @classmethod
-    def from_kvpairs(cls, kvpairs):
-        self = cls()
-        self.gitid = kvpairs['gitid']
-        self.gitdir = kvpairs['gitdir']
-        self.subject = kvpairs['subject']
-        self.mbox = kvpairs['mbox']
-        self.common_works()
-        if self.date is None or self.subject is None:
-            return None
-
     def __init__(self, mbox=None, kvpairs=None):
         self.replies = []
         self.tags = []
