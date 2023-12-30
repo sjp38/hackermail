@@ -41,6 +41,9 @@ def get_mail(gitid=None, gitdir=None, key=None):
 def set_mail(mail):
     global need_file_update
 
+    if mail.broken():
+        return
+
     cache = get_mails_cache()
     if mail.gitid is not None and mail.gitdir is not None:
         key = get_cache_key(mail.gitid, mail.gitdir)
