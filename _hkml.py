@@ -209,8 +209,8 @@ def read_mbox_file(filepath):
 
     mails = []
     for message in mailbox.mbox(filepath):
-        mail = Mail.from_mbox('%s' % message)
-        if mail is None:
+        mail = Mail(mbox='%s' % message)
+        if mail.subject is None:
             continue
         mails.append(mail)
     return mails

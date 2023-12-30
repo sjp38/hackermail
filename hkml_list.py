@@ -335,7 +335,7 @@ def get_mails(
         return [m for m in mails if m is not None]
     if source == 'clipboard':
         mbox_str = _hkml.cmd_str_output(['xclip', '-o', '-sel', 'clip'])
-        return [_hkml.Mail.from_mbox(mbox_str)]
+        return [_hkml.Mail(mbox=mbox_str)]
     elif os.path.isfile(source):
         return _hkml.read_mbox_file(source)
 
