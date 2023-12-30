@@ -94,8 +94,6 @@ def pr_mails_thread(mail, ls_range, new_threads_only,
                     collapse_threads, expand_threads,
                     open_mail_idxs, show_lore_link, open_mail_via_lore,
                     nr_cols, mail_idx_to_key, lines):
-    nr_printed = 1
-
     mail_idx_to_key[mail.pridx] = hkml_cache.get_cache_key(
             mail.gitid, mail.gitdir, mail.get_field('message-id'))
 
@@ -105,7 +103,6 @@ def pr_mails_thread(mail, ls_range, new_threads_only,
     if should_collapse(mail.pridx, collapse_threads, expand_threads):
         nr_replies = nr_replies_of(mail)
         suffix = '%d+ msgs' % nr_replies
-        nr_printed += nr_replies
 
     start = ls_range[0]
     len_ = ls_range[1]
@@ -119,7 +116,7 @@ def pr_mails_thread(mail, ls_range, new_threads_only,
 
     if not should_collapse(mail.pridx, collapse_threads, expand_threads):
         for re in mail.replies:
-            nr_printed += pr_mails_thread(
+            pr_mails_thread(
                     re, ls_range,
                     new_threads_only, collapse_threads, expand_threads,
                     open_mail_idxs,
