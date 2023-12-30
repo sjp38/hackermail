@@ -57,7 +57,7 @@ def pr_mail(mail, depth, suffix, lines,
             open_mail_idxs, show_lore_link, open_mail_via_lore, nr_cols):
     prefix_fields = []
     prefix_fields += ['[%04d]' % mail.pridx]
-    indent = ' ' * 4 * depth
+    indent = ' ' * 4 * mail.prdepth
     prefix_fields.append(indent)
     prefix = ' '.join(prefix_fields)
     subject = '%s' % mail.get_field('subject')
@@ -65,7 +65,7 @@ def pr_mail(mail, depth, suffix, lines,
                 mail.date.strftime('%m/%d %H:%M')]
     if suffix != '':
         suffices.append(suffix)
-    if depth and subject.lower().startswith('re: '):
+    if mail.prdepth and subject.lower().startswith('re: '):
         subject = subject[4:]
     if show_lore_link:
         suffices.append(lore_url(mail))
