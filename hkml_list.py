@@ -56,8 +56,7 @@ def should_open_mail(mail_idx, open_mail_idxs):
 def pr_mail(mail, depth, suffix, idx, lines,
             open_mail_idxs, show_lore_link, open_mail_via_lore, nr_cols):
     prefix_fields = []
-    index = '[%04d]' % idx
-    prefix_fields += [index]
+    prefix_fields += ['[%04d]' % mail.pridx]
     indent = ' ' * 4 * depth
     prefix_fields.append(indent)
     prefix = ' '.join(prefix_fields)
@@ -72,7 +71,7 @@ def pr_mail(mail, depth, suffix, idx, lines,
         suffices.append(lore_url(mail))
     suffix = ' (%s)' % ', '.join(suffices)
     pr_line_wrap(prefix, subject + suffix, nr_cols, lines)
-    if should_open_mail(idx, open_mail_idxs):
+    if should_open_mail(mail.pridx, open_mail_idxs):
         lines.append(hkml_open.mail_display_str(mail, open_mail_via_lore,
                                                 show_lore_link))
 
