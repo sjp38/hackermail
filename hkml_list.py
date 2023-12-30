@@ -214,12 +214,19 @@ def mails_to_str(mails_to_show, show_stat, show_thread_of, descend,
         else:
             ls_range = thread_index_range(index, by_pr_idx, by_msgids)
 
-    for mail in threads:
-        pr_mails_thread(
-                mail, ls_range,
-                new_threads_only, collapse_threads, expand_threads,
-                open_mail_idxs, show_lore_link, open_mail_via_lore, nr_cols,
-                mail_idx_to_key, lines)
+    for mail in by_pr_idx:
+        if not mail.pridx in ls_range:
+            continue
+        if new_threads_only and mail.get_field('in-reply-to'):
+            continue
+
+        suffix = ''
+        if should_collapse(mail.pridx, collapse_threads, expand_threads):
+            if mail.prdepth > 0:
+                continue
+            suffix = '%d+ msgs' % nr_replies_of(mail)
+        pr_mail(mail, suffix, lines, open_mail_idxs, show_lore_link,
+                open_mail_via_lore, nr_cols)
 
     return '\n'.join(lines)
 
