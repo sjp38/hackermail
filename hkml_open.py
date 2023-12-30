@@ -13,7 +13,7 @@ def pr_with_pager_if_needed(lines):
     text = '\n'.join(lines)
     try:
         if text.count('\n') < os.get_terminal_size().lines:
-            print('\n'.join(lines))
+            print(text)
             return
     except OSError as e:
         # maybe the user is using pipe to the output
@@ -21,7 +21,7 @@ def pr_with_pager_if_needed(lines):
 
     fd, tmp_path = tempfile.mkstemp(prefix='hkml_open-')
     with open(tmp_path, 'w') as f:
-        f.write('\n'.join(lines))
+        f.write(text)
     subprocess.call(['less', '--no-init', tmp_path])
     os.remove(tmp_path)
 
