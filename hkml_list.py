@@ -90,34 +90,6 @@ def should_collapse(mail_idx, collapse_threads, expand_threads):
         return False
     return not mail_idx in expand_threads
 
-def pr_mails_thread(mail, ls_range, new_threads_only,
-                    collapse_threads, expand_threads,
-                    open_mail_idxs, show_lore_link, open_mail_via_lore,
-                    nr_cols, mail_idx_to_key, lines):
-    mail_idx_to_key[mail.pridx] = hkml_cache.get_cache_key(
-            mail.gitid, mail.gitdir, mail.get_field('message-id'))
-
-    suffix = ''
-    if new_threads_only and mail.get_field('in-reply-to'):
-        nr_replies = nr_replies_of(mail)
-    if should_collapse(mail.pridx, collapse_threads, expand_threads):
-        nr_replies = nr_replies_of(mail)
-        suffix = '%d+ msgs' % nr_replies
-
-    if mail.pridx in ls_range:
-        pr_mail(mail, suffix, lines,
-                open_mail_idxs, show_lore_link, open_mail_via_lore,
-                nr_cols)
-
-    if not should_collapse(mail.pridx, collapse_threads, expand_threads):
-        for re in mail.replies:
-            pr_mails_thread(
-                    re, ls_range,
-                    new_threads_only, collapse_threads, expand_threads,
-                    open_mail_idxs,
-                    show_lore_link, open_mail_via_lore, nr_cols,
-                    mail_idx_to_key, lines)
-
 def root_of_thread(mail, by_msgids):
     in_reply_to = mail.get_field('in-reply-to')
     if not in_reply_to in by_msgids:
