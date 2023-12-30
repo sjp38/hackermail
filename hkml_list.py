@@ -107,20 +107,15 @@ def pr_mails_thread(mail, ls_range, new_threads_only,
         suffix = '%d+ msgs' % nr_replies
         nr_printed += nr_replies
 
-    if len(ls_range) == 2:
-        start = ls_range[0]
-        len_ = ls_range[1]
-        end = start + len_
-        if len_ == 1:
-            open_mail_idxs = [start]
-        if mail.pridx >= start and (len_ == -1 or mail.pridx < end):
-            pr_mail(mail, suffix, lines,
-                    open_mail_idxs, show_lore_link, open_mail_via_lore,
-                    nr_cols)
-    elif mail.pridx in ls_range:
-            pr_mail(mail, suffix, lines,
-                    open_mail_idxs,
-                    show_lore_link, open_mail_via_lore, nr_cols)
+    start = ls_range[0]
+    len_ = ls_range[1]
+    end = start + len_
+    if len_ == 1:
+        open_mail_idxs = [start]
+    if mail.pridx >= start and (len_ == -1 or mail.pridx < end):
+        pr_mail(mail, suffix, lines,
+                open_mail_idxs, show_lore_link, open_mail_via_lore,
+                nr_cols)
 
     if not should_collapse(mail.pridx, collapse_threads, expand_threads):
         for re in mail.replies:
