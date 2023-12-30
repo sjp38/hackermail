@@ -42,6 +42,7 @@ def pr_mail_content(mail, use_lore, show_lore_link, lines):
         pr_mail_content_via_lore(lore_url(mail), lines)
         return
 
+    lines.append('Local-Date: %s' % mail.date)
     for head in ['Date', 'Subject', 'Message-Id', 'From', 'To', 'CC']:
         value = mail.get_field(head)
         if value:
