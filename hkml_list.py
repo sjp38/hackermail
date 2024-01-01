@@ -54,23 +54,22 @@ def should_open_mail(mail_idx, open_mail_idxs):
         return True
     return mail_idx in open_mail_idxs
 
-def pr_mail(mail, suffix, lines,
+def pr_mail(mail, show_nr_replies, lines,
             open_mail_idxs, show_lore_link, open_mail_via_lore, nr_cols):
-    prefix_fields = []
-    prefix_fields += ['[%04d]' % mail.pridx]
-    indent = ' ' * 4 * mail.prdepth
-    prefix_fields.append(indent)
-    prefix = ' '.join(prefix_fields)
+    prefix = '[%04d]%s' % (mail.pridx, ' ' * 4 * mail.prdepth)
+
     subject = '%s' % mail.get_field('subject')
-    suffices = [' '.join(mail.get_field('from').split()[0:-1]),
-                mail.date.strftime('%m/%d %H:%M')]
-    if suffix != '':
-        suffices.append(suffix)
     if mail.prdepth and subject.lower().startswith('re: '):
         subject = subject[4:]
+
+    suffices = [' '.join(mail.get_field('from').split()[0:-1]),
+                mail.date.strftime('%m/%d %H:%M')]
+    if show_nr_replies:
+        suffices.append('%d+ msgs' % nr_replies_of(mail))
     if show_lore_link:
         suffices.append(lore_url(mail))
     suffix = ' (%s)' % ', '.join(suffices)
+
     pr_line_wrap(prefix, subject + suffix, nr_cols, lines)
     if should_open_mail(mail.pridx, open_mail_idxs):
         lines.append(hkml_open.mail_display_str(mail, open_mail_via_lore,
@@ -186,12 +185,12 @@ def mails_to_str(mails_to_show, show_stat, show_thread_of, descend,
         if new_threads_only and mail.get_field('in-reply-to'):
             continue
 
-        suffix = ''
+        show_nr_replies = False
         if should_collapse(mail.pridx, collapse_threads, expand_threads):
             if mail.prdepth > 0:
                 continue
-            suffix = '%d+ msgs' % nr_replies_of(mail)
-        pr_mail(mail, suffix, lines, open_mail_idxs, show_lore_link,
+            show_nr_replies = True
+        pr_mail(mail, show_nr_replies, lines, open_mail_idxs, show_lore_link,
                 open_mail_via_lore, nr_cols)
 
     return '\n'.join(lines)
