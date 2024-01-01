@@ -92,11 +92,9 @@ def should_collapse(mail_idx, collapse_threads, expand_threads):
     return not mail_idx in expand_threads
 
 def root_of_thread(mail, by_msgids):
-    in_reply_to = mail.get_field('in-reply-to')
-    if not in_reply_to in by_msgids:
+    if mail.parent_mail is None:
         return mail
-
-    return root_of_thread(by_msgids[in_reply_to], by_msgids)
+    return root_of_thread(mail.parent_mail, None)
 
 def thread_index_range(pr_idx, by_pr_idx, by_msgids):
     root = root_of_thread(by_pr_idx[pr_idx], by_msgids)
