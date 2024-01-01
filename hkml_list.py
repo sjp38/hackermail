@@ -188,8 +188,7 @@ def sort_threads(threads, category):
 
 def mails_to_str(mails_to_show, show_stat, show_thread_of, descend,
         sort_threads_by, new_threads_only, collapse_threads, expand_threads,
-        open_mail_idxs, open_mail_via_lore, show_lore_link,
-                 nr_cols, mail_idx_to_key):
+        open_mail_idxs, open_mail_via_lore, show_lore_link, nr_cols):
     lines = []
 
     threads, by_msgids = threads_of(mails_to_show)
@@ -216,8 +215,9 @@ def mails_to_str(mails_to_show, show_stat, show_thread_of, descend,
     ls_range = get_display_range(show_thread_of, by_msgids, by_pr_idx)
 
     for mail in by_pr_idx:
-        mail_idx_to_key[mail.pridx] = hkml_cache.get_cache_key(
-                mail.gitid, mail.gitdir, mail.get_field('message-id'))
+        set_mail_cache_key(
+                mail.pridx, hkml_cache.get_cache_key(
+                    mail.gitid, mail.gitdir, mail.get_field('message-id')))
         if not mail.pridx in ls_range:
             continue
         if new_threads_only and mail.get_field('in-reply-to'):
@@ -434,15 +434,12 @@ def main(args=None):
 
     if args.thread != None:
         args.collapse = False
-    mail_idx_to_key = {}
     to_show = mails_to_str(mails_to_show, args.stat, args.thread,
             args.descend, args.sort_threads_by,
             args.new, args.collapse, args.expand, args.open,
-            args.lore_read, args.lore, nr_cols_in_line, mail_idx_to_key)
+            args.lore_read, args.lore, nr_cols_in_line)
     hkml_cache.writeback_mails()
-    with open(os.path.join(_hkml.get_hkml_dir(), 'mail_idx_to_cache_key'),
-              'w') as f:
-        json.dump(mail_idx_to_key, f, indent=4)
+    writeback_mail_idx_key_cache()
 
     if args.stdout:
         print(to_show)
