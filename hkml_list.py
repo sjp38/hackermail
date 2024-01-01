@@ -96,32 +96,21 @@ def root_of_thread(mail):
         return mail
     return root_of_thread(mail.parent_mail)
 
-def thread_index_range(pr_idx, by_pr_idx):
-    root = root_of_thread(by_pr_idx[pr_idx])
-    if root:
-        return range(root.pridx, root.pridx + nr_replies_of(root) + 1)
-    return range(0, 0)
-
-def index_of_mail_descr(desc, by_msgids):
-    try:
-        return int(desc)
-    except:
-        if desc[0] != '<' or desc[-1] != '>':
-            desc = '<%s>' % desc
-        if not desc in by_msgids:
-            return -1
-        return by_msgids[desc].pridx
-
 def get_display_range(show_thread_of, by_msgids, by_pr_idx):
     # Show all by default
-    ls_range = range(0, 9999)
-    if show_thread_of != None:
-        index = index_of_mail_descr(show_thread_of, by_msgids)
-        if index == -1:
-            ls_range = range(0, 0)
-        else:
-            ls_range = thread_index_range(index, by_pr_idx)
-    return ls_range
+    if show_thread_of is None:
+        return range(0, 9999)
+
+    if show_thread_of.isdigit():
+        mail = by_pr_idx[int(show_thread_of)]
+    else:
+        if show_thread_of[0] != '<' or show_thread_of[-1] != '>':
+            show_thread_of = '<%s>' % show_thread_of
+        if not show_thread_of in by_msgids:
+            return range(0, 0)
+        mail = by_msgids[desc]
+    root = root_of_thread(mail)
+    return range(root.pridx, root.pridx + nr_replies_of(root) + 1)
 
 def mk_pr_ready(mail, list_, depth=0):
     """ Make mails to be all ready for print in list"""
