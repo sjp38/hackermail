@@ -96,7 +96,7 @@ def root_of_thread(mail):
         return mail
     return root_of_thread(mail.parent_mail)
 
-def thread_index_range(pr_idx, by_pr_idx, by_msgids):
+def thread_index_range(pr_idx, by_pr_idx):
     root = root_of_thread(by_pr_idx[pr_idx])
     if root:
         return range(root.pridx, root.pridx + nr_replies_of(root) + 1)
@@ -183,7 +183,7 @@ def mails_to_str(mails_to_show, show_stat, show_thread_of, descend,
         if index == -1:
             ls_range = range(0, 0)
         else:
-            ls_range = thread_index_range(index, by_pr_idx, by_msgids)
+            ls_range = thread_index_range(index, by_pr_idx)
 
     for mail in by_pr_idx:
         mail_idx_to_key[mail.pridx] = hkml_cache.get_cache_key(
