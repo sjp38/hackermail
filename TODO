@@ -4,6 +4,7 @@
     - message id
     - lore link
   - Support fetching mail since root of a thread
+  - Support multiple sources
 - Tag mails (Store the information under .hkm directory in some format)
 - Subscribe to a thread
   (monitor replies and forward the new reply to given mail address)
