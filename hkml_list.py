@@ -112,6 +112,17 @@ def index_of_mail_descr(desc, by_msgids):
             return -1
         return by_msgids[desc].pridx
 
+def get_display_range(show_thread_of, by_msgids, by_pr_idx):
+    # Show all by default
+    ls_range = range(0, 9999)
+    if show_thread_of != None:
+        index = index_of_mail_descr(show_thread_of, by_msgids)
+        if index == -1:
+            ls_range = range(0, 0)
+        else:
+            ls_range = thread_index_range(index, by_pr_idx)
+    return ls_range
+
 def mk_pr_ready(mail, list_, depth=0):
     """ Make mails to be all ready for print in list"""
     mail.pridx = len(list_)
@@ -176,14 +187,7 @@ def mails_to_str(mails_to_show, show_stat, show_thread_of, descend,
     for mail in threads:
         mk_pr_ready(mail, by_pr_idx)
 
-    # Show all by default
-    ls_range = range(0, 9999)
-    if show_thread_of != None:
-        index = index_of_mail_descr(show_thread_of, by_msgids)
-        if index == -1:
-            ls_range = range(0, 0)
-        else:
-            ls_range = thread_index_range(index, by_pr_idx)
+    ls_range = get_display_range(show_thread_of, by_msgids, by_pr_idx)
 
     for mail in by_pr_idx:
         mail_idx_to_key[mail.pridx] = hkml_cache.get_cache_key(
