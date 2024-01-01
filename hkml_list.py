@@ -14,6 +14,41 @@ import hkml_cache
 import hkml_fetch
 import hkml_open
 
+mail_idx_key_cache = None
+
+def mail_idx_key_cache_file_path():
+    return os.path.join(_hkml.get_hkml_dir(), 'mail_idx_to_cache_key')
+
+def get_mail_idx_key_cache():
+    global mail_idx_key_cache
+    if mail_idx_key_cache is None:
+        if not os.path.isfile(mail_idx_key_cache_file_path()):
+            mail_idx_key_cache = {}
+        else:
+            with open(mail_idx_key_cache_file_path(), 'r') as f:
+                mail_idx_key_cache = json.load(f)
+    if mail_idx_key_cache is None:
+        mail_idx_key_cache = {}
+    return mail_idx_key_cache
+
+def get_mail_cache_key(idx):
+    cache = get_mail_idx_key_cache()
+    idx_str = '%d' % idx
+    if not idx_str in cache:
+        return None
+    return cache[idx_str]
+
+def set_mail_cache_key(idx, key):
+    cache = get_mail_idx_key_cache()
+    idx_str = '%d' % idx
+    if idx_str in cache:
+        return
+    cache[idx_str] = key
+
+def writeback_mail_idx_key_cache():
+    with open(mail_idx_key_cache_file_path(), 'w') as f:
+        json.dump(mail_idx_key_cache, f, indent=4)
+
 def lore_url(mail):
     return 'https://lore.kernel.org/r/%s' % mail.get_field('message-id')[1:-1]
 
