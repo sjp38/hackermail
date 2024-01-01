@@ -197,7 +197,7 @@ def read_mbox_file(filepath):
 
     for message in mailbox.mbox(filepath):
         mail = Mail(mbox='%s' % message)
-        if not mail.broken():
+        if mail.broken():
             continue
         mails.append(mail)
     return mails
