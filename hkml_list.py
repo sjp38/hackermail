@@ -102,7 +102,7 @@ def thread_index_range(pr_idx, by_pr_idx):
         return range(root.pridx, root.pridx + nr_replies_of(root) + 1)
     return range(0, 0)
 
-def index_of_mail_descr(desc, threads, by_msgids):
+def index_of_mail_descr(desc, by_msgids):
     try:
         return int(desc)
     except:
@@ -179,7 +179,7 @@ def mails_to_str(mails_to_show, show_stat, show_thread_of, descend,
     # Show all by default
     ls_range = range(0, 9999)
     if show_thread_of != None:
-        index = index_of_mail_descr(show_thread_of, threads, by_msgids)
+        index = index_of_mail_descr(show_thread_of, by_msgids)
         if index == -1:
             ls_range = range(0, 0)
         else:
