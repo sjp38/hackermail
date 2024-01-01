@@ -44,6 +44,7 @@ def threads_of(mails):
         else:
             orig_mail = by_msgids[in_reply_to]
             orig_mail.replies.append(mail)
+            mail.parent_mail = orig_mail
     return threads, by_msgids
 
 def should_open_mail(mail_idx, open_mail_idxs):

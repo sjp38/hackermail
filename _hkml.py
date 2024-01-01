@@ -32,6 +32,7 @@ class Mail:
     __mbox_parsed = None
     mbox = None
     replies = None
+    parent_mail = None
 
     def set_tags_series(self):
         subject = self.subject
