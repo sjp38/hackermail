@@ -34,9 +34,7 @@ def main(args=None):
         set_argparser(parser)
         args = parser.parse_args()
 
-    mails = []
     idx_to_cache_keys = hkml_list.get_mail_idx_key_cache()
-    to_export = []
     idxs = [int(idx) for idx in idx_to_cache_keys.keys()]
     if args.range is not None:
         idxs = [idx for idx in idxs
