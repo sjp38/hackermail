@@ -56,7 +56,7 @@ def should_open_mail(mail_idx, open_mail_idxs):
         return True
     return mail_idx in open_mail_idxs
 
-def pr_mail(mail, show_nr_replies, lines,
+def format_entry(mail, show_nr_replies,
             open_mail_idxs, show_lore_link, open_mail_via_lore, nr_cols):
     prefix = '[%04d]%s' % (mail.pridx, ' ' * 4 * mail.prdepth)
 
@@ -72,10 +72,11 @@ def pr_mail(mail, show_nr_replies, lines,
         suffices.append(lore_url(mail))
     suffix = ' (%s)' % ', '.join(suffices)
 
-    lines += wrap_line(prefix, subject + suffix, nr_cols)
+    lines = wrap_line(prefix, subject + suffix, nr_cols)
     if should_open_mail(mail.pridx, open_mail_idxs):
         lines.append(hkml_open.mail_display_str(mail, open_mail_via_lore,
                                                 show_lore_link))
+    return lines
 
 def nr_replies_of(mail):
     nr = len(mail.replies)
@@ -192,9 +193,8 @@ def mails_to_str(mails_to_show, show_stat, show_thread_of, descend,
             if mail.prdepth > 0:
                 continue
             show_nr_replies = True
-        pr_mail(mail, show_nr_replies, lines, open_mail_idxs, show_lore_link,
-                open_mail_via_lore, nr_cols)
-
+        lines += format_entry(mail, show_nr_replies, open_mail_idxs,
+                              show_lore_link, open_mail_via_lore, nr_cols)
     return '\n'.join(lines)
 
 def filter_tags(mail, tags):
