@@ -91,13 +91,13 @@ def should_collapse(mail_idx, collapse_threads, expand_threads):
         return False
     return not mail_idx in expand_threads
 
-def root_of_thread(mail, by_msgids):
+def root_of_thread(mail):
     if mail.parent_mail is None:
         return mail
-    return root_of_thread(mail.parent_mail, None)
+    return root_of_thread(mail.parent_mail)
 
 def thread_index_range(pr_idx, by_pr_idx, by_msgids):
-    root = root_of_thread(by_pr_idx[pr_idx], by_msgids)
+    root = root_of_thread(by_pr_idx[pr_idx])
     if root:
         return range(root.pridx, root.pridx + nr_replies_of(root) + 1)
     return range(0, 0)
