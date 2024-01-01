@@ -17,7 +17,8 @@ import hkml_open
 def lore_url(mail):
     return 'https://lore.kernel.org/r/%s' % mail.get_field('message-id')[1:-1]
 
-def pr_line_wrap(prefix, line, nr_cols, lines):
+def wrap_line(prefix, line, nr_cols):
+    lines = []
     words = [prefix] + line.split(' ')
     words_to_print = []
     for w in words:
@@ -30,6 +31,7 @@ def pr_line_wrap(prefix, line, nr_cols, lines):
                 lines.append(' '.join(words_to_print[:-1]))
                 words_to_print = [' ' * (len(prefix) + 1) + words_to_print[-1]]
     lines.append(' '.join(words_to_print))
+    return lines
 
 def threads_of(mails):
     by_msgids = {}
@@ -70,7 +72,7 @@ def pr_mail(mail, show_nr_replies, lines,
         suffices.append(lore_url(mail))
     suffix = ' (%s)' % ', '.join(suffices)
 
-    pr_line_wrap(prefix, subject + suffix, nr_cols, lines)
+    lines += wrap_line(prefix, subject + suffix, nr_cols)
     if should_open_mail(mail.pridx, open_mail_idxs):
         lines.append(hkml_open.mail_display_str(mail, open_mail_via_lore,
                                                 show_lore_link))
