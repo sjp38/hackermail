@@ -5,6 +5,7 @@ import os
 
 import _hkml
 import hkml_cache
+import hkml_list
 
 def export_mails(mails, export_file):
     if export_file[-5:] != '.mbox':
@@ -34,23 +35,21 @@ def main(args=None):
         args = parser.parse_args()
 
     mails = []
-    with open(os.path.join(_hkml.get_hkml_dir(), 'mail_idx_to_cache_key'),
-              'r') as f:
-        to_export = []
-        idx_to_cache_keys = json.load(f)
-        idxs = [int(idx) for idx in idx_to_cache_keys.keys()]
-        if args.range is not None:
-            idxs = [idx for idx in idxs
-                    if idx >= args.range[0] and idx < args.range[1]]
-        mails = []
-        for idx in idxs:
-            key = idx_to_cache_keys['%d' % idx]
-            mail = hkml_cache.get_mail(key=key)
-            if mail is None:
-                print('warning: %d-th mail seems not cached, cannot export'
-                      % idx)
-                continue
-            mails.append(mail)
+    idx_to_cache_keys = hkml_list.get_mail_idx_key_cache()
+    to_export = []
+    idxs = [int(idx) for idx in idx_to_cache_keys.keys()]
+    if args.range is not None:
+        idxs = [idx for idx in idxs
+                if idx >= args.range[0] and idx < args.range[1]]
+    mails = []
+    for idx in idxs:
+        key = idx_to_cache_keys['%d' % idx]
+        mail = hkml_cache.get_mail(key=key)
+        if mail is None:
+            print('warning: %d-th mail seems not cached, cannot export'
+                  % idx)
+            continue
+        mails.append(mail)
     return export_mails(mails, args.export_file)
 
 if __name__ == '__main__':
