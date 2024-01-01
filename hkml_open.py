@@ -65,9 +65,7 @@ def main(args=None):
         set_Argparser(parser)
         args = parser.parse_args()
 
-    with open(os.path.join(_hkml.get_hkml_dir(), 'mail_idx_to_cache_key'),
-              'r') as f:
-        key = json.load(f)['%d' % args.mail_idx]
+    key = hkml_list.get_mail_cache_key(args.mail_idx)
     mail = hkml_cache.get_mail(key=key)
     if mail is None:
         print('mail is not cached')
