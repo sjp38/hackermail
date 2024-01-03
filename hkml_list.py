@@ -45,6 +45,10 @@ def set_mail_cache_key(idx, key):
         return
     cache[idx_str] = key
 
+def flush_mail_idx_key_cache():
+    global mail_idx_key_cache
+    mail_idx_key_cache = {}
+
 def writeback_mail_idx_key_cache():
     with open(mail_idx_key_cache_file_path(), 'w') as f:
         json.dump(mail_idx_key_cache, f, indent=4)
@@ -327,6 +331,8 @@ def get_mails(
             keys = json.load(f).values()
         mails = [hkml_cache.get_mail(key=key) for key in keys]
         return [m for m in mails if m is not None]
+    else:
+        flush_mail_idx_key_cache()
     if source == 'clipboard':
         mbox_str = _hkml.cmd_str_output(['xclip', '-o', '-sel', 'clip'])
         mail = _hkml.Mail(mbox=mbox_str)
