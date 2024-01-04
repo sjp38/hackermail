@@ -401,8 +401,8 @@ def set_argparser(parser=None):
             help='print lore link for mails')
     parser.add_argument('--lore_read', action='store_true',
             help='fetch body of mail from the lore')
-    parser.add_argument('--stat', action='store_true',
-            help='show stat of the mails')
+    parser.add_argument('--hide_stat', action='store_true',
+            help='hide stat of the mails')
     parser.add_argument('--stdout', action='store_true',
             help='print to stdout instead of using the pager')
     parser.add_argument('--fetch', action='store_true',
@@ -440,7 +440,7 @@ def main(args=None):
 
     if args.thread != None:
         args.collapse = False
-    to_show = mails_to_str(mails_to_show, args.stat, args.thread,
+    to_show = mails_to_str(mails_to_show, not args.hide_stat, args.thread,
             args.descend, args.sort_threads_by,
             args.new, args.collapse, args.expand, args.open,
             args.lore_read, args.lore, nr_cols_in_line)
