@@ -328,8 +328,7 @@ def filter_mails(manifest, mail_list, since, until, tags, msgid):
     mails_to_show.reverse()
     return mails_to_show
 
-def get_mails(
-        source, fetch, manifest, since, until, show, hide, msgid):
+def get_mails(source, fetch, manifest, since, until):
     if source is None:
         with open(os.path.join(_hkml.get_hkml_dir(), 'mail_idx_to_cache_key'),
                   'r') as f:
@@ -444,8 +443,7 @@ def main(args=None):
             nr_cols_in_line = 80
 
     mails_to_show = get_mails(
-            args.source, args.fetch, args.manifest, args.since, args.until,
-            args.show, args.hide, args.msgid)
+            args.source, args.fetch, args.manifest, args.since, args.until)
 
     if args.thread != None:
         args.collapse = False
