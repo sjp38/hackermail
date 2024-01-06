@@ -312,9 +312,17 @@ def get_mails(source, fetch, manifest, since, until):
     if source is None:
         with open(os.path.join(_hkml.get_hkml_dir(), 'mail_idx_to_cache_key'),
                   'r') as f:
-            keys = json.load(f).values()
-        mails = [hkml_cache.get_mail(key=key) for key in keys]
-        return [m for m in mails if m is not None]
+            idx_to_cache_key_set = json.load(f)
+            cache_keys = []
+            sorted_idxs = sorted(
+                    [int(idx) for idx in idx_to_cache_key_set.keys()])
+            mails = []
+            for idx in sorted_idxs:
+                cache_key = idx_to_cache_key_set['%d' % idx]
+                mail = hkml_cache.get_mail(key=cache_key)
+                if mail is not None:
+                    mails.append(hkml_cache.get_mail(key=cache_key))
+        return mails
 
     flush_mail_idx_key_cache()
 
