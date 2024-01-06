@@ -200,6 +200,25 @@ def sort_threads(threads, category):
     elif category == 'nr_comments':
         threads.sort(key=lambda t: nr_comments(t))
 
+def should_filter_out(mail, ls_range, new_threads_only, show, hide,
+                      msgid, author, subject_keyword, body_keyword):
+    if not mail.pridx in ls_range:
+        return True
+    if new_threads_only and mail.get_field('in-reply-to'):
+        return True
+    if not filter_tags(mail, [show, hide]):
+        return True
+    if msgid and mail.get_field('message-id') != '<%s>' % msgid:
+        return True
+    if author and not author in mail.get_field('from'):
+        return True
+    if subject_keyword and not subject_keyword in mail.subject:
+        return True
+    if body_keyword and not body_keyword in mail.get_field('body'):
+        return True
+
+    return False
+
 def mails_to_str(mails_to_show,
         show, hide, msgid, author, subject_keyword, body_keyword,
         show_stat, show_thread_of, descend,
@@ -232,24 +251,8 @@ def mails_to_str(mails_to_show,
         by_pr_idx.reverse()
 
     for mail in by_pr_idx:
-        if not mail.pridx in ls_range:
-            continue
-        if new_threads_only and mail.get_field('in-reply-to'):
-            continue
-
-        if not filter_tags(mail, [show, hide]):
-            continue
-
-        if msgid and mail.get_field('message-id') != '<%s>' % msgid:
-            continue
-
-        if author and not author in mail.get_field('from'):
-            continue
-
-        if subject_keyword and not subject_keyword in mail.subject:
-            continue
-
-        if body_keyword and not body_keyword in mail.get_field('body'):
+        if should_filter_out(mail, ls_range, new_threads_only, show, hide,
+                             msgid, author, subject_keyword, body_keyword):
             continue
 
         show_nr_replies = False
