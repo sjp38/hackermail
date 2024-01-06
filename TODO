@@ -5,8 +5,6 @@
     - lore link
   - Support fetching mail since root of a thread
   - Support multiple sources
-  - Make the index consistent regardless of filtering options
-    - e.g., ./hkml list --hot && ./hkml list --thread 123 fails now.
 - Tag mails (Store the information under .hkm directory in some format)
 - Subscribe to a thread
   (monitor replies and forward the new reply to given mail address)
