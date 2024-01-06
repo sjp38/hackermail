@@ -162,7 +162,7 @@ def get_display_range(show_thread_of, by_msgids, by_pr_idx):
             show_thread_of = '<%s>' % show_thread_of
         if not show_thread_of in by_msgids:
             return range(0, 0)
-        mail = by_msgids[desc]
+        mail = by_msgids[show_thread_of]
     root = root_of_thread(mail)
     return range(root.pridx, root.pridx + nr_replies_of(root) + 1)
 
