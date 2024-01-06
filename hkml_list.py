@@ -314,8 +314,9 @@ def get_mails(source, fetch, manifest, since, until):
             keys = json.load(f).values()
         mails = [hkml_cache.get_mail(key=key) for key in keys]
         return [m for m in mails if m is not None]
-    else:
-        flush_mail_idx_key_cache()
+
+    flush_mail_idx_key_cache()
+
     if source == 'clipboard':
         mbox_str = _hkml.cmd_str_output(['xclip', '-o', '-sel', 'clip'])
         mail = _hkml.Mail(mbox=mbox_str)
@@ -323,7 +324,8 @@ def get_mails(source, fetch, manifest, since, until):
             print('clipboard is not complete mbox string')
             return []
         return [mail]
-    elif os.path.isfile(source):
+
+    if os.path.isfile(source):
         return _hkml.read_mbox_file(source)
 
     if fetch:
