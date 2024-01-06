@@ -158,13 +158,13 @@ def get_display_range(show_thread_of, by_msgids, by_pr_idx):
     root = root_of_thread(mail)
     return range(root.pridx, root.pridx + nr_replies_of(root) + 1)
 
-def mk_pr_ready(mail, list_, depth=0):
+def set_index(mail, list_, depth=0):
     """ Make mails to be all ready for print in list"""
     mail.pridx = len(list_)
     mail.prdepth = depth
     list_.append(mail)
     for mail in mail.replies:
-        mk_pr_ready(mail, list_, depth + 1)
+        set_index(mail, list_, depth + 1)
 
 def last_reply_date(mail, prev_last_date):
     if len(mail.replies) == 0:
@@ -219,7 +219,7 @@ def mails_to_str(mails_to_show,
 
     by_pr_idx = []
     for mail in threads:
-        mk_pr_ready(mail, by_pr_idx)
+        set_index(mail, by_pr_idx)
 
     ls_range = get_display_range(show_thread_of, by_msgids, by_pr_idx)
 
