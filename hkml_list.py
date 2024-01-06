@@ -283,7 +283,7 @@ def git_log_output_line_to_mail(line, mdir):
     subject = line[subject_offset:]
     return _hkml.Mail.from_gitlog(fields[0], mdir, fields[1], subject)
 
-def get_mails_from_git(manifest, mail_list, since, until, author):
+def get_mails_from_git(manifest, mail_list, since, until):
     lines = []
     mdirs = _hkml.mail_list_data_paths(mail_list, manifest)
     if not mdirs:
@@ -299,8 +299,6 @@ def get_mails_from_git(manifest, mail_list, since, until, author):
                 '--since=%s' % since]
         if until:
             cmd += ['--until=%s' % until]
-        if author:
-            cmd += ['--author=%s'% author]
         lines = _hkml.cmd_lines_output(cmd)
 
         for line in lines:
@@ -309,13 +307,13 @@ def get_mails_from_git(manifest, mail_list, since, until, author):
                 mails.append(mail)
     return mails
 
-def filter_mails(manifest, mail_list, since, until, tags, msgid, author):
+def filter_mails(manifest, mail_list, since, until, tags, msgid):
     manifest = _hkml.get_manifest(manifest)
     if not manifest:
         print('Cannot open manifest file')
         exit(1)
 
-    mails = get_mails_from_git(manifest, mail_list, since, until, author)
+    mails = get_mails_from_git(manifest, mail_list, since, until)
 
     mails_to_show = []
     for mail in mails:
@@ -331,7 +329,7 @@ def filter_mails(manifest, mail_list, since, until, tags, msgid, author):
     return mails_to_show
 
 def get_mails(
-        source, fetch, manifest, since, until, show, hide, msgid, author):
+        source, fetch, manifest, since, until, show, hide, msgid):
     if source is None:
         with open(os.path.join(_hkml.get_hkml_dir(), 'mail_idx_to_cache_key'),
                   'r') as f:
@@ -354,7 +352,7 @@ def get_mails(
         hkml_fetch.fetch_mail(manifest, [source], False, 1)
 
     return filter_mails(
-            manifest, source, since, until, [show, hide], msgid, author)
+            manifest, source, since, until, [show, hide], msgid)
 
 def set_argparser(parser=None):
     DEFAULT_SINCE = datetime.datetime.now() - datetime.timedelta(days=3)
@@ -441,7 +439,7 @@ def main(args=None):
 
     mails_to_show = get_mails(
             args.source, args.fetch, args.manifest, args.since, args.until,
-            args.show, args.hide, args.msgid, args.author)
+            args.show, args.hide, args.msgid)
 
     if args.thread != None:
         args.collapse = False
