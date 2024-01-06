@@ -150,15 +150,6 @@ def root_of_thread(mail):
         return mail
     return root_of_thread(mail.parent_mail)
 
-def get_display_range(mail_idx, by_pr_idx):
-    # Show all by default
-    if mail_idx is None:
-        return range(0, 9999)
-
-    mail = by_pr_idx[mail_idx]
-    root = root_of_thread(mail)
-    return range(root.pridx, root.pridx + nr_replies_of(root) + 1)
-
 def set_index(mail, list_, depth=0):
     """ Make mails to be all ready for print in list"""
     mail.pridx = len(list_)
@@ -246,7 +237,13 @@ def mails_to_str(mails_to_show,
     for mail in threads:
         set_index(mail, by_pr_idx)
 
-    ls_range = get_display_range(show_thread_of, by_pr_idx)
+    # Show all by default
+    if show_thread_of is None:
+        ls_range = range(0, 9999)
+    else:
+        mail = by_pr_idx[show_thread_of]
+        root = root_of_thread(mail)
+        ls_range = range(root.pridx, root.pridx + nr_replies_of(root) + 1)
 
     if descend:
         by_pr_idx.reverse()
