@@ -200,8 +200,6 @@ def mails_to_str(mails_to_show,
     threads, by_msgids = threads_of(mails_to_show)
     for sort_category in sort_threads_by:
         sort_threads(threads, sort_category)
-    if descend:
-        threads.reverse()
 
     if show_stat:
         nr_new_threads = len([m for m in threads
@@ -219,6 +217,9 @@ def mails_to_str(mails_to_show,
         mk_pr_ready(mail, by_pr_idx)
 
     ls_range = get_display_range(show_thread_of, by_msgids, by_pr_idx)
+
+    if descend:
+        by_pr_idx.reverse()
 
     for mail in by_pr_idx:
         set_mail_cache_key(
