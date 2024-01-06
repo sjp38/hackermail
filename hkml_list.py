@@ -275,18 +275,13 @@ def filter_tags(mail, tags):
             return False
     return True
 
-def git_log_output_line_to_mail(line, mdir, subject_keyword, body_keyword):
+def git_log_output_line_to_mail(line, mdir):
     fields = line.split()
     if len(fields) < 3:
         return None
     subject_offset = len(fields[0]) + 1 + len(fields[1]) + 1
     subject = line[subject_offset:]
-    if subject_keyword and not subject_keyword in subject:
-        return None
-    mail = _hkml.Mail.from_gitlog(fields[0], mdir, fields[1], subject)
-    if body_keyword and not body_keyword in mail.get_field('body'):
-        return None
-    return mail
+    return _hkml.Mail.from_gitlog(fields[0], mdir, fields[1], subject)
 
 def get_mails_from_git(manifest, mail_list, since, until, author,
         subject_keyword, body_keyword):
@@ -310,8 +305,7 @@ def get_mails_from_git(manifest, mail_list, since, until, author,
         lines = _hkml.cmd_lines_output(cmd)
 
         for line in lines:
-            mail = git_log_output_line_to_mail(line, mdir, subject_keyword,
-                    body_keyword)
+            mail = git_log_output_line_to_mail(line, mdir)
             if mail:
                 mails.append(mail)
     return mails
