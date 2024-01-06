@@ -351,8 +351,14 @@ def get_mails(
     if fetch:
         hkml_fetch.fetch_mail(manifest, [source], False, 1)
 
-    return filter_mails(
-            manifest, source, since, until, [show, hide], msgid)
+    manifest = _hkml.get_manifest(manifest)
+    if not manifest:
+        print('Cannot open manifest file')
+        exit(1)
+
+    mails = get_mails_from_git(manifest, source, since, until)
+    mails.reverse()
+    return mails
 
 def set_argparser(parser=None):
     DEFAULT_SINCE = datetime.datetime.now() - datetime.timedelta(days=3)
