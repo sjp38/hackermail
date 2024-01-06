@@ -211,16 +211,24 @@ def should_filter_out(mail, ls_range, new_threads_only, show, hide,
 
     return False
 
-def format_stat(threads, mails_to_show):
+def format_stat(mails_to_show):
+    nr_threads = 0
+    nr_new_threads = 0
+    nr_patches = 0
+    nr_patchsets = 0
+    for mail in mails_to_show:
+        if mail.parent_mail is None:
+            nr_threads += 1
+        if not mail.get_field('in-reply-to'):
+            nr_new_threads += 1
+        if 'patch' in mail.tags and not 'reply' in mail.tags:
+            nr_patches += 1
+        if 'patch' in mail.tags and not mail.get_field('in-reply-to'):
+            nr_patchsets += 1
+
     lines = []
-    nr_new_threads = len([m for m in threads
-        if not m.get_field('in-reply-to')])
-    nr_patches = len([m for m in mails_to_show
-        if 'patch' in m.tags and not 'reply' in m.tags])
-    nr_patchsets = len([m for m in threads
-        if not m.get_field('in-reply-to') and 'patch' in m.tags])
     lines.append('# %d mails, %d threads, %d new threads' %
-            (len(mails_to_show), len(threads), nr_new_threads))
+            (len(mails_to_show), nr_threads, nr_new_threads))
     lines.append('# %d patches, %d series' % (nr_patches, nr_patchsets))
     return lines
 
@@ -236,7 +244,7 @@ def mails_to_str(mails_to_show,
         sort_threads(threads, sort_category)
 
     if show_stat:
-        lines += format_stat(threads, mails_to_show)
+        lines += format_stat(mails_to_show)
 
     by_pr_idx = []
     for mail in threads:
