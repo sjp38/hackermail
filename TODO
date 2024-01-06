@@ -10,5 +10,3 @@
   (monitor replies and forward the new reply to given mail address)
 - Subscribe to summary
   (send summary of mails to given mail address in requested time period)
-- Cleanup root of thread finding mechanism in hkml_list
-  - Just set link to the in-reply-to
