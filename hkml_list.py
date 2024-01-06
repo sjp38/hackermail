@@ -150,19 +150,12 @@ def root_of_thread(mail):
         return mail
     return root_of_thread(mail.parent_mail)
 
-def get_display_range(show_thread_of, by_msgids, by_pr_idx):
+def get_display_range(mail_idx, by_pr_idx):
     # Show all by default
-    if show_thread_of is None:
+    if mail_idx is None:
         return range(0, 9999)
 
-    if show_thread_of.isdigit():
-        mail = by_pr_idx[int(show_thread_of)]
-    else:
-        if show_thread_of[0] != '<' or show_thread_of[-1] != '>':
-            show_thread_of = '<%s>' % show_thread_of
-        if not show_thread_of in by_msgids:
-            return range(0, 0)
-        mail = by_msgids[show_thread_of]
+    mail = by_pr_idx[mail_idx]
     root = root_of_thread(mail)
     return range(root.pridx, root.pridx + nr_replies_of(root) + 1)
 
@@ -253,7 +246,7 @@ def mails_to_str(mails_to_show,
     for mail in threads:
         set_index(mail, by_pr_idx)
 
-    ls_range = get_display_range(show_thread_of, by_msgids, by_pr_idx)
+    ls_range = get_display_range(show_thread_of, by_pr_idx)
 
     if descend:
         by_pr_idx.reverse()
@@ -403,8 +396,8 @@ def set_argparser(parser=None):
 
     parser.add_argument('--new', '-n', action='store_true',
             help='list new threads only')
-    parser.add_argument('--thread', metavar='<index or msgid>', type=str,
-            help='list thread of specific mail')
+    parser.add_argument('--thread', metavar='<mail index>', type=int,
+            help='list only the thread of the specified mail')
 
     parser.add_argument('--descend', action='store_true',
             help='list threads in descending order')
