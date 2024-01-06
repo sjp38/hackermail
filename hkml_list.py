@@ -211,6 +211,19 @@ def should_filter_out(mail, ls_range, new_threads_only, show, hide,
 
     return False
 
+def format_stat(threads, mails_to_show):
+    lines = []
+    nr_new_threads = len([m for m in threads
+        if not m.get_field('in-reply-to')])
+    nr_patches = len([m for m in mails_to_show
+        if 'patch' in m.tags and not 'reply' in m.tags])
+    nr_patchsets = len([m for m in threads
+        if not m.get_field('in-reply-to') and 'patch' in m.tags])
+    lines.append('# %d mails, %d threads, %d new threads' %
+            (len(mails_to_show), len(threads), nr_new_threads))
+    lines.append('# %d patches, %d series' % (nr_patches, nr_patchsets))
+    return lines
+
 def mails_to_str(mails_to_show,
         show, hide, msgid, author, subject_keyword, body_keyword,
         show_stat, show_thread_of, descend,
@@ -223,15 +236,7 @@ def mails_to_str(mails_to_show,
         sort_threads(threads, sort_category)
 
     if show_stat:
-        nr_new_threads = len([m for m in threads
-            if not m.get_field('in-reply-to')])
-        nr_patches = len([m for m in mails_to_show
-            if 'patch' in m.tags and not 'reply' in m.tags])
-        nr_patchsets = len([m for m in threads
-            if not m.get_field('in-reply-to') and 'patch' in m.tags])
-        lines.append('# %d mails, %d threads, %d new threads' %
-                (len(mails_to_show), len(threads), nr_new_threads))
-        lines.append('# %d patches, %d series' % (nr_patches, nr_patchsets))
+        lines += format_stat(threads, mails_to_show)
 
     by_pr_idx = []
     for mail in threads:
