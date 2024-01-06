@@ -163,6 +163,11 @@ def set_index(mail, list_, depth=0):
     mail.pridx = len(list_)
     mail.prdepth = depth
     list_.append(mail)
+
+    set_mail_cache_key(
+            mail.pridx, hkml_cache.get_cache_key(
+                mail.gitid, mail.gitdir, mail.get_field('message-id')))
+
     for mail in mail.replies:
         set_index(mail, list_, depth + 1)
 
@@ -227,9 +232,6 @@ def mails_to_str(mails_to_show,
         by_pr_idx.reverse()
 
     for mail in by_pr_idx:
-        set_mail_cache_key(
-                mail.pridx, hkml_cache.get_cache_key(
-                    mail.gitid, mail.gitdir, mail.get_field('message-id')))
         if not mail.pridx in ls_range:
             continue
         if new_threads_only and mail.get_field('in-reply-to'):
