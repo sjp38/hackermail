@@ -307,27 +307,6 @@ def get_mails_from_git(manifest, mail_list, since, until):
                 mails.append(mail)
     return mails
 
-def filter_mails(manifest, mail_list, since, until, tags, msgid):
-    manifest = _hkml.get_manifest(manifest)
-    if not manifest:
-        print('Cannot open manifest file')
-        exit(1)
-
-    mails = get_mails_from_git(manifest, mail_list, since, until)
-
-    mails_to_show = []
-    for mail in mails:
-        if msgid and mail.get_field('message-id') != ('<%s>' % msgid):
-            continue
-
-        if not filter_tags(mail, tags):
-            continue
-
-        mails_to_show.append(mail)
-
-    mails_to_show.reverse()
-    return mails_to_show
-
 def get_mails(source, fetch, manifest, since, until):
     if source is None:
         with open(os.path.join(_hkml.get_hkml_dir(), 'mail_idx_to_cache_key'),
