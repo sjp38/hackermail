@@ -101,11 +101,12 @@ def format_entry(mail, show_nr_replies,
 
     subject = '%s' % mail.get_field('subject')
     if mail.prdepth and subject.lower().startswith('re: '):
+        subject = subject[4:]
         parent_subject = mail.parent_mail.get_field('subject')
+        if parent_subject[:4].lower() == 're: ':
+            parent_subject = parent_subject[4:]
         if parent_subject == subject:
             subject = 're:'
-        else:
-            subject = subject[4:]
 
     suffices = [' '.join(mail.get_field('from').split()[0:-1]),
                 mail.date.strftime('%m/%d %H:%M')]
