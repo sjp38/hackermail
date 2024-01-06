@@ -86,7 +86,7 @@ def threads_of(mails):
             orig_mail = by_msgids[in_reply_to]
             orig_mail.replies.append(mail)
             mail.parent_mail = orig_mail
-    return threads, by_msgids
+    return threads
 
 def should_open_mail(mail_idx, open_mail_idxs):
     if open_mail_idxs is None:
@@ -231,7 +231,7 @@ def mails_to_str(mails_to_show,
         open_mail_idxs, open_mail_via_lore, show_lore_link, nr_cols):
     lines = []
 
-    threads, by_msgids = threads_of(mails_to_show)
+    threads = threads_of(mails_to_show)
     for sort_category in sort_threads_by:
         sort_threads(threads, sort_category)
 
