@@ -38,9 +38,9 @@ Send a reply to the 5th mail:
 
     $ ./hkml reply 5
 
-Write a mail to the mailing list, and send:
+Write and send t a mail to the mailing list:
 
-    $ ./hkml write --cc linux-mm@kvack.org --send
+    $ ./hkml write --cc linux-mm@kvack.org
 
 Export the [2, 5)-th mails on the list to 'exported.mbox' file:
 
