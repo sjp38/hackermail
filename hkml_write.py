@@ -65,8 +65,6 @@ def set_argparser(parser=None):
             help='body message of the mail')
     parser.add_argument('--format_only', action='store_true',
             help='print formatted mail template only')
-    parser.add_argument('--send', action='store_true',
-            help='send the mail')
 
 def main(args=None):
     if not args:
@@ -91,13 +89,15 @@ def main(args=None):
         mbox = f.read()
 
     print(mbox)
-    if not args.send:
-        os.remove(tmp_path)
-        return
 
     answer = input('Will send above mail.  Okay? [y/N] ')
     if answer.lower() != 'y':
-        exit(0)
+        answer = input('Save the mail as a file for later update? [Y/n] ')
+        if answer.lower() != 'n':
+            print('The mail is saved at %s' % tmp_path)
+            return
+        os.remove(tmp_path)
+        return
     _hkml.cmd_str_output(['git', 'send-email', tmp_path])
 
 if __name__ == '__main__':
