@@ -16,11 +16,11 @@ good examples of the public-inbox managed mailing list archives.
 Getting Started
 ===============
 
-List mails in damon mailing list (https://lore.kernel.org/damon) which were
-sent within last three days:
+List mails in Linux kernel memory management subsystem mailing list
+(https://lore.kernel.org/linux-mm) which were sent within last three days:
 
     $ ./hkml init --manifest ./manifests/lore.js
-    $ ./hkml list damon --fetch
+    $ ./hkml list linux-mm --fetch
 
 Show the list again
 
@@ -40,7 +40,7 @@ Send a reply to the 5th mail:
 
 Write a mail to the mailing list, and send:
 
-    $ ./hkml write --cc damon@lists.linux.dev --send
+    $ ./hkml write --cc linux-mm@kvack.org --send
 
 Export the [2, 5)-th mails on the list to 'exported.mbox' file:
 
