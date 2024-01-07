@@ -2,17 +2,18 @@ hackermail
 ==========
 
 hackermail is a mail client for hackers who collaborate using mailing lists.
-Using hackermail, you can fetch mailing list archives, read mails in those, and
-write replies or new mails.
+It requires no complicated setup but just `git`.  Using it, you can fetch
+mailing list archives, read mails in those, and post new mails or replies.
 
-For now, hackermail supports only public-inbox[1] managed mailing list
-archives.  Linux Kernel Mailing Lists (LKML)[2] are good examples.
+For now, hackermail supports public-inbox[1] managed mailing list archives and
+manually exported mbox file contents.  Linux Kernel Mailing Lists (LKML)[2] are
+good examples of the public-inbox managed mailing list archives.
 
 [1] https://public-inbox.org/design_notes.html<br>
 [2] https://www.kernel.org/lore.html
 
 
-Quick Tutorials
+Getting Started
 ===============
 
 List mails in damon mailing list (https://lore.kernel.org/damon) which were
