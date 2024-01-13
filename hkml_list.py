@@ -477,13 +477,14 @@ def main(args=None):
         args = parser.parse_args()
 
     list_output_cache_key = args_to_list_output_key(args)
-    to_show = get_cached_list_output(list_output_cache_key)
-    if to_show is not None:
-        if args.stdout:
-            print(to_show)
+    if args.fetch == False:
+        to_show = get_cached_list_output(list_output_cache_key)
+        if to_show is not None:
+            if args.stdout:
+                print(to_show)
+                return
+            hkml_open.pr_with_pager_if_needed(to_show)
             return
-        hkml_open.pr_with_pager_if_needed(to_show)
-        return
 
     if args.hot:
         args.descend = True
