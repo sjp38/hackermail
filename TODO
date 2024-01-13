@@ -10,3 +10,5 @@
   (monitor replies and forward the new reply to given mail address)
 - Subscribe to summary
   (send summary of mails to given mail address in requested time period)
+- Support 'clipboard' from 'hkml reply'
+- make 'hkml list' to show filter-applied list
