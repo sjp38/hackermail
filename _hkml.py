@@ -202,6 +202,13 @@ def read_mbox_file(filepath):
         mails.append(mail)
     return mails
 
+def read_mails_from_clipboard():
+    mbox_str = cmd_str_output(['xclip', '-o', '-sel', 'clip'])
+    mail = Mail(mbox=mbox_str)
+    if mail.broken():
+        return [], 'clipboard is not complete mbox string'
+    return [mail], None
+
 __hkml_dir = None
 
 def set_hkml_dir(path=None):
