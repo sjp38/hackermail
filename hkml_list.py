@@ -350,12 +350,11 @@ def get_mails(source, fetch, manifest, since, until):
     flush_mail_idx_key_cache()
 
     if source == 'clipboard':
-        mbox_str = _hkml.cmd_str_output(['xclip', '-o', '-sel', 'clip'])
-        mail = _hkml.Mail(mbox=mbox_str)
-        if mail.broken():
-            print('clipboard is not complete mbox string')
-            return []
-        return [mail]
+        mails, err = _hkml.read_mails_from_clipboard()
+        if err != None:
+            print('reading mails from clipboard failed: %s' % err)
+            exit(1)
+        return mails
 
     if os.path.isfile(source):
         return _hkml.read_mbox_file(source)
