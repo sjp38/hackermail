@@ -373,8 +373,7 @@ def get_mails(source, fetch, manifest, since, until):
 
 def set_argparser(parser=None):
     DEFAULT_SINCE = datetime.datetime.now() - datetime.timedelta(days=3)
-    DEFAULT_SINCE = '%s-%s-%s' % (DEFAULT_SINCE.year, DEFAULT_SINCE.month,
-                DEFAULT_SINCE.day)
+    DEFAULT_SINCE = DEFAULT_SINCE.strftime('%Y-%m-%d')
 
     _hkml.set_manifest_option(parser)
     parser.add_argument('source', metavar='<source of mails>', nargs='?',
