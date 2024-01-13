@@ -53,6 +53,39 @@ def writeback_mail_idx_key_cache():
     with open(mail_idx_key_cache_file_path(), 'w') as f:
         json.dump(mail_idx_key_cache, f, indent=4)
 
+list_output_cache = None
+
+def list_output_cache_file_path():
+    return os.path.join(_hkml.get_hkml_dir(), 'list_output_cache')
+
+def args_to_list_output_key(args):
+    return json.dumps(args.__dict__, sort_keys=True)
+
+def get_list_output_cache():
+    global list_output_cache
+
+    if list_output_cache is None:
+        if not os.path.isfile(list_output_cache_file_path()):
+            list_output_cache = {}
+        else:
+            with open(list_output_cache_file_path(), 'r') as f:
+                list_output_cache = json.load(f)
+    if list_output_cache is None:
+        list_output_cache = {}
+    return list_output_cache
+
+def get_cached_list_output(key):
+    cache = get_list_output_cache()
+    if not key in cache:
+        return None
+    return cache[key]
+
+def cache_list_output(key, output):
+    cache = get_list_output_cache()
+    cache[key] = output
+    with open(list_output_cache_file_path(), 'w') as f:
+        json.dump(cache, f, indent=4)
+
 def lore_url(mail):
     return 'https://lore.kernel.org/r/%s' % mail.get_field('message-id')[1:-1]
 
@@ -443,6 +476,15 @@ def main(args=None):
         set_argparser(parser)
         args = parser.parse_args()
 
+    list_output_cache_key = args_to_list_output_key(args)
+    to_show = get_cached_list_output(list_output_cache_key)
+    if to_show is not None:
+        if args.stdout:
+            print(to_show)
+            return
+        hkml_open.pr_with_pager_if_needed(to_show)
+        return
+
     if args.hot:
         args.descend = True
         args.sort_threads_by = ['last_date', 'nr_comments']
@@ -470,6 +512,7 @@ def main(args=None):
             args.lore_read, args.lore, nr_cols_in_line)
     hkml_cache.writeback_mails()
     writeback_mail_idx_key_cache()
+    cache_list_output(list_output_cache_key, to_show)
 
     if args.stdout:
         print(to_show)
