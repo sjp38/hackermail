@@ -83,11 +83,13 @@ def get_cached_list_output(key):
     cache = get_list_output_cache()
     if not key in cache:
         return None
-    return cache[key]
+    return cache[key]['output']
 
 def cache_list_output(key, output):
     cache = get_list_output_cache()
-    cache[key] = output
+    cache[key] = {
+            'output': output,
+            'date': datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')}
     with open(list_output_cache_file_path(), 'w') as f:
         json.dump(cache, f, indent=4)
 
