@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: GPL-2.0
 
 import argparse
+import copy
 import datetime
 import json
 import os
@@ -59,7 +60,11 @@ def list_output_cache_file_path():
     return os.path.join(_hkml.get_hkml_dir(), 'list_output_cache')
 
 def args_to_list_output_key(args):
-    return json.dumps(args.__dict__, sort_keys=True)
+    dict_ = copy.deepcopy(args.__dict__)
+    dict_['fetch'] = False
+    dict_['stdout'] = False
+
+    return json.dumps(dict_, sort_keys=True)
 
 def get_list_output_cache():
     global list_output_cache
