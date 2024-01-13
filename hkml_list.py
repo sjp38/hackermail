@@ -374,6 +374,8 @@ def get_mails(source, fetch, manifest, since, until):
 def set_argparser(parser=None):
     DEFAULT_SINCE = datetime.datetime.now() - datetime.timedelta(days=3)
     DEFAULT_SINCE = DEFAULT_SINCE.strftime('%Y-%m-%d')
+    DEFAULT_UNTIL = datetime.datetime.now() + datetime.timedelta(days=1)
+    DEFAULT_UNTIL = DEFAULT_UNTIL.strftime('%Y-%m-%d')
 
     _hkml.set_manifest_option(parser)
     parser.add_argument('source', metavar='<source of mails>', nargs='?',
@@ -388,6 +390,7 @@ def set_argparser(parser=None):
             default=DEFAULT_SINCE,
             help='show mails sent after a specific date')
     parser.add_argument('--until', metavar='<date>', type=str,
+            default=DEFAULT_UNTIL,
             help='show mails sent before a specific date')
     parser.add_argument('--show', metavar='<tag>', type=str, nargs='+',
             help='show mails having these tags')
