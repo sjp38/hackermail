@@ -34,8 +34,10 @@ def format_reply(mail):
 
 def set_argparser(parser):
     parser.add_argument(
-            'mail_idx', metavar='<index>', type=int,
-            help='index of the mail to reply to')
+            'mail', metavar='<mail>',
+            help=' '.join(
+                ['The mail to reply to.',
+                'Could be index on the list, or \'clipboard\'']))
     parser.add_argument(
             '--format_only', action='store_true',
             help='print formatted reply template only')
@@ -46,8 +48,21 @@ def main(args=None):
         set_Argparser(parser)
         args = parser.parse_args()
 
-    key = hkml_list.get_mail_cache_key(args.mail_idx)
-    mail = hkml_cache.get_mail(key=key)
+    if args.mail.isdigit():
+        key = hkml_list.get_mail_cache_key(int(args.mail))
+        mail = hkml_cache.get_mail(key=key)
+    elif args.mail == 'clipboard':
+        mails, err = _hkml.read_mails_from_clipboard()
+        if err != None:
+            print('reading mails in clipboard failed: %s' % err)
+            exit(1)
+        if len(mails) != 1:
+            print('multiple mails in clipboard')
+            exit(1)
+        mail = mails[0]
+    else:
+        print('unsupported <mail> (%s)' % args.mail)
+
     if mail is None:
         print('mail is not cached')
         exit(1)
