@@ -90,6 +90,10 @@ def cache_list_output(key, output):
     cache[key] = {
             'output': output,
             'date': datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')}
+    max_cache_sz = 64
+    if len(cache) == max_cache_sz:
+        keys = sorted(cache.keys(), key=lambda x: cache[x]['date'])
+        del cache[keys[0]]
     with open(list_output_cache_file_path(), 'w') as f:
         json.dump(cache, f, indent=4)
 
