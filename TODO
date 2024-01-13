@@ -12,3 +12,4 @@
 - Subscribe to summary
   (send summary of mails to given mail address in requested time period)
 - make 'hkml list' to show filter-applied list
+- Split cache file for speed (large cache file makes even opening one mail slow)
