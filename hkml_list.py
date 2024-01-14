@@ -90,6 +90,7 @@ def cache_list_output(key, output):
     cache = get_list_output_cache()
     cache[key] = {
             'output': output,
+            'index_to_cache_key': get_mail_idx_key_cache(),
             'date': datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')}
     max_cache_sz = 64
     if len(cache) == max_cache_sz:
