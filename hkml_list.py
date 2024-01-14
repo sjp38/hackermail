@@ -435,8 +435,6 @@ def set_argparser(parser=None):
             help='collapse threads')
     parser.add_argument('--expand', type=int, nargs='*',
             help='expand threads')
-    parser.add_argument('--open', '-o', type=int, nargs='*',
-            help='show the content of the <index>th mail')
     parser.add_argument('--cols', metavar='<int>', type=int,
             help='number of columns for each line')
     parser.add_argument('--lore', action='store_true',
@@ -496,7 +494,7 @@ def main(args=None):
             args.subject_contains, args.contains,
             not args.hide_stat, args.thread,
             args.descend, args.sort_threads_by,
-            args.new, args.collapse, args.expand, args.open,
+            args.new, args.collapse, args.expand, None,
             args.lore_read, args.lore, nr_cols_in_line)
     hkml_cache.writeback_mails()
     cache_list_output(list_output_cache_key, to_show)
