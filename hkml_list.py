@@ -17,9 +17,6 @@ import hkml_open
 
 mail_idx_key_cache = None
 
-def mail_idx_key_cache_file_path():
-    return os.path.join(_hkml.get_hkml_dir(), 'mail_idx_to_cache_key')
-
 def get_mail_idx_key_cache():
     global mail_idx_key_cache
     if mail_idx_key_cache is None:
@@ -41,14 +38,6 @@ def set_mail_cache_key(idx, key):
     if idx_str in cache:
         return
     cache[idx_str] = key
-
-def flush_mail_idx_key_cache():
-    global mail_idx_key_cache
-    mail_idx_key_cache = {}
-
-def writeback_mail_idx_key_cache():
-    with open(mail_idx_key_cache_file_path(), 'w') as f:
-        json.dump(mail_idx_key_cache, f, indent=4)
 
 list_output_cache = None
 
@@ -379,8 +368,6 @@ def get_mails_from_git(manifest, mail_list, since, until):
     return mails
 
 def get_mails(source, fetch, manifest, since, until):
-    flush_mail_idx_key_cache()
-
     if source == 'clipboard':
         mails, err = _hkml.read_mails_from_clipboard()
         if err != None:
@@ -512,7 +499,6 @@ def main(args=None):
             args.new, args.collapse, args.expand, args.open,
             args.lore_read, args.lore, nr_cols_in_line)
     hkml_cache.writeback_mails()
-    writeback_mail_idx_key_cache()
     cache_list_output(list_output_cache_key, to_show)
 
     if args.stdout:
