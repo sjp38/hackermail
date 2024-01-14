@@ -376,21 +376,6 @@ def get_mails_from_git(manifest, mail_list, since, until):
     return mails
 
 def get_mails(source, fetch, manifest, since, until):
-    if source is None:
-        with open(os.path.join(_hkml.get_hkml_dir(), 'mail_idx_to_cache_key'),
-                  'r') as f:
-            idx_to_cache_key_set = json.load(f)
-            cache_keys = []
-            sorted_idxs = sorted(
-                    [int(idx) for idx in idx_to_cache_key_set.keys()])
-            mails = []
-            for idx in sorted_idxs:
-                cache_key = idx_to_cache_key_set['%d' % idx]
-                mail = hkml_cache.get_mail(key=cache_key)
-                if mail is not None:
-                    mails.append(hkml_cache.get_mail(key=cache_key))
-        return mails
-
     flush_mail_idx_key_cache()
 
     if source == 'clipboard':
@@ -422,14 +407,14 @@ def set_argparser(parser=None):
     DEFAULT_UNTIL = DEFAULT_UNTIL.strftime('%Y-%m-%d')
 
     _hkml.set_manifest_option(parser)
-    parser.add_argument('source', metavar='<source of mails>', nargs='?',
+    parser.add_argument('source', metavar='<source of mails>',
             help='  '.join([
             'Source of mails to read.  Could be one of following types.',
             'Name of a mailing list in the manifest file.',
             'Path to mbox file in the local filesyste.',
             'Special keyword, \'clipboard\'.',
             '\'clipboard\' means mbox string in the clipboard.',
-            'No argument means last command listed mails.']))
+            ]))
     parser.add_argument('--since', metavar='<date>', type=str,
             default=DEFAULT_SINCE,
             help='show mails sent after a specific date')
@@ -488,7 +473,7 @@ def main(args=None):
         args = parser.parse_args()
 
     list_output_cache_key = args_to_list_output_key(args)
-    if args.fetch == False and args.source is not None:
+    if args.fetch == False:
         to_show = get_cached_list_output(list_output_cache_key)
         if to_show is not None:
             if args.stdout:
@@ -524,8 +509,7 @@ def main(args=None):
             args.lore_read, args.lore, nr_cols_in_line)
     hkml_cache.writeback_mails()
     writeback_mail_idx_key_cache()
-    if args.source is not None:
-        cache_list_output(list_output_cache_key, to_show)
+    cache_list_output(list_output_cache_key, to_show)
 
     if args.stdout:
         print(to_show)
