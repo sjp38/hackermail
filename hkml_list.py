@@ -23,12 +23,6 @@ def mail_idx_key_cache_file_path():
 def get_mail_idx_key_cache():
     global mail_idx_key_cache
     if mail_idx_key_cache is None:
-        if not os.path.isfile(mail_idx_key_cache_file_path()):
-            mail_idx_key_cache = {}
-        else:
-            with open(mail_idx_key_cache_file_path(), 'r') as f:
-                mail_idx_key_cache = json.load(f)
-    if mail_idx_key_cache is None:
         mail_idx_key_cache = {}
     return mail_idx_key_cache
 
