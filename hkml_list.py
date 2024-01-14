@@ -488,7 +488,7 @@ def main(args=None):
         args = parser.parse_args()
 
     list_output_cache_key = args_to_list_output_key(args)
-    if args.fetch == False:
+    if args.fetch == False and args.source is not None:
         to_show = get_cached_list_output(list_output_cache_key)
         if to_show is not None:
             if args.stdout:
@@ -524,7 +524,8 @@ def main(args=None):
             args.lore_read, args.lore, nr_cols_in_line)
     hkml_cache.writeback_mails()
     writeback_mail_idx_key_cache()
-    cache_list_output(list_output_cache_key, to_show)
+    if args.source is not None:
+        cache_list_output(list_output_cache_key, to_show)
 
     if args.stdout:
         print(to_show)
