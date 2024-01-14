@@ -364,6 +364,18 @@ def get_mails(source, fetch, manifest, since, until):
     mails.reverse()
     return mails
 
+def last_listed_mails():
+    cache = get_list_output_cache()
+    last_key = sorted(cache.keys(), key=lambda x: cache[x]['date'])[-1]
+    idx_to_keys = cache[last_key]['index_to_cache_key']
+    mails = []
+    for idx in sorted([int(idx) for idx in idx_to_keys.keys()]):
+        cache_key = idx_to_keys['%d' % idx]
+        mail = hkml_cache.get_mail(key=cache_key)
+        if mail is not None:
+            mails.append(mail)
+    return mails
+
 def set_argparser(parser=None):
     DEFAULT_SINCE = datetime.datetime.now() - datetime.timedelta(days=3)
     DEFAULT_SINCE = DEFAULT_SINCE.strftime('%Y-%m-%d')
@@ -455,8 +467,11 @@ def main(args=None):
             # maybe user is doing pipe
             nr_cols_in_line = 80
 
-    mails_to_show = get_mails(
-            args.source, args.fetch, args.manifest, args.since, args.until)
+    if args.thread != None:
+        mails_to_show = last_listed_mails()
+    else:
+        mails_to_show = get_mails(
+                args.source, args.fetch, args.manifest, args.since, args.until)
 
     if args.thread != None:
         args.collapse = False
