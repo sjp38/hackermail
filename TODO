@@ -5,12 +5,11 @@
     - lore link
   - Support fetching mail since root of a thread
   - Support multiple sources
-  - Show full thread list when --open is given
-  - Cache mail idx to cache key for different command line options
+  - Set index based on filtering
 - Tag mails (Store the information under .hkm directory in some format)
 - Subscribe to a thread
   (monitor replies and forward the new reply to given mail address)
 - Subscribe to summary
   (send summary of mails to given mail address in requested time period)
-- make 'hkml list' to show filter-applied list
-- Split cache file for speed (large cache file makes even opening one mail slow)
+- Deal with large cache file
+  - split file, or at least make size limit
