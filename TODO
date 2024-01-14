@@ -6,6 +6,8 @@
   - Support fetching mail since root of a thread
   - Support multiple sources
   - Set index based on filtering
+  - Separate --thread to a command
+  - Print stat for filtered mails
 - Tag mails (Store the information under .hkm directory in some format)
 - Subscribe to a thread
   (monitor replies and forward the new reply to given mail address)
