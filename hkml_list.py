@@ -218,13 +218,11 @@ def sort_threads(threads, category):
     elif category == 'nr_comments':
         threads.sort(key=lambda t: nr_comments(t))
 
-def should_filter_out(mail, ls_range, new_threads_only, show, hide,
+def should_filter_out(mail, ls_range, new_threads_only,
                       msgid, author, subject_keyword, body_keyword):
     if not mail.pridx in ls_range:
         return True
     if new_threads_only and mail.get_field('in-reply-to'):
-        return True
-    if not filter_tags(mail, [show, hide]):
         return True
     if msgid and mail.get_field('message-id') != '<%s>' % msgid:
         return True
@@ -259,7 +257,7 @@ def format_stat(mails_to_show):
     return lines
 
 def mails_to_str(mails_to_show,
-        show, hide, msgid, author, subject_keyword, body_keyword,
+        msgid, author, subject_keyword, body_keyword,
         show_stat, show_thread_of, descend,
         sort_threads_by, new_threads_only, collapse_threads, expand_threads,
         open_mail_via_lore, show_lore_link, nr_cols):
@@ -288,7 +286,7 @@ def mails_to_str(mails_to_show,
         by_pr_idx.reverse()
 
     for mail in by_pr_idx:
-        if should_filter_out(mail, ls_range, new_threads_only, show, hide,
+        if should_filter_out(mail, ls_range, new_threads_only,
                              msgid, author, subject_keyword, body_keyword):
             mail.filtered_out = True
             continue
@@ -302,28 +300,6 @@ def mails_to_str(mails_to_show,
         lines += format_entry(mail, show_nr_replies, show_lore_link,
                               open_mail_via_lore, nr_cols)
     return '\n'.join(lines)
-
-def filter_tags(mail, tags):
-    tags_to_show = tags[0]
-    tags_to_hide = tags[1]
-
-    has_tag = False
-    if tags_to_hide:
-        for tag in tags_to_hide:
-            if tag.lower() in mail.tags:
-                has_tag = True
-                break
-        if has_tag:
-            return False
-
-    if tags_to_show:
-        for tag in tags_to_show:
-            if tag.lower() in mail.tags:
-                has_tag = True
-                break
-        if not has_tag:
-            return False
-    return True
 
 def git_log_output_line_to_mail(line, mdir):
     fields = line.split()
@@ -476,7 +452,7 @@ def main(args=None):
     if args.thread != None:
         args.collapse = False
     to_show = mails_to_str(mails_to_show,
-            None, None, args.msgid, args.author,
+            args.msgid, args.author,
             args.subject_contains, args.contains,
             not args.hide_stat, args.thread,
             args.descend, args.sort_threads_by,
