@@ -124,13 +124,6 @@ def threads_of(mails):
             mail.parent_mail = orig_mail
     return threads
 
-def should_open_mail(mail_idx, open_mail_idxs):
-    if open_mail_idxs is None:
-        return False
-    if open_mail_idxs == []:
-        return True
-    return mail_idx in open_mail_idxs
-
 def orig_subject_formatted(mail):
     if mail.parent_mail is None:
         return False
@@ -138,8 +131,8 @@ def orig_subject_formatted(mail):
         return True
     return orig_subject_formatted(mail.parent_mail)
 
-def format_entry(mail, show_nr_replies,
-            open_mail_idxs, show_lore_link, open_mail_via_lore, nr_cols):
+def format_entry(mail, show_nr_replies, show_lore_link, open_mail_via_lore,
+                 nr_cols):
     prefix = '[%04d]%s' % (mail.pridx, ' ' * 4 * mail.prdepth)
 
     subject = '%s' % mail.get_field('subject')
@@ -161,9 +154,6 @@ def format_entry(mail, show_nr_replies,
     suffix = ' (%s)' % ', '.join(suffices)
 
     lines = wrap_line(prefix, subject + suffix, nr_cols)
-    if should_open_mail(mail.pridx, open_mail_idxs):
-        lines.append(hkml_open.mail_display_str(mail, open_mail_via_lore,
-                                                show_lore_link))
     return lines
 
 def nr_replies_of(mail):
@@ -272,7 +262,7 @@ def mails_to_str(mails_to_show,
         show, hide, msgid, author, subject_keyword, body_keyword,
         show_stat, show_thread_of, descend,
         sort_threads_by, new_threads_only, collapse_threads, expand_threads,
-        open_mail_idxs, open_mail_via_lore, show_lore_link, nr_cols):
+        open_mail_via_lore, show_lore_link, nr_cols):
     lines = []
 
     threads = threads_of(mails_to_show)
@@ -309,8 +299,8 @@ def mails_to_str(mails_to_show,
             if mail.prdepth > 0:
                 continue
             show_nr_replies = True
-        lines += format_entry(mail, show_nr_replies, open_mail_idxs,
-                              show_lore_link, open_mail_via_lore, nr_cols)
+        lines += format_entry(mail, show_nr_replies, show_lore_link,
+                              open_mail_via_lore, nr_cols)
     return '\n'.join(lines)
 
 def filter_tags(mail, tags):
@@ -494,7 +484,7 @@ def main(args=None):
             args.subject_contains, args.contains,
             not args.hide_stat, args.thread,
             args.descend, args.sort_threads_by,
-            args.new, args.collapse, args.expand, None,
+            args.new, args.collapse, args.expand,
             args.lore_read, args.lore, nr_cols_in_line)
     hkml_cache.writeback_mails()
     cache_list_output(list_output_cache_key, to_show)
