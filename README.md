@@ -22,10 +22,6 @@ List mails in Linux kernel memory management subsystem mailing list
     $ ./hkml init --manifest ./manifests/lore.js
     $ ./hkml list linux-mm --fetch
 
-Show the list again
-
-    $ ./hkml list
-
 Show the list again, with the content of the 5th mail on the list open:
 
     $ ./hkml list --open 5
