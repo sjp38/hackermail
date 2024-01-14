@@ -218,8 +218,16 @@ def sort_threads(threads, category):
     elif category == 'nr_comments':
         threads.sort(key=lambda t: nr_comments(t))
 
+def keywords_in(keywords, text):
+    if keywords is None:
+        return True
+    for keyword in keywords:
+        if not keyword in text:
+            return False
+    return True
+
 def should_filter_out(mail, ls_range, new_threads_only,
-                      msgid, author, subject_keyword, body_keyword):
+                      msgid, author, subject_keywords, body_keyword):
     if not mail.pridx in ls_range:
         return True
     if new_threads_only and mail.get_field('in-reply-to'):
@@ -228,7 +236,7 @@ def should_filter_out(mail, ls_range, new_threads_only,
         return True
     if author and not author in mail.get_field('from'):
         return True
-    if subject_keyword and not subject_keyword in mail.subject:
+    if not keywords_in(subject_keywords, mail.subject):
         return True
     if body_keyword and not body_keyword in mail.get_field('body'):
         return True
@@ -257,7 +265,7 @@ def format_stat(mails_to_show):
     return lines
 
 def mails_to_str(mails_to_show,
-        msgid, author, subject_keyword, body_keyword,
+        msgid, author, subject_keywords, body_keyword,
         show_stat, show_thread_of, descend,
         sort_threads_by, new_threads_only, collapse_threads, expand_threads,
         open_mail_via_lore, show_lore_link, nr_cols):
@@ -287,7 +295,7 @@ def mails_to_str(mails_to_show,
 
     for mail in by_pr_idx:
         if should_filter_out(mail, ls_range, new_threads_only,
-                             msgid, author, subject_keyword, body_keyword):
+                             msgid, author, subject_keywords, body_keyword):
             mail.filtered_out = True
             continue
         mail.filtered_out = False
@@ -382,6 +390,7 @@ def set_argparser(parser=None):
     parser.add_argument('--author', metavar='<name or email>', type=str,
             help='show only mails from the author')
     parser.add_argument('--subject_contains', metavar='<words>', type=str,
+            nargs='+',
             help='list mails containing the keyword in their subject')
     parser.add_argument('--contains', metavar='<keyword>', type=str,
             help='list mails containing the keyword in their body')
