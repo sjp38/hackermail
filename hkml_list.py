@@ -79,6 +79,11 @@ def get_list_output_cache():
         list_output_cache = {}
     return list_output_cache
 
+def writeback_list_output():
+    cache = get_list_output_cache()
+    with open(list_output_cache_file_path(), 'w') as f:
+        json.dump(cache, f, indent=4)
+
 def get_cached_list_output(key):
     cache = get_list_output_cache()
     if not key in cache:
@@ -482,6 +487,7 @@ def main(args=None):
                 print(to_show)
                 return
             hkml_open.pr_with_pager_if_needed(to_show)
+            writeback_list_output()
             return
 
     if args.hot:
