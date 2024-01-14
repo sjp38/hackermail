@@ -6,6 +6,7 @@
   - Support fetching mail since root of a thread
   - Support multiple sources
   - Show full thread list when --open is given
+  - Cache mail idx to cache key for different command line options
 - Tag mails (Store the information under .hkm directory in some format)
 - Subscribe to a thread
   (monitor replies and forward the new reply to given mail address)
