@@ -401,10 +401,6 @@ def set_argparser(parser=None):
     parser.add_argument('--until', metavar='<date>', type=str,
             default=DEFAULT_UNTIL,
             help='show mails sent before a specific date')
-    parser.add_argument('--show', metavar='<tag>', type=str, nargs='+',
-            help='show mails having these tags')
-    parser.add_argument('--hide', metavar='<tag>', type=str, nargs='+',
-            help='hide mails having these tags')
     parser.add_argument('--msgid', metavar='<message id>', type=str,
             help='show only the mail of the message id')
     parser.add_argument('--author', metavar='<name or email>', type=str,
@@ -480,7 +476,7 @@ def main(args=None):
     if args.thread != None:
         args.collapse = False
     to_show = mails_to_str(mails_to_show,
-            args.show, args.hide, args.msgid, args.author,
+            None, None, args.msgid, args.author,
             args.subject_contains, args.contains,
             not args.hide_stat, args.thread,
             args.descend, args.sort_threads_by,
