@@ -83,6 +83,7 @@ def get_cached_list_output(key):
     cache = get_list_output_cache()
     if not key in cache:
         return None
+    cache[key]['date'] = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
     return cache[key]['output']
 
 def cache_list_output(key, output):
