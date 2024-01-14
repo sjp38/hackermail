@@ -437,8 +437,8 @@ def main(args=None):
         if to_show is not None:
             if args.stdout:
                 print(to_show)
-                return
-            hkml_open.pr_with_pager_if_needed(to_show)
+            else:
+                hkml_open.pr_with_pager_if_needed(to_show)
             writeback_list_output()
             return
 
