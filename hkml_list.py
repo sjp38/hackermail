@@ -33,11 +33,13 @@ def get_mail_idx_key_cache():
     return mail_idx_key_cache
 
 def get_mail_cache_key(idx):
-    cache = get_mail_idx_key_cache()
+    cache = get_list_output_cache()
+    last_key = sorted(cache.keys(), key=lambda x: cache[x]['date'])[-1]
+    idx_to_keys = cache[last_key]['index_to_cache_key']
     idx_str = '%d' % idx
-    if not idx_str in cache:
+    if not idx_str in idx_to_keys:
         return None
-    return cache[idx_str]
+    return idx_to_keys[idx_str]
 
 def set_mail_cache_key(idx, key):
     cache = get_mail_idx_key_cache()
