@@ -380,6 +380,7 @@ def set_argparser(parser=None):
     DEFAULT_UNTIL = DEFAULT_UNTIL.strftime('%Y-%m-%d')
 
     _hkml.set_manifest_option(parser)
+    # What mails to show
     parser.add_argument('source', metavar='<source of mails>',
             help='  '.join([
             'Source of mails to read.  Could be one of following types.',
@@ -403,18 +404,29 @@ def set_argparser(parser=None):
             help='list mails containing the keyword in their subject')
     parser.add_argument('--contains', metavar='<keyword>', type=str, nargs='+',
             help='list mails containing the keyword in their body')
-
     parser.add_argument('--new', '-n', action='store_true',
             help='list new threads only')
     parser.add_argument('--thread', metavar='<mail index>', type=int,
             help='list only the thread of the specified mail')
 
+    # How to show the mails
     parser.add_argument('--descend', action='store_true',
             help='list threads in descending order')
     parser.add_argument('--collapse', '-c', action='store_true',
             help='collapse threads')
     parser.add_argument('--expand', type=int, nargs='*',
             help='expand threads')
+    parser.add_argument('--sort_threads_by', nargs='+',
+            choices=['first_date', 'last_date', 'nr_replies', 'nr_comments'],
+            default=['first_date'],
+            help='threads sort field')
+    parser.add_argument('--hot', action='store_true',
+            help='show latest and hot threds first')
+
+    # misc
+    parser.add_argument('--fetch', action='store_true',
+            help='fetch mails before listing')
+
     parser.add_argument('--cols', metavar='<int>', type=int,
             help='number of columns for each line')
     parser.add_argument('--lore', action='store_true',
@@ -425,14 +437,6 @@ def set_argparser(parser=None):
             help='hide stat of the mails')
     parser.add_argument('--stdout', action='store_true',
             help='print to stdout instead of using the pager')
-    parser.add_argument('--fetch', action='store_true',
-            help='fetch mails before listing')
-    parser.add_argument('--sort_threads_by', nargs='+',
-            choices=['first_date', 'last_date', 'nr_replies', 'nr_comments'],
-            default=['first_date'],
-            help='threads sort field')
-    parser.add_argument('--hot', action='store_true',
-            help='show latest and hot threds first')
 
 def main(args=None):
     if not args:
