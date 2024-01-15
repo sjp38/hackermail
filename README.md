@@ -22,11 +22,7 @@ List mails in Linux kernel memory management subsystem mailing list
     $ ./hkml init --manifest ./manifests/lore.js
     $ ./hkml list linux-mm --fetch
 
-Show the list again, with the content of the 5th mail on the list open:
-
-    $ ./hkml list --open 5
-
-Open the fifth mail only, without the list
+Open the fifth mail:
 
     $ ./hkml open 5
 
@@ -34,7 +30,7 @@ Send a reply to the 5th mail:
 
     $ ./hkml reply 5
 
-Write and send t a mail to the mailing list:
+Write and send a mail to the mailing list:
 
     $ ./hkml write --cc linux-mm@kvack.org
 
