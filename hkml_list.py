@@ -383,10 +383,10 @@ def set_argparser(parser=None):
     # What mails to show
     parser.add_argument('source', metavar='<source of mails>',
             help='  '.join([
-            'Source of mails to read.  Could be one of following types.',
-            'Name of a mailing list in the manifest file.',
-            'Path to mbox file in the local filesyste.',
-            'Special keyword, \'clipboard\'.',
+            'Source of mails to list.  Could be one of following types.',
+            '1) Name of a mailing list in the manifest file.',
+            '2) Path to mbox file in the local filesyste.',
+            '3) Special keyword, \'clipboard\'.',
             '\'clipboard\' means mbox string in the clipboard.',
             ]))
     parser.add_argument('--since', metavar='<date>', type=str,
