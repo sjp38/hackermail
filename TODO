@@ -8,10 +8,13 @@
   - Set index based on filtering
   - Separate --thread to a command
   - Print stat for filtered mails
+  - Remove index-dependent options (--expand)
+  - Add --from (Show the list from the specific mail)
 - Tag mails (Store the information under .hkm directory in some format)
-- Subscribe to a thread
-  (monitor replies and forward the new reply to given mail address)
-- Subscribe to summary
-  (send summary of mails to given mail address in requested time period)
+- Implement 'monitor' command
+  - Subscribe to a thread
+    (monitor replies and forward the new reply to given mail address)
+  - Subscribe to summary
+    (send summary of mails to given mail address in requested time period)
 - Deal with large cache file
   - split file, or at least make size limit
