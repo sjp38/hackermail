@@ -4,6 +4,7 @@ import argparse
 import datetime
 import json
 import os
+import time
 
 import _hkml
 
@@ -101,8 +102,10 @@ def main(args=None):
     cache_stat = os.stat(cache_path)
     print('cache size: %.3f MiB' % (cache_stat.st_size / 1024 / 1024))
 
+    before_timestamp = time.time()
     cache = get_mails_cache()
     print('%d mails in cache' % len(mails_cache))
+    print('%f seconds for loading cache' % (time.time() - before_timestamp))
 
     mails = []
     for key in cache:
