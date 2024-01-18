@@ -86,6 +86,11 @@ def invalidate_cached_outputs(source):
     for key in keys_to_del:
         del cache[key]
 
+def writeback_list_output_cache():
+    cache = get_list_output_cache()
+    with open(list_output_cache_file_path(), 'w') as f:
+        json.dump(cache, f, indent=4)
+
 def cache_list_output(key, output):
     cache = get_list_output_cache()
     cache[key] = {
@@ -96,8 +101,7 @@ def cache_list_output(key, output):
     if len(cache) == max_cache_sz:
         keys = sorted(cache.keys(), key=lambda x: cache[x]['date'])
         del cache[keys[0]]
-    with open(list_output_cache_file_path(), 'w') as f:
-        json.dump(cache, f, indent=4)
+    writeback_list_output_cache()
 
 def lore_url(mail):
     return 'https://lore.kernel.org/r/%s' % mail.get_field('message-id')[1:-1]
