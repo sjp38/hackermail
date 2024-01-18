@@ -412,8 +412,6 @@ def set_argparser(parser=None):
             help='list threads in descending order')
     parser.add_argument('--collapse', '-c', action='store_true',
             help='collapse threads')
-    parser.add_argument('--expand', type=int, nargs='*',
-            help='expand threads')
     parser.add_argument('--sort_threads_by', nargs='+',
             choices=['first_date', 'last_date', 'nr_replies', 'nr_comments'],
             default=['first_date'],
@@ -474,7 +472,7 @@ def main(args=None):
             args.subject_contains, args.contains,
             not args.hide_stat, None,
             args.descend, args.sort_threads_by,
-            args.new, args.collapse, args.expand,
+            args.new, args.collapse, None,
             args.lore_read, args.lore, nr_cols_in_line)
     hkml_cache.writeback_mails()
     cache_list_output(list_output_cache_key, to_show)
