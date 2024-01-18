@@ -12,6 +12,8 @@ def set_argparser(parser=None):
     parser.add_argument(
             'mail_idx', metavar='<mail index>', type=int,
             help='list only the thread of the specified mail')
+    parser.add_argument('--lore', action='store_true',
+            help='print lore link for mails')
 
 def main(args=None):
     if not args:
@@ -24,7 +26,7 @@ def main(args=None):
     mails_to_show = hkml_list.last_listed_mails()
     to_show = hkml_list.mails_to_str(
             mails_to_show, None, None, None, None, False, args.mail_idx, False,
-            ['first_date'], None, None, None, None, nr_cols_in_line)
+            ['first_date'], None, None, None, args.lore, nr_cols_in_line)
     hkml_open.pr_with_pager_if_needed(to_show)
 
 
