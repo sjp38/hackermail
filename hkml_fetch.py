@@ -6,6 +6,7 @@ import os
 import subprocess
 
 import _hkml
+import hkml_list
 
 def fetch_mail(manifest_file, mail_lists, quiet=False, epochs=1):
     manifest = _hkml.get_manifest(manifest_file)
@@ -15,6 +16,7 @@ def fetch_mail(manifest_file, mail_lists, quiet=False, epochs=1):
 
     site = manifest['site']
     for mlist in mail_lists:
+        hkml_list.invalidate_cached_outputs(mlist)
         repo_paths = _hkml.mail_list_repo_paths(mlist, manifest)[:epochs]
         local_paths = _hkml.mail_list_data_paths(mlist, manifest)[:epochs]
 
@@ -31,6 +33,7 @@ def fetch_mail(manifest_file, mail_lists, quiet=False, epochs=1):
             else:
                 with open(os.devnull, 'w') as f:
                     subprocess.call(cmd.split(), stdout=f)
+    hkml_list.writeback_list_output_cache()
 
 def fetched_mail_lists():
     archive_dir = os.path.join(_hkml.get_hkml_dir(), 'archives')
