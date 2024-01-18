@@ -42,9 +42,12 @@ def list_output_cache_file_path():
     return os.path.join(_hkml.get_hkml_dir(), 'list_output_cache')
 
 def args_to_list_output_key(args):
-    dict_ = copy.deepcopy(args.__dict__)
-    dict_['fetch'] = False
-    dict_['stdout'] = False
+    dict_ = {
+            'source': args.source,
+            'since': args.since,
+            'until': args.until,
+            'sort_keys': args.sort_threads_by
+            }
 
     return json.dumps(dict_, sort_keys=True)
 
