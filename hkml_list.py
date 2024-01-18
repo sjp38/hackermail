@@ -159,15 +159,6 @@ def nr_replies_of(mail):
         nr += nr_replies_of(re)
     return nr
 
-def should_collapse(mail_idx, collapse_threads, expand_threads):
-    if not collapse_threads:
-        return False
-    if expand_threads is None:
-        return True
-    if expand_threads == []:
-        return False
-    return not mail_idx in expand_threads
-
 def root_of_thread(mail):
     if mail.parent_mail is None:
         return mail
@@ -298,7 +289,7 @@ def mails_to_str(mails_to_show,
         mail.filtered_out = False
 
         show_nr_replies = False
-        if should_collapse(mail.pridx, collapse_threads, None):
+        if collapse_threads == True:
             if mail.prdepth > 0:
                 continue
             show_nr_replies = True
