@@ -406,8 +406,6 @@ def set_argparser(parser=None):
             help='list mails containing the keyword in their body')
     parser.add_argument('--new', '-n', action='store_true',
             help='list new threads only')
-    parser.add_argument('--thread', metavar='<mail index>', type=int,
-            help='list only the thread of the specified mail')
 
     # How to show the mails
     parser.add_argument('--descend', action='store_true',
@@ -468,18 +466,13 @@ def main(args=None):
             # maybe user is doing pipe
             nr_cols_in_line = 80
 
-    if args.thread != None:
-        mails_to_show = last_listed_mails()
-    else:
-        mails_to_show = get_mails(
-                args.source, args.fetch, args.manifest, args.since, args.until)
+    mails_to_show = get_mails(
+            args.source, args.fetch, args.manifest, args.since, args.until)
 
-    if args.thread != None:
-        args.collapse = False
     to_show = mails_to_str(mails_to_show,
             args.msgid, args.author,
             args.subject_contains, args.contains,
-            not args.hide_stat, args.thread,
+            not args.hide_stat, None,
             args.descend, args.sort_threads_by,
             args.new, args.collapse, args.expand,
             args.lore_read, args.lore, nr_cols_in_line)
