@@ -10,6 +10,9 @@
   - Print stat for filtered mails
   - Remove index-dependent options (--expand)
   - Add --from (Show the list from the specific mail)
+  - Use source, since, until, and sort keys as list output cache key
+  - For fetching mailing list, invalidate all cached outputs of same mailing
+    list
 - Tag mails (Store the information under .hkm directory in some format)
 - Implement 'monitor' command
   - Subscribe to a thread
