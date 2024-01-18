@@ -76,6 +76,16 @@ def get_cached_list_output(key):
     cache[key]['date'] = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
     return cache[key]['output']
 
+def invalidate_cached_outputs(source):
+    keys_to_del = []
+    cache = get_list_output_cache()
+    for key in cache.keys():
+        key_dict = json.loads(key)
+        if key_dict['source'] == source:
+            keys_to_del.append(key)
+    for key in keys_to_del:
+        del cache[key]
+
 def cache_list_output(key, output):
     cache = get_list_output_cache()
     cache[key] = {
@@ -444,6 +454,8 @@ def main(args=None):
                 hkml_open.pr_with_pager_if_needed(to_show)
             writeback_list_output()
             return
+    else:
+        invalidate_cached_outputs(args.source)
 
     if args.hot:
         args.descend = True
