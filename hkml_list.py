@@ -264,7 +264,7 @@ def format_stat(mails_to_show):
 def mails_to_str(mails_to_show,
         msgid, author, subject_keywords, body_keywords,
         show_stat, show_thread_of, descend,
-        sort_threads_by, new_threads_only, collapse_threads, expand_threads,
+        sort_threads_by, new_threads_only, collapse_threads,
         open_mail_via_lore, show_lore_link, nr_cols):
     lines = []
 
@@ -298,7 +298,7 @@ def mails_to_str(mails_to_show,
         mail.filtered_out = False
 
         show_nr_replies = False
-        if should_collapse(mail.pridx, collapse_threads, expand_threads):
+        if should_collapse(mail.pridx, collapse_threads, None):
             if mail.prdepth > 0:
                 continue
             show_nr_replies = True
@@ -472,7 +472,7 @@ def main(args=None):
             args.subject_contains, args.contains,
             not args.hide_stat, None,
             args.descend, args.sort_threads_by,
-            args.new, args.collapse, None,
+            args.new, args.collapse,
             args.lore_read, args.lore, nr_cols_in_line)
     hkml_cache.writeback_mails()
     cache_list_output(list_output_cache_key, to_show)
