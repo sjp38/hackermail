@@ -5,7 +5,6 @@
     - lore link
   - Support fetching mail since root of a thread
   - Support multiple sources
-  - Set index based on filtering
   - Print stat for filtered mails
   - Add --from (Show the list from the specific mail)
 - Tag mails (Store the information under .hkm directory in some format)
