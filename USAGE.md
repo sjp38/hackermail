@@ -65,6 +65,19 @@ $ hkml init --manifest ./manifests/lore.json
 Fetching Mails
 ==============
 
+Users can download mails from specific mailing list that described on the
+manifest file onto the local storage using `fetch` sub-command.  It receives
+the names of the mailing lists to fetch.  By default, it receives latest
+epoch's mails of given mailing lists.  For example, below command downloads
+recent mails from linux-mm mailing list.
+
+```
+$ hkml fetch linux-mm
+```
+
+Note that fetching can be done with `list` sub-command, which will be described
+below.  In some use cases, `fetch` sub-command may not frequently used.
+
 Listing Mails
 =============
 
