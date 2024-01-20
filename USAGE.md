@@ -258,3 +258,29 @@ similar to that of `reply`.  Again, `git send-email` setup is required.
 
 Exporting Mails
 ===============
+
+Users can export specific mails on the last `hkml list`-generated list to a
+`mbox` file, using `export` sub-command.  It receives the path to the file that
+will save the exported mail.  The file name should have `.mbox` suffix.  Users
+can specify which mails from the list need to be exported via `--range` option
+of the sub-command.
+
+For example, below exports the second to six mails from above example mails
+list to `foo.mbox` file, and then lists the exported mails in it again.
+
+```
+$ hkml export --range 2 7 foo.mbox
+$ ./hkml list foo.mbox --since 2024-01-10 --until 2024-01-20
+# 5 mails, 3 threads, 1 new threads
+# 4 patches, 1 series
+[0000] Re: [PATCH 6.6 0/1] 6.6.12-rc1 review (SeongJae Park, 01/13 10:44)
+[0001] Re: DAMON Beer/Coffee/Tea chat series (SeongJae Park, 01/16 10:09)
+[0002] [RFC PATCH 0/4] DAMON based 2-tier memory management for CXL memory (Honggyu Kim, 01/14
+       20:52)
+[0003]     [RFC PATCH 1/4] mm/vmscan: refactor reclaim_pages with reclaim_or_migrate_folios
+           (Honggyu Kim, 01/14 20:52)
+[0004]         re: (SeongJae Park, 01/16 12:32)
+```
+
+Users could also import the mbox file on their other mbox-supporting mail
+client.
