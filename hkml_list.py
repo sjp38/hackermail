@@ -424,7 +424,7 @@ def set_argparser(parser=None):
             default=['first_date'],
             help='threads sort field')
     parser.add_argument('--hot', action='store_true',
-            help='show latest and hot threds first')
+            help='show latest and hot threads first')
 
     # misc
     parser.add_argument('--fetch', action='store_true',
