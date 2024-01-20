@@ -139,6 +139,7 @@ def evict_mails(date_thres):
         del cache[key]
 
 def pr_cache_stat(cache_path):
+    print('Stat of %s' % cache_path)
     cache_stat = os.stat(cache_path)
     print('cache size: %.3f MiB' % (cache_stat.st_size / 1024 / 1024))
 
@@ -169,6 +170,8 @@ def main(args=None):
         exit(1)
 
     pr_cache_stat(cache_path)
+    for archived_cache in list_archive_files():
+        pr_cache_stat(archived_cache)
 
 if __name__ == '__main__':
     main()
