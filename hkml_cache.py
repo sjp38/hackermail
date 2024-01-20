@@ -138,6 +138,15 @@ def evict_mails(date_thres):
         need_file_update = True
         del cache[key]
 
+def pr_cache_stat(cache_path):
+    cache_stat = os.stat(cache_path)
+    print('cache size: %.3f MiB' % (cache_stat.st_size / 1024 / 1024))
+
+    before_timestamp = time.time()
+    cache = get_last_mails_cache()
+    print('%d mails in cache' % len(cache))
+    print('%f seconds for loading cache' % (time.time() - before_timestamp))
+
 def set_argparser(parser):
     parser.add_argument(
             '--evict_old', metavar='<%Y-%m-%d>',
@@ -159,13 +168,7 @@ def main(args=None):
         print('no cache exist')
         exit(1)
 
-    cache_stat = os.stat(cache_path)
-    print('cache size: %.3f MiB' % (cache_stat.st_size / 1024 / 1024))
-
-    before_timestamp = time.time()
-    cache = get_last_mails_cache()
-    print('%d mails in cache' % len(cache))
-    print('%f seconds for loading cache' % (time.time() - before_timestamp))
+    pr_cache_stat(cache_path)
 
 if __name__ == '__main__':
     main()
