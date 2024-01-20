@@ -8,6 +8,19 @@ import time
 
 import _hkml
 
+# Cache is constructed with multiple files.
+# last cache: Contains most recently added cache entries.
+# archieved cache: Contains cache entries that added older than oldest one in
+# last cache.
+#
+# Size of cache files are limited to about 100 MiB.
+# Up to 9 archived cache files can exist.
+# When the size of last cache becomes >=100 MiB, delete oldest archived cache,
+# make the last cache a newest archived cache, and create a new last cache. 
+#
+# When reading the cache, last cache is first read, then archived caches one by
+# one, recent archive first, until the item is found.
+
 # dict having gitid/gitdir as key, Mail kvpairs as value
 mails_cache = None
 need_file_update = False
