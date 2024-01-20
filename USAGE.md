@@ -250,5 +250,11 @@ should be configured correctly on the user's system.
 Writing New Mails
 =================
 
+Users can write new mail in a way similar to `reply` sub-command, using `write`
+sub-command.  Users can specify subject, recipients, Cc list, etc via command
+line.  Then `write` sub-command formats the basic mail, and let the user
+additionally make more edits interactively and finally send it, in a way pretty
+similar to that of `reply`.  Again, `git send-email` setup is required.
+
 Exporting Mails
 ===============
