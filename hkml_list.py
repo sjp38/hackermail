@@ -29,7 +29,11 @@ def get_mail_cache_key(idx):
         return None
     return idx_to_keys[idx_str]
 
-def set_mail_cache_key(idx, key):
+def set_mail_cache_key(mail):
+    idx = mail.pridx
+    key = hkml_cache.get_cache_key(
+            mail.gitid, mail.gitdir, mail.get_field('message-id'))
+
     cache = get_mail_idx_key_cache()
     idx_str = '%d' % idx
     if idx_str in cache:
@@ -184,9 +188,7 @@ def set_index(mail, list_, depth=0):
     mail.prdepth = depth
     list_.append(mail)
 
-    set_mail_cache_key(
-            mail.pridx, hkml_cache.get_cache_key(
-                mail.gitid, mail.gitdir, mail.get_field('message-id')))
+    set_mail_cache_key(mail)
 
     for mail in mail.replies:
         set_index(mail, list_, depth + 1)
