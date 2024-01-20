@@ -3,8 +3,6 @@ details of `hkml` but only major features.  This document may not complete and
 up to date sometimes.  Please don't hesitate at asking questions or help for
 this document via GitHub issues.
 
-As of now, this document is work in progress, so incomplete.
-
 Demo
 ====
 
