@@ -171,8 +171,10 @@ def main(args=None):
         exit(1)
 
     pr_cache_stat(cache_path)
+    print('')
     for archived_cache in list_archive_files():
         pr_cache_stat(archived_cache)
+        print('')
 
 if __name__ == '__main__':
     main()
