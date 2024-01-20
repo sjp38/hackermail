@@ -185,6 +185,39 @@ $ ./hkml thread 13
 Reading Mails
 =============
 
+Users can open the content of the mail using `open` subcommand.  It receives
+the identifier of the mail to read.  The identifier should be that of the last
+generated `list` output.
+
+For example, below command shows the 18-th mail of the above list.
+
+```
+Local-Date: 2024-01-18 09:17:56-08:00
+Date: Thu, 18 Jan 2024 09:17:56 -0800
+Subject: Re: [RFC PATCH 0/4] DAMON based 2-tier memory management for CXL memory
+Message-Id: <20240118171756.80356-1-sj@kernel.org>
+From: SeongJae Park <sj@kernel.org>
+To: Hyeongtak Ji <hyeongtak.ji@sk.com>
+CC: sj@kernel.org, akpm@linux-foundation.org, apopple@nvidia.com, baolin.wang@linux.alibaba.com, damon@lists.linux.dev, dave.jiang@intel.com, honggyu.kim@sk.com, kernel_team@skhynix.com, linmiaohe@huawei.com, linux-kernel@vger.kernel.org, linux-mm@kvack.org, linux-trace-kernel@vger.kernel.org, lizhijian@cn.fujitsu.com, mathieu.desnoyers@efficios.com, mhiramat@kernel.org, rakie.kim@sk.com, rostedt@goodmis.org, surenb@google.com, yangx.jy@fujitsu.com, ying.huang@intel.com, ziy@nvidia.com
+
+On Thu, 18 Jan 2024 19:40:16 +0900 Hyeongtak Ji <hyeongtak.ji@sk.com> wrote:
+
+> Hi SeongJae,
+>
+> On Wed, 17 Jan 2024 SeongJae Park <sj@kernel.org> wrote:
+>
+> [...]
+> >> Let's say there are 3 nodes in the system and the first node0 and node1
+> >> are the first tier, and node2 is the second tier.
+> >>
+> >>   $ cat /sys/devices/virtual/memory_tiering/memory_tier4/nodelist
+> >>   0-1
+> >>
+> >>   $ cat /sys/devices/virtual/memory_tiering/memory_tier22/nodelist
+> >>   2
+[...]
+```
+
 Replying
 ========
 
