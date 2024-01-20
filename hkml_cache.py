@@ -54,6 +54,7 @@ def get_active_mails_cache():
     if active_cache is not None:
         return active_cache
 
+    active_cache = {}
     cache_path = os.path.join(_hkml.get_hkml_dir(), 'mails_cache_active')
     if os.path.isfile(cache_path):
         stat = os.stat(cache_path)
@@ -65,7 +66,6 @@ def get_active_mails_cache():
             archive_files = list_archive_files()
             if len(archive_files) > max_archived_caches:
                 os.remove(archive_files[-1])
-            active_cache = {}
         else:
             with open(cache_path, 'r') as f:
                 active_cache = json.load(f)
