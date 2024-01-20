@@ -46,4 +46,4 @@ For more detail,
 
     $ ./hkml -h
 
-For more detailed usages, please refer to [USAGE.md](USGE.md) file.
+For more detailed usages, please refer to [USAGE.md](USAGE.md) file.
