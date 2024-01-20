@@ -23,6 +23,7 @@ import _hkml
 # one, recent archive first, until the item is found.
 
 # dict having gitid/gitdir as key, Mail kvpairs as value
+max_active_cache_file_size = 100 * 1024 * 1024
 max_archived_caches = 9
 archived_caches = []
 active_cache = None
@@ -56,7 +57,7 @@ def get_active_mails_cache():
     cache_path = os.path.join(_hkml.get_hkml_dir(), 'mails_cache_active')
     if os.path.isfile(cache_path):
         stat = os.stat(cache_path)
-        if stat.st_size >= 100 * 1024 * 1024:
+        if stat.st_size >= max_active_cache_file_size:
             os.rename(
                     cache_path, os.path.join(
                         _hkml.get_hkml_dir(), 'mails_cache_archive_%s' %
