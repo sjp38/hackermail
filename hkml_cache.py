@@ -123,22 +123,6 @@ def writeback_mails():
     with open(cache_path, 'w') as f:
         json.dump(get_active_mails_cache(), f, indent=4)
 
-def evict_mails(date_thres):
-    global need_file_update
-
-    date_thres = datetime.datetime.strptime(
-            date_thres, '%Y-%m-%d').astimezone()
-    cache = get_active_mails_cache()
-    keys_to_del = []
-    for key in cache:
-        mail = _hkml.Mail(kvpairs=cache[key])
-        if mail.date < date_thres:
-            keys_to_del.append(key)
-
-    for key in keys_to_del:
-        need_file_update = True
-        del cache[key]
-
 def pr_cache_stat(cache_path):
     print('Stat of %s' % cache_path)
     cache_stat = os.stat(cache_path)
@@ -151,20 +135,13 @@ def pr_cache_stat(cache_path):
     print('%f seconds for loading cache' % (time.time() - before_timestamp))
 
 def set_argparser(parser):
-    parser.add_argument(
-            '--evict_old', metavar='<%Y-%m-%d>',
-            help='evict cached mails older than the given date')
+    return
 
 def main(args=None):
     if not args:
         parser = argparse.ArgumentParser()
         set_argparser(parser)
         args = parser.parse_args()
-
-    if args.evict_old:
-        evict_mails(args.evict_old)
-        writeback_mails()
-        return
 
     cache_path = os.path.join(_hkml.get_hkml_dir(), 'mails_cache_active')
     if not os.path.isfile(cache_path):
