@@ -52,10 +52,18 @@ def mail_display_str(mail, use_lore, show_lore_link):
         lines.append('\n%s\n' % lore_url(mail))
     return '\n'.join(lines)
 
+def last_open_mail_idx():
+    with open(os.path.join(_hkml.get_hkml_dir(), 'last_open_idx'), 'r') as f:
+        return int(f.read())
+
 def set_argparser(parser):
     parser.add_argument(
-            'mail_idx', metavar='<index>', type=int,
-            help='index of the mail to open and read')
+            'mail_idx', metavar='<index>',
+            help=' '.join(
+            [
+            'Index of the mail to open.',
+            '\'next\'/\'prev\' mean last open mail index plus/minus one.',
+            ]))
     parser.add_argument(
             '--stdout', action='store_true', help='print without a pager')
 
@@ -65,6 +73,13 @@ def main(args=None):
         set_Argparser(parser)
         args = parser.parse_args()
 
+    if args.mail_idx == 'prev':
+        args.mail_idx = last_open_mail_idx() - 1
+    elif args.mail_idx == 'next':
+        args.mail_idx = last_open_mail_idx() + 1
+    else:
+        args.mail_idx = int(args.mail_idx)
+
     key = hkml_list.get_mail_cache_key(args.mail_idx)
     mail = hkml_cache.get_mail(key=key)
     if mail is None:
@@ -72,7 +87,7 @@ def main(args=None):
         exit(1)
 
     with open(os.path.join(_hkml.get_hkml_dir(), 'last_open_idx'), 'w') as f:
-        f.write(args.mail_idx)
+        f.write('%d' % args.mail_idx)
 
     mail_str = mail_display_str(mail, False, False)
 
