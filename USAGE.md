@@ -81,6 +81,67 @@ below.  In some use cases, `fetch` sub-command may not frequently used.
 Listing Mails
 =============
 
+Users can list mails of specific mailing list on the manifest file via `list`
+sub-command.  By default, it lists the downloaded mails of the mailing list
+that sent within last three days.  Users can let the command to do dowloading
+of the mails together via `--fetch` option.  The sent time range of the mails
+to list can be adjusted using `--since` and `--until` options.
+
+In addition to the sent dates range, users can filter mails on the list by
+author of the mail, keywords on subject or body, whether those are newly
+started threads, via `--author`, `--subject_contains`, `--contains`, and
+`--new` options, respectively.
+
+The list shows all mails grouped by threads and sort the threads by sent date
+of the latest mail of each thread.  Mails in each thread are sorted in the
+reply order.  Users can show only first mail of each thread using `--collapse`
+option.  It could be useful for mailing lists that people send huge amount of
+mails every day.  Threads sorting key can also be customized using
+`--sort_threads_by` option.  `--descend` option makes the sorting be done in
+descendent order.  `--hot` option is a short cut for sorting threads by number
+of comments in descendent way.
+
+Below example lists mails that sent to [DAMON](https://damonitor.github.io/)
+mailing list from 2024-01-10 to 2024-01-20.
+
+```
+$ ./hkml list damon --fetch --since 2024-01-10 --until 2024-01-20
+git --git-dir=./.hkm/archives/damon/git/0.git remote update
+# 22 mails, 8 threads, 1 new threads
+# 21 patches, 1 series
+[0000] Re: [PATCH 5.15 00/59] 5.15.147-rc1 review (SeongJae Park, 01/13 10:42)
+[0001] Re: [PATCH 6.1 0/4] 6.1.73-rc1 review (SeongJae Park, 01/13 10:43)
+[0002] Re: [PATCH 6.6 0/1] 6.6.12-rc1 review (SeongJae Park, 01/13 10:44)
+[0003] Re: DAMON Beer/Coffee/Tea chat series (SeongJae Park, 01/16 10:09)
+[0004] [RFC PATCH 0/4] DAMON based 2-tier memory management for CXL memory (Honggyu Kim, 01/14
+       20:52)
+[0005]     [RFC PATCH 1/4] mm/vmscan: refactor reclaim_pages with reclaim_or_migrate_folios
+           (Honggyu Kim, 01/14 20:52)
+[0006]         re: (SeongJae Park, 01/16 12:32)
+[0007]     [RFC PATCH 2/4] mm/damon: introduce DAMOS_DEMOTE action for demotion (Honggyu Kim,
+           01/14 20:52)
+[0008]         re: (SeongJae Park, 01/16 12:32)
+[0009]     [RFC PATCH 3/4] mm/memory-tiers: add next_promotion_node to find promotion target
+           (Honggyu Kim, 01/14 20:52)
+[0010]         re: (SeongJae Park, 01/16 12:32)
+[0011]     [RFC PATCH 4/4] mm/damon: introduce DAMOS_PROMOTE action for promotion (Honggyu
+           Kim, 01/14 20:52)
+[0012]         re: (SeongJae Park, 01/16 12:32)
+[0013]     re: (SeongJae Park, 01/16 12:31)
+[0014]         re: (Honggyu Kim, 01/17 03:49)
+[0015]             re: (SeongJae Park, 01/17 13:11)
+[0016]                 re: (SeongJae Park, 01/17 13:24)
+[0017]                 re: (Hyeongtak Ji, 01/18 02:40)
+[0018]                     re: (SeongJae Park, 01/18 09:17)
+[0019] Re: [PATCH 6.1 000/100] 6.1.74-rc1 review (SeongJae Park, 01/18 10:35)
+[0020] Re: [PATCH 6.6 000/150] 6.6.13-rc1 review (SeongJae Park, 01/18 10:36)
+[0021] Re: [PATCH 6.7 00/28] 6.7.1-rc1 review (SeongJae Park, 01/18 12:17)
+```
+
+The output maybe intuitive to understand.  The first column of the each mail is
+called index or identifier of the mail, and be used by other sub-commands that
+will be described below.
+
 Reading Mails
 =============
 
