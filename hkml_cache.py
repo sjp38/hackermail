@@ -167,20 +167,5 @@ def main(args=None):
     print('%d mails in cache' % len(cache))
     print('%f seconds for loading cache' % (time.time() - before_timestamp))
 
-    mails = []
-    for key in cache:
-        mail = _hkml.Mail(kvpairs=cache[key])
-        if not mail.broken():
-            mails.append(mail)
-        else:
-            print('broken')
-
-    if len(mails) == 0:
-        return
-    mails.sort(key=lambda x: x.date)
-
-    print('oldest mail: %s' % mails[0].date)
-    print('newest mail: %s' % mails[-1].date)
-
 if __name__ == '__main__':
     main()
