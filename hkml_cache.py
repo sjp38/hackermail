@@ -22,6 +22,11 @@ import _hkml
 # one, recent archive first, until the item is found.
 
 # dict having gitid/gitdir as key, Mail kvpairs as value
+max_archived_caches = 9
+archived_caches = []
+last_cache = None
+total_cache = {}
+
 mails_cache = None
 need_file_update = False
 
@@ -30,27 +35,66 @@ def get_cache_key(gitid=None, gitdir=None, msgid=None):
         return '%s/%s' % (gitid, gitdir)
     return msgid
 
-def get_mails_cache():
-    global mails_cache
+def list_archive_files():
+    """Return a list of archived cache files sorted in recent one first"""
+    archive_files = []
+    for file_ in os.listdir(_hkml.get_hkml_dir()):
+        if file_.startswith('mails_cache_archive_'):
+            archive_files.append(
+                    os.path.join(_hkml.get_hkml_dir(), file_))
+    # name is mails_cache_archive_<timestamp>
+    archive_files.sort(reverse=True)
+    return archive_files
 
-    if mails_cache is not None:
-        return mails_cache
+def get_last_mails_cache():
+    global last_cache
 
-    cache_path = os.path.join(_hkml.get_hkml_dir(), 'mails_cache')
+    if last_cache is not None:
+        return last_cache
+
+    cache_path = os.path.join(_hkml.get_hkml_dir(), 'mails_cache_last')
     if os.path.isfile(cache_path):
-        with open(cache_path, 'r') as f:
-            mails_cache = json.load(f)
-    else:
-        mails_cache = {}
-    return mails_cache
+        stat = os.stat(cache_path)
+        if stat.st_size >= 100 * 1024 * 1024:
+            os.rename(
+                    cache_path, os.path.join(
+                        _hkml.get_hkml_dir(), 'mails_cache_archive_%s' %
+                        datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')))
+            archive_files = list_archive_files()
+            if len(archive_files) > max_archived_caches:
+                os.remove(archive_files[-1])
+            last_cache = {}
+        else:
+            with open(cache_path, 'r') as f:
+                last_cache = json.load(f)
+    return last_cache
+
+def load_one_more_archived_cache():
+    global archived_caches
+
+    archive_files = list_archive_files()
+    if len(archive_files) == len(archived_caches):
+        return False
+    with open(archive_files[len(archived_caches)], 'r') as f:
+        archived_caches.append(json.load(f))
+    return True
 
 def get_mail(gitid=None, gitdir=None, key=None):
-    cache = get_mails_cache()
+    global archived_caches
+
     if key is None:
         key = get_cache_key(gitid, gitdir)
-    if not key in cache:
-        return None
-    return _hkml.Mail(kvpairs=cache[key])
+
+    cache = get_last_mails_cache()
+    if key in cache:
+        return _hkml.Mail(kvpairs=cache[key])
+    for cache in archived_caches:
+        if key in cache:
+            return _hkml.Mail(kvpairs=cache[key])
+    while load_one_more_archived_cache() == True:
+        if key in archived_caches[-1]:
+            return _hkml.Mail(kvpairs=archived_caches[-1][key])
+    return None
 
 def set_mail(mail):
     global need_file_update
@@ -58,29 +102,32 @@ def set_mail(mail):
     if mail.broken():
         return
 
-    cache = get_mails_cache()
+    cache = get_last_mails_cache()
     if mail.gitid is not None and mail.gitdir is not None:
         key = get_cache_key(mail.gitid, mail.gitdir)
     else:
         key = mail.get_field('message-id')
     if key in cache:
         return
+    for archived_cache in archived_caches:
+        if key in archived_cache:
+            return
     cache[key] = mail.to_kvpairs()
     need_file_update = True
 
 def writeback_mails():
     if not need_file_update:
         return
-    cache_path = os.path.join(_hkml.get_hkml_dir(), 'mails_cache')
+    cache_path = os.path.join(_hkml.get_hkml_dir(), 'mails_cache_last')
     with open(cache_path, 'w') as f:
-        json.dump(get_mails_cache(), f, indent=4)
+        json.dump(get_last_mails_cache(), f, indent=4)
 
 def evict_mails(date_thres):
     global need_file_update
 
     date_thres = datetime.datetime.strptime(
             date_thres, '%Y-%m-%d').astimezone()
-    cache = get_mails_cache()
+    cache = get_last_mails_cache()
     keys_to_del = []
     for key in cache:
         mail = _hkml.Mail(kvpairs=cache[key])
@@ -107,7 +154,7 @@ def main(args=None):
         writeback_mails()
         return
 
-    cache_path = os.path.join(_hkml.get_hkml_dir(), 'mails_cache')
+    cache_path = os.path.join(_hkml.get_hkml_dir(), 'mails_cache_last')
     if not os.path.isfile(cache_path):
         print('no cache exist')
         exit(1)
@@ -116,8 +163,8 @@ def main(args=None):
     print('cache size: %.3f MiB' % (cache_stat.st_size / 1024 / 1024))
 
     before_timestamp = time.time()
-    cache = get_mails_cache()
-    print('%d mails in cache' % len(mails_cache))
+    cache = get_last_mails_cache()
+    print('%d mails in cache' % len(cache))
     print('%f seconds for loading cache' % (time.time() - before_timestamp))
 
     mails = []
@@ -125,7 +172,11 @@ def main(args=None):
         mail = _hkml.Mail(kvpairs=cache[key])
         if not mail.broken():
             mails.append(mail)
+        else:
+            print('broken')
 
+    if len(mails) == 0:
+        return
     mails.sort(key=lambda x: x.date)
 
     print('oldest mail: %s' % mails[0].date)
