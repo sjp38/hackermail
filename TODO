@@ -7,13 +7,10 @@
   - Support multiple sources
   - Print stat for filtered mails
   - Add --from (Show the list from the specific mail)
+  - Let user set maximum number of mails
 - Tag mails (Store the information under .hkm directory in some format)
 - Implement 'monitor' command
   - Subscribe to a thread
     (monitor replies and forward the new reply to given mail address)
   - Subscribe to summary
     (send summary of mails to given mail address in requested time period)
-- Deal with large cache file
-  - split file, or at least make size limit
-- open
-  - Support 'next' and 'prev' argument
