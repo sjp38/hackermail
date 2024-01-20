@@ -18,3 +18,5 @@
     (send summary of mails to given mail address in requested time period)
 - Deal with large cache file
   - split file, or at least make size limit
+- open
+  - Support 'next' and 'prev' argument
