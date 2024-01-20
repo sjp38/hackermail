@@ -20,6 +20,11 @@ def get_mail_idx_key_cache():
         mail_idx_key_cache = {}
     return mail_idx_key_cache
 
+def get_last_mail_idx_key_cache():
+    cache = get_list_output_cache()
+    last_key = sorted(cache.keys(), key=lambda x: cache[x]['date'])[-1]
+    return cache[last_key]['index_to_cache_key']
+
 def get_mail_cache_key(idx):
     cache = get_list_output_cache()
     last_key = sorted(cache.keys(), key=lambda x: cache[x]['date'])[-1]
