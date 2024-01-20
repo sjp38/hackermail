@@ -71,6 +71,9 @@ def main(args=None):
         print('mail is not cached')
         exit(1)
 
+    with open(os.path.join(_hkml.get_hkml_dir(), 'last_open_idx'), 'w') as f:
+        f.write(args.mail_idx)
+
     mail_str = mail_display_str(mail, False, False)
 
     if args.stdout:
