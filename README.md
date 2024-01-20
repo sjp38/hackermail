@@ -13,6 +13,12 @@ good examples of the public-inbox managed mailing list archives.
 [2] https://www.kernel.org/lore.html
 
 
+Demo
+====
+
+[![asciicast](https://asciinema.org/a/632442.svg)](https://asciinema.org/a/632442)
+
+
 Getting Started
 ===============
 
