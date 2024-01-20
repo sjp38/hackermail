@@ -145,7 +145,8 @@ def pr_cache_stat(cache_path):
     print('cache size: %.3f MiB' % (cache_stat.st_size / 1024 / 1024))
 
     before_timestamp = time.time()
-    cache = get_active_mails_cache()
+    with open(cache_path, 'r') as f:
+        cache = json.load(f)
     print('%d mails in cache' % len(cache))
     print('%f seconds for loading cache' % (time.time() - before_timestamp))
 
