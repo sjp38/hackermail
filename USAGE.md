@@ -5,6 +5,11 @@ this document via GitHub issues.
 
 As of now, this document is work in progress, so incomplete.
 
+Demo
+====
+
+[![asciicast](https://asciinema.org/a/632442.svg)](https://asciinema.org/a/632442)
+
 Commands
 ========
 
