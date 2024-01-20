@@ -101,12 +101,15 @@ mails every day.  Threads sorting key can also be customized using
 descendent order.  `--hot` option is a short cut for sorting threads by number
 of comments in descendent way.
 
+The sub-command support not only mailing lists on the manifest file, but also
+mbox files.  You can pass the path to the mbox file instead of the mailing list
+name.
+
 Below example lists mails that sent to [DAMON](https://damonitor.github.io/)
 mailing list from 2024-01-10 to 2024-01-20.
 
 ```
-$ ./hkml list damon --fetch --since 2024-01-10 --until 2024-01-20
-git --git-dir=./.hkm/archives/damon/git/0.git remote update
+$ hkml list damon --fetch --since 2024-01-10 --until 2024-01-20
 # 22 mails, 8 threads, 1 new threads
 # 21 patches, 1 series
 [0000] Re: [PATCH 5.15 00/59] 5.15.147-rc1 review (SeongJae Park, 01/13 10:42)
@@ -141,6 +144,43 @@ git --git-dir=./.hkm/archives/damon/git/0.git remote update
 The output maybe intuitive to understand.  The first column of the each mail is
 called index or identifier of the mail, and be used by other sub-commands that
 will be described below.
+
+Listing only Thread of Given Mail
+=================================
+
+On huge mailing list, reading all `hkml list` output takes time.  Users can
+list mails of only specific threads containing specific mail using `thread`
+sub-command.  The mail of the thread can be specified by passing the mail
+identifier of the mail to the sub-command.  The mail identifier should be that
+of previously generated list.  In other words, `thread` sub-command cannot be
+used before `list` sub-command is executed at least once.
+
+For example, below command show the thread for mail identifier 13 of the above
+`hkml list` example.
+
+```
+$ ./hkml thread 13
+[0004] [RFC PATCH 0/4] DAMON based 2-tier memory management for CXL memory (Honggyu Kim, 01/14
+       20:52)
+[0005]     [RFC PATCH 1/4] mm/vmscan: refactor reclaim_pages with reclaim_or_migrate_folios
+           (Honggyu Kim, 01/14 20:52)
+[0006]         re: (SeongJae Park, 01/16 12:32)
+[0007]     [RFC PATCH 2/4] mm/damon: introduce DAMOS_DEMOTE action for demotion (Honggyu Kim,
+           01/14 20:52)
+[0008]         re: (SeongJae Park, 01/16 12:32)
+[0009]     [RFC PATCH 3/4] mm/memory-tiers: add next_promotion_node to find promotion target
+           (Honggyu Kim, 01/14 20:52)
+[0010]         re: (SeongJae Park, 01/16 12:32)
+[0011]     [RFC PATCH 4/4] mm/damon: introduce DAMOS_PROMOTE action for promotion (Honggyu
+           Kim, 01/14 20:52)
+[0012]         re: (SeongJae Park, 01/16 12:32)
+[0013]     re: (SeongJae Park, 01/16 12:31)
+[0014]         re: (Honggyu Kim, 01/17 03:49)
+[0015]             re: (SeongJae Park, 01/17 13:11)
+[0016]                 re: (SeongJae Park, 01/17 13:24)
+[0017]                 re: (Hyeongtak Ji, 01/18 02:40)
+[0018]                     re: (SeongJae Park, 01/18 09:17)
+```
 
 Reading Mails
 =============
