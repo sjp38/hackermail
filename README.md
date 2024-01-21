@@ -3,7 +3,7 @@ hackermail
 
 hackermail is a mail client for hackers who collaborate using mailing lists.
 It requires no complicated setup but just `git`.  Using it, you can fetch
-mailing list archives, read mails in those, and post new mails or replies.
+mailing list archives, read mails in those, and post replies or new mails.
 
 For now, hackermail supports public-inbox[1] managed mailing list archives and
 manually exported mbox file contents.  Linux Kernel Mailing Lists (LKML)[2] are
