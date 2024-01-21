@@ -14,4 +14,3 @@
     (monitor replies and forward the new reply to given mail address)
   - Subscribe to summary
     (send summary of mails to given mail address in requested time period)
-- Write USAGE
