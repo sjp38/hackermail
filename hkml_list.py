@@ -5,6 +5,7 @@ import argparse
 import copy
 import datetime
 import json
+import math
 import os
 
 import _hkml
@@ -151,9 +152,12 @@ def orig_subject_formatted(mail):
         return True
     return orig_subject_formatted(mail.parent_mail)
 
-def format_entry(mail, show_nr_replies, show_lore_link, open_mail_via_lore,
-                 nr_cols):
-    prefix = '[%04d]%s' % (mail.pridx, ' ' * 4 * mail.prdepth)
+def format_entry(mail, max_digits_for_idx, show_nr_replies, show_lore_link,
+                 open_mail_via_lore, nr_cols):
+    index = '%d' % mail.pridx
+    nr_zeroes = max_digits_for_idx - len(index)
+    index = '%s%s' % ('0' * nr_zeroes, index)
+    prefix = '[%s]%s' % (index, ' ' * 4 * mail.prdepth)
 
     subject = '%s' % mail.get_field('subject')
     if mail.prdepth and subject.lower().startswith('re: '):
@@ -299,6 +303,11 @@ def mails_to_str(mails_to_show,
         root = root_of_thread(mail)
         ls_range = range(root.pridx, root.pridx + nr_replies_of(root) + 1)
 
+    max_index = ls_range[-1]
+    if max_index == 0:
+        max_index = 1
+    max_digits_for_idx = math.ceil(math.log(max_index, 10))
+
     if descend:
         by_pr_idx.reverse()
 
@@ -314,8 +323,8 @@ def mails_to_str(mails_to_show,
             if mail.prdepth > 0:
                 continue
             show_nr_replies = True
-        lines += format_entry(mail, show_nr_replies, show_lore_link,
-                              open_mail_via_lore, nr_cols)
+        lines += format_entry(mail, max_digits_for_idx, show_nr_replies,
+                              show_lore_link, open_mail_via_lore, nr_cols)
     return '\n'.join(lines)
 
 def git_log_output_line_to_mail(line, mdir):
