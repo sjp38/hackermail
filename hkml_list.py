@@ -288,9 +288,6 @@ def mails_to_str(mails_to_show,
     for sort_category in sort_threads_by:
         sort_threads(threads, sort_category)
 
-    if show_stat:
-        lines += format_stat(mails_to_show)
-
     by_pr_idx = []
     for mail in threads:
         set_index(mail, by_pr_idx)
@@ -311,12 +308,14 @@ def mails_to_str(mails_to_show,
     if descend:
         by_pr_idx.reverse()
 
+    filtered_mails = []
     for mail in by_pr_idx:
         if should_filter_out(mail, ls_range, new_threads_only,
                              msgid, author, subject_keywords, body_keywords):
             mail.filtered_out = True
             continue
         mail.filtered_out = False
+        filtered_mails.append(mail)
 
         show_nr_replies = False
         if collapse_threads == True:
@@ -325,6 +324,14 @@ def mails_to_str(mails_to_show,
             show_nr_replies = True
         lines += format_entry(mail, max_digits_for_idx, show_nr_replies,
                               show_lore_link, open_mail_via_lore, nr_cols)
+    stat_lines = []
+    if show_stat:
+        stat_lines.append('# stat for total mails')
+        stat_lines += format_stat(mails_to_show)
+        stat_lines.append('#')
+        stat_lines.append('# stat for filtered mails')
+        stat_lines += format_stat(filtered_mails)
+    lines = stat_lines + lines
     return '\n'.join(lines)
 
 def git_log_output_line_to_mail(line, mdir):
