@@ -293,7 +293,7 @@ def mails_to_str(mails_to_show,
 
     # Show all by default
     if show_thread_of is None:
-        ls_range = range(0, 9999)
+        ls_range = range(0, len(mails_to_show))
     else:
         mail = by_pr_idx[show_thread_of]
         root = root_of_thread(mail)
