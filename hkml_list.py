@@ -474,6 +474,7 @@ def main(args=None):
     if args.fetch == False:
         to_show = get_cached_list_output(list_output_cache_key)
         if to_show is not None:
+            to_show = '# (cached output is reused)\n%s' % to_show
             if args.stdout:
                 print(to_show)
             else:
