@@ -195,6 +195,7 @@ generated `list` output.
 For example, below command shows the 18-th mail of the above list.
 
 ```
+$ hkml open 18
 Local-Date: 2024-01-18 09:17:56-08:00
 Date: Thu, 18 Jan 2024 09:17:56 -0800
 Subject: Re: [RFC PATCH 0/4] DAMON based 2-tier memory management for CXL memory
