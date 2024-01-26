@@ -66,10 +66,10 @@ def parse_mails(msg):
         tag = tokens[0]
         patch = tokens[1].split('.patch')[0]
         action = ' '.join(tokens[2:6])
-        if tag == '+' and action == 'added to -mm tree':
+        if tag == '+' and action.startswith('added to '):
             added.append(MmCommits(date, 'added', patch))
             actions['added'] = True
-        if action == 'removed from -mm tree':
+        if action == 'removed from ':
             removed.append(MmCommits(date, tag, patch))
             actions[tag] = True
     return added, removed, actions
