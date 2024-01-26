@@ -435,6 +435,7 @@ def get_mails(source, fetch, manifest, since, until,
         mails += get_mails_from_git(manifest, source, since, until)
         nr_tries += 1
         if nr_tries > 100:
+            print('cannot get %d mails even with 100 more days' % min_nr_mails)
             break
     if max_nr_mails is not None:
         mails = mails[:max_nr_mails]
