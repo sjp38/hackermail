@@ -459,6 +459,8 @@ def set_argparser(parser=None):
     parser.add_argument('--until', metavar='<date>', type=str,
             default=DEFAULT_UNTIL,
             help='show mails sent before a specific date')
+    parser.add_argument('--min_nr_mails', metavar='<int>', type=int,
+            help='minimum number of mails to list')
     parser.add_argument('--max_nr_mails', metavar='<int>', type=int,
             help='maximum number of mails to list')
     parser.add_argument('--msgid', metavar='<message id>', type=str,
@@ -540,6 +542,13 @@ def main(args=None):
     runtime_profile = {}
     mails_to_show = get_mails(
             args.source, args.fetch, args.manifest, args.since, args.until)
+    while (args.min_nr_mails is not None and
+           len(mails_to_show) < args.min_nr_mails):
+        since = datetime.datetime.strptime(args.since, '%Y-%m-%d')
+        args.since = (since - datetime.timedelta(days=1)).strftime('%Y-%m-%d')
+        mails_to_show = get_mails(args.source, args.fetch, args.manifest,
+                                  args.since, args.until)
+
     runtime_profile = {'get_mails': time.time() - timestamp}
     if args.max_nr_mails is not None:
         mails_to_show = mails_to_show[:args.max_nr_mails]
