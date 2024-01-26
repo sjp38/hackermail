@@ -343,6 +343,7 @@ def mails_to_str(mails_to_show,
     runtime_profile_lines = ['# runtime profile']
     for key, value in runtime_profile.items():
         runtime_profile_lines.append('# %s: %s' % (key, value))
+    runtime_profile_lines.append('#')
     lines = runtime_profile_lines + stat_lines + lines
     return '\n'.join(lines)
 
