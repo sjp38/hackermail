@@ -290,7 +290,8 @@ def mails_to_str(mails_to_show,
         msgid, author, subject_keywords, body_keywords,
         show_stat, show_thread_of, descend,
         sort_threads_by, new_threads_only, idx_range, collapse_threads,
-        open_mail_via_lore, show_lore_link, nr_cols, runtime_profile):
+        open_mail_via_lore, show_lore_link, nr_cols,
+        runtime_profile, show_runtime_profile):
     lines = []
 
     timestamp = time.time()
@@ -358,11 +359,13 @@ def mails_to_str(mails_to_show,
             stat_lines.append('# stat for filtered mails')
             stat_lines += format_stat(filtered_mails)
 
-    runtime_profile['etc'] = time.time() - timestamp
-    runtime_profile_lines = ['# runtime profile']
-    for key, value in runtime_profile.items():
-        runtime_profile_lines.append('# %s: %s' % (key, value))
-    runtime_profile_lines.append('#')
+    runtime_profile_lines = []
+    if show_runtime_profile is True:
+        runtime_profile['etc'] = time.time() - timestamp
+        runtime_profile_lines = ['# runtime profile']
+        for key, value in runtime_profile.items():
+            runtime_profile_lines.append('# %s: %s' % (key, value))
+        runtime_profile_lines.append('#')
     lines = runtime_profile_lines + stat_lines + lines
     return '\n'.join(lines)
 
@@ -497,6 +500,8 @@ def set_argparser(parser=None):
             help='hide stat of the mails')
     parser.add_argument('--stdout', action='store_true',
             help='print to stdout instead of using the pager')
+    parser.add_argument('--runtime_profile', action='store_true',
+            help='print runtime profiling result')
 
 def main(args=None):
     if not args:
@@ -544,7 +549,8 @@ def main(args=None):
             not args.hide_stat, None,
             args.descend, args.sort_threads_by,
             args.new, args.range, args.collapse,
-            args.lore_read, args.lore, nr_cols_in_line, runtime_profile)
+            args.lore_read, args.lore, nr_cols_in_line, runtime_profile,
+            args.runtime_profile)
     hkml_cache.writeback_mails()
     cache_list_output(list_output_cache_key, to_show)
 
