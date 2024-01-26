@@ -186,7 +186,7 @@ class Mail:
 
 def read_mbox_file(filepath):
     mails = []
-    if filepath[-5:] != '.mbox':
+    if filepath[-5:] == '.json':
         with open(filepath, 'r') as f:
             for kvp in json.load(f):
                 mail = Mail(kvpairs=kvp)
