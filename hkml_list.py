@@ -498,14 +498,15 @@ def set_argparser(parser=None):
             help='start and end mail index to show')
 
     # How to show the mails
-    parser.add_argument('--descend', action='store_true',
-            help='list threads in descending order')
     parser.add_argument('--collapse', '-c', action='store_true',
             help='collapse threads')
     parser.add_argument('--sort_threads_by', nargs='+',
             choices=['first_date', 'last_date', 'nr_replies', 'nr_comments'],
             default=['last_date'],
             help='threads sort field')
+    parser.add_argument('--ascend', action='store_true',
+            help='sort threads in ascending order')
+
     parser.add_argument('--hot', action='store_true',
             help='show latest and hot threads first')
 
@@ -546,7 +547,7 @@ def main(args=None):
         invalidate_cached_outputs(args.source)
 
     if args.hot:
-        args.descend = True
+        args.ascend = False
         args.sort_threads_by = ['last_date', 'nr_comments']
         args.collapse = True
 
@@ -577,7 +578,7 @@ def main(args=None):
             args.msgid, args.author,
             args.subject_contains, args.contains,
             not args.hide_stat, None,
-            args.descend, args.sort_threads_by,
+            not args.ascend, args.sort_threads_by,
             args.new, args.range, args.collapse,
             args.lore_read, args.lore, nr_cols_in_line, runtime_profile,
             args.runtime_profile)
