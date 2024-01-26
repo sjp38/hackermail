@@ -333,11 +333,16 @@ def mails_to_str(mails_to_show,
 
     stat_lines = []
     if show_stat:
-        stat_lines.append('# stat for total mails')
-        stat_lines += format_stat(mails_to_show)
-        stat_lines.append('#')
-        stat_lines.append('# stat for filtered mails')
-        stat_lines += format_stat(filtered_mails)
+        total_stat_lines = format_stat(mails_to_show)
+        filtered_stat_lines = format_stat(filtered_mails)
+        if total_stat_lines == filtered_stat_lines:
+            stat_lines += total_stat_lines
+        else:
+            stat_lines.append('# stat for total mails')
+            stat_lines += format_stat(mails_to_show)
+            stat_lines.append('#')
+            stat_lines.append('# stat for filtered mails')
+            stat_lines += format_stat(filtered_mails)
 
     runtime_profile['etc'] = time.time() - timestamp
     runtime_profile_lines = ['# runtime profile']
