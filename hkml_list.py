@@ -292,6 +292,9 @@ def mails_to_str(mails_to_show,
         sort_threads_by, new_threads_only, idx_range, collapse_threads,
         open_mail_via_lore, show_lore_link, nr_cols,
         runtime_profile, show_runtime_profile):
+    if len(mails_to_show) == 0:
+        return 'no mail'
+
     lines = []
 
     timestamp = time.time()
