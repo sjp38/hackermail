@@ -158,7 +158,7 @@ def format_entry(mail, max_digits_for_idx, show_nr_replies, show_lore_link,
     index = '%d' % mail.pridx
     nr_zeroes = max_digits_for_idx - len(index)
     index = '%s%s' % ('0' * nr_zeroes, index)
-    prefix = '[%s]%s' % (index, ' ' * 4 * mail.prdepth)
+    prefix = '[%s]%s' % (index, ' ' * 2 * mail.prdepth)
 
     subject = '%s' % mail.get_field('subject')
     if mail.prdepth and subject.lower().startswith('re: '):
