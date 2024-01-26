@@ -360,7 +360,8 @@ def mails_to_str(mails_to_show,
             stat_lines += format_stat(filtered_mails)
 
     runtime_profile_lines = []
-    if show_runtime_profile is True:
+    total_profiled_time = sum([v for k,v in runtime_profile.items()])
+    if show_runtime_profile is True or total_profiled_time > 3:
         runtime_profile['etc'] = time.time() - timestamp
         runtime_profile_lines = ['# runtime profile']
         for key, value in runtime_profile.items():
