@@ -476,6 +476,8 @@ def set_argparser(parser=None):
     parser.add_argument('--until', metavar='<date>', type=str,
             default=DEFAULT_UNTIL,
             help='show mails sent before a specific date')
+    parser.add_argument('--nr_mails', type=int,
+            help='number of mails to list')
     parser.add_argument('--min_nr_mails', metavar='<int>', type=int,
             help='minimum number of mails to list')
     parser.add_argument('--max_nr_mails', metavar='<int>', type=int,
@@ -546,6 +548,12 @@ def main(args=None):
         args.descend = True
         args.sort_threads_by = ['last_date', 'nr_comments']
         args.collapse = True
+
+    if args.nr_mails is not None:
+        args.since = (datetime.datetime.strptime(args.until, '%Y-%m-%d') -
+                      datetime.timedelta(days=1)).strftime('%Y-%m-%d')
+        args.min_nr_mails = args.nr_mails
+        args.max_nr_mails = args.nr_mails
 
     nr_cols_in_line = args.cols
     if nr_cols_in_line is None:
