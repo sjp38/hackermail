@@ -323,6 +323,7 @@ def mails_to_str(mails_to_show,
         mail.filtered_out = False
         filtered_mails.append(mail)
 
+    for mail in filtered_mails:
         show_nr_replies = False
         if collapse_threads == True:
             if mail.prdepth > 0:
