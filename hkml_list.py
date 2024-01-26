@@ -102,7 +102,7 @@ def writeback_list_output_cache():
 def cache_list_output(key, output):
     cache = get_list_output_cache()
     cache[key] = {
-            'output': output,
+            'output': '\n'.join(['# (cached output)', output]),
             'index_to_cache_key': get_mail_idx_key_cache(),
             'date': datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')}
     max_cache_sz = 64
@@ -487,7 +487,6 @@ def main(args=None):
     if args.fetch == False:
         to_show = get_cached_list_output(list_output_cache_key)
         if to_show is not None:
-            to_show = '# (cached output is reused)\n%s' % to_show
             if args.stdout:
                 print(to_show)
             else:
