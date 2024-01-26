@@ -22,13 +22,13 @@ Demo
 Getting Started
 ===============
 
-List mails in Linux kernel memory management subsystem mailing list
-(https://lore.kernel.org/linux-mm) which were sent within last three days:
+List recent mails in Linux kernel DAMON subsystem mailing list
+(https://lore.kernel.org/damon):
 
     $ ./hkml init --manifest ./manifests/lore.js
-    $ ./hkml list linux-mm --fetch
+    $ ./hkml list damon --fetch
 
-Open the fifth mail:
+Open the fifth mail of the list:
 
     $ ./hkml open 5
 
@@ -38,7 +38,7 @@ Send a reply to the 5th mail:
 
 Write and send a mail to the mailing list:
 
-    $ ./hkml write --cc linux-mm@kvack.org
+    $ ./hkml write --cc damon@lists.linux.dev
 
 Export the [2, 5)-th mails on the list to 'exported.mbox' file:
 
