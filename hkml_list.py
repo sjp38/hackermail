@@ -281,7 +281,7 @@ def format_stat(mails_to_show):
 def mails_to_str(mails_to_show,
         msgid, author, subject_keywords, body_keywords,
         show_stat, show_thread_of, descend,
-        sort_threads_by, new_threads_only, collapse_threads,
+        sort_threads_by, new_threads_only, idx_range, collapse_threads,
         open_mail_via_lore, show_lore_link, nr_cols, runtime_profile):
     lines = []
 
@@ -302,11 +302,17 @@ def mails_to_str(mails_to_show,
     timestamp = time.time()
     # Show all by default
     if show_thread_of is None:
-        ls_range = range(0, len(mails_to_show))
+        start_idx = 0
+        end_idx = len(mails_to_show)
+        if idx_range is not None:
+            start_idx = max(start_idx, idx_range[0])
+            end_idx = min(end_idx, idx_range[1])
     else:
         mail = by_pr_idx[show_thread_of]
         root = root_of_thread(mail)
-        ls_range = range(root.pridx, root.pridx + nr_replies_of(root) + 1)
+        start_idx = root.pridx
+        end_idx = root.pridx + nr_replies_of(root) + 1
+    ls_range = range(start_idx, end_idx)
 
     max_index = ls_range[-1]
     if max_index == 0:
@@ -454,6 +460,8 @@ def set_argparser(parser=None):
             help='list mails containing the keyword in their body')
     parser.add_argument('--new', '-n', action='store_true',
             help='list new threads only')
+    parser.add_argument('--range', nargs=2, type=int, metavar='index',
+            help='start and end mail index to show')
 
     # How to show the mails
     parser.add_argument('--descend', action='store_true',
@@ -527,7 +535,7 @@ def main(args=None):
             args.subject_contains, args.contains,
             not args.hide_stat, None,
             args.descend, args.sort_threads_by,
-            args.new, args.collapse,
+            args.new, args.range, args.collapse,
             args.lore_read, args.lore, nr_cols_in_line, runtime_profile)
     hkml_cache.writeback_mails()
     cache_list_output(list_output_cache_key, to_show)
