@@ -289,6 +289,8 @@ def mails_to_str(mails_to_show,
     threads = threads_of(mails_to_show)
     for sort_category in sort_threads_by:
         sort_threads(threads, sort_category)
+    if descend:
+        threads.reverse()
     runtime_profile['threads_extract'] = time.time() - timestamp
 
     by_pr_idx = []
@@ -310,9 +312,6 @@ def mails_to_str(mails_to_show,
     if max_index == 0:
         max_index = 1
     max_digits_for_idx = math.ceil(math.log(max_index, 10))
-
-    if descend:
-        by_pr_idx.reverse()
 
     filtered_mails = []
     for mail in by_pr_idx:
