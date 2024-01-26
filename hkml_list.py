@@ -262,6 +262,8 @@ def format_stat(mails_to_show):
     nr_new_threads = 0
     nr_patches = 0
     nr_patchsets = 0
+    oldest = None
+    latest = None
     for mail in mails_to_show:
         if mail.parent_mail is None:
             nr_threads += 1
@@ -271,11 +273,17 @@ def format_stat(mails_to_show):
             nr_patches += 1
         if 'patch' in mail.tags and not mail.get_field('in-reply-to'):
             nr_patchsets += 1
+        if oldest is None or mail.date < oldest.date:
+            oldest = mail
+        if latest is None or latest.date < mail.date:
+            latest = mail
 
     lines = []
     lines.append('# %d mails, %d threads, %d new threads' %
             (len(mails_to_show), nr_threads, nr_new_threads))
     lines.append('# %d patches, %d series' % (nr_patches, nr_patchsets))
+    lines.append('# oldest: %s' % oldest.date)
+    lines.append('# newest: %s' % latest.date)
     return lines
 
 def mails_to_str(mails_to_show,
