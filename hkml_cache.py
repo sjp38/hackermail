@@ -133,7 +133,14 @@ def pr_cache_stat(cache_path):
     with open(cache_path, 'r') as f:
         cache = json.load(f)
     print('%d mails in cache' % len(cache))
-    print('%f seconds for loading cache' % (time.time() - before_timestamp))
+    print('%f seconds for json-loading cache' %
+          (time.time() - before_timestamp))
+
+    before_timestamp = time.time()
+    for key in cache:
+        mail = _hkml.Mail(kvpairs=cache[key])
+    print('%f seconds for parsing mails' % (time.time() - before_timestamp))
+
 
 def set_argparser(parser):
     return
