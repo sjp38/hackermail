@@ -42,6 +42,8 @@ def parse_mails(msg):
     mails = []
     mail = ''
     for line in msg.split('\n'):
+        if not line.startswith('[') and not line.startswith(' '):
+            continue
         if not line.startswith(' '):
             if mail != '':
                 mails.append(mail)
