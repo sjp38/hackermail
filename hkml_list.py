@@ -416,7 +416,8 @@ def get_mails(source, fetch, manifest, since, until,
     if os.path.isfile(source):
         mails = _hkml.read_mbox_file(source)
         if max_nr_mails is not None:
-            return mails[:max_nr_mails]
+            mails = mails[:max_nr_mails]
+        return mails
 
     if fetch:
         hkml_fetch.fetch_mail(manifest, [source], False, 1)
