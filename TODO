@@ -4,6 +4,7 @@
     - message id
     - lore link
   - Support fetching mail since root of a thread
+    - 'b4 mbox' could be used internally
   - Support multiple sources
   - Print stat for filtered mails
   - Do that only when total/filtered stat are different
