@@ -6,7 +6,6 @@
   - Support fetching mail since root of a thread
     - 'b4 mbox' could be used internally
   - Support multiple sources
-  - Use '└' Instead of indentation for replies?
 - Tag mails (Store the information under .hkm directory in some format)
 - Implement 'monitor' command
   - Subscribe to a thread
