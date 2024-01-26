@@ -115,33 +115,35 @@ mailing list from 2024-01-10 to 2024-01-20.
 $ hkml list damon --fetch --since 2024-01-10 --until 2024-01-20
 # 22 mails, 8 threads, 1 new threads
 # 21 patches, 1 series
-[0000] Re: [PATCH 5.15 00/59] 5.15.147-rc1 review (SeongJae Park, 01/13 10:42)
-[0001] Re: [PATCH 6.1 0/4] 6.1.73-rc1 review (SeongJae Park, 01/13 10:43)
-[0002] Re: [PATCH 6.6 0/1] 6.6.12-rc1 review (SeongJae Park, 01/13 10:44)
-[0003] Re: DAMON Beer/Coffee/Tea chat series (SeongJae Park, 01/16 10:09)
-[0004] [RFC PATCH 0/4] DAMON based 2-tier memory management for CXL memory (Honggyu Kim, 01/14
-       20:52)
-[0005]     [RFC PATCH 1/4] mm/vmscan: refactor reclaim_pages with reclaim_or_migrate_folios
-           (Honggyu Kim, 01/14 20:52)
-[0006]         re: (SeongJae Park, 01/16 12:32)
-[0007]     [RFC PATCH 2/4] mm/damon: introduce DAMOS_DEMOTE action for demotion (Honggyu Kim,
-           01/14 20:52)
-[0008]         re: (SeongJae Park, 01/16 12:32)
-[0009]     [RFC PATCH 3/4] mm/memory-tiers: add next_promotion_node to find promotion target
-           (Honggyu Kim, 01/14 20:52)
-[0010]         re: (SeongJae Park, 01/16 12:32)
-[0011]     [RFC PATCH 4/4] mm/damon: introduce DAMOS_PROMOTE action for promotion (Honggyu
-           Kim, 01/14 20:52)
-[0012]         re: (SeongJae Park, 01/16 12:32)
-[0013]     re: (SeongJae Park, 01/16 12:31)
-[0014]         re: (Honggyu Kim, 01/17 03:49)
-[0015]             re: (SeongJae Park, 01/17 13:11)
-[0016]                 re: (SeongJae Park, 01/17 13:24)
-[0017]                 re: (Hyeongtak Ji, 01/18 02:40)
-[0018]                     re: (SeongJae Park, 01/18 09:17)
-[0019] Re: [PATCH 6.1 000/100] 6.1.74-rc1 review (SeongJae Park, 01/18 10:35)
-[0020] Re: [PATCH 6.6 000/150] 6.6.13-rc1 review (SeongJae Park, 01/18 10:36)
-[0021] Re: [PATCH 6.7 00/28] 6.7.1-rc1 review (SeongJae Park, 01/18 12:17)
+# oldest: 2024-01-13 10:42:50-08:00
+# newest: 2024-01-18 12:17:12-08:00
+[00] Re: [PATCH 5.15 00/59] 5.15.147-rc1 review (SeongJae Park, 01/13 10:42)
+[01] Re: [PATCH 6.1 0/4] 6.1.73-rc1 review (SeongJae Park, 01/13 10:43)
+[02] Re: [PATCH 6.6 0/1] 6.6.12-rc1 review (SeongJae Park, 01/13 10:44)
+[03] Re: DAMON Beer/Coffee/Tea chat series (SeongJae Park, 01/16 10:09)
+[04] [RFC PATCH 0/4] DAMON based 2-tier memory management for CXL memory (Honggyu
+     Kim, 01/14 20:52)
+[05]   [RFC PATCH 1/4] mm/vmscan: refactor reclaim_pages with
+       reclaim_or_migrate_folios (Honggyu Kim, 01/14 20:52)
+[06]     re: (SeongJae Park, 01/16 12:32)
+[07]   [RFC PATCH 2/4] mm/damon: introduce DAMOS_DEMOTE action for demotion (Honggyu
+       Kim, 01/14 20:52)
+[08]     re: (SeongJae Park, 01/16 12:32)
+[09]   [RFC PATCH 3/4] mm/memory-tiers: add next_promotion_node to find promotion
+       target (Honggyu Kim, 01/14 20:52)
+[10]     re: (SeongJae Park, 01/16 12:32)
+[11]   [RFC PATCH 4/4] mm/damon: introduce DAMOS_PROMOTE action for promotion
+       (Honggyu Kim, 01/14 20:52)
+[12]     re: (SeongJae Park, 01/16 12:32)
+[13]   re: (SeongJae Park, 01/16 12:31)
+[14]     re: (Honggyu Kim, 01/17 03:49)
+[15]       re: (SeongJae Park, 01/17 13:11)
+[16]         re: (SeongJae Park, 01/17 13:24)
+[17]         re: (Hyeongtak Ji, 01/18 02:40)
+[18]           re: (SeongJae Park, 01/18 09:17)
+[19] Re: [PATCH 6.1 000/100] 6.1.74-rc1 review (SeongJae Park, 01/18 10:35)
+[20] Re: [PATCH 6.6 000/150] 6.6.13-rc1 review (SeongJae Park, 01/18 10:36)
+[21] Re: [PATCH 6.7 00/28] 6.7.1-rc1 review (SeongJae Park, 01/18 12:17)
 ```
 
 The output maybe intuitive to understand.  The first column of the each mail is
@@ -163,26 +165,26 @@ For example, below command show the thread for mail identifier 13 of the above
 
 ```
 $ ./hkml thread 13
-[0004] [RFC PATCH 0/4] DAMON based 2-tier memory management for CXL memory (Honggyu Kim, 01/14
-       20:52)
-[0005]     [RFC PATCH 1/4] mm/vmscan: refactor reclaim_pages with reclaim_or_migrate_folios
-           (Honggyu Kim, 01/14 20:52)
-[0006]         re: (SeongJae Park, 01/16 12:32)
-[0007]     [RFC PATCH 2/4] mm/damon: introduce DAMOS_DEMOTE action for demotion (Honggyu Kim,
-           01/14 20:52)
-[0008]         re: (SeongJae Park, 01/16 12:32)
-[0009]     [RFC PATCH 3/4] mm/memory-tiers: add next_promotion_node to find promotion target
-           (Honggyu Kim, 01/14 20:52)
-[0010]         re: (SeongJae Park, 01/16 12:32)
-[0011]     [RFC PATCH 4/4] mm/damon: introduce DAMOS_PROMOTE action for promotion (Honggyu
-           Kim, 01/14 20:52)
-[0012]         re: (SeongJae Park, 01/16 12:32)
-[0013]     re: (SeongJae Park, 01/16 12:31)
-[0014]         re: (Honggyu Kim, 01/17 03:49)
-[0015]             re: (SeongJae Park, 01/17 13:11)
-[0016]                 re: (SeongJae Park, 01/17 13:24)
-[0017]                 re: (Hyeongtak Ji, 01/18 02:40)
-[0018]                     re: (SeongJae Park, 01/18 09:17)
+[04] [RFC PATCH 0/4] DAMON based 2-tier memory management for CXL memory (Honggyu
+     Kim, 01/14 20:52)
+[05]   [RFC PATCH 1/4] mm/vmscan: refactor reclaim_pages with
+       reclaim_or_migrate_folios (Honggyu Kim, 01/14 20:52)
+[06]     re: (SeongJae Park, 01/16 12:32)
+[07]   [RFC PATCH 2/4] mm/damon: introduce DAMOS_DEMOTE action for demotion (Honggyu
+       Kim, 01/14 20:52)
+[08]     re: (SeongJae Park, 01/16 12:32)
+[09]   [RFC PATCH 3/4] mm/memory-tiers: add next_promotion_node to find promotion
+       target (Honggyu Kim, 01/14 20:52)
+[10]     re: (SeongJae Park, 01/16 12:32)
+[11]   [RFC PATCH 4/4] mm/damon: introduce DAMOS_PROMOTE action for promotion
+       (Honggyu Kim, 01/14 20:52)
+[12]     re: (SeongJae Park, 01/16 12:32)
+[13]   re: (SeongJae Park, 01/16 12:31)
+[14]     re: (Honggyu Kim, 01/17 03:49)
+[15]       re: (SeongJae Park, 01/17 13:11)
+[16]         re: (SeongJae Park, 01/17 13:24)
+[17]         re: (Hyeongtak Ji, 01/18 02:40)
+[18]           re: (SeongJae Park, 01/18 09:17)
 ```
 
 Reading Mails
@@ -277,13 +279,15 @@ $ hkml export --range 2 7 foo.mbox
 $ ./hkml list foo.mbox --since 2024-01-10 --until 2024-01-20
 # 5 mails, 3 threads, 1 new threads
 # 4 patches, 1 series
-[0000] Re: [PATCH 6.6 0/1] 6.6.12-rc1 review (SeongJae Park, 01/13 10:44)
-[0001] Re: DAMON Beer/Coffee/Tea chat series (SeongJae Park, 01/16 10:09)
-[0002] [RFC PATCH 0/4] DAMON based 2-tier memory management for CXL memory (Honggyu Kim, 01/14
-       20:52)
-[0003]     [RFC PATCH 1/4] mm/vmscan: refactor reclaim_pages with reclaim_or_migrate_folios
-           (Honggyu Kim, 01/14 20:52)
-[0004]         re: (SeongJae Park, 01/16 12:32)
+# oldest: 2024-01-13 10:44:55-08:00
+# newest: 2024-01-16 12:32:10-08:00
+[0] Re: [PATCH 6.6 0/1] 6.6.12-rc1 review (SeongJae Park, 01/13 10:44)
+[1] Re: DAMON Beer/Coffee/Tea chat series (SeongJae Park, 01/16 10:09)
+[2] [RFC PATCH 0/4] DAMON based 2-tier memory management for CXL memory (Honggyu Kim,
+    01/14 20:52)
+[3]   [RFC PATCH 1/4] mm/vmscan: refactor reclaim_pages with
+      reclaim_or_migrate_folios (Honggyu Kim, 01/14 20:52)
+[4]     re: (SeongJae Park, 01/16 12:32)
 ```
 
 Users could also import the mbox file on their other mbox-supporting mail
