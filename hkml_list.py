@@ -480,6 +480,7 @@ def set_argparser(parser=None):
     parser.add_argument('--nr_mails', type=int,
             help='number of mails to list')
     parser.add_argument('--min_nr_mails', metavar='<int>', type=int,
+            default=50,
             help='minimum number of mails to list')
     parser.add_argument('--max_nr_mails', metavar='<int>', type=int,
             help='maximum number of mails to list')
