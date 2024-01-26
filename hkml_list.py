@@ -402,16 +402,21 @@ def get_mails_from_git(manifest, mail_list, since, until):
                 mails.append(mail)
     return mails
 
-def get_mails(source, fetch, manifest, since, until):
+def get_mails(source, fetch, manifest, since, until,
+              min_nr_mails, max_nr_mails):
     if source == 'clipboard':
         mails, err = _hkml.read_mails_from_clipboard()
         if err != None:
             print('reading mails from clipboard failed: %s' % err)
             exit(1)
+        if max_nr_mails is not None:
+            mails = mails[:max_nr_mails]
         return mails
 
     if os.path.isfile(source):
-        return _hkml.read_mbox_file(source)
+        mails = _hkml.read_mbox_file(source)
+        if max_nr_mails is not None:
+            return mails[:max_nr_mails]
 
     if fetch:
         hkml_fetch.fetch_mail(manifest, [source], False, 1)
@@ -422,6 +427,17 @@ def get_mails(source, fetch, manifest, since, until):
         exit(1)
 
     mails = get_mails_from_git(manifest, source, since, until)
+    nr_tries = 0
+    while min_nr_mails is not None and len(mails) < min_nr_mails:
+        until = since
+        since = (datetime.datetime.strptime(since, '%Y-%m-%d') -
+                 datetime.timedelta(days=1)).strftime('%Y-%m-%d')
+        mails += get_mails_from_git(manifest, source, since, until)
+        nr_tries += 1
+        if nr_tries > 100:
+            break
+    if max_nr_mails is not None:
+        mails = mails[:max_nr_mails]
     mails.reverse()
     return mails
 
@@ -541,14 +557,8 @@ def main(args=None):
     timestamp = time.time()
     runtime_profile = {}
     mails_to_show = get_mails(
-            args.source, args.fetch, args.manifest, args.since, args.until)
-    while (args.min_nr_mails is not None and
-           len(mails_to_show) < args.min_nr_mails):
-        since = datetime.datetime.strptime(args.since, '%Y-%m-%d')
-        args.since = (since - datetime.timedelta(days=1)).strftime('%Y-%m-%d')
-        mails_to_show = get_mails(args.source, args.fetch, args.manifest,
-                                  args.since, args.until)
-
+            args.source, args.fetch, args.manifest, args.since, args.until,
+            args.min_nr_mails, args.max_nr_mails)
     runtime_profile = {'get_mails': time.time() - timestamp}
     if args.max_nr_mails is not None:
         mails_to_show = mails_to_show[:args.max_nr_mails]
