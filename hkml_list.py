@@ -7,6 +7,7 @@ import datetime
 import json
 import math
 import os
+import time
 
 import _hkml
 import hkml_cache
@@ -281,17 +282,22 @@ def mails_to_str(mails_to_show,
         msgid, author, subject_keywords, body_keywords,
         show_stat, show_thread_of, descend,
         sort_threads_by, new_threads_only, collapse_threads,
-        open_mail_via_lore, show_lore_link, nr_cols):
+        open_mail_via_lore, show_lore_link, nr_cols, runtime_profile):
     lines = []
 
+    timestamp = time.time()
     threads = threads_of(mails_to_show)
     for sort_category in sort_threads_by:
         sort_threads(threads, sort_category)
+    runtime_profile['threads_extract'] = time.time() - timestamp
 
     by_pr_idx = []
+    timestamp = time.time()
     for mail in threads:
         set_index(mail, by_pr_idx)
+    runtime_profile['set_index'] = time.time() - timestamp
 
+    timestamp = time.time()
     # Show all by default
     if show_thread_of is None:
         ls_range = range(0, len(mails_to_show))
@@ -324,6 +330,7 @@ def mails_to_str(mails_to_show,
             show_nr_replies = True
         lines += format_entry(mail, max_digits_for_idx, show_nr_replies,
                               show_lore_link, open_mail_via_lore, nr_cols)
+
     stat_lines = []
     if show_stat:
         stat_lines.append('# stat for total mails')
@@ -331,7 +338,12 @@ def mails_to_str(mails_to_show,
         stat_lines.append('#')
         stat_lines.append('# stat for filtered mails')
         stat_lines += format_stat(filtered_mails)
-    lines = stat_lines + lines
+
+    runtime_profile['etc'] = time.time() - timestamp
+    runtime_profile_lines = ['# runtime profile']
+    for key, value in runtime_profile.items():
+        runtime_profile_lines.append('# %s: %s' % (key, value))
+    lines = runtime_profile_lines + stat_lines + lines
     return '\n'.join(lines)
 
 def git_log_output_line_to_mail(line, mdir):
@@ -497,8 +509,11 @@ def main(args=None):
             # maybe user is doing pipe
             nr_cols_in_line = 80
 
+    timestamp = time.time()
+    runtime_profile = {}
     mails_to_show = get_mails(
             args.source, args.fetch, args.manifest, args.since, args.until)
+    runtime_profile = {'get_mails': time.time() - timestamp}
     if args.max_nr_mails is not None:
         mails_to_show = mails_to_show[:args.max_nr_mails]
 
@@ -508,7 +523,7 @@ def main(args=None):
             not args.hide_stat, None,
             args.descend, args.sort_threads_by,
             args.new, args.collapse,
-            args.lore_read, args.lore, nr_cols_in_line)
+            args.lore_read, args.lore, nr_cols_in_line, runtime_profile)
     hkml_cache.writeback_mails()
     cache_list_output(list_output_cache_key, to_show)
 
