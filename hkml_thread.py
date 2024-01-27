@@ -10,9 +10,6 @@ import hkml_cache
 import hkml_list
 import hkml_open
 
-class FakeArgs:
-    pass
-
 def set_argparser(parser=None):
     parser.description='list mails of a thread'
     _hkml.set_manifest_option(parser)
@@ -60,11 +57,7 @@ def main(args=None):
             [], False)
 
     if use_b4:
-        hkml_cache.writeback_mails()
-        fake_args = FakeArgs()
-        fake_args.source = tmp_path
-        list_output_cache_key = hkml_list.args_to_list_output_key(fake_args)
-        hkml_list.cache_list_output(list_output_cache_key, to_show)
+        hkml_list.cache_list_output('thread_output', to_show)
     hkml_open.pr_with_pager_if_needed(to_show)
 
 if __name__ == '__main__':
