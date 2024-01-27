@@ -91,9 +91,12 @@ def invalidate_cached_outputs(source):
     keys_to_del = []
     cache = get_list_output_cache()
     for key in cache.keys():
-        key_dict = json.loads(key)
-        if key_dict['source'] == source:
-            keys_to_del.append(key)
+        try:
+            key_dict = json.loads(key)
+            if key_dict['source'] == source:
+                keys_to_del.append(key)
+        except:
+            pass
     for key in keys_to_del:
         del cache[key]
 
