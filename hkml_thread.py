@@ -20,9 +20,6 @@ def set_argparser(parser=None):
             help='list only the thread of the specified mail')
     parser.add_argument('--lore', action='store_true',
             help='print lore link for mails')
-    parser.add_argument(
-            '--above_list', action='store_true',
-            help='list whole thread, above the last generated list')
 
 def main(args=None):
     if not args:
@@ -34,7 +31,10 @@ def main(args=None):
 
     mails_to_show = hkml_list.last_listed_mails()
 
-    if args.above_list:
+    if subprocess.call(['which', 'b4'], stdout=subprocess.DEVNULL) == 0:
+        use_b4 = True
+
+    if use_b4:
         found = False
         for mail in mails_to_show:
             if mail.pridx == args.mail_idx:
@@ -59,7 +59,7 @@ def main(args=None):
             ['first_date'], None, None, None, None, args.lore, nr_cols_in_line,
             [], False)
 
-    if args.above_list:
+    if use_b4:
         hkml_cache.writeback_mails()
         fake_args = FakeArgs()
         fake_args.source = tmp_path
