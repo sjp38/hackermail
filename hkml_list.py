@@ -36,6 +36,9 @@ def get_mail_cache_key(idx):
         return None
     return idx_to_keys[idx_str]
 
+def get_mail(idx):
+    return hkml_cache.get_mail(key=get_mail_cache_key(idx))
+
 def set_mail_cache_key(mail):
     idx = mail.pridx
     key = hkml_cache.get_cache_key(
