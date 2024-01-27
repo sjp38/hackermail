@@ -81,8 +81,7 @@ def main(args=None):
     else:
         args.mail_idx = int(args.mail_idx)
 
-    key = hkml_list.get_mail_cache_key(args.mail_idx)
-    mail = hkml_cache.get_mail(key=key)
+    mail = hkml_list.get_mail(args.mail_idx)
     if mail is None:
         print('mail is not cached')
         exit(1)

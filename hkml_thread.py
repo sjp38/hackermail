@@ -39,12 +39,8 @@ def main(args=None):
         use_b4 = args.dont_use_b4 is False
 
     if use_b4:
-        found = False
-        for mail in mails_to_show:
-            if mail.pridx == args.mail_idx:
-                found = True
-                break
-        if found is False:
+        mail = hkml_list.get_mail(args.mail_idx)
+        if mail is None:
             print('wrong <mail_idx>')
             exit(1)
         msgid = mail.get_field('message-id')

@@ -50,8 +50,7 @@ def main(args=None):
         args = parser.parse_args()
 
     if args.mail.isdigit():
-        key = hkml_list.get_mail_cache_key(int(args.mail))
-        mail = hkml_cache.get_mail(key=key)
+        mail = hkml_list.get_mail(args.mail)
     elif args.mail == 'clipboard':
         mails, err = _hkml.read_mails_from_clipboard()
         if err != None:
