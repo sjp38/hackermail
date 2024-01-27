@@ -17,7 +17,7 @@ def set_argparser(parser=None):
     _hkml.set_manifest_option(parser)
     parser.add_argument(
             'mail_idx', metavar='<mail index>', type=int,
-            help='list only the thread of the specified mail')
+            help='index of any mail in the thread to list')
     parser.add_argument('--lore', action='store_true',
             help='print lore link for mails')
     parser.add_argument(
