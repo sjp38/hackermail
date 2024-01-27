@@ -6,8 +6,12 @@ import subprocess
 import tempfile
 
 import _hkml
+import hkml_cache
 import hkml_list
 import hkml_open
+
+class FakeArgs:
+    pass
 
 def set_argparser(parser=None):
     _hkml.set_manifest_option(parser)
@@ -53,10 +57,16 @@ def main(args=None):
             mails_to_show, None, None, None, None, False, args.mail_idx, False,
             ['first_date'], None, None, None, None, args.lore, nr_cols_in_line,
             [], False)
+
+    if args.above_list:
+        hkml_cache.writeback_mails()
+        fake_args = FakeArgs()
+        fake_args.source = tmp_path
+        list_output_cache_key = hkml_list.args_to_list_output_key(fake_args)
+        hkml_list.cache_list_output(list_output_cache_key, to_show)
     hkml_open.pr_with_pager_if_needed(to_show)
 
     os.remove(tmp_path)
-
 
 if __name__ == '__main__':
     main()
