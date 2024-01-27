@@ -27,7 +27,7 @@ def main(args=None):
     to_show = hkml_list.mails_to_str(
             mails_to_show, None, None, None, None, False, args.mail_idx, False,
             ['first_date'], None, None, None, None, args.lore, nr_cols_in_line,
-            {}, False)
+            [], False)
     hkml_open.pr_with_pager_if_needed(to_show)
 
 

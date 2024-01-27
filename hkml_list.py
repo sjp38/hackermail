@@ -303,13 +303,13 @@ def mails_to_str(mails_to_show,
         sort_threads(threads, sort_category)
     if descend:
         threads.reverse()
-    runtime_profile['threads_extract'] = time.time() - timestamp
+    runtime_profile.append(['threads_extract', time.time() - timestamp])
 
     by_pr_idx = []
     timestamp = time.time()
     for mail in threads:
         set_index(mail, by_pr_idx)
-    runtime_profile['set_index'] = time.time() - timestamp
+    runtime_profile.append(['set_index', time.time() - timestamp])
 
     timestamp = time.time()
     # Show all by default
@@ -363,11 +363,11 @@ def mails_to_str(mails_to_show,
             stat_lines += format_stat(filtered_mails)
 
     runtime_profile_lines = []
-    total_profiled_time = sum([v for k,v in runtime_profile.items()])
+    total_profiled_time = sum([profile[1] for profile in runtime_profile])
     if show_runtime_profile is True or total_profiled_time > 3:
-        runtime_profile['etc'] = time.time() - timestamp
+        runtime_profile.append(['etc', time.time() - timestamp])
         runtime_profile_lines = ['# runtime profile']
-        for key, value in runtime_profile.items():
+        for key, value in runtime_profile:
             runtime_profile_lines.append('# %s: %s' % (key, value))
         runtime_profile_lines.append('#')
     lines = runtime_profile_lines + stat_lines + lines
@@ -570,11 +570,11 @@ def main(args=None):
             nr_cols_in_line = 80
 
     timestamp = time.time()
-    runtime_profile = {}
+    runtime_profile = []
     mails_to_show = get_mails(
             args.source, args.fetch, args.manifest, args.since, args.until,
             args.min_nr_mails, args.max_nr_mails)
-    runtime_profile = {'get_mails': time.time() - timestamp}
+    runtime_profile = [['get_mails', time.time() - timestamp]]
     if args.max_nr_mails is not None:
         mails_to_show = mails_to_show[:args.max_nr_mails]
 
