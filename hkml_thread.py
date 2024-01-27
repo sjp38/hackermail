@@ -46,7 +46,8 @@ def main(args=None):
         msgid = mail.get_field('message-id')
 
         fd, tmp_path = tempfile.mkstemp(prefix='hkml_thread_')
-        if subprocess.call(['b4', 'mbox', '--mbox-name', tmp_path, msgid]) != 0:
+        if subprocess.call(['b4', 'mbox', '--mbox-name', tmp_path, msgid],
+                           stderr=subprocess.DEVNULL) != 0:
             print('b4 mbox failed')
             exit(1)
         mails_to_show = hkml_list.get_mails(
