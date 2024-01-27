@@ -171,7 +171,7 @@ def format_entry(mail, max_digits_for_idx, show_nr_replies, show_lore_link,
                 subject = 're:'
 
     suffices = [' '.join(mail.get_field('from').split()[0:-1]),
-                mail.date.strftime('%m/%d %H:%M')]
+                mail.date.strftime('%y/%m/%d %H:%M')]
     if show_nr_replies:
         suffices.append('%d+ msgs' % nr_replies_of(mail))
     if show_lore_link:
