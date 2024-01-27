@@ -15,6 +15,7 @@ import hkml_reply
 import hkml_send
 import hkml_write
 import hkml_export
+import hkml_monitor
 import hkml_manifest
 import hkml_cache
 
@@ -30,8 +31,7 @@ class SubCmdHelpFormatter(argparse.RawDescriptionHelpFormatter):
         return parts
 
 parser = argparse.ArgumentParser(formatter_class=SubCmdHelpFormatter)
-parser.add_argument('--hkml_dir', metavar='hkml dir', type=str,
-        help='Path to the hkml meta data directory.')
+parser.add_argument('--hkml_dir', metavar='hkml dir', type=str)
 
 subparsers = parser.add_subparsers(title='command', dest='command',
         metavar='<command>')
@@ -63,6 +63,9 @@ hkml_send.set_argparser(parser_send)
 
 parser_export = subparsers.add_parser('export', help = 'export mails')
 hkml_export.set_argparser(parser_export)
+
+parser_monitor = subparsers.add_parser('monitor', help = 'monitor mails')
+hkml_monitor.set_argparser(parser_monitor)
 
 parser_manifest = subparsers.add_parser('manifest', help = 'print manifest')
 hkml_manifest.set_argparser(parser_manifest)
@@ -96,6 +99,8 @@ elif args.command == 'send':
     hkml_send.main(args)
 elif args.command == 'export':
     hkml_export.main(args)
+elif args.command == 'monitor':
+    hkml_monitor.main(args)
 elif args.command == 'manifest':
     hkml_manifest.main(args)
 elif args.command == 'cache':
