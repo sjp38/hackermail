@@ -53,6 +53,7 @@ def format_mbox(subject, in_reply_to, to, cc, body):
     return '\n'.join(lines)
 
 def set_argparser(parser=None):
+    parser.description = 'write a mail'
     parser.add_argument('--subject', metavar='<subject>', type=str,
             help='Subject of the mail.')
     parser.add_argument('--in-reply-to', metavar='<message id>',

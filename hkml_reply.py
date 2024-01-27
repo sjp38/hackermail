@@ -33,6 +33,7 @@ def format_reply(mail):
     return hkml_write.format_mbox(subject, in_reply_to, to, cc, body)
 
 def set_argparser(parser):
+    parser.description = 'reply to a mail'
     parser.add_argument(
             'mail', metavar='<mail>',
             help=' '.join(

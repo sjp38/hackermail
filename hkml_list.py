@@ -464,6 +464,7 @@ def set_argparser(parser=None):
     DEFAULT_UNTIL = datetime.datetime.now() + datetime.timedelta(days=1)
     DEFAULT_UNTIL = DEFAULT_UNTIL.strftime('%Y-%m-%d')
 
+    parser.description = 'list mails'
     _hkml.set_manifest_option(parser)
     # What mails to show
     parser.add_argument('source', metavar='<source of mails>',

@@ -57,6 +57,7 @@ def last_open_mail_idx():
         return int(f.read())
 
 def set_argparser(parser):
+    parser.description = 'open a mail'
     parser.add_argument(
             'mail_idx', metavar='<index>',
             help=' '.join(

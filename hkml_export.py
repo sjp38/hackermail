@@ -21,6 +21,7 @@ def export_mails(mails, export_file):
                 ['From mboxrd@z Thu Jan  1 00:00:00 1970', mail.mbox,'']))
 
 def set_argparser(parser):
+    parser.description = 'export mails'
     parser.add_argument(
             'export_file', metavar='<file>',
             help='file to save exported mail (mbox or json)')

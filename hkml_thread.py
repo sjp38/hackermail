@@ -14,6 +14,7 @@ class FakeArgs:
     pass
 
 def set_argparser(parser=None):
+    parser.description='list mails of a thread'
     _hkml.set_manifest_option(parser)
     parser.add_argument(
             'mail_idx', metavar='<mail index>', type=int,

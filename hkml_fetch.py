@@ -41,6 +41,7 @@ def fetched_mail_lists():
             if os.path.isdir(os.path.join(archive_dir, d))]
 
 def set_argparser(parser):
+    parser.description = 'fetch mails'
     _hkml.set_manifest_option(parser)
     parser.add_argument('mlist', metavar='<mailing list>', nargs='*',
             help='mailing list to fetch.')
