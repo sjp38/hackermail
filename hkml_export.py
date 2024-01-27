@@ -35,20 +35,10 @@ def main(args=None):
         set_argparser(parser)
         args = parser.parse_args()
 
-    idx_to_cache_keys = hkml_list.get_last_mail_idx_key_cache()
-    idxs = [int(idx) for idx in idx_to_cache_keys.keys()]
+    mails = hkml_list.last_listed_mails()
     if args.range is not None:
-        idxs = [idx for idx in idxs
-                if idx >= args.range[0] and idx < args.range[1]]
-    mails = []
-    for idx in idxs:
-        key = idx_to_cache_keys['%d' % idx]
-        mail = hkml_cache.get_mail(key=key)
-        if mail is None:
-            print('warning: %d-th mail seems not cached, cannot export'
-                  % idx)
-            continue
-        mails.append(mail)
+        mails = [mail for mail in mails
+                 if mail.pridx >= args.range[0] and mail.pridx < args.range[1]]
     return export_mails(mails, args.export_file)
 
 if __name__ == '__main__':
