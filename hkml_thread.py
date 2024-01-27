@@ -20,6 +20,9 @@ def set_argparser(parser=None):
             help='list only the thread of the specified mail')
     parser.add_argument('--lore', action='store_true',
             help='print lore link for mails')
+    parser.add_argument(
+            '--dont_use_b4', action='store_true',
+            help='don\'t use b4 but only previous list\'s output')
 
 def main(args=None):
     if not args:
@@ -32,7 +35,7 @@ def main(args=None):
     mails_to_show = hkml_list.last_listed_mails()
 
     if subprocess.call(['which', 'b4'], stdout=subprocess.DEVNULL) == 0:
-        use_b4 = True
+        use_b4 = args.dont_use_b4 is False
 
     if use_b4:
         found = False
