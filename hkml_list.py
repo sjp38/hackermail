@@ -454,6 +454,7 @@ def last_listed_mails():
         cache_key = idx_to_keys['%d' % idx]
         mail = hkml_cache.get_mail(key=cache_key)
         if mail is not None:
+            mail.pridx = int(idx)
             mails.append(mail)
     return mails
 
