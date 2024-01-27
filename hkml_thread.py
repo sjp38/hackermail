@@ -65,9 +65,8 @@ def main(args=None):
         fake_args.source = tmp_path
         list_output_cache_key = hkml_list.args_to_list_output_key(fake_args)
         hkml_list.cache_list_output(list_output_cache_key, to_show)
+        os.remove(tmp_path)
     hkml_open.pr_with_pager_if_needed(to_show)
-
-    os.remove(tmp_path)
 
 if __name__ == '__main__':
     main()
