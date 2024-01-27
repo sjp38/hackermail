@@ -479,7 +479,7 @@ def set_argparser(parser=None):
     parser.add_argument('--until', metavar='<date>', type=str,
             default=DEFAULT_UNTIL,
             help='show mails sent before a specific date')
-    parser.add_argument('--nr_mails', type=int,
+    parser.add_argument('--nr_mails', type=int, metavar='<int>',
             help='number of mails to list')
     parser.add_argument('--min_nr_mails', metavar='<int>', type=int,
             default=50,
@@ -497,7 +497,7 @@ def set_argparser(parser=None):
             help='list mails containing the keyword in their body')
     parser.add_argument('--new', '-n', action='store_true',
             help='list new threads only')
-    parser.add_argument('--range', nargs=2, type=int, metavar='index',
+    parser.add_argument('--range', nargs=2, type=int, metavar='<index>',
             help='start and end mail index to show')
 
     # How to show the mails
@@ -506,12 +506,12 @@ def set_argparser(parser=None):
     parser.add_argument('--sort_threads_by', nargs='+',
             choices=['first_date', 'last_date', 'nr_replies', 'nr_comments'],
             default=['last_date'],
-            help='threads sort field')
+            help='threads sort keys')
     parser.add_argument('--ascend', action='store_true',
             help='sort threads in ascending order')
 
     parser.add_argument('--hot', action='store_true',
-            help='show latest and hot threads first')
+            help='show threads having more comments and later updated first.')
 
     # misc
     parser.add_argument('--fetch', action='store_true',
