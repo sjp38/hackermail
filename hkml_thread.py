@@ -31,10 +31,6 @@ def main(args=None):
         set_argparser(parser)
         args = parser.parse_args()
 
-    nr_cols_in_line = int(os.get_terminal_size().columns * 9 / 10)
-
-    mails_to_show = hkml_list.last_listed_mails()
-
     if subprocess.call(['which', 'b4'], stdout=subprocess.DEVNULL) == 0:
         use_b4 = args.dont_use_b4 is False
 
@@ -52,8 +48,12 @@ def main(args=None):
             exit(1)
         mails_to_show = hkml_list.get_mails(
                 tmp_path, False, None, None, None, None, None)
+        os.remove(tmp_path)
         args.mail_idx = None
+    else:
+        mails_to_show = hkml_list.last_listed_mails()
 
+    nr_cols_in_line = int(os.get_terminal_size().columns * 9 / 10)
     to_show = hkml_list.mails_to_str(
             mails_to_show, None, None, None, None, False, args.mail_idx, False,
             ['first_date'], None, None, None, None, args.lore, nr_cols_in_line,
@@ -65,7 +65,6 @@ def main(args=None):
         fake_args.source = tmp_path
         list_output_cache_key = hkml_list.args_to_list_output_key(fake_args)
         hkml_list.cache_list_output(list_output_cache_key, to_show)
-        os.remove(tmp_path)
     hkml_open.pr_with_pager_if_needed(to_show)
 
 if __name__ == '__main__':
