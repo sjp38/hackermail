@@ -381,7 +381,8 @@ def git_log_output_line_to_mail(line, mdir):
     subject = line[subject_offset:]
     return _hkml.Mail.from_gitlog(fields[0], mdir, fields[1], subject)
 
-def get_mails_from_git(manifest, mail_list, since, until):
+def get_mails_from_git(manifest, mail_list, since, until,
+                       min_nr_mails, max_nr_mails):
     lines = []
     mdirs = _hkml.mail_list_data_paths(mail_list, manifest)
     if not mdirs:
@@ -392,12 +393,21 @@ def get_mails_from_git(manifest, mail_list, since, until):
     for mdir in mdirs:
         if not os.path.isdir(mdir):
             break
-        cmd = ['git', '--git-dir=%s' % mdir, 'log',
-                '--date=iso-strict', '--pretty=%H %ad %s',
-                '--since=%s' % since]
+        base_cmd = ['git', '--git-dir=%s' % mdir, 'log',
+                '--date=iso-strict', '--pretty=%H %ad %s']
+
+        cmd = base_cmd + ['--since=%s' % since]
         if until:
             cmd += ['--until=%s' % until]
+        if max_nr_mails is not None:
+            cmd += ['-n', max_nr_mails]
         lines = _hkml.cmd_lines_output(cmd)
+
+        if min_nr_mails is not None and len(lines) < min_nr_mails:
+            cmd = base_cmd + ['-n', '%d' % min_nr_mails]
+            if until:
+                cmd += ['--until=%s' % until]
+            lines = _hkml.cmd_lines_output(cmd)
 
         for line in lines:
             mail = git_log_output_line_to_mail(line, mdir)
@@ -430,19 +440,8 @@ def get_mails(source, fetch, manifest, since, until,
         print('Cannot open manifest file')
         exit(1)
 
-    mails = get_mails_from_git(manifest, source, since, until)
-    nr_tries = 0
-    while min_nr_mails is not None and len(mails) < min_nr_mails:
-        until = since
-        since = (datetime.datetime.strptime(since, '%Y-%m-%d') -
-                 datetime.timedelta(days=1)).strftime('%Y-%m-%d')
-        mails += get_mails_from_git(manifest, source, since, until)
-        nr_tries += 1
-        if nr_tries > 100:
-            print('cannot get %d mails even with 100 more days' % min_nr_mails)
-            break
-    if max_nr_mails is not None:
-        mails = mails[:max_nr_mails]
+    mails = get_mails_from_git(manifest, source, since, until,
+                               min_nr_mails, max_nr_mails)
     mails.reverse()
     return mails
 
