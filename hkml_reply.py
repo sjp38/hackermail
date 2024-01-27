@@ -6,7 +6,6 @@ import subprocess
 import tempfile
 
 import _hkml
-import hkml_cache
 import hkml_list
 import hkml_send
 import hkml_write

@@ -4,7 +4,6 @@ import json
 import os
 
 import _hkml
-import hkml_cache
 import hkml_list
 
 def export_mails(mails, export_file):

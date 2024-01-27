@@ -6,7 +6,6 @@ import subprocess
 import tempfile
 
 import _hkml
-import hkml_cache
 import hkml_list
 
 def pr_with_pager_if_needed(text):
