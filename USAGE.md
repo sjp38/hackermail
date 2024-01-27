@@ -112,7 +112,7 @@ Below example lists mails that sent to [DAMON](https://damonitor.github.io/)
 mailing list from 2024-01-10 to 2024-01-20.
 
 ```
-$ hkml list damon --fetch --since 2024-01-10 --until 2024-01-20
+$ hkml list damon --fetch --since 2024-01-10 --until 2024-01-20 --min_nr_mails 0
 # 22 mails, 8 threads, 1 new threads
 # 21 patches, 1 series
 # oldest: 2024-01-13 10:42:50-08:00
@@ -164,35 +164,40 @@ For example, below command show the thread for mail identifier 13 of the above
 `hkml list` example.
 
 ```
-$ ./hkml thread 13
-[04] [RFC PATCH 0/4] DAMON based 2-tier memory management for CXL memory (Honggyu
-     Kim, 01/14 20:52)
-[05]   [RFC PATCH 1/4] mm/vmscan: refactor reclaim_pages with
-       reclaim_or_migrate_folios (Honggyu Kim, 01/14 20:52)
-[06]     re: (SeongJae Park, 01/16 12:32)
-[07]   [RFC PATCH 2/4] mm/damon: introduce DAMOS_DEMOTE action for demotion (Honggyu
-       Kim, 01/14 20:52)
+$ hkml thread 13
+[00] [RFC PATCH 0/4] DAMON based 2-tier memory management for CXL memory (Honggyu Kim, 01/14
+     20:52)
+[01]   re: (SeongJae Park, 01/16 12:31)
+[02]     re: (Honggyu Kim, 01/17 03:49)
+[03]       re: (SeongJae Park, 01/17 13:11)
+[04]         re: (SeongJae Park, 01/17 13:24)
+[05]         re: (Hyeongtak Ji, 01/18 02:40)
+[06]           re: (SeongJae Park, 01/18 09:17)
+[07]   [RFC PATCH 4/4] mm/damon: introduce DAMOS_PROMOTE action for promotion (Honggyu Kim,
+       01/14 20:52)
 [08]     re: (SeongJae Park, 01/16 12:32)
-[09]   [RFC PATCH 3/4] mm/memory-tiers: add next_promotion_node to find promotion
-       target (Honggyu Kim, 01/14 20:52)
-[10]     re: (SeongJae Park, 01/16 12:32)
-[11]   [RFC PATCH 4/4] mm/damon: introduce DAMOS_PROMOTE action for promotion
+[09]   [RFC PATCH 3/4] mm/memory-tiers: add next_promotion_node to find promotion target
        (Honggyu Kim, 01/14 20:52)
+[10]     re: (SeongJae Park, 01/16 12:32)
+[11]   [RFC PATCH 2/4] mm/damon: introduce DAMOS_DEMOTE action for demotion (Honggyu Kim,
+       01/14 20:52)
 [12]     re: (SeongJae Park, 01/16 12:32)
-[13]   re: (SeongJae Park, 01/16 12:31)
-[14]     re: (Honggyu Kim, 01/17 03:49)
-[15]       re: (SeongJae Park, 01/17 13:11)
-[16]         re: (SeongJae Park, 01/17 13:24)
-[17]         re: (Hyeongtak Ji, 01/18 02:40)
-[18]           re: (SeongJae Park, 01/18 09:17)
+[13]   [RFC PATCH 1/4] mm/vmscan: refactor reclaim_pages with reclaim_or_migrate_folios
+       (Honggyu Kim, 01/14 20:52)
+[14]     re: (SeongJae Park, 01/16 12:32)
 ```
+
+If the system is having [b4](https://b4.docs.kernel.org/), the command
+downloads whole mails of the thread and shows the list.  If the system is not
+having `b4`, only the mails of the thread in the previously generated list is
+listed.  Note that the mail identifiers are newly generated when `b4` is used.
 
 Reading Mails
 =============
 
 Users can open the content of the mail using `open` subcommand.  It receives
 the identifier of the mail to read.  The identifier should be that of the last
-generated `list` output.
+generated `list` or `thread` output.
 
 For example, below command shows the 18-th mail of the above list.
 
