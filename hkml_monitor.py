@@ -7,6 +7,7 @@ import time
 import json
 
 import _hkml
+import hkml_list
 import hkml_monitor_add
 
 class HkmlMonitorRequest:
@@ -99,8 +100,51 @@ def pr_w_time(text):
     print('[%s] %s' %
           (datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'), text))
 
-def do_monitor(request, ignore_mails_before):
-    pr_w_time('handle %s' % request)
+def all_keywords_in(keywords, text):
+    if keywords is None:
+        return True
+    for keyword in keywords:
+        if not keyword in text:
+            return False
+    return True
+
+
+def do_monitor(request, ignore_mails_before, last_monitored_mails):
+    mails_to_check = []
+    for mailing_list in request.mailing_lists:
+        if not mailing_list in last_monitored_mails:
+            last_monitored_mails[mailing_list] = None
+        last_mail = last_monitored_mails[mailing_list]
+        if last_mail is None:
+            since = ignore_mails_before
+            commits_range = None
+        else:
+            since = None
+            commits_range = '%s..' % last_mail.gitid
+
+        fetched_mails = hkml_list.get_mails(
+                source=mailing_list, fetch=True, manifest=None,
+                since=since, until=None, min_nr_mails=None, max_nr_mails=None,
+                commits_range=commits_range)
+        if len(fetched_mails) > 0:
+            last_monitored_mails[mailing_list] = fetched_mails[-1]
+        mails_to_check += fetched_mails
+
+    mails_to_noti = []
+    for mail in mails_to_check:
+        if not all_keywords_in(request.sender_keywords, mail.get_field('from')):
+            continue
+        if not all_keywords_in(request.subject_keywords, mail.subject):
+            continue
+        if not all_keywords_in(request.body_keywords, mail.get_field('body')):
+            continue
+        # todo: support thread_of_msgid
+        mails_to_noti.append(mail)
+
+    print('%d mails to noti' % len(mails_to_noti))
+    for mail in mails_to_noti:
+        print(mail.subject)
+    # todo: notification
 
 def get_monitor_stop_file_path():
     return os.path.join(_hkml.get_hkml_dir(), 'monitor_stop')
@@ -110,6 +154,7 @@ def start_monitoring(ignore_mails_before):
     monitor_interval_gcd = math.gcd(*[r.monitor_interval for r in requests])
 
     last_monitor_time = [None] * len(requests)
+    last_monitored_mails = {}
 
     while not os.path.isfile(get_monitor_stop_file_path()):
         for idx, req in enumerate(requests):
@@ -117,7 +162,8 @@ def start_monitoring(ignore_mails_before):
             now = time.time()
             if (last_monitor is None or
                 now - last_monitor >= req.monitor_interval):
-                do_monitor(req, ignore_mails_before)
+                do_monitor(req, ignore_mails_before, last_monitored_mails)
+
                 last_monitor_time[idx] = now
         pr_w_time('sleep %d seconds' % monitor_interval_gcd)
         time.sleep(monitor_interval_gcd)
