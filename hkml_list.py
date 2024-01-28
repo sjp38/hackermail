@@ -403,20 +403,29 @@ def get_mails_from_git(manifest, mail_list, since, until,
         base_cmd = ['git', '--git-dir=%s' % mdir, 'log',
                 '--date=iso-strict', '--pretty=%H %ad %s']
         if commits_range is not None:
-            base_cmd += commits_range
+            base_cmd += [commits_range]
 
         cmd = base_cmd + ['--since=%s' % since]
         if until:
             cmd += ['--until=%s' % until]
         if max_nr_mails is not None:
             cmd += ['-n', max_nr_mails]
-        lines = _hkml.cmd_lines_output(cmd)
+        try:
+            lines = _hkml.cmd_lines_output(cmd)
+        except:
+            # maybe commits_range is given, but the commit is not in this mdir
+            pass
 
         if min_nr_mails is not None and len(lines) < min_nr_mails:
             cmd = base_cmd + ['-n', '%d' % min_nr_mails]
             if until:
                 cmd += ['--until=%s' % until]
-            lines = _hkml.cmd_lines_output(cmd)
+            try:
+                lines = _hkml.cmd_lines_output(cmd)
+            except:
+                # maybe commits_range is given, but the commit is not in this
+                # mdir
+                pass
 
         for line in lines:
             mail = git_log_output_line_to_mail(line, mdir)
