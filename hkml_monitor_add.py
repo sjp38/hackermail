@@ -38,10 +38,10 @@ def set_argparser(parser):
             '--noti_files', nargs='+', metavar='<file>',
             help='file paths to write monitoring results notification')
     parser.add_argument(
-            '--noti_interval', metavar='<seconds>', type=float, default=60,
+            '--noti_interval', metavar='<seconds>', type=int, default=60,
             help='send notification once per this time interval')
     parser.add_argument(
-            '--monitor_interval', type=float, metavar='<seconds>', default=300,
+            '--monitor_interval', type=int, metavar='<seconds>', default=300,
             help='do monitoring once per this time interval')
     parser.add_argument(
             '--name', metavar='<name>',
