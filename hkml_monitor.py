@@ -158,7 +158,7 @@ def do_monitor(request, ignore_mails_before, last_monitored_mails):
     lines.append('')
     for mail in mails_to_noti:
         lines.append('%s (%s)' % (mail.subject, mail.get_field('from')))
-        lines.append(mail.get_field('message-id'))
+        lines.append('- msgid: %s' % mail.get_field('message-id'))
     noti_text = '\n'.join(lines)
     print(noti_text)
 
