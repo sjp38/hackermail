@@ -474,7 +474,7 @@ def set_argparser(parser=None):
     parser.description = 'list mails'
     _hkml.set_manifest_option(parser)
     # What mails to show
-    parser.add_argument('source', metavar='<source of mails>',
+    parser.add_argument('sources', metavar='<source of mails>', nargs='+',
             help='  '.join([
             'Source of mails to list.  Could be one of following types.',
             '1) Name of a mailing list in the manifest file.',
@@ -556,7 +556,8 @@ def main(args=None):
             writeback_list_output()
             return
     else:
-        invalidate_cached_outputs(args.source)
+        for source in args.sources:
+            invalidate_cached_outputs(source)
 
     if args.hot:
         args.ascend = False
@@ -579,9 +580,11 @@ def main(args=None):
 
     timestamp = time.time()
     runtime_profile = []
-    mails_to_show = get_mails(
-            args.source, args.fetch, args.manifest, args.since, args.until,
-            args.min_nr_mails, args.max_nr_mails)
+    mails_to_show = []
+    for source in args.sources:
+        mails_to_show += get_mails(
+                source, args.fetch, args.manifest, args.since, args.until,
+                args.min_nr_mails, args.max_nr_mails)
     runtime_profile = [['get_mails', time.time() - timestamp]]
     if args.max_nr_mails is not None:
         mails_to_show = mails_to_show[:args.max_nr_mails]
