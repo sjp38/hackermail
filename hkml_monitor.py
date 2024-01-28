@@ -40,9 +40,10 @@ class HkmlMonitorRequest:
 
     @classmethod
     def from_kvpairs(cls, kvpairs):
-        self = cls()
+        self = cls(*[None] * 10)
         for key, value in kvpairs.items():
             setattr(self, key, value)
+        return self
 
 # list of HkmlMonitorRequest objects
 requests = None
