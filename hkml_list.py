@@ -389,7 +389,7 @@ def git_log_output_line_to_mail(line, mdir):
     return _hkml.Mail.from_gitlog(fields[0], mdir, fields[1], subject)
 
 def get_mails_from_git(manifest, mail_list, since, until,
-                       min_nr_mails, max_nr_mails):
+                       min_nr_mails, max_nr_mails, commits_range=None):
     lines = []
     mdirs = _hkml.mail_list_data_paths(mail_list, manifest)
     if not mdirs:
@@ -402,6 +402,8 @@ def get_mails_from_git(manifest, mail_list, since, until,
             break
         base_cmd = ['git', '--git-dir=%s' % mdir, 'log',
                 '--date=iso-strict', '--pretty=%H %ad %s']
+        if commits_range is not None:
+            base_cmd += commits_range
 
         cmd = base_cmd + ['--since=%s' % since]
         if until:
@@ -423,7 +425,7 @@ def get_mails_from_git(manifest, mail_list, since, until,
     return mails
 
 def get_mails(source, fetch, manifest, since, until,
-              min_nr_mails, max_nr_mails):
+              min_nr_mails, max_nr_mails, commits_range=None):
     if source == 'clipboard':
         mails, err = _hkml.read_mails_from_clipboard()
         if err != None:
@@ -448,7 +450,7 @@ def get_mails(source, fetch, manifest, since, until,
         exit(1)
 
     mails = get_mails_from_git(manifest, source, since, until,
-                               min_nr_mails, max_nr_mails)
+                               min_nr_mails, max_nr_mails, commits_range)
     mails.reverse()
     return mails
 
@@ -584,7 +586,7 @@ def main(args=None):
     for source in args.sources:
         mails_to_show += get_mails(
                 source, args.fetch, args.manifest, args.since, args.until,
-                args.min_nr_mails, args.max_nr_mails)
+                args.min_nr_mails, args.max_nr_mails, None)
     runtime_profile = [['get_mails', time.time() - timestamp]]
     if args.max_nr_mails is not None:
         mails_to_show = mails_to_show[:args.max_nr_mails]
