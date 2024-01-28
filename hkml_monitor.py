@@ -32,6 +32,15 @@ class HkmlMonitorRequest:
         self.monitor_interval = monitor_interval
         self.name = name
 
+    def to_kvpairs(self):
+        return vars(self)
+
+    @classmethod
+    def from_kvpairs(cls, kvpairs):
+        self = cls()
+        for key, value in kvpairs.items():
+            setattr(self, key, value)
+
 def set_argparser(parser):
     _hkml.set_manifest_option(parser)
     subparsers = parser.add_subparsers(
