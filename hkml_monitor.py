@@ -94,10 +94,16 @@ def remove_requests(name=None, idx=None):
     write_requests_file()
     return True
 
+def pr_w_time(text):
+    '''Print text with timestamp'''
+    print('[%s] %s' %
+          (datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'), text))
+
 def do_monitor(request):
-    print(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-          'handle %s' % request)
-    pass
+    pr_w_time('handle %s' % request)
+
+def get_monitor_stop_file_path():
+    return os.path.join(_hkml.get_hkml_dir(), 'monitor_stop')
 
 def start_monitoring():
     requests = get_requests()
@@ -105,7 +111,7 @@ def start_monitoring():
 
     last_monitor_time = [None] * len(requests)
 
-    while True:
+    while not os.path.isfile(get_monitor_stop_file_path()):
         for idx, req in enumerate(requests):
             last_monitor = last_monitor_time[idx]
             now = time.time()
@@ -113,9 +119,14 @@ def start_monitoring():
                 now - last_monitor >= req.monitor_interval):
                 do_monitor(req)
                 last_monitor_time[idx] = now
-        print(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-              'sleep %d seconds' % monitor_interval_gcd)
+        pr_w_time('sleep %d seconds' % monitor_interval_gcd)
         time.sleep(monitor_interval_gcd)
+
+    os.remove(get_monitor_stop_file_path())
+
+def stop_monitoring():
+    with open(get_monitor_stop_file_path(), 'w') as f:
+        f.write('issued at %s' % datetime.datetime.now())
 
 def main(args):
     if args.action == 'add':
@@ -133,6 +144,8 @@ def main(args):
                 print('failed removing the request')
     elif args.action == 'start':
         start_monitoring()
+    elif args.action == 'stop':
+        stop_monitoring()
 
 def set_argparser(parser):
     _hkml.set_manifest_option(parser)
