@@ -1,14 +1,16 @@
 # SPDX-License-Identifier: GPL-2.0
 
 import datetime
+import json
 import math
 import os
+import tempfile
 import time
-import json
 
 import _hkml
 import hkml_list
 import hkml_monitor_add
+import hkml_write
 
 class HkmlMonitorRequest:
     mailing_lists = None
@@ -142,9 +144,42 @@ def do_monitor(request, ignore_mails_before, last_monitored_mails):
         mails_to_noti.append(mail)
 
     print('%d mails to noti' % len(mails_to_noti))
-    for mail in mails_to_noti:
-        print(mail.subject)
-    # todo: notification
+    if len(mails_to_noti) == 0:
+        return
+
+    noti_text_lines = [
+            'monitor result noti at %s' % datetime.datetime.now(),
+            'monitor request',
+            '%s' % json.dumps(request.to_kvpairs(), indent=4),
+            '',
+            ]
+
+    noti_text_lines += [mail.subject for mail in mails_to_noti]
+    noti_text = '\n'.join(noti_text_lines)
+    print(noti_text)
+
+    if request.noti_files is not None:
+        for file in request.noti_files:
+            lines = []
+            if os.path.isfile(file):
+                with open(file, 'r') as f:
+                    lines.append(f.read())
+            with open(file, 'w') as f:
+                f.write('\n'.join(lines + [noti_text]))
+
+    if request.noti_mails is not None:
+        mail_content = '\n'.join([
+                'Subject: hkml noti for monitor request %s' % request.name,
+                '',
+                noti_text])
+        fd, tmp_path = tempfile.mkstemp(prefix='hkml_monitor_')
+        with open(tmp_path, 'w') as f:
+            f.write(mail_content)
+
+        cmd = ['git', 'send-email', tmp_path, '--to'] + request.noti_mails
+        _hkml.cmd_str_output(['git', 'send-email', tmp_path,
+                              '--to'] + request.noti_mails)
+        os.remove(tmp_path)
 
 def get_monitor_stop_file_path():
     return os.path.join(_hkml.get_hkml_dir(), 'monitor_stop')
