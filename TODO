@@ -3,7 +3,6 @@
   - Mail source types extension
     - message id
     - lore link
-  - Support multiple sources
 - Tag mails (Store the information under .hkm directory in some format)
 - Implement 'monitor' command
   - Subscribe to a thread
