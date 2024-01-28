@@ -405,7 +405,10 @@ def get_mails_from_git(manifest, mail_list, since, until,
         if commits_range is not None:
             base_cmd += [commits_range]
 
-        cmd = base_cmd + ['--since=%s' % since]
+        cmd = base_cmd + []
+
+        if since is not None:
+            cmd += ['--since=%s' % since]
         if until:
             cmd += ['--until=%s' % until]
         if max_nr_mails is not None:
