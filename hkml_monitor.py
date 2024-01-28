@@ -94,14 +94,25 @@ def remove_requests(name=None, idx=None):
     write_requests_file()
     return True
 
-def do_monitor(requests):
+def do_monitor(request):
+    print(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+          'handle %s' % request)
     pass
 
 def start_monitoring():
     requests = get_requests()
     monitor_interval_gcd = math.gcd(*[r.monitor_interval for r in requests])
+
+    last_monitor_time = [None] * len(requests)
+
     while True:
-        do_monitor(requests)
+        for idx, req in enumerate(requests):
+            last_monitor = last_monitor_time[idx]
+            now = time.time()
+            if (last_monitor is None or
+                now - last_monitor >= req.monitor_interval):
+                do_monitor(req)
+                last_monitor_time[idx] = now
         print(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
               'sleep %d seconds' % monitor_interval_gcd)
         time.sleep(monitor_interval_gcd)
