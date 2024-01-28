@@ -36,6 +36,10 @@ Send a reply to the 5th mail:
 
     $ ./hkml reply 5
 
+Forward the 5th mail to others:
+
+    $ ./hkml forward 5
+
 Write and send a mail to the mailing list:
 
     $ ./hkml write --cc damon@lists.linux.dev
