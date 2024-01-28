@@ -105,7 +105,9 @@ def set_argparser(parser):
 
     parser_remove = subparsers.add_parser(
             'remove', help='remove a given monitoring request')
-    parser_remove.add_argument('req_index', type=int, metavar='<int>')
+    parser_remove.add_argument(
+            'request', metavar='<index or name>',
+            help='name or index of the request to remove')
 
     parser_status = subparsers.add_parser(
             'status', help='show monitoring status including requests')
@@ -119,9 +121,14 @@ def set_argparser(parser):
 def main(args):
     if args.action == 'add':
         hkml_monitor_add.main(args)
-    elif args.action == 'remove':
-        print('remove monitor query')
     elif args.action == 'status':
         for idx, request in enumerate(get_requests()):
             print('request %d' % idx)
             print(json.dumps(request.to_kvpairs(), indent=4, sort_keys=True))
+    elif args.action == 'remove':
+        if args.request.isdigit():
+            if remove_requests(idx=int(args.request)) is False:
+                print('failed removing the request')
+        else:
+            if remove_requests(name=args.request) is False:
+                print('failed removing the request')
