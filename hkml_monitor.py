@@ -41,6 +41,37 @@ class HkmlMonitorRequest:
         for key, value in kvpairs.items():
             setattr(self, key, value)
 
+# list of HkmlMonitorRequest objects
+requests = None
+
+def get_requests():
+    global requests
+
+    if requests is None:
+        requests = []
+
+    return requests
+
+def add_requests(request):
+    requests = get_requests()
+    requests.append(request)
+
+def remove_requests(name=None, idx=None):
+    '''Returns whether removal has success'''
+    requests = get_requests()
+    if name is not None:
+        found = False
+        for idx, request in enumerate(requests):
+            if request.name == name:
+                found = True
+                break
+
+    if idx is None and found is False:
+        return False
+    if idx >= len(idx):
+        return False
+    del requests[idx]
+
 def set_argparser(parser):
     _hkml.set_manifest_option(parser)
     subparsers = parser.add_subparsers(
