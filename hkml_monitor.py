@@ -8,11 +8,29 @@ class HkmlMonitorRequest:
     sender_keywords = None
     subject_keywords = None
     body_keywords = None
-    thread_of = None
+    thread_of_msgid = None
 
-    notify_send_mail = None
-    notify_write_file = None
-    notify_frequency = None
+    noti_mails = None
+    noti_files = None
+    noti_interval = None
+
+    monitor_interval = None
+
+    name = None
+
+    def __init__(self, mailing_lists, sender_keywords, subject_keywords,
+                 body_keywords, thread_of_msgid, noti_mails, noti_files,
+                 noti_interval, monitor_interval, name):
+        self.mailing_lists = mailing_lists
+        self.sender_keywords = sender_keywords
+        self.subject_keywords = subject_keywords
+        self.body_keywords = body_keywords
+        self.thread_of_msgid = thread_of_msgid
+        self.noti_mails = noti_mails
+        self.noti_files = noti_files
+        self.noti_interval = noti_interval
+        self.monitor_interval = monitor_interval
+        self.name = name
 
 def set_argparser(parser):
     _hkml.set_manifest_option(parser)
