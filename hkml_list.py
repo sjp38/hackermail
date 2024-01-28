@@ -451,7 +451,7 @@ def get_mails(source, fetch, manifest, since, until,
         return mails
 
     if fetch:
-        hkml_fetch.fetch_mail(manifest, [source], False, 1)
+        hkml_fetch.fetch_mail(manifest, [source], True, 1)
 
     manifest = _hkml.get_manifest(manifest)
     if not manifest:
