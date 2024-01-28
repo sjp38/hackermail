@@ -12,6 +12,7 @@ import hkml_list
 import hkml_thread
 import hkml_open
 import hkml_reply
+import hkml_forward
 import hkml_send
 import hkml_write
 import hkml_export
@@ -55,6 +56,9 @@ hkml_open.set_argparser(parser_open)
 parser_reply = subparsers.add_parser('reply', help = 'reply to a mail')
 hkml_reply.set_argparser(parser_reply)
 
+parser_forward = subparsers.add_parser('forward', help = 'forward a mail')
+hkml_forward.set_argparser(parser_forward)
+
 parser_fmtml = subparsers.add_parser('write', help = 'write a mail')
 hkml_write.set_argparser(parser_fmtml)
 
@@ -93,6 +97,8 @@ elif args.command == 'open':
     hkml_open.main(args)
 elif args.command == 'reply':
     hkml_reply.main(args)
+elif args.command == 'forward':
+    hkml_forward.main(args)
 elif args.command == 'write':
     hkml_write.main(args)
 elif args.command == 'send':
