@@ -12,4 +12,3 @@
   - monitor add/remove: Add/remove monitoring queries
   - monitor start/stop: Start/stop monitoring deamon
   - monitor status: As name says.
-- Implement 'forward' command
