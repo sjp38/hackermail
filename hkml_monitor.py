@@ -99,13 +99,13 @@ def pr_w_time(text):
     print('[%s] %s' %
           (datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'), text))
 
-def do_monitor(request):
+def do_monitor(request, ignore_mails_before):
     pr_w_time('handle %s' % request)
 
 def get_monitor_stop_file_path():
     return os.path.join(_hkml.get_hkml_dir(), 'monitor_stop')
 
-def start_monitoring():
+def start_monitoring(ignore_mails_before):
     requests = get_requests()
     monitor_interval_gcd = math.gcd(*[r.monitor_interval for r in requests])
 
@@ -117,7 +117,7 @@ def start_monitoring():
             now = time.time()
             if (last_monitor is None or
                 now - last_monitor >= req.monitor_interval):
-                do_monitor(req)
+                do_monitor(req, ignore_mails_before)
                 last_monitor_time[idx] = now
         pr_w_time('sleep %d seconds' % monitor_interval_gcd)
         time.sleep(monitor_interval_gcd)
@@ -143,7 +143,12 @@ def main(args):
             if remove_requests(name=args.request) is False:
                 print('failed removing the request')
     elif args.action == 'start':
-        start_monitoring()
+        if args.ignore_mails_before is None:
+            ignore_mails_before = datetime.datetime.now()
+        else:
+            ignore_mails_before = datetime.datetime.strptime(
+                    args.ignore_mails_before, '%Y-%m-%d %H:%M:%S')
+        start_monitoring(ignore_mails_before)
     elif args.action == 'stop':
         stop_monitoring()
 
@@ -166,6 +171,9 @@ def set_argparser(parser):
 
     parser_start = subparsers.add_parser(
             'start', help='start monitoring')
+    parser_start.add_argument(
+            '--ignore_mails_before', metavar='<%Y-%m-%d %H:%M:%S>',
+            help='Ignore monitoring target mails that sent before this time')
 
     parser_stop = subparsers.add_parser(
             'stop', help='stop monitoring')
