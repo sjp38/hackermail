@@ -95,6 +95,21 @@ def remove_requests(name=None, idx=None):
     write_requests_file()
     return True
 
+def main(args):
+    if args.action == 'add':
+        hkml_monitor_add.main(args)
+    elif args.action == 'status':
+        for idx, request in enumerate(get_requests()):
+            print('request %d' % idx)
+            print(json.dumps(request.to_kvpairs(), indent=4, sort_keys=True))
+    elif args.action == 'remove':
+        if args.request.isdigit():
+            if remove_requests(idx=int(args.request)) is False:
+                print('failed removing the request')
+        else:
+            if remove_requests(name=args.request) is False:
+                print('failed removing the request')
+
 def set_argparser(parser):
     _hkml.set_manifest_option(parser)
     subparsers = parser.add_subparsers(
@@ -117,18 +132,3 @@ def set_argparser(parser):
 
     parser_stop = subparsers.add_parser(
             'stop', help='stop monitoring')
-
-def main(args):
-    if args.action == 'add':
-        hkml_monitor_add.main(args)
-    elif args.action == 'status':
-        for idx, request in enumerate(get_requests()):
-            print('request %d' % idx)
-            print(json.dumps(request.to_kvpairs(), indent=4, sort_keys=True))
-    elif args.action == 'remove':
-        if args.request.isdigit():
-            if remove_requests(idx=int(args.request)) is False:
-                print('failed removing the request')
-        else:
-            if remove_requests(name=args.request) is False:
-                print('failed removing the request')
