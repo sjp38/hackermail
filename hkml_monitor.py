@@ -18,7 +18,6 @@ class HkmlMonitorRequest:
 
     noti_mails = None
     noti_files = None
-    noti_interval = None
 
     monitor_interval = None
 
@@ -26,7 +25,7 @@ class HkmlMonitorRequest:
 
     def __init__(self, mailing_lists, sender_keywords, subject_keywords,
                  body_keywords, thread_of_msgid, noti_mails, noti_files,
-                 noti_interval, monitor_interval, name):
+                 monitor_interval, name):
         self.mailing_lists = mailing_lists
         self.sender_keywords = sender_keywords
         self.subject_keywords = subject_keywords
@@ -34,7 +33,6 @@ class HkmlMonitorRequest:
         self.thread_of_msgid = thread_of_msgid
         self.noti_mails = noti_mails
         self.noti_files = noti_files
-        self.noti_interval = noti_interval
         self.monitor_interval = monitor_interval
         self.name = name
 
@@ -43,7 +41,7 @@ class HkmlMonitorRequest:
 
     @classmethod
     def from_kvpairs(cls, kvpairs):
-        self = cls(*[None] * 10)
+        self = cls(*[None] * 9)
         for key, value in kvpairs.items():
             setattr(self, key, value)
         return self

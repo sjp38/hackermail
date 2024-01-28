@@ -13,7 +13,7 @@ def main(args):
             hkml_monitor.HkmlMonitorRequest(
                 args.mailing_lists, args.sender, args.subject, args.body,
                 thread_of_msgid, args.noti_mails, args.noti_files,
-                args.noti_interval, args.monitor_interval, args.name))
+                args.monitor_interval, args.name))
 
 def set_argparser(parser):
     parser.add_argument(
@@ -37,9 +37,6 @@ def set_argparser(parser):
     parser.add_argument(
             '--noti_files', nargs='+', metavar='<file>',
             help='file paths to write monitoring results notification')
-    parser.add_argument(
-            '--noti_interval', metavar='<seconds>', type=int, default=60,
-            help='send notification once per this time interval')
     parser.add_argument(
             '--monitor_interval', type=int, metavar='<seconds>', default=300,
             help='do monitoring once per this time interval')
