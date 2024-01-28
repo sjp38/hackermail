@@ -398,6 +398,7 @@ def get_mails_from_git(manifest, mail_list, since, until,
 
     mails = []
     for mdir in mdirs:
+        lines = []
         if not os.path.isdir(mdir):
             break
         base_cmd = ['git', '--git-dir=%s' % mdir, 'log',
