@@ -147,15 +147,19 @@ def do_monitor(request, ignore_mails_before, last_monitored_mails):
     if len(mails_to_noti) == 0:
         return
 
-    noti_text_lines = [
+    lines = [
             'monitor result noti at %s' % datetime.datetime.now(),
             'monitor request',
             '%s' % json.dumps(request.to_kvpairs(), indent=4),
             '',
             ]
 
-    noti_text_lines += [mail.subject for mail in mails_to_noti]
-    noti_text = '\n'.join(noti_text_lines)
+    lines.append('%d mails' % len(mails_to_noti))
+    lines.append('')
+    for mail in mails_to_noti:
+        lines.append('%s (%s)' % (mail.subject, mail.get_field('from')))
+        lines.append(mail.get_field('message-id'))
+    noti_text = '\n'.join(lines)
     print(noti_text)
 
     if request.noti_files is not None:
@@ -169,7 +173,7 @@ def do_monitor(request, ignore_mails_before, last_monitored_mails):
 
     if request.noti_mails is not None:
         mail_content = '\n'.join([
-                'Subject: hkml noti for monitor request %s' % request.name,
+                'Subject: [hkml-noti] for monitor request %s' % request.name,
                 '',
                 noti_text])
         fd, tmp_path = tempfile.mkstemp(prefix='hkml_monitor_')
