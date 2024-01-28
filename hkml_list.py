@@ -288,8 +288,9 @@ def format_stat(mails_to_show):
     lines.append('# %d mails, %d threads, %d new threads' %
             (len(mails_to_show), nr_threads, nr_new_threads))
     lines.append('# %d patches, %d series' % (nr_patches, nr_patchsets))
-    lines.append('# oldest: %s' % oldest.date)
-    lines.append('# newest: %s' % latest.date)
+    if oldest is not None:
+        lines.append('# oldest: %s' % oldest.date)
+        lines.append('# newest: %s' % latest.date)
     return lines
 
 def mails_to_str(mails_to_show,
