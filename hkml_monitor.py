@@ -83,15 +83,13 @@ def remove_requests(name=None, idx=None):
     requests = get_requests()
     if name is not None:
         found = False
-        for idx_, request in enumerate(requests):
+        for idx, request in enumerate(requests):
             if request.name == name:
                 found = True
                 break
+        if found is False:
+            return False
 
-    if idx is None and found is False:
-        return False
-    else:
-        idx = idx_
     if idx >= len(requests):
         return False
     del requests[idx]
