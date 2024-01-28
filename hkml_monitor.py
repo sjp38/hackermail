@@ -1,6 +1,9 @@
 # SPDX-License-Identifier: GPL-2.0
 
+import datetime
+import math
 import os
+import time
 import json
 
 import _hkml
@@ -95,6 +98,18 @@ def remove_requests(name=None, idx=None):
     write_requests_file()
     return True
 
+def do_monitor(requests):
+    pass
+
+def start_monitoring():
+    requests = get_requests()
+    monitor_interval_gcd = math.gcd(*[r.monitor_interval for r in requests])
+    while True:
+        do_monitor(requests)
+        print(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+              'sleep %d seconds' % monitor_interval_gcd)
+        time.sleep(monitor_interval_gcd)
+
 def main(args):
     if args.action == 'add':
         hkml_monitor_add.main(args)
@@ -109,6 +124,8 @@ def main(args):
         else:
             if remove_requests(name=args.request) is False:
                 print('failed removing the request')
+    elif args.action == 'start':
+        start_monitoring()
 
 def set_argparser(parser):
     _hkml.set_manifest_option(parser)
