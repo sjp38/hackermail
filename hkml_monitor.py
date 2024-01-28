@@ -1,5 +1,8 @@
 # SPDX-License-Identifier: GPL-2.0
 
+import os
+import json
+
 import _hkml
 import hkml_monitor_add
 
@@ -44,17 +47,32 @@ class HkmlMonitorRequest:
 # list of HkmlMonitorRequest objects
 requests = None
 
+def get_requests_file_path():
+    return os.path.join(_hkml.get_hkml_dir(), 'monitor_requests')
+
 def get_requests():
     global requests
 
     if requests is None:
         requests = []
+        requests_file_path = get_requests_file_path()
+        if os.path.isfile(requests_file_path):
+            with open(requests_file_path, 'r') as f:
+                requests = [HkmlMonitorRequest.from_kvpairs(kvp)
+                            for kvp in json.load(f)]
 
     return requests
+
+def write_requests_file():
+    requests = get_requests()
+    requests_file_path = get_requests_file_path()
+    with open(requests_file_path, 'w') as f:
+        json.dump([r.to_kvpairs() for r in requests], f, indent=4)
 
 def add_requests(request):
     requests = get_requests()
     requests.append(request)
+    write_requests_file()
 
 def remove_requests(name=None, idx=None):
     '''Returns whether removal has success'''
@@ -71,6 +89,8 @@ def remove_requests(name=None, idx=None):
     if idx >= len(idx):
         return False
     del requests[idx]
+    write_requests_file()
+    return True
 
 def set_argparser(parser):
     _hkml.set_manifest_option(parser)
