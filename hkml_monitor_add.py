@@ -1,7 +1,19 @@
 # SPDX-License-Identifier: GPL-2.0
 
+import hkml_monitor
+
 def main(args):
-    print('add called with %s' % args)
+    if args.thread_of is not None:
+        mail = hkml_list.get_mail(args.thread_of)
+        thread_of_msgid = mail.get_field('message-id')
+    else:
+        thread_of_msgid = None
+
+    hkml_monitor.add_requests(
+            hkml_monitor.HkmlMonitorRequest(
+                args.mailing_lists, args.sender, args.subject, args.body,
+                thread_of_msgid, args.noti_mails, args.noti_files,
+                args.noti_interval, args.monitor_interval, args.name))
 
 def set_argparser(parser):
     parser.add_argument(
