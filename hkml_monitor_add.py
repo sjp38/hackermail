@@ -17,13 +17,13 @@ def set_argparser(parser):
             '--body', nargs='+', metavar='<keyword>',
             help='monitoring target keywords in bodies of mails')
     parser.add_argument(
-            '--thread_of', metavar='<mail id>',
+            '--thread_of', metavar='<mail id>', type=int,
             help='any mail in monitoring target threads')
     parser.add_argument(
-            '--noti_mail', nargs='+', metavar='<email address>',
+            '--noti_mails', nargs='+', metavar='<email address>',
             help='mail addresses to send monitoring results notification')
     parser.add_argument(
-            '--noti_file', nargs='+', metavar='<file>',
+            '--noti_files', nargs='+', metavar='<file>',
             help='file paths to write monitoring results notification')
     parser.add_argument(
             '--noti_interval', metavar='<seconds>', type=float,
