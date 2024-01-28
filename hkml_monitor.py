@@ -119,3 +119,7 @@ def main(args):
         hkml_monitor_add.main(args)
     elif args.action == 'remove':
         print('remove monitor query')
+    elif args.action == 'status':
+        for idx, request in enumerate(get_requests()):
+            print('request %d' % idx)
+            print(json.dumps(request.to_kvpairs(), indent=4, sort_keys=True))
