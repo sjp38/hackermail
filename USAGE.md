@@ -258,6 +258,17 @@ The draft message is at /tmp/hkml_reply_py9o_yec
 Note that `hkml` send mail using `git send-email`.  Hence `git send-email`
 should be configured correctly on the user's system.
 
+Forwarding
+==========
+
+Users can forward a specific mail on the last generated list, using 'forward'
+sub-command.  Similar to `thread` and `open`, it receives the identifier of the
+mail to reply for, on the last generated list.  Users can specify subject,
+recipients, Cc list, etc via command line.  Then `forward` sub-command formats
+the basic mail, and let the user additionally make more edits interactively and
+finally send it, in a way pretty similar to that of `reply`.  Again, `git
+send-email` setup is required.
+
 Writing New Mails
 =================
 
