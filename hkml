@@ -79,7 +79,8 @@ hkml_cache.set_argparser(parser_cache)
 
 args = parser.parse_args()
 
-_hkml.set_hkml_dir(args.hkml_dir)
+if not args.command == 'init':
+    _hkml.set_hkml_dir(args.hkml_dir)
 
 if not args.command:
     parser.print_help()
