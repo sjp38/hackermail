@@ -193,7 +193,9 @@ def start_monitoring(ignore_mails_before):
     monitor_interval_gcd = math.gcd(*[r.monitor_interval for r in requests])
 
     last_monitor_time = [None] * len(requests)
-    last_monitored_mails = {}
+    last_monitored_mails = []
+    for i in range(len(requests)):
+        last_monitored_mails.append({})
 
     while not os.path.isfile(get_monitor_stop_file_path()):
         for idx, req in enumerate(requests):
@@ -201,7 +203,7 @@ def start_monitoring(ignore_mails_before):
             now = time.time()
             if (last_monitor is None or
                 now - last_monitor >= req.monitor_interval):
-                do_monitor(req, ignore_mails_before, last_monitored_mails)
+                do_monitor(req, ignore_mails_before, last_monitored_mails[idx])
 
                 last_monitor_time[idx] = now
         pr_w_time('sleep %d seconds' % monitor_interval_gcd)
