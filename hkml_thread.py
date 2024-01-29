@@ -6,6 +6,7 @@ import subprocess
 import tempfile
 
 import _hkml
+import hkml_cache
 import hkml_list
 import hkml_open
 
@@ -56,6 +57,7 @@ def main(args=None):
             [], False)
 
     if use_b4:
+        hkml_cache.writeback_mails()
         hkml_list.cache_list_output('thread_output', to_show)
     hkml_open.pr_with_pager_if_needed(to_show)
 
