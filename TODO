@@ -3,6 +3,9 @@
   - Mail source types extension
     - message id
     - lore link
+  - Make moving between list easier
+    - list cached?
+- Make 'open next/prev' shows current index, for easier context keeping
 - Tag mails (Store the information under .hkm directory in some format)
 - Implement 'monitor' command
   - Subscribe to a thread
