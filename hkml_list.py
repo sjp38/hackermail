@@ -451,12 +451,14 @@ def get_mails(source, fetch, manifest, since, until,
             exit(1)
         if max_nr_mails is not None:
             mails = mails[:max_nr_mails]
+        mails.sort(key=lambda mail: mail.date)
         return mails
 
     if os.path.isfile(source):
         mails = _hkml.read_mbox_file(source)
         if max_nr_mails is not None:
             mails = mails[:max_nr_mails]
+        mails.sort(key=lambda mail: mail.date)
         return mails
 
     if fetch:
