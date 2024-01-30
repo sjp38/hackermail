@@ -22,6 +22,16 @@ def set_argparser(parser=None):
             '--dont_use_b4', action='store_true',
             help='don\'t use b4 but only previous list\'s output')
 
+def get_thread_mails_use_b4(msgid):
+    fd, tmp_path = tempfile.mkstemp(prefix='hkml_thread_')
+    if subprocess.call(['b4', 'mbox', '--mbox-name', tmp_path, msgid],
+                       stderr=subprocess.DEVNULL) != 0:
+        return None, 'b4 mbox failed'
+    mails = hkml_list.get_mails(
+            tmp_path, False, None, None, None, None, None)
+    os.remove(tmp_path)
+    return mails, None
+
 def main(args=None):
     if not args:
         parser = argparse.ArgumentParser()
@@ -38,14 +48,11 @@ def main(args=None):
             exit(1)
         msgid = mail.get_field('message-id')
 
-        fd, tmp_path = tempfile.mkstemp(prefix='hkml_thread_')
-        if subprocess.call(['b4', 'mbox', '--mbox-name', tmp_path, msgid],
-                           stderr=subprocess.DEVNULL) != 0:
-            print('b4 mbox failed')
+        mails_to_show, err = get_thread_mails_use_b4(msgid)
+        if err is not None:
+            print(err)
             exit(1)
-        mails_to_show = hkml_list.get_mails(
-                tmp_path, False, None, None, None, None, None)
-        os.remove(tmp_path)
+
         args.mail_idx = None
     else:
         mails_to_show = hkml_list.last_listed_mails()
