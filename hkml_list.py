@@ -248,7 +248,7 @@ def keywords_in(keywords, text):
 
 def should_filter_out(mail, ls_range, new_threads_only,
                       msgid, author_keywords, subject_keywords, body_keywords):
-    if not mail.pridx in ls_range:
+    if ls_range is not None and not mail.pridx:
         return True
     if new_threads_only and mail.get_field('in-reply-to'):
         return True
