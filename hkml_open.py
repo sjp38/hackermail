@@ -73,11 +73,13 @@ def main(args=None):
         set_Argparser(parser)
         args = parser.parse_args()
 
+    noti_current_index = True
     if args.mail_idx == 'prev':
         args.mail_idx = last_open_mail_idx() - 1
     elif args.mail_idx == 'next':
         args.mail_idx = last_open_mail_idx() + 1
     else:
+        noti_current_index = False
         args.mail_idx = int(args.mail_idx)
 
     mail = hkml_list.get_mail(args.mail_idx)
@@ -94,6 +96,9 @@ def main(args=None):
         print(mail_str)
         return
     pr_with_pager_if_needed(mail_str)
+
+    if noti_current_index is True:
+        print('# you were reading %d-th index' % args.mail_idx)
 
 if __name__ == 'main__':
     main()
