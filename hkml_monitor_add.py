@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: GPL-2.0
 
+import hkml_list
 import hkml_monitor
 
 def main(args):

@@ -10,6 +10,7 @@ import time
 import _hkml
 import hkml_list
 import hkml_monitor_add
+import hkml_thread
 import hkml_write
 
 class HkmlMonitorRequest:
@@ -102,6 +103,12 @@ def pr_w_time(text):
     print('[%s] %s' %
           (datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'), text))
 
+def mail_in(mail, mails):
+    for m in mails:
+        if m.get_field('message-id') == mail.get_field('message-id'):
+            return True
+    return False
+
 def do_monitor(request, ignore_mails_before, last_monitored_mails):
     mails_to_check = []
     for mailing_list in request.mailing_lists:
@@ -124,12 +131,22 @@ def do_monitor(request, ignore_mails_before, last_monitored_mails):
         mails_to_check += fetched_mails
 
     mails_to_noti = []
+
+    thread_msgid = request.thread_of_msgid
+    if thread_msgid is not None:
+        thread_mails, err = hkml_thread.get_thread_mails_use_b4(thread_msgid)
+
     for mail in mails_to_check:
         if hkml_list.should_filter_out(
                 mail, None, None, None,
                 request.sender_keywords, request.subject_keywords,
                 request.body_keywords):
             continue
+
+        if thread_msgid is not None:
+            if not mail_in(mail, thread_mails):
+                continue
+
         # todo: support thread_of_msgid
         mails_to_noti.append(mail)
 
