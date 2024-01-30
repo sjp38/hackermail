@@ -234,7 +234,7 @@ Replying
 
 Users can reply to specific mail on the last generated list, using `reply`
 sub-command.  Similar to `thread` and `open`, it receives the identifier of the
-mail to reply for, on the last generated list.
+mail to reply for, on the last generated `list` or `thread` output.
 
 The command formats reply mail for the given mail and open VIM for the user's
 interactive writing of the content.  Once the user finishes writing it and
@@ -263,11 +263,11 @@ Forwarding
 
 Users can forward a specific mail on the last generated list, using 'forward'
 sub-command.  Similar to `thread` and `open`, it receives the identifier of the
-mail to reply for, on the last generated list.  Users can specify subject,
-recipients, Cc list, etc via command line.  Then `forward` sub-command formats
-the basic mail, and let the user additionally make more edits interactively and
-finally send it, in a way pretty similar to that of `reply`.  Again, `git
-send-email` setup is required.
+mail to forward, on the last generated `list` or `thread` output.  Users can
+specify subject, recipients, Cc list, etc via command line.  Then `forward`
+sub-command formats the basic mail, and let the user additionally make more
+edits interactively and finally send it, in a way pretty similar to that of
+`reply`.  Again, `git send-email` setup is required.
 
 Writing New Mails
 =================
