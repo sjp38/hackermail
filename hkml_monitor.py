@@ -102,15 +102,6 @@ def pr_w_time(text):
     print('[%s] %s' %
           (datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'), text))
 
-def all_keywords_in(keywords, text):
-    if keywords is None:
-        return True
-    for keyword in keywords:
-        if not keyword in text:
-            return False
-    return True
-
-
 def do_monitor(request, ignore_mails_before, last_monitored_mails):
     mails_to_check = []
     for mailing_list in request.mailing_lists:
