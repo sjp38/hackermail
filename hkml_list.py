@@ -27,17 +27,21 @@ def get_last_mail_idx_key_cache():
     last_key = sorted(cache.keys(), key=lambda x: cache[x]['date'])[-1]
     return cache[last_key]['index_to_cache_key']
 
-def get_mail_cache_key(idx):
+def get_mail_cache_key(idx, no_thread_output):
     cache = get_list_output_cache()
-    last_key = sorted(cache.keys(), key=lambda x: cache[x]['date'])[-1]
+    sorted_keys = sorted(cache.keys(), key=lambda x: cache[x]['date'])
+    if no_thread_output and sorted_keys[-1] == 'thread_output':
+        last_key = sorted_keys[-2]
+    else:
+        last_key = sorted_keys[-1]
     idx_to_keys = cache[last_key]['index_to_cache_key']
     idx_str = '%d' % idx
     if not idx_str in idx_to_keys:
         return None
     return idx_to_keys[idx_str]
 
-def get_mail(idx):
-    return hkml_cache.get_mail(key=get_mail_cache_key(idx))
+def get_mail(idx, no_thread_output=False):
+    return hkml_cache.get_mail(key=get_mail_cache_key(idx, no_thread_output))
 
 def set_mail_cache_key(mail):
     idx = mail.pridx
@@ -59,6 +63,7 @@ def args_to_list_output_key(args):
     dict_ = copy.deepcopy(args.__dict__)
     dict_['fetch'] = False
     dict_['stdout'] = False
+    del dict_['quiet']
 
     return json.dumps(dict_, sort_keys=True)
 
@@ -553,6 +558,9 @@ def set_argparser(parser=None):
             help='print to stdout instead of using the pager')
     parser.add_argument('--runtime_profile', action='store_true',
             help='print runtime profiling result')
+    parser.add_argument(
+            '--quiet', action='store_true',
+            help='don\'t display the list but only generate the list')
 
 def main(args=None):
     if not args:
@@ -564,10 +572,11 @@ def main(args=None):
     if args.fetch == False:
         to_show = get_cached_list_output(list_output_cache_key)
         if to_show is not None:
-            if args.stdout:
-                print(to_show)
-            else:
-                hkml_open.pr_with_pager_if_needed(to_show)
+            if args.quiet is False:
+                if args.stdout:
+                    print(to_show)
+                else:
+                    hkml_open.pr_with_pager_if_needed(to_show)
             writeback_list_output()
             return
     else:
@@ -614,6 +623,9 @@ def main(args=None):
             args.runtime_profile)
     hkml_cache.writeback_mails()
     cache_list_output(list_output_cache_key, to_show)
+
+    if args.quiet:
+        return
 
     if args.stdout:
         print(to_show)
