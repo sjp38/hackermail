@@ -242,7 +242,7 @@ def keywords_in(keywords, text):
     if keywords is None:
         return True
     for keyword in keywords:
-        if not keyword in text:
+        if keyword is not None and not keyword in text:
             return False
     return True
 
