@@ -15,9 +15,8 @@ import hkml_write
 
 class HkmlMonitorRequest:
     mailing_lists = None
-    sender_keywords = None
-    subject_keywords = None
-    body_keywords = None
+    mail_list_filter = None
+
     thread_of_msgid = None
 
     noti_mails = None
@@ -27,13 +26,11 @@ class HkmlMonitorRequest:
 
     name = None
 
-    def __init__(self, mailing_lists, sender_keywords, subject_keywords,
-                 body_keywords, thread_of_msgid, noti_mails, noti_files,
+    def __init__(self, mailing_lists, mail_list_filter,
+                 thread_of_msgid, noti_mails, noti_files,
                  monitor_interval, name):
         self.mailing_lists = mailing_lists
-        self.sender_keywords = sender_keywords
-        self.subject_keywords = subject_keywords
-        self.body_keywords = body_keywords
+        self.mail_list_filter = mail_list_filter
         self.thread_of_msgid = thread_of_msgid
         self.noti_mails = noti_mails
         self.noti_files = noti_files
@@ -41,13 +38,21 @@ class HkmlMonitorRequest:
         self.name = name
 
     def to_kvpairs(self):
-        return vars(self)
+        kvpairs = vars(self)
+        kvpairs['mail_list_filter'] = vars(self.mail_list_filter)
+        return kvpairs
 
     @classmethod
     def from_kvpairs(cls, kvpairs):
-        self = cls(*[None] * 9)
+        self = cls(*[None] * 7)
         for key, value in kvpairs.items():
+            if key == 'mail_list_filter':
+                continue
             setattr(self, key, value)
+
+        self.mail_list_filter = hkml_list.MailListFilter(None)
+        for key, value in kvpairs['mail_list_filter'].items():
+            setattr(self.mail_list_filter, key, value)
         return self
 
 # list of HkmlMonitorRequest objects
@@ -137,10 +142,7 @@ def do_monitor(request, ignore_mails_before, last_monitored_mails):
         thread_mails, err = hkml_thread.get_thread_mails_use_b4(thread_msgid)
 
     for mail in mails_to_check:
-        if hkml_list.should_filter_out(
-                mail, None, None,
-                request.sender_keywords, request.subject_keywords,
-                request.body_keywords):
+        if request.mail_list_filter.should_filter_out(mail):
             continue
 
         if thread_msgid is not None:

@@ -12,7 +12,8 @@ def main(args):
 
     hkml_monitor.add_requests(
             hkml_monitor.HkmlMonitorRequest(
-                args.mailing_lists, args.sender, args.subject, args.body,
+                args.mailing_lists,
+                hkml_list.MailListFilter(args),
                 thread_of_msgid, args.noti_mails, args.noti_files,
                 args.monitor_interval, args.name))
 
@@ -20,15 +21,9 @@ def set_argparser(parser):
     parser.add_argument(
             'mailing_lists', nargs='+', metavar='<mailing list>',
             help='monitoring target mailing lists')
-    parser.add_argument(
-            '--sender', nargs='+', metavar='<keyword>',
-            help='monitoring target keywords in senders of mails')
-    parser.add_argument(
-            '--subject', nargs='+', metavar='<keyword>',
-            help='monitoring target keywords in subjects of mails')
-    parser.add_argument(
-            '--body', nargs='+', metavar='<keyword>',
-            help='monitoring target keywords in bodies of mails')
+
+    hkml_list.add_mails_filter_arguments(parser)
+
     parser.add_argument(
             '--thread_of', metavar='<mail id>', type=int,
             help='any mail in monitoring target threads')
