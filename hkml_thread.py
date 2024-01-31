@@ -59,9 +59,12 @@ def main(args=None):
 
     nr_cols_in_line = int(os.get_terminal_size().columns * 9 / 10)
     to_show = hkml_list.mails_to_str(
-            mails_to_show, None, False,
-            args.mail_idx, False, ['first_date'], None, False,
-            args.lore, nr_cols_in_line, [], False)
+            mails_to_show, mails_filter=None, show_stat=False,
+            show_thread_of=args.mail_idx, descend=False,
+            sort_threads_by=['first_date'], collapse_threads=None,
+            open_mail_via_lore=False,
+            show_lore_link=args.lore, nr_cols=nr_cols_in_line,
+            runtime_profile=[], show_runtime_profile=False)
 
     if use_b4:
         hkml_cache.writeback_mails()
