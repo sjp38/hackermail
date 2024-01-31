@@ -260,6 +260,8 @@ class MailListFilter:
     body_keywords = None
 
     def __init__(self, args):
+        if args is None:
+            return
         self.new_threads_only = args.new
         self.from_keywords = args.from_keywords
         self.from_to_keywords = args.from_to_keywords
