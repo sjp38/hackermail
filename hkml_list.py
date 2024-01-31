@@ -251,6 +251,43 @@ def keywords_in(keywords, text):
             return False
     return True
 
+class MailListFilter:
+    new_threads_only = None
+    from_keywords = None
+    from_to_keywords = None
+    from_to_cc_keywords = None
+    subject_keywords = None
+    body_keywords = None
+
+    def __init__(self, args):
+        self.new_threads_only = args.new_threads_only
+        self.from_keywords = args.from_keywords
+        self.from_to_keywords = args.from_to_keywords
+        self.from_to_cc_keywords = args.from_to_cc_keywords
+        self.subject_keywords = args.subject_keywords
+        self.body_keywords = args.body_keywords
+
+    def should_filter_out(self, mail):
+        if self.new_threads_only and mail.get_filed('in-reply-to'):
+            return True
+        if not keywords_in(self.from_keywords, mail.get_field('from')):
+            return True
+        if not keywords_in(
+                self.from_to_keywords,
+                '%s %s' % (mail.get_field('from'), mail.get_field('to'))):
+            return True
+        if not keywords_in(
+                self.from_to_cc_keywords,
+                '%s %s %s' % (mail.get_field('from'), mail.get_field('to'),
+                              mail.get_field('cc'))):
+            return True
+        if not keywords_in(self.subject_keywords, mail.subject):
+            return True
+        if not keywords_in(self.body_keywords, mail.get_field('body')):
+            return True
+
+        return False
+
 def should_filter_out(mail, ls_range, new_threads_only,
                       from_keywords, from_to_keywords,
                       from_to_cc_keywords, subject_keywords, body_keywords):
