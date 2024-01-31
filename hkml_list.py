@@ -534,6 +534,24 @@ def last_listed_mails():
             mails.append(mail)
     return mails
 
+def add_mails_filter_arguments(parser):
+    parser.add_argument(
+            '--from_keywords', metavar='<keyword>', nargs='+',
+            help='show mails having the keywords in from: field')
+    parser.add_argument(
+            '--from_to_keywords', metavar='<keyword>', nargs='+',
+            help='same to --from except chekcing to: fields together')
+    parser.add_argument(
+            '--from_to_cc_keywords', metavar='<keyword>', nargs='+',
+            help='same to --from except chekcing to: and cc: fields together')
+    parser.add_argument('--subject_contains', metavar='<words>', type=str,
+            nargs='+',
+            help='list mails containing the keyword in their subject')
+    parser.add_argument('--contains', metavar='<keyword>', type=str, nargs='+',
+            help='list mails containing the keyword in their body')
+    parser.add_argument('--new', '-n', action='store_true',
+            help='list new threads only')
+
 def set_argparser(parser=None):
     DEFAULT_SINCE = datetime.datetime.now() - datetime.timedelta(days=3)
     DEFAULT_SINCE = DEFAULT_SINCE.strftime('%Y-%m-%d')
@@ -564,22 +582,9 @@ def set_argparser(parser=None):
             help='minimum number of mails to list')
     parser.add_argument('--max_nr_mails', metavar='<int>', type=int,
             help='maximum number of mails to list')
-    parser.add_argument(
-            '--from_keywords', metavar='<keyword>', nargs='+',
-            help='show mails having the keywords in from: field')
-    parser.add_argument(
-            '--from_to_keywords', metavar='<keyword>', nargs='+',
-            help='same to --from except chekcing to: fields together')
-    parser.add_argument(
-            '--from_to_cc_keywords', metavar='<keyword>', nargs='+',
-            help='same to --from except chekcing to: and cc: fields together')
-    parser.add_argument('--subject_contains', metavar='<words>', type=str,
-            nargs='+',
-            help='list mails containing the keyword in their subject')
-    parser.add_argument('--contains', metavar='<keyword>', type=str, nargs='+',
-            help='list mails containing the keyword in their body')
-    parser.add_argument('--new', '-n', action='store_true',
-            help='list new threads only')
+
+    add_mails_filter_arguments(parser)
+
     parser.add_argument('--range', nargs=2, type=int, metavar='<index>',
             help='start and end mail index to show')
 
