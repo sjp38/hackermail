@@ -266,8 +266,8 @@ class MailListFilter:
         self.from_keywords = args.from_keywords
         self.from_to_keywords = args.from_to_keywords
         self.from_to_cc_keywords = args.from_to_cc_keywords
-        self.subject_keywords = args.subject_contains
-        self.body_keywords = args.contains
+        self.subject_keywords = args.subject_keywords
+        self.body_keywords = args.body_keywords
 
     def should_filter_out(self, mail):
         if self.new_threads_only and mail.get_filed('in-reply-to'):
@@ -543,10 +543,10 @@ def add_mails_filter_arguments(parser):
     parser.add_argument(
             '--from_to_cc_keywords', metavar='<keyword>', nargs='+',
             help='same to --from except chekcing to: and cc: fields together')
-    parser.add_argument('--subject_contains', metavar='<words>', type=str,
+    parser.add_argument('--subject_keywords', metavar='<words>', type=str,
             nargs='+',
             help='list mails containing the keyword in their subject')
-    parser.add_argument('--contains', metavar='<keyword>', type=str, nargs='+',
+    parser.add_argument('--body_keywords', metavar='<keyword>', type=str, nargs='+',
             help='list mails containing the keyword in their body')
     parser.add_argument('--new', '-n', action='store_true',
             help='list new threads only')
