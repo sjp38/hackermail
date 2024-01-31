@@ -310,7 +310,7 @@ def format_stat(mails_to_show):
 
 def mails_to_str(
         mails_to_show,
-        msgid, from_keywords, from_to_keywords, from_to_cc_keywords,
+        from_keywords, from_to_keywords, from_to_cc_keywords,
         subject_keywords, body_keywords,
         show_stat, show_thread_of, descend,
         sort_threads_by, new_threads_only, idx_range, collapse_threads,
@@ -358,7 +358,7 @@ def mails_to_str(
     filtered_mails = []
     for mail in by_pr_idx:
         if should_filter_out(mail, ls_range, new_threads_only,
-                             msgid, from_keywords, from_to_keywords,
+                             None, from_keywords, from_to_keywords,
                              from_to_cc_keywords, subject_keywords,
                              body_keywords):
             mail.filtered_out = True
@@ -636,7 +636,7 @@ def main(args=None):
 
     to_show = mails_to_str(
             mails_to_show,
-            None, args.from_keywords, args.from_to_keywords,
+            args.from_keywords, args.from_to_keywords,
             args.from_to_cc_keywords,
             args.subject_contains, args.contains,
             not args.hide_stat, None,
