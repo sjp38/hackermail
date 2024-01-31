@@ -15,3 +15,10 @@
   - monitor add/remove: Add/remove monitoring queries
   - monitor start/stop: Start/stop monitoring deamon
   - monitor status: As name says.
+  - Let monitor any involved people (from, to, cc)
+  - Add flags for decorating the report
+    - stat only
+    - whole thread
+    - whole mails plus thread
+- Let index more flexible
+  - If it finds no cached index, just use next newer index list?
