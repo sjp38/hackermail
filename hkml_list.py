@@ -252,8 +252,8 @@ def keywords_in(keywords, text):
     return True
 
 def should_filter_out(mail, ls_range, new_threads_only,
-                      msgid, from_keywords, from_to_keywords, subject_keywords,
-                      body_keywords):
+                      msgid, from_keywords, from_to_keywords,
+                      from_to_cc_keywords, subject_keywords, body_keywords):
     if ls_range is not None and not mail.pridx:
         return True
     if new_threads_only and mail.get_field('in-reply-to'):
@@ -265,6 +265,11 @@ def should_filter_out(mail, ls_range, new_threads_only,
     if not keywords_in(
             from_to_keywords,
             '%s %s' % (mail.get_field('from'), mail.get_field('to'))):
+        return True
+    if not keywords_in(
+            from_to_cc_keywords,
+            '%s %s %s' % (mail.get_field('from'), mail.get_field('to'),
+                          mail.get_field('cc'))):
         return True
     if not keywords_in(subject_keywords, mail.subject):
         return True
@@ -305,8 +310,8 @@ def format_stat(mails_to_show):
 
 def mails_to_str(
         mails_to_show,
-        msgid, from_keywords, from_to_keywords, subject_keywords,
-        body_keywords,
+        msgid, from_keywords, from_to_keywords, from_to_cc_keywords,
+        subject_keywords, body_keywords,
         show_stat, show_thread_of, descend,
         sort_threads_by, new_threads_only, idx_range, collapse_threads,
         open_mail_via_lore, show_lore_link, nr_cols,
@@ -354,7 +359,8 @@ def mails_to_str(
     for mail in by_pr_idx:
         if should_filter_out(mail, ls_range, new_threads_only,
                              msgid, from_keywords, from_to_keywords,
-                             subject_keywords, body_keywords):
+                             from_to_cc_keywords, subject_keywords,
+                             body_keywords):
             mail.filtered_out = True
             continue
         mail.filtered_out = False
@@ -533,6 +539,9 @@ def set_argparser(parser=None):
     parser.add_argument(
             '--from_to_keywords', metavar='<keyword>', nargs='+',
             help='same to --from except chekcing to: fields together')
+    parser.add_argument(
+            '--from_to_cc_keywords', metavar='<keyword>', nargs='+',
+            help='same to --from except chekcing to: and cc: fields together')
     parser.add_argument('--subject_contains', metavar='<words>', type=str,
             nargs='+',
             help='list mails containing the keyword in their subject')
@@ -627,8 +636,10 @@ def main(args=None):
     if args.max_nr_mails is not None:
         mails_to_show = mails_to_show[:args.max_nr_mails]
 
-    to_show = mails_to_str(mails_to_show,
+    to_show = mails_to_str(
+            mails_to_show,
             args.msgid, args.from_keywords, args.from_to_keywords,
+            args.from_to_cc_keywords,
             args.subject_contains, args.contains,
             not args.hide_stat, None,
             not args.ascend, args.sort_threads_by,
