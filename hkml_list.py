@@ -585,9 +585,6 @@ def set_argparser(parser=None):
 
     add_mails_filter_arguments(parser)
 
-    parser.add_argument('--range', nargs=2, type=int, metavar='<index>',
-            help='start and end mail index to show')
-
     # How to show the mails
     parser.add_argument('--collapse', '-c', action='store_true',
             help='collapse threads')
@@ -677,7 +674,7 @@ def main(args=None):
             MailListFilter(args),
             not args.hide_stat, None,
             not args.ascend, args.sort_threads_by,
-            args.range, args.collapse,
+            None, args.collapse,
             args.lore_read, args.lore, nr_cols_in_line, runtime_profile,
             args.runtime_profile)
     hkml_cache.writeback_mails()
