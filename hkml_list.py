@@ -260,12 +260,12 @@ class MailListFilter:
     body_keywords = None
 
     def __init__(self, args):
-        self.new_threads_only = args.new_threads_only
+        self.new_threads_only = args.new
         self.from_keywords = args.from_keywords
         self.from_to_keywords = args.from_to_keywords
         self.from_to_cc_keywords = args.from_to_cc_keywords
-        self.subject_keywords = args.subject_keywords
-        self.body_keywords = args.body_keywords
+        self.subject_keywords = args.subject_contains
+        self.body_keywords = args.contains
 
     def should_filter_out(self, mail):
         if self.new_threads_only and mail.get_filed('in-reply-to'):
@@ -344,11 +344,9 @@ def format_stat(mails_to_show):
     return lines
 
 def mails_to_str(
-        mails_to_show,
-        from_keywords, from_to_keywords, from_to_cc_keywords,
-        subject_keywords, body_keywords,
+        mails_to_show, mails_filter,
         show_stat, show_thread_of, descend,
-        sort_threads_by, new_threads_only, idx_range, collapse_threads,
+        sort_threads_by, idx_range, collapse_threads,
         open_mail_via_lore, show_lore_link, nr_cols,
         runtime_profile, show_runtime_profile):
     if len(mails_to_show) == 0:
@@ -392,10 +390,10 @@ def mails_to_str(
 
     filtered_mails = []
     for mail in by_pr_idx:
-        if should_filter_out(mail, ls_range, new_threads_only,
-                             from_keywords, from_to_keywords,
-                             from_to_cc_keywords, subject_keywords,
-                             body_keywords):
+        if ls_range is not None and not mail.pridx:
+            mail.filtered_out = True
+            continue
+        if mails_filter is not None and mails_filter.should_filter_out(mail):
             mail.filtered_out = True
             continue
         mail.filtered_out = False
@@ -671,12 +669,10 @@ def main(args=None):
 
     to_show = mails_to_str(
             mails_to_show,
-            args.from_keywords, args.from_to_keywords,
-            args.from_to_cc_keywords,
-            args.subject_contains, args.contains,
+            MailListFilter(args),
             not args.hide_stat, None,
             not args.ascend, args.sort_threads_by,
-            args.new, args.range, args.collapse,
+            args.range, args.collapse,
             args.lore_read, args.lore, nr_cols_in_line, runtime_profile,
             args.runtime_profile)
     hkml_cache.writeback_mails()
