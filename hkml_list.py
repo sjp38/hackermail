@@ -531,8 +531,6 @@ def set_argparser(parser=None):
             help='minimum number of mails to list')
     parser.add_argument('--max_nr_mails', metavar='<int>', type=int,
             help='maximum number of mails to list')
-    parser.add_argument('--msgid', metavar='<message id>', type=str,
-            help='show only the mail of the message id')
     parser.add_argument(
             '--from_keywords', metavar='<keyword>', nargs='+',
             help='show mails having the keywords in from: field')
@@ -638,7 +636,7 @@ def main(args=None):
 
     to_show = mails_to_str(
             mails_to_show,
-            args.msgid, args.from_keywords, args.from_to_keywords,
+            None, args.from_keywords, args.from_to_keywords,
             args.from_to_cc_keywords,
             args.subject_contains, args.contains,
             not args.hide_stat, None,
