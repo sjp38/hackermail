@@ -84,8 +84,11 @@ def main(args=None):
 
     mail = hkml_list.get_mail(args.mail_idx)
     if mail is None:
-        print('mail is not cached')
-        exit(1)
+        print('mail is not cached.  Try older list')
+        mail = hkml_list.get_mail(args.mail_idx, no_thread_output=True)
+        if mail is None:
+            print('even not an older list index.  Forgiving.')
+            exit(1)
 
     with open(os.path.join(_hkml.get_hkml_dir(), 'last_open_idx'), 'w') as f:
         f.write('%d' % args.mail_idx)
