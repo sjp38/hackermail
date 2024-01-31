@@ -346,7 +346,7 @@ def format_stat(mails_to_show):
 def mails_to_str(
         mails_to_show, mails_filter,
         show_stat, show_thread_of, descend,
-        sort_threads_by, idx_range, collapse_threads,
+        sort_threads_by, collapse_threads,
         open_mail_via_lore, show_lore_link, nr_cols,
         runtime_profile, show_runtime_profile):
     if len(mails_to_show) == 0:
@@ -373,9 +373,6 @@ def mails_to_str(
     if show_thread_of is None:
         start_idx = 0
         end_idx = len(mails_to_show)
-        if idx_range is not None:
-            start_idx = max(start_idx, idx_range[0])
-            end_idx = min(end_idx, idx_range[1])
     else:
         mail = by_pr_idx[show_thread_of]
         root = root_of_thread(mail)
@@ -674,7 +671,7 @@ def main(args=None):
             MailListFilter(args),
             not args.hide_stat, None,
             not args.ascend, args.sort_threads_by,
-            None, args.collapse,
+            args.collapse,
             args.lore_read, args.lore, nr_cols_in_line, runtime_profile,
             args.runtime_profile)
     hkml_cache.writeback_mails()
