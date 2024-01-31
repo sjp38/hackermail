@@ -138,7 +138,7 @@ def do_monitor(request, ignore_mails_before, last_monitored_mails):
 
     for mail in mails_to_check:
         if hkml_list.should_filter_out(
-                mail, None, None, None,
+                mail, None, None,
                 request.sender_keywords, request.subject_keywords,
                 request.body_keywords):
             continue

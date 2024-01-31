@@ -252,13 +252,11 @@ def keywords_in(keywords, text):
     return True
 
 def should_filter_out(mail, ls_range, new_threads_only,
-                      msgid, from_keywords, from_to_keywords,
+                      from_keywords, from_to_keywords,
                       from_to_cc_keywords, subject_keywords, body_keywords):
     if ls_range is not None and not mail.pridx:
         return True
     if new_threads_only and mail.get_field('in-reply-to'):
-        return True
-    if msgid and mail.get_field('message-id') != '<%s>' % msgid:
         return True
     if not keywords_in(from_keywords, mail.get_field('from')):
         return True
@@ -358,7 +356,7 @@ def mails_to_str(
     filtered_mails = []
     for mail in by_pr_idx:
         if should_filter_out(mail, ls_range, new_threads_only,
-                             None, from_keywords, from_to_keywords,
+                             from_keywords, from_to_keywords,
                              from_to_cc_keywords, subject_keywords,
                              body_keywords):
             mail.filtered_out = True
