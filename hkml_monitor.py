@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: GPL-2.0
 
+import copy
 import datetime
 import json
 import math
@@ -38,8 +39,9 @@ class HkmlMonitorRequest:
         self.name = name
 
     def to_kvpairs(self):
-        kvpairs = vars(self)
-        kvpairs['mail_list_filter'] = vars(self.mail_list_filter)
+        kvpairs = copy.deepcopy(vars(self))
+        kvpairs['mail_list_filter'] = copy.deepcopy(
+                vars(self.mail_list_filter))
         return kvpairs
 
     @classmethod
