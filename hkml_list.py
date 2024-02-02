@@ -389,7 +389,7 @@ def mails_to_str(
 
     filtered_mails = []
     for mail in by_pr_idx:
-        if ls_range is not None and not mail.pridx:
+        if ls_range is not None and not mail.pridx in ls_range:
             mail.filtered_out = True
             continue
         if mails_filter is not None and mails_filter.should_filter_out(mail):
