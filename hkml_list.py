@@ -291,7 +291,8 @@ class MailListFilter:
         return False
 
     def to_kvpairs(self):
-        return copy.deepcopy(vars(self))
+        kvpairs = copy.deepcopy(vars(self))
+        return {k: v for k, v in kvpairs.items() if v is not None}
 
     @classmethod
     def from_kvpairs(cls, kvpairs):
