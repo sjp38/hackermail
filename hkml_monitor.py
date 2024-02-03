@@ -156,12 +156,11 @@ def format_noti_text(request, mails_to_noti):
             '',
             ]
 
-    lines.append('%d mails' % len(mails_to_noti))
-    lines.append('')
-    for mail in mails_to_noti:
-        mail.pridx = 0
-        mail.prdepth = 0
-        lines += hkml_list.format_entry(mail, 1, False, show_lore_link, 80)
+    lines.append(hkml_list.mails_to_str(
+        mails_to_noti, mails_filter=None, show_stat=True, show_thread_of=None,
+        descend=True, sort_threads_by=['first_date'], collapse_threads=False,
+        show_lore_link=show_lore_link, nr_cols=80, runtime_profile=[],
+        show_runtime_profile=False))
     noti_text = '\n'.join(lines)
     return noti_text
 
