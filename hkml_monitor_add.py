@@ -4,13 +4,11 @@ import hkml_list
 import hkml_monitor
 
 def main(args):
-    thread_of_msgid = None
-
     hkml_monitor.add_requests(
             hkml_monitor.HkmlMonitorRequest(
                 args.mailing_lists,
                 hkml_list.MailListFilter(args),
-                thread_of_msgid, args.noti_mails, args.noti_files,
+                args.noti_mails, args.noti_files,
                 args.monitor_interval, args.name))
 
 def set_argparser(parser):

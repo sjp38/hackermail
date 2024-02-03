@@ -18,8 +18,6 @@ class HkmlMonitorRequest:
     mailing_lists = None
     mail_list_filter = None
 
-    thread_of_msgid = None
-
     noti_mails = None
     noti_files = None
 
@@ -28,11 +26,9 @@ class HkmlMonitorRequest:
     name = None
 
     def __init__(self, mailing_lists, mail_list_filter,
-                 thread_of_msgid, noti_mails, noti_files,
-                 monitor_interval, name):
+                 noti_mails, noti_files, monitor_interval, name):
         self.mailing_lists = mailing_lists
         self.mail_list_filter = mail_list_filter
-        self.thread_of_msgid = thread_of_msgid
         self.noti_mails = noti_mails
         self.noti_files = noti_files
         self.monitor_interval = monitor_interval
@@ -45,7 +41,7 @@ class HkmlMonitorRequest:
 
     @classmethod
     def from_kvpairs(cls, kvpairs):
-        self = cls(*[None] * 7)
+        self = cls(*[None] * 6)
         for key, value in kvpairs.items():
             if key == 'mail_list_filter':
                 continue
@@ -142,19 +138,10 @@ def get_mails_to_check(request, ignore_mails_before, last_monitored_mails):
 def get_mails_to_noti(mails_to_check, request):
     mails_to_noti = []
 
-    thread_msgid = request.thread_of_msgid
-    if thread_msgid is not None:
-        thread_mails, err = hkml_thread.get_thread_mails_use_b4(thread_msgid)
-
     for mail in mails_to_check:
         if request.mail_list_filter.should_filter_out(mail):
             continue
 
-        if thread_msgid is not None:
-            if not mail_in(mail, thread_mails):
-                continue
-
-        # todo: support thread_of_msgid
         mails_to_noti.append(mail)
 
     return mails_to_noti
