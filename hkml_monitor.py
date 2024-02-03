@@ -180,8 +180,9 @@ def do_monitor(request, ignore_mails_before, last_monitored_mails):
     lines.append('%d mails' % len(mails_to_noti))
     lines.append('')
     for mail in mails_to_noti:
-        lines.append('%s (%s)' % (mail.subject, mail.get_field('from')))
-        lines.append('- msgid: %s' % mail.get_field('message-id'))
+        mail.pridx = 0
+        mail.prdepth = 0
+        lines += hkml_list.format_entry(mail, 1, False, True, False, 80)
     noti_text = '\n'.join(lines)
     print('# noti text start')
     print(noti_text)
