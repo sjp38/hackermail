@@ -138,10 +138,7 @@ def get_mails_to_check(request, ignore_mails_before, last_monitored_mails):
         mails_to_check += fetched_mails
     return mails_to_check
 
-def do_monitor(request, ignore_mails_before, last_monitored_mails):
-    mails_to_check = get_mails_to_check(request, ignore_mails_before,
-                                        last_monitored_mails)
-
+def get_mails_to_noti(mails_to_check, request):
     mails_to_noti = []
 
     thread_msgid = request.thread_of_msgid
@@ -158,6 +155,13 @@ def do_monitor(request, ignore_mails_before, last_monitored_mails):
 
         # todo: support thread_of_msgid
         mails_to_noti.append(mail)
+
+    return mails_to_noti
+
+def do_monitor(request, ignore_mails_before, last_monitored_mails):
+    mails_to_check = get_mails_to_check(request, ignore_mails_before,
+                                        last_monitored_mails)
+    mails_to_noti = get_mails_to_noti(mails_to_check, request)
 
     print('%d mails to noti' % len(mails_to_noti))
     if len(mails_to_noti) == 0:
