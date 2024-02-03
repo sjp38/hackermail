@@ -22,3 +22,4 @@
     - whole mails plus thread
 - Let index more flexible
   - If it finds no cached index, just use next newer index list?
+- Remove --manifest option
