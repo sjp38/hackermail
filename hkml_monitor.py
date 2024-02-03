@@ -55,6 +55,9 @@ class HkmlMonitorRequest:
                 kvpairs['mail_list_filter'])
         return self
 
+    def __str__(self):
+        return json.dumps(self.to_kvpairs(), indent=4, sort_keys=True)
+
 # list of HkmlMonitorRequest objects
 requests = None
 
