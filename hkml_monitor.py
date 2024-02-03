@@ -116,7 +116,7 @@ def mail_in(mail, mails):
             return True
     return False
 
-def do_monitor(request, ignore_mails_before, last_monitored_mails):
+def get_mails_to_check(request, ignore_mails_before, last_monitored_mails):
     mails_to_check = []
     for mailing_list in request.mailing_lists:
         if not mailing_list in last_monitored_mails:
@@ -136,6 +136,11 @@ def do_monitor(request, ignore_mails_before, last_monitored_mails):
         if len(fetched_mails) > 0:
             last_monitored_mails[mailing_list] = fetched_mails[-1]
         mails_to_check += fetched_mails
+    return mails_to_check
+
+def do_monitor(request, ignore_mails_before, last_monitored_mails):
+    mails_to_check = get_mails_to_check(request, ignore_mails_before,
+                                        last_monitored_mails)
 
     mails_to_noti = []
 
