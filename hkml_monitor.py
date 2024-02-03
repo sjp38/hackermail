@@ -166,6 +166,8 @@ def do_monitor(request, ignore_mails_before, last_monitored_mails):
 
     print('%d mails to noti' % len(mails_to_noti))
     if len(mails_to_noti) == 0:
+        print('request was')
+        print('%s' % request)
         return
 
     lines = [
@@ -181,7 +183,9 @@ def do_monitor(request, ignore_mails_before, last_monitored_mails):
         lines.append('%s (%s)' % (mail.subject, mail.get_field('from')))
         lines.append('- msgid: %s' % mail.get_field('message-id'))
     noti_text = '\n'.join(lines)
+    print('# noti text start')
     print(noti_text)
+    print('# noti text end')
 
     if request.noti_files is not None:
         for file in request.noti_files:
