@@ -5,21 +5,14 @@
     - lore link
   - Make moving between list easier
     - list cached?
-- Make 'open next/prev' shows current index, for easier context keeping
 - Tag mails (Store the information under .hkm directory in some format)
 - Implement 'monitor' command
   - Subscribe to a thread
     (monitor replies and forward the new reply to given mail address)
   - Subscribe to summary
     (send summary of mails to given mail address in requested time period)
-  - monitor add/remove: Add/remove monitoring queries
-  - monitor start/stop: Start/stop monitoring deamon
-  - monitor status: As name says.
-  - Let monitor any involved people (from, to, cc)
   - Add flags for decorating the report
     - stat only
     - whole thread
     - whole mails plus thread
-- Let index more flexible
-  - If it finds no cached index, just use next newer index list?
 - Remove --manifest option
