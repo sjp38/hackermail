@@ -7,8 +7,6 @@
     - list cached?
 - Tag mails (Store the information under .hkm directory in some format)
 - Implement 'monitor' command
-  - Subscribe to a thread
-    (monitor replies and forward the new reply to given mail address)
   - Subscribe to summary
     (send summary of mails to given mail address in requested time period)
   - Add flags for decorating the report
