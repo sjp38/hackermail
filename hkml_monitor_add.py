@@ -4,11 +4,7 @@ import hkml_list
 import hkml_monitor
 
 def main(args):
-    if args.thread_of is not None:
-        mail = hkml_list.get_mail(args.thread_of)
-        thread_of_msgid = mail.get_field('message-id')
-    else:
-        thread_of_msgid = None
+    thread_of_msgid = None
 
     hkml_monitor.add_requests(
             hkml_monitor.HkmlMonitorRequest(
@@ -24,9 +20,6 @@ def set_argparser(parser):
 
     hkml_list.add_mails_filter_arguments(parser)
 
-    parser.add_argument(
-            '--thread_of', metavar='<mail id>', type=int,
-            help='any mail in monitoring target threads')
     parser.add_argument(
             '--noti_mails', nargs='+', metavar='<email address>',
             help='mail addresses to send monitoring results notification')
