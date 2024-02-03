@@ -159,17 +159,7 @@ def get_mails_to_noti(mails_to_check, request):
 
     return mails_to_noti
 
-def do_monitor(request, ignore_mails_before, last_monitored_mails):
-    mails_to_check = get_mails_to_check(request, ignore_mails_before,
-                                        last_monitored_mails)
-    mails_to_noti = get_mails_to_noti(mails_to_check, request)
-
-    print('%d mails to noti' % len(mails_to_noti))
-    if len(mails_to_noti) == 0:
-        print('request was')
-        print('%s' % request)
-        return
-
+def format_noti_text(request, mails_to_noti):
     lines = [
             'monitor result noti at %s' % datetime.datetime.now(),
             'monitor request',
@@ -184,6 +174,21 @@ def do_monitor(request, ignore_mails_before, last_monitored_mails):
         mail.prdepth = 0
         lines += hkml_list.format_entry(mail, 1, False, True, 80)
     noti_text = '\n'.join(lines)
+    return noti_text
+
+def do_monitor(request, ignore_mails_before, last_monitored_mails):
+    mails_to_check = get_mails_to_check(request, ignore_mails_before,
+                                        last_monitored_mails)
+    mails_to_noti = get_mails_to_noti(mails_to_check, request)
+
+    print('%d mails to noti' % len(mails_to_noti))
+    if len(mails_to_noti) == 0:
+        print('request was')
+        print('%s' % request)
+        return
+
+    noti_text = format_noti_text(request, mails_to_noti)
+
     print('# noti text start')
     print(noti_text)
     print('# noti text end')
