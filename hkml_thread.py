@@ -62,7 +62,6 @@ def main(args=None):
             mails_to_show, mails_filter=None, show_stat=False,
             show_thread_of=args.mail_idx, descend=False,
             sort_threads_by=['first_date'], collapse_threads=None,
-            open_mail_via_lore=False,
             show_lore_link=args.lore, nr_cols=nr_cols_in_line,
             runtime_profile=[], show_runtime_profile=False)
 

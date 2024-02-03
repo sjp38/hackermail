@@ -360,8 +360,7 @@ def mails_to_str(
         mails_to_show, mails_filter,
         show_stat, show_thread_of, descend,
         sort_threads_by, collapse_threads,
-        open_mail_via_lore, show_lore_link, nr_cols,
-        runtime_profile, show_runtime_profile):
+        show_lore_link, nr_cols, runtime_profile, show_runtime_profile):
     if len(mails_to_show) == 0:
         return 'no mail'
 
@@ -685,7 +684,7 @@ def main(args=None):
             not args.hide_stat, None,
             not args.ascend, args.sort_threads_by,
             args.collapse,
-            args.lore_read, args.lore, nr_cols_in_line, runtime_profile,
+            args.lore, nr_cols_in_line, runtime_profile,
             args.runtime_profile)
     hkml_cache.writeback_mails()
     cache_list_output(list_output_cache_key, to_show)
