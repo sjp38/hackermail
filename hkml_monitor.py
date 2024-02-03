@@ -171,7 +171,7 @@ def do_monitor(request, ignore_mails_before, last_monitored_mails):
     lines = [
             'monitor result noti at %s' % datetime.datetime.now(),
             'monitor request',
-            '%s' % json.dumps(request.to_kvpairs(), indent=4),
+            '%s' % request,
             '',
             ]
 
@@ -242,7 +242,7 @@ def main(args):
     elif args.action == 'status':
         for idx, request in enumerate(get_requests()):
             print('request %d' % idx)
-            print(json.dumps(request.to_kvpairs(), indent=4, sort_keys=True))
+            print('%s' % request)
     elif args.action == 'remove':
         if args.request.isdigit():
             if remove_requests(idx=int(args.request)) is False:
