@@ -177,9 +177,11 @@ def do_monitor(request, ignore_mails_before, last_monitored_mails):
 
     noti_text = format_noti_text(request, mails_to_noti)
 
+    print('#')
     print('# noti text start')
     print(noti_text)
     print('# noti text end')
+    print('#')
 
     if request.noti_files is not None:
         for file in request.noti_files:
