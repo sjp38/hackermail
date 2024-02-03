@@ -270,7 +270,7 @@ class MailListFilter:
         self.body_keywords = args.body_keywords
 
     def should_filter_out(self, mail):
-        if self.new_threads_only and mail.get_filed('in-reply-to'):
+        if self.new_threads_only and mail.get_field('in-reply-to'):
             return True
         if not keywords_in(self.from_keywords, mail.get_field('from')):
             return True
