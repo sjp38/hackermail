@@ -40,8 +40,7 @@ class HkmlMonitorRequest:
 
     def to_kvpairs(self):
         kvpairs = copy.deepcopy(vars(self))
-        kvpairs['mail_list_filter'] = copy.deepcopy(
-                vars(self.mail_list_filter))
+        kvpairs['mail_list_filter'] = self.mail_list_filter.to_kvpairs()
         return kvpairs
 
     @classmethod
@@ -52,9 +51,8 @@ class HkmlMonitorRequest:
                 continue
             setattr(self, key, value)
 
-        self.mail_list_filter = hkml_list.MailListFilter(None)
-        for key, value in kvpairs['mail_list_filter'].items():
-            setattr(self.mail_list_filter, key, value)
+        self.mail_list_filter = hkml_list.MailListFilter.from_kvpairs(
+                kvpairs['mail_list_filter'])
         return self
 
 # list of HkmlMonitorRequest objects
