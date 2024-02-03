@@ -290,6 +290,16 @@ class MailListFilter:
 
         return False
 
+    def to_kvpairs(self):
+        return copy.deepcopy(vars(self))
+
+    @classmethod
+    def from_kvpairs(cls, kvpairs):
+        self = cls(None)
+        for key, value in kvpairs.items():
+            setattr(self, key, value)
+        return self
+
 def should_filter_out(mail, ls_range, new_threads_only,
                       from_keywords, from_to_keywords,
                       from_to_cc_keywords, subject_keywords, body_keywords):
