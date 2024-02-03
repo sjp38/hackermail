@@ -41,7 +41,7 @@ class HkmlMonitorRequest:
     def to_kvpairs(self):
         kvpairs = copy.deepcopy(vars(self))
         kvpairs['mail_list_filter'] = self.mail_list_filter.to_kvpairs()
-        return kvpairs
+        return {k: v for k, v in kvpairs.items() if v is not None}
 
     @classmethod
     def from_kvpairs(cls, kvpairs):
