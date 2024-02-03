@@ -165,7 +165,7 @@ def orig_subject_formatted(mail):
     return orig_subject_formatted(mail.parent_mail)
 
 def format_entry(mail, max_digits_for_idx, show_nr_replies, show_lore_link,
-                 open_mail_via_lore, nr_cols):
+                 nr_cols):
     index = '%d' % mail.pridx
     nr_zeroes = max_digits_for_idx - len(index)
     index = '%s%s' % ('0' * nr_zeroes, index)
@@ -416,7 +416,7 @@ def mails_to_str(
                 continue
             show_nr_replies = True
         lines += format_entry(mail, max_digits_for_idx, show_nr_replies,
-                              show_lore_link, open_mail_via_lore, nr_cols)
+                              show_lore_link, nr_cols)
 
     stat_lines = []
     if show_stat:
