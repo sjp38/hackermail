@@ -266,8 +266,14 @@ def main(args):
         if args.ignore_mails_before is None:
             ignore_mails_before = datetime.datetime.now()
         else:
-            ignore_mails_before = datetime.datetime.strptime(
-                    args.ignore_mails_before, '%Y-%m-%d %H:%M:%S')
+            try:
+                ignore_mails_before = datetime.datetime.strptime(
+                        args.ignore_mails_before, '%Y-%m-%d %H:%M:%S')
+            except:
+                print('parsing --ignore_mails_before failed')
+                print('the argument should be in \'%Y-%m-%d %H:%M:%S\' format')
+                exit(1)
+
         start_monitoring(ignore_mails_before)
     elif args.action == 'stop':
         stop_monitoring()
