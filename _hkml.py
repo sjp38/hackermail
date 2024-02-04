@@ -210,7 +210,7 @@ def read_mails_from_clipboard():
     return [mail], None
 
 __hkml_dir = None
-__manifest_file = None
+__manifest = None
 
 def set_hkml_dir(path=None):
     global __hkml_dir
@@ -249,28 +249,24 @@ def get_hkml_dir():
     return __hkml_dir
 
 def set_hkml_dir_manifest(hkml_dir, manifest):
-    global __manifest_file
+    global __manifest
 
     set_hkml_dir(hkml_dir)
     if manifest is None:
         manifest = os.path.join(get_hkml_dir(), 'manifest')
-    if not os.path.isfile(manifest):
-        sys.stderr.write('Manifest file (%s) not found\n' % manifest)
-        exit(1)
-    __manifest_file = manifest
-
-def get_manifest():
-    manifest_file = __manifest_file
-    if manifest_file is None:
-        sys.stderr.write('BUG: Manifest file is not set\n')
-        exit(1)
 
     try:
-        with open(manifest_file) as f:
-            manifest = json.load(f)
+        with open(manifest, 'r') as f:
+            __manifest = json.load(f)
     except:
-        return None
-    return manifest
+        sys.stderr.write('Manifest (%s) load failed\n' % manifest)
+        exit(1)
+
+def get_manifest():
+    if __manifest is None:
+        sys.stderr.write('BUG: Manifest file is not set\n')
+        exit(1)
+    return __manifest
 
 def __get_epoch_from_git_path(git_path):
     # git_path is, e.g., '.../0.git'
