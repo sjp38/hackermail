@@ -8,11 +8,8 @@ import subprocess
 import _hkml
 import hkml_list
 
-def fetch_mail(manifest_file, mail_lists, quiet=False, epochs=1):
+def fetch_mail(mail_lists, quiet=False, epochs=1):
     manifest = _hkml.get_manifest()
-    if not manifest:
-        print('Cannot open manifest file (%s)' % manifest_file)
-        exit(1)
 
     site = manifest['site']
     for mlist in mail_lists:
@@ -64,7 +61,7 @@ def main(args=None):
         print('mail lists to fetch is not specified')
         exit(1)
     quiet = args.quiet
-    fetch_mail(manifest_file, mail_lists, quiet, args.epochs)
+    fetch_mail(mail_lists, quiet, args.epochs)
 
 if __name__ == '__main__':
     main()
