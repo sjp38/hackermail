@@ -27,8 +27,11 @@ def main(args):
         f.write(hkml_open.mail_display_str(mail, False, False))
 
     if args.checker is not None:
-        if subprocess.call([args.checker, patch_file]) != 0:
+        rc = subprocess.call([args.checker, patch_file])
+        if rc != 0:
             print('checker complains something')
+        if args.check_only:
+            return rc
 
     rc = subprocess.call(['git', '-C', args.repo, 'am', patch_file])
     if rc == 0:
@@ -47,3 +50,5 @@ def set_argparser(parser):
                         help='git repo to apply this patch')
     parser.add_argument('--checker', metavar='<program>',
                         help='patch checker program to run first')
+    parser.add_argument('--check_only', action='store_true',
+                        help='skip applying the patch')
