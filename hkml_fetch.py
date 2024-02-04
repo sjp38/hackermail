@@ -54,7 +54,6 @@ def main(args=None):
         args = parser.parse_args()
 
     mail_lists = args.mlist
-    manifest_file = args.manifest
     if not mail_lists:
         mail_lists = fetched_mail_lists()
     if not mail_lists:
