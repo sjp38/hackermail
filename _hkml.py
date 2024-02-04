@@ -259,7 +259,10 @@ def set_hkml_dir_manifest(hkml_dir, manifest):
         exit(1)
     __manifest_file = manifest
 
-def get_manifest(manifest_file):
+def get_manifest(manifest_file=None):
+    if manifest_file is None:
+        manifest_file = __manifest_file
+
     if not manifest_file:
         manifest_file = os.path.join(get_hkml_dir(), 'manifest')
 
