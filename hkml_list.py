@@ -498,7 +498,7 @@ def get_mails_from_git(manifest, mail_list, since, until,
                 mails.append(mail)
     return mails
 
-def get_mails(source, fetch, manifest, since, until,
+def get_mails(source, fetch, since, until,
               min_nr_mails, max_nr_mails, commits_range=None):
     if source == 'clipboard':
         mails, err = _hkml.read_mails_from_clipboard()
@@ -521,9 +521,6 @@ def get_mails(source, fetch, manifest, since, until,
         hkml_fetch.fetch_mail([source], True, 1)
 
     manifest = _hkml.get_manifest()
-    if not manifest:
-        print('Cannot open manifest file')
-        exit(1)
 
     mails = get_mails_from_git(manifest, source, since, until,
                                min_nr_mails, max_nr_mails, commits_range)
@@ -670,7 +667,7 @@ def main(args=None):
     mails_to_show = []
     for source in args.sources:
         mails_to_show += get_mails(
-                source, args.fetch, args.manifest, args.since, args.until,
+                source, args.fetch, args.since, args.until,
                 args.min_nr_mails, args.max_nr_mails, None)
     runtime_profile = [['get_mails', time.time() - timestamp]]
     if args.max_nr_mails is not None:

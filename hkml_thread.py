@@ -28,7 +28,7 @@ def get_thread_mails_use_b4(msgid):
                        stderr=subprocess.DEVNULL) != 0:
         return None, 'b4 mbox failed'
     mails = hkml_list.get_mails(
-            tmp_path, False, None, None, None, None, None)
+            tmp_path, False, None, None, None, None)
     os.remove(tmp_path)
     return mails, None
 

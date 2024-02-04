@@ -127,7 +127,7 @@ def get_mails_to_check(request, ignore_mails_before, last_monitored_mails):
             commits_range = '%s..' % last_mail.gitid
 
         fetched_mails = hkml_list.get_mails(
-                source=mailing_list, fetch=True, manifest=None,
+                source=mailing_list, fetch=True,
                 since=since, until=None, min_nr_mails=None, max_nr_mails=None,
                 commits_range=commits_range)
         if len(fetched_mails) > 0:
