@@ -449,10 +449,10 @@ def git_log_output_line_to_mail(line, mdir):
     subject = line[subject_offset:]
     return _hkml.Mail.from_gitlog(fields[0], mdir, fields[1], subject)
 
-def get_mails_from_git(manifest, mail_list, since, until,
+def get_mails_from_git(mail_list, since, until,
                        min_nr_mails, max_nr_mails, commits_range=None):
     lines = []
-    mdirs = _hkml.mail_list_data_paths(mail_list, manifest)
+    mdirs = _hkml.mail_list_data_paths(mail_list, _hkml.get_manifest())
     if not mdirs:
         print("Mailing list '%s' in manifest not found." % mail_list)
         exit(1)
@@ -520,10 +520,8 @@ def get_mails(source, fetch, since, until,
     if fetch:
         hkml_fetch.fetch_mail([source], True, 1)
 
-    manifest = _hkml.get_manifest()
-
-    mails = get_mails_from_git(manifest, source, since, until,
-                               min_nr_mails, max_nr_mails, commits_range)
+    mails = get_mails_from_git(source, since, until, min_nr_mails,
+                               max_nr_mails, commits_range)
     mails.reverse()
     return mails
 
