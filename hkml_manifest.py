@@ -55,7 +55,7 @@ def main(args=None):
         args = parser.parse_args()
 
     if args.action == 'list':
-        pr_directory(_hkml.get_manifest(args.manifest), args.mlists)
+        pr_directory(_hkml.get_manifest(), args.mlists)
     elif args.action == 'convert_public_inbox_manifest':
         if not args.public_inbox_manifest or not args.site:
             print('--public_inbox_manifest or --site is not set')

@@ -520,7 +520,7 @@ def get_mails(source, fetch, manifest, since, until,
     if fetch:
         hkml_fetch.fetch_mail(manifest, [source], True, 1)
 
-    manifest = _hkml.get_manifest(manifest)
+    manifest = _hkml.get_manifest()
     if not manifest:
         print('Cannot open manifest file')
         exit(1)

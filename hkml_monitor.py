@@ -147,8 +147,7 @@ def get_mails_to_noti(mails_to_check, request):
     return mails_to_noti
 
 def format_noti_text(request, mails_to_noti):
-    show_lore_link = _hkml.get_manifest(
-            None)['site'] == 'https://lore.kernel.org'
+    show_lore_link = _hkml.get_manifest()['site'] == 'https://lore.kernel.org'
     lines = [
             'monitor result noti at %s' % datetime.datetime.now(),
             'monitor request',
