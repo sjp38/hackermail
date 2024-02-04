@@ -80,7 +80,10 @@ hkml_cache.set_argparser(parser_cache)
 args = parser.parse_args()
 
 if not args.command == 'init':
-    _hkml.set_hkml_dir(args.hkml_dir)
+    manifest = None
+    if hasattr(args, 'manifest'):
+        manifest = args.manifest
+    _hkml.set_hkml_dir_manifest(args.hkml_dir, manifest)
 
 if not args.command:
     parser.print_help()
