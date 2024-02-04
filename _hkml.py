@@ -210,6 +210,7 @@ def read_mails_from_clipboard():
     return [mail], None
 
 __hkml_dir = None
+__manifest_file = None
 
 def set_hkml_dir(path=None):
     global __hkml_dir
@@ -246,6 +247,17 @@ def get_hkml_dir():
     if not __hkml_dir:
         set_hkml_dir()
     return __hkml_dir
+
+def set_hkml_dir_manifest(hkml_dir, manifest):
+    global __manifest_file
+
+    set_hkml_dir(hkml_dir)
+    if manifest is None:
+        manifest = os.path.join(get_hkml_dir(), 'manifest')
+    if not os.path.isfile(manifest):
+        sys.stderr.write('Manifest file (%s) not found\n' % manifest)
+        exit(1)
+    __manifest_file = manifest
 
 def get_manifest(manifest_file):
     if not manifest_file:
