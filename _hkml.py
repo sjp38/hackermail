@@ -259,12 +259,11 @@ def set_hkml_dir_manifest(hkml_dir, manifest):
         exit(1)
     __manifest_file = manifest
 
-def get_manifest(manifest_file=None):
+def get_manifest():
+    manifest_file = __manifest_file
     if manifest_file is None:
-        manifest_file = __manifest_file
-
-    if not manifest_file:
-        manifest_file = os.path.join(get_hkml_dir(), 'manifest')
+        sys.stderr.write('BUG: Manifest file is not set\n')
+        exit(1)
 
     try:
         with open(manifest_file) as f:
