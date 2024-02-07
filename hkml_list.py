@@ -100,6 +100,12 @@ def get_last_list_output():
     cache[key]['date'] = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
     return cache[key]['output']
 
+def get_last_thread_output():
+    cache = get_list_output_cache()
+    if not 'thread_output' in cache:
+        return 'no valid thread output'
+    return cache['thread_output']['output']
+
 def invalidate_cached_outputs(source):
     keys_to_del = []
     cache = get_list_output_cache()

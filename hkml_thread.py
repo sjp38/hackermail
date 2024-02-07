@@ -14,8 +14,11 @@ def set_argparser(parser=None):
     parser.description='list mails of a thread'
     _hkml.set_manifest_option(parser)
     parser.add_argument(
-            'mail_idx', metavar='<mail index>', type=int,
-            help='index of any mail in the thread to list')
+            'mail_idx', metavar='<mail index>', type=int, nargs='?',
+            help=' '.join([
+                'Index of any mail in the thread to list.',
+                'If this is not given, shows last thread output.',
+                ]))
     parser.add_argument('--lore', action='store_true',
             help='print lore link for mails')
     parser.add_argument(
@@ -37,6 +40,11 @@ def main(args=None):
         parser = argparse.ArgumentParser()
         set_argparser(parser)
         args = parser.parse_args()
+
+    if args.mail_idx is None:
+        to_show = hkml_list.get_last_thread_output()
+        hkml_open.pr_with_pager_if_needed(to_show)
+        return
 
     if subprocess.call(['which', 'b4'], stdout=subprocess.DEVNULL) == 0:
         use_b4 = args.dont_use_b4 is False
