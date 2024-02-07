@@ -96,7 +96,6 @@ def get_last_list_output():
     cache = get_list_output_cache()
     keys = [k for k in cache if k != 'thread_output']
     key = sorted(keys, key=lambda x: cache[x]['date'])[-1]
-    print(key)
     cache[key]['date'] = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
     return cache[key]['output']
 
