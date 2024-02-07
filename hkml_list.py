@@ -92,6 +92,14 @@ def get_cached_list_output(key):
     cache[key]['date'] = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
     return cache[key]['output']
 
+def get_last_list_output():
+    cache = get_list_output_cache()
+    keys = [k for k in cache if k != 'thread_output']
+    key = sorted(keys, key=lambda x: cache[x]['date'])[-1]
+    print(key)
+    cache[key]['date'] = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
+    return cache[key]['output']
+
 def invalidate_cached_outputs(source):
     keys_to_del = []
     cache = get_list_output_cache()
@@ -565,13 +573,14 @@ def set_argparser(parser=None):
     parser.description = 'list mails'
     _hkml.set_manifest_option(parser)
     # What mails to show
-    parser.add_argument('sources', metavar='<source of mails>', nargs='+',
+    parser.add_argument('sources', metavar='<source of mails>', nargs='*',
             help='  '.join([
             'Source of mails to list.  Could be one of following types.',
             '1) Name of a mailing list in the manifest file.',
             '2) Path to mbox file in the local filesyste.',
             '3) Special keyword, \'clipboard\'.',
             '\'clipboard\' means mbox string in the clipboard.',
+            '4) If nothing is given, show last list output.',
             ]))
     parser.add_argument('--since', metavar='<date>', type=str,
             default=DEFAULT_SINCE,
@@ -627,8 +636,14 @@ def main(args=None):
         args = parser.parse_args()
 
     list_output_cache_key = args_to_list_output_key(args)
-    if args.fetch == False:
-        to_show = get_cached_list_output(list_output_cache_key)
+    if args.fetch == False or args.sources == []:
+        if args.sources == []:
+            to_show = get_last_list_output()
+            if to_show is None:
+                print('no valid last list output exists')
+                exit(1)
+        else:
+            to_show = get_cached_list_output(list_output_cache_key)
         if to_show is not None:
             if args.quiet is False:
                 if args.stdout:
