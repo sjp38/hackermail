@@ -5,6 +5,9 @@
     - lore link
   - Make moving between list easier
     - list cached?
+  - Show last open/thread-expanded mail index on comments
+- thread
+  - Show last open mail index on comments
 - Tag mails (Store the information under .hkm directory in some format)
 - monitor
   - Add flags for decorating the report
