@@ -685,10 +685,15 @@ def main(args=None):
     timestamp = time.time()
     runtime_profile = []
     mails_to_show = []
+    msgids = {}
     for source in args.sources:
-        mails_to_show += get_mails(
+        for mail in get_mails(
                 source, args.fetch, args.since, args.until,
-                args.min_nr_mails, args.max_nr_mails, None)
+                args.min_nr_mails, args.max_nr_mails, None):
+            msgid = mail.get_field('message-id')
+            if not msgid in msgids:
+                mails_to_show.append(mail)
+            msgids[mail.get_field('message-id')] = True
     runtime_profile = [['get_mails', time.time() - timestamp]]
     if args.max_nr_mails is not None:
         mails_to_show = mails_to_show[:args.max_nr_mails]
