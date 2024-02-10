@@ -117,10 +117,10 @@ def cache_list_str(key, list_str):
 # mappings from mail index to the key of the mail in the mail cache
 mail_idx_key_mapping = {}
 
-def get_mail(idx, no_thread_output=False):
+def get_mail(idx, not_thread_idx=False):
     cache = get_list_output_cache()
     sorted_keys = sorted(cache.keys(), key=lambda x: cache[x]['date'])
-    if no_thread_output and sorted_keys[-1] == 'thread_output':
+    if not_thread_idx and sorted_keys[-1] == 'thread_output':
         last_key = sorted_keys[-2]
     else:
         last_key = sorted_keys[-1]
