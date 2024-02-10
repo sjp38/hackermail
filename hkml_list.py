@@ -27,7 +27,7 @@ def get_last_mail_idx_key_cache():
     last_key = sorted(cache.keys(), key=lambda x: cache[x]['date'])[-1]
     return cache[last_key]['index_to_cache_key']
 
-def get_mail_cache_key(idx, no_thread_output):
+def get_mail(idx, no_thread_output=False):
     cache = get_list_output_cache()
     sorted_keys = sorted(cache.keys(), key=lambda x: cache[x]['date'])
     if no_thread_output and sorted_keys[-1] == 'thread_output':
@@ -47,10 +47,8 @@ def get_mail_cache_key(idx, no_thread_output):
     cache[last_key]['output'] = '\n'.join(output_string_lines)
     writeback_list_output()
 
-    return idx_to_keys[idx_str]
-
-def get_mail(idx, no_thread_output=False):
-    return hkml_cache.get_mail(key=get_mail_cache_key(idx, no_thread_output))
+    mail_key = idx_to_keys[idx_str]
+    return hkml_cache.get_mail(key=mail_key)
 
 def set_mail_cache_key(mail):
     idx = mail.pridx
