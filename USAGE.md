@@ -308,3 +308,65 @@ $ ./hkml list foo.mbox --since 2024-01-10 --until 2024-01-20
 
 Users could also import the mbox file on their other mbox-supporting mail
 client.
+
+Monitoring Mails
+================
+
+Users can monitor new mails to specific mailing lists using `hkml monitor`
+command.  Using this, users can get periodic notification of summary or updates
+on specific mail threads that the user is not already in the loop, without
+subscribing to the mailing list.  It works with sub-sub commands, `add`,
+`status`, `remove`, and `start`.
+
+`hkml monitor add`
+------------------
+
+`add` command adds monitoring request.  Users can specify
+- the mailing lists to monitor,
+- How often the monitoring should be done,
+- what mails should be filtered in/out from the new mails,
+- how the monitored mails should be displayed, and
+- how the monitoring result should be delivered to users via command line
+  options.
+
+The command line options for specifying what mails to filtered and how those
+should be displayed are very similar to that of `list` command.
+
+It provides the monitoring results via the termina with some execution logs by
+default, but users can asks it to send the new findings via sending emails to
+specific addresses, or writing to specific files.
+
+For example, users ask `hkml` to monitor updates to the `DAMON Beer/Coffee/Tea
+chat series`
+[thread](https://lore.kernel.org/r/20220810225102.124459-1-sj@kernel.org) for
+every hour, format notification text with lore links for found new mails, and
+send the notification text to their personal email address, like below:
+
+```
+$ hkml monitor add damon \
+    --subject_keywords "DAMON Beer/Coffee/Tea chat series" \
+    --monitor_interval 3600 --lore --noti_mails $YOUR_EMAIL_ADDRESS \
+    --name "DAMON chat series monitoring"
+```
+
+`hkml monitor remove`
+---------------------
+
+Remove added monitoring requests.  User can specify the request to remove using
+the index of the request on the requests list that can be shown via `hkml
+monitor status`, or the name of the request which the user can set with `hkml
+monitor add` command.
+
+`hkml monitor status`
+---------------------
+
+Show status of the monitoring, including list of currently added monitoring
+requests.
+
+`hkml monitor start`
+--------------------
+
+Start the requested monitoring.  Monitoring requests that added after
+monitoring is started is not automatically added to the running instance.  You
+should start a new instance for new requests.  To stop running instance, you
+can simply Ctrl-C.
