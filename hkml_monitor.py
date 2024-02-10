@@ -10,7 +10,6 @@ import time
 
 import _hkml
 import hkml_list
-import hkml_monitor_add
 import hkml_thread
 import hkml_write
 
@@ -237,7 +236,10 @@ def stop_monitoring():
 
 def main(args):
     if args.action == 'add':
-        hkml_monitor_add.main(args)
+        add_requests(HkmlMonitorRequest(
+            args.mailing_lists, hkml_list.MailListFilter(args),
+            args.noti_mails, args.noti_files, args.monitor_interval,
+            args.name))
     elif args.action == 'status':
         for idx, request in enumerate(get_requests()):
             print('request %d' % idx)
@@ -265,13 +267,33 @@ def main(args):
     elif args.action == 'stop':
         stop_monitoring()
 
+def set_add_arguments(parser):
+    parser.add_argument(
+            'mailing_lists', nargs='+', metavar='<mailing list>',
+            help='monitoring target mailing lists')
+
+    hkml_list.add_mails_filter_arguments(parser)
+
+    parser.add_argument(
+            '--noti_mails', nargs='+', metavar='<email address>',
+            help='mail addresses to send monitoring results notification')
+    parser.add_argument(
+            '--noti_files', nargs='+', metavar='<file>',
+            help='file paths to write monitoring results notification')
+    parser.add_argument(
+            '--monitor_interval', type=int, metavar='<seconds>', default=300,
+            help='do monitoring once per this time interval')
+    parser.add_argument(
+            '--name', metavar='<name>',
+            help='name of the request')
+
 def set_argparser(parser):
     _hkml.set_manifest_option(parser)
     subparsers = parser.add_subparsers(
             title='action', dest='action', metavar='<action>')
 
     parser_add = subparsers.add_parser('add', help='add a monitoring request')
-    hkml_monitor_add.set_argparser(parser_add)
+    set_add_arguments(parser_add)
 
     parser_remove = subparsers.add_parser(
             'remove', help='remove a given monitoring request')
