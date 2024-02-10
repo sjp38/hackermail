@@ -431,6 +431,9 @@ def mails_to_str(mails_to_show, mails_filter, list_decorator, show_thread_of,
         nr_cols = list_decorator.cols
         show_runtime_profile = list_decorator.runtime_profile
 
+    if nr_cols is None:
+        nr_cols = 80
+
     lines = []
 
     timestamp = time.time()
