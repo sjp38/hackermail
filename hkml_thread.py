@@ -66,8 +66,17 @@ def main(args=None):
         mails_to_show = hkml_list.last_listed_mails()
 
     nr_cols_in_line = int(os.get_terminal_size().columns * 9 / 10)
+    list_decorator = hkml_list.MailListDecorator(None)
+    list_decorator.show_stat = False
+    list_decorator.ascend = True,
+    list_decorator.sort_threads_by = ['first_date'],
+    list_decorator.collapse = False
+    list_decorator.lore = args.lore
+    list_decorator.cols = nr_cols_in_line
+    list_decorator.show_runtime_profile = False
+
     to_show = hkml_list.mails_to_str(
-            mails_to_show, mails_filter=None, list_decorator=None,
+            mails_to_show, mails_filter=None, list_decorator=list_decorator,
             show_stat=False, show_thread_of=args.mail_idx, descend=False,
             sort_threads_by=['first_date'], collapse_threads=None,
             show_lore_link=args.lore, nr_cols=nr_cols_in_line,
