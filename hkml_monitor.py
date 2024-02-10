@@ -154,8 +154,17 @@ def format_noti_text(request, mails_to_noti):
             '',
             ]
 
+    list_decorator = hkml_list.MailListDecorator(None)
+    list_decorator.show_stat = True
+    list_decorator.ascend = False
+    list_decorator.sort_threads_by = ['first_date']
+    list_decorator.collapse = False
+    list_decorator.lore = show_lore_link
+    list_decorator.cols = 80
+    list_decorator.show_runtime_profile = False
+
     lines.append(hkml_list.mails_to_str(
-        mails_to_noti, mails_filter=None, list_decorator=None,
+        mails_to_noti, mails_filter=None, list_decorator=list_decorator,
         show_stat=True, show_thread_of=None,
         descend=True, sort_threads_by=['first_date'], collapse_threads=False,
         show_lore_link=show_lore_link, nr_cols=80, runtime_profile=[],
