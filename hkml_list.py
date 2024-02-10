@@ -586,6 +586,26 @@ def add_mails_filter_arguments(parser):
     parser.add_argument('--new', '-n', action='store_true',
             help='list new threads only')
 
+def add_decoration_arguments(parser):
+    parser.add_argument('--collapse', '-c', action='store_true',
+            help='collapse threads')
+    parser.add_argument('--sort_threads_by', nargs='+',
+            choices=['first_date', 'last_date', 'nr_replies', 'nr_comments'],
+            default=['last_date'],
+            help='threads sort keys')
+    parser.add_argument('--ascend', action='store_true',
+            help='sort threads in ascending order')
+    parser.add_argument('--hot', action='store_true',
+            help='show threads having more comments and later updated first.')
+    parser.add_argument('--cols', metavar='<int>', type=int,
+            help='number of columns for each line')
+    parser.add_argument('--lore', action='store_true',
+            help='print lore link for mails')
+    parser.add_argument('--hide_stat', action='store_true',
+            help='hide stat of the mails')
+    parser.add_argument('--runtime_profile', action='store_true',
+            help='print runtime profiling result')
+
 def set_argparser(parser=None):
     DEFAULT_SINCE = datetime.datetime.now() - datetime.timedelta(days=3)
     DEFAULT_SINCE = DEFAULT_SINCE.strftime('%Y-%m-%d')
@@ -619,34 +639,13 @@ def set_argparser(parser=None):
             help='maximum number of mails to list')
 
     add_mails_filter_arguments(parser)
-
-    # How to show the mails
-    parser.add_argument('--collapse', '-c', action='store_true',
-            help='collapse threads')
-    parser.add_argument('--sort_threads_by', nargs='+',
-            choices=['first_date', 'last_date', 'nr_replies', 'nr_comments'],
-            default=['last_date'],
-            help='threads sort keys')
-    parser.add_argument('--ascend', action='store_true',
-            help='sort threads in ascending order')
-
-    parser.add_argument('--hot', action='store_true',
-            help='show threads having more comments and later updated first.')
+    add_decoration_arguments(parser)
 
     # misc
     parser.add_argument('--fetch', action='store_true',
             help='fetch mails before listing')
-
-    parser.add_argument('--cols', metavar='<int>', type=int,
-            help='number of columns for each line')
-    parser.add_argument('--lore', action='store_true',
-            help='print lore link for mails')
-    parser.add_argument('--hide_stat', action='store_true',
-            help='hide stat of the mails')
     parser.add_argument('--stdout', action='store_true',
             help='print to stdout instead of using the pager')
-    parser.add_argument('--runtime_profile', action='store_true',
-            help='print runtime profiling result')
     parser.add_argument(
             '--quiet', action='store_true',
             help='don\'t display the list but only generate the list')
