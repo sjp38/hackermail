@@ -170,6 +170,17 @@ class MailListDecorator:
         self.hide_stat = args.hide_stat
         self.runtime_profile = args.runtime_profile
 
+    def to_kvpairs(self):
+        kvpairs = copy.deepcopy(vars(self))
+        return {k: v for k, v in kvpairs.items() if v is not None}
+
+    @classmethod
+    def from_kvpairs(cls, kvpairs):
+        self = cls(None)
+        for key, value in kvpairs.items():
+            setattr(self, key, value)
+        return self
+
 def lore_url(mail):
     return 'https://lore.kernel.org/r/%s' % mail.get_field('message-id')[1:-1]
 
