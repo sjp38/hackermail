@@ -54,6 +54,14 @@ def writeback_list_output():
     with open(list_output_cache_file_path(), 'w') as f:
         json.dump(cache, f, indent=4)
 
+def get_cached_list_outputs(key):
+    cache = get_list_output_cache()
+    if not key in cache:
+        return None
+    outputs = cache[key]
+    outputs['date'] = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
+    return outputs
+
 def get_cached_list_output(key):
     cache = get_list_output_cache()
     if not key in cache:
