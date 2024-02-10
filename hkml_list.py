@@ -157,6 +157,7 @@ class MailListDecorator:
     lore = None
     hide_stat = None
     runtime_profile = None
+    max_len = None
 
     def __init__(self, args):
         if args is None:
@@ -169,6 +170,7 @@ class MailListDecorator:
         self.lore = args.lore
         self.hide_stat = args.hide_stat
         self.runtime_profile = args.runtime_profile
+        self.max_len = args.max_len_list
 
     def to_kvpairs(self):
         kvpairs = copy.deepcopy(vars(self))
@@ -454,7 +456,9 @@ def mails_to_str(mails_to_show, mails_filter, list_decorator, show_thread_of,
     # Show all by default
     if show_thread_of is None:
         start_idx = 0
-        end_idx = len(mails_to_show)
+        end_idx = list_decorator.max_len
+        if end_idx is None:
+            end_idx = len(mails_to_show)
     else:
         mail = by_pr_idx[show_thread_of]
         root = root_of_thread(mail)
@@ -645,6 +649,9 @@ def add_decoration_arguments(parser):
             help='hide stat of the mails')
     parser.add_argument('--runtime_profile', action='store_true',
             help='print runtime profiling result')
+    parser.add_argument(
+            '--max_len_list', metavar='<int>', type=int,
+            help='max length of the list')
 
 def set_argparser(parser=None):
     DEFAULT_SINCE = datetime.datetime.now() - datetime.timedelta(days=3)
