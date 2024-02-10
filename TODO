@@ -4,3 +4,4 @@
     - message id
     - lore link
 - Tag mails (Store the information under .hkm directory in some format)
+- Document monitor command
