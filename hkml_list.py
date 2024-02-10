@@ -62,13 +62,13 @@ def get_cached_list_outputs(key):
     outputs['date'] = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
     return outputs
 
-def get_cached_list_output(key):
+def get_list_str(key):
     outputs = get_cached_list_outputs(key)
     if outputs is None:
         return None
     return outputs['output']
 
-def get_last_list_output():
+def get_last_list_str():
     cache = get_list_output_cache()
     keys = [k for k in cache if k != 'thread_output']
     key = sorted(keys, key=lambda x: cache[x]['date'])[-1]
@@ -77,7 +77,7 @@ def get_last_list_output():
         return None
     return outputs['output']
 
-def get_last_thread_output():
+def get_last_thread_str():
     cache = get_list_output_cache()
     outputs = get_cached_list_outputs('thread_output')
     if outputs is None:
@@ -102,10 +102,10 @@ def writeback_list_output_cache():
     with open(list_output_cache_file_path(), 'w') as f:
         json.dump(cache, f, indent=4)
 
-def cache_list_output(key, output):
+def cache_list_str(key, list_str):
     cache = get_list_output_cache()
     cache[key] = {
-            'output': '\n'.join(['# (cached output)', output]),
+            'output': '\n'.join(['# (cached output)', list_str]),
             'index_to_cache_key': mail_idx_key_mapping,
             'date': datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')}
     max_cache_sz = 64
@@ -660,12 +660,12 @@ def main(args=None):
     list_output_cache_key = args_to_list_output_key(args)
     if args.fetch == False or args.sources == []:
         if args.sources == []:
-            to_show = get_last_list_output()
+            to_show = get_last_list_str()
             if to_show is None:
                 print('no valid last list output exists')
                 exit(1)
         else:
-            to_show = get_cached_list_output(list_output_cache_key)
+            to_show = get_list_str(list_output_cache_key)
         if to_show is not None:
             if args.quiet is False:
                 if args.stdout:
@@ -722,7 +722,7 @@ def main(args=None):
             args.lore, nr_cols_in_line, runtime_profile,
             args.runtime_profile)
     hkml_cache.writeback_mails()
-    cache_list_output(list_output_cache_key, to_show)
+    cache_list_str(list_output_cache_key, to_show)
 
     if args.quiet:
         return

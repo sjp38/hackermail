@@ -42,7 +42,7 @@ def main(args=None):
         args = parser.parse_args()
 
     if args.mail_idx is None:
-        to_show = hkml_list.get_last_thread_output()
+        to_show = hkml_list.get_last_thread_str()
         hkml_open.pr_with_pager_if_needed(to_show)
         return
 
@@ -75,7 +75,7 @@ def main(args=None):
 
     if use_b4:
         hkml_cache.writeback_mails()
-        hkml_list.cache_list_output('thread_output', to_show)
+        hkml_list.cache_list_str('thread_output', to_show)
     hkml_open.pr_with_pager_if_needed(to_show)
 
 if __name__ == '__main__':
