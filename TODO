@@ -3,9 +3,6 @@
   - Mail source types extension
     - message id
     - lore link
-  - Show last open/thread-expanded mail index on comments
-- thread
-  - Show last open mail index on comments
 - Tag mails (Store the information under .hkm directory in some format)
 - monitor
   - Add flags for decorating the report
@@ -14,4 +11,3 @@
     - whole mails plus thread
     - maybe we can  just use 'list' output as noti text, and add options for
       list decoration.
-- Remove --manifest option
