@@ -38,6 +38,15 @@ def get_mail_cache_key(idx, no_thread_output):
     idx_str = '%d' % idx
     if not idx_str in idx_to_keys:
         return None
+
+    output_string_lines = cache[last_key]['output'].split('\n')
+    if output_string_lines[0].startswith('# last reference: '):
+        output_string_lines = output_string_lines[2:]
+    output_string_lines = ['# last reference: %d' % idx,
+                           '#'] + output_string_lines
+    cache[last_key]['output'] = '\n'.join(output_string_lines)
+    writeback_list_output()
+
     return idx_to_keys[idx_str]
 
 def get_mail(idx, no_thread_output=False):
