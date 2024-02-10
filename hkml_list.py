@@ -15,7 +15,7 @@ import hkml_fetch
 import hkml_open
 
 '''
-Contains list command generated things to cache for later fast processing.
+Contains list command generated outputs to cache for later fast processing.
 Keys are the json string of the list command arguments, or 'thread_output'.
 Values are a dict containing below key/values.
 - 'output': the list command's terminal output string.
@@ -63,24 +63,26 @@ def get_cached_list_outputs(key):
     return outputs
 
 def get_cached_list_output(key):
-    cache = get_list_output_cache()
-    if not key in cache:
+    outputs = get_cached_list_outputs(key)
+    if outputs is None:
         return None
-    cache[key]['date'] = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
-    return cache[key]['output']
+    return outputs['output']
 
 def get_last_list_output():
     cache = get_list_output_cache()
     keys = [k for k in cache if k != 'thread_output']
     key = sorted(keys, key=lambda x: cache[x]['date'])[-1]
-    cache[key]['date'] = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
-    return cache[key]['output']
+    outputs = get_cached_list_outputs(key)
+    if outputs is None:
+        return None
+    return outputs['output']
 
 def get_last_thread_output():
     cache = get_list_output_cache()
-    if not 'thread_output' in cache:
-        return 'no valid thread output'
-    return cache['thread_output']['output']
+    outputs = get_cached_list_outputs('thread_output')
+    if outputs is None:
+        return None
+    return outputs['output']
 
 def invalidate_cached_outputs(source):
     keys_to_del = []
