@@ -15,13 +15,7 @@ import hkml_fetch
 import hkml_open
 
 # mappings from mail index to the key of the mail in the mail cache
-mail_idx_key_mapping = None
-
-def get_mail_idx_key_mapping():
-    global mail_idx_key_mapping
-    if mail_idx_key_mapping is None:
-        mail_idx_key_mapping = {}
-    return mail_idx_key_mapping
+mail_idx_key_mapping = {}
 
 def get_mail(idx, no_thread_output=False):
     cache = get_list_output_cache()
@@ -51,7 +45,7 @@ def set_mail_cache_key(mail):
     key = hkml_cache.get_cache_key(
             mail.gitid, mail.gitdir, mail.get_field('message-id'))
 
-    cache = get_mail_idx_key_mapping()
+    cache = mail_idx_key_mapping
     idx_str = '%d' % idx
     if idx_str in cache:
         return
@@ -130,7 +124,7 @@ def cache_list_output(key, output):
     cache = get_list_output_cache()
     cache[key] = {
             'output': '\n'.join(['# (cached output)', output]),
-            'index_to_cache_key': get_mail_idx_key_mapping(),
+            'index_to_cache_key': mail_idx_key_mapping,
             'date': datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')}
     max_cache_sz = 64
     if len(cache) == max_cache_sz:
