@@ -32,7 +32,6 @@ def args_to_list_output_key(args):
     dict_ = copy.deepcopy(args.__dict__)
     dict_['fetch'] = False
     dict_['stdout'] = False
-    del dict_['quiet']
 
     return json.dumps(dict_, sort_keys=True)
 
@@ -646,9 +645,6 @@ def set_argparser(parser=None):
             help='fetch mails before listing')
     parser.add_argument('--stdout', action='store_true',
             help='print to stdout instead of using the pager')
-    parser.add_argument(
-            '--quiet', action='store_true',
-            help='don\'t display the list but only generate the list')
 
 def main(args=None):
     if not args:
@@ -666,11 +662,10 @@ def main(args=None):
         else:
             to_show = get_list_str(list_output_cache_key)
         if to_show is not None:
-            if args.quiet is False:
-                if args.stdout:
-                    print(to_show)
-                else:
-                    hkml_open.pr_with_pager_if_needed(to_show)
+            if args.stdout:
+                print(to_show)
+            else:
+                hkml_open.pr_with_pager_if_needed(to_show)
             writeback_list_output()
             return
     else:
@@ -722,9 +717,6 @@ def main(args=None):
             args.runtime_profile)
     hkml_cache.writeback_mails()
     cache_list_str(list_output_cache_key, to_show)
-
-    if args.quiet:
-        return
 
     if args.stdout:
         print(to_show)
