@@ -149,6 +149,27 @@ def map_idx_to_mail_cache_key(mail):
         return
     mail_idx_key_mapping[idx_str] = key
 
+class MailListDecorator:
+    collapse = None
+    sort_threads_by = None
+    ascend = None
+    cols = None
+    lore = None
+    hide_stat = None
+    runtime_profile = None
+
+    def __init__(self, args):
+        if args is None:
+            return
+
+        self.collapse = args.collapse
+        self.sort_threads_by = args.sort_threads_by
+        self.ascend = args.ascend
+        self.cols = args.cols
+        self.lore = args.lore
+        self.hide_stat = args.hide_stat
+        self.runtime_profile = args.runtime_profile
+
 def lore_url(mail):
     return 'https://lore.kernel.org/r/%s' % mail.get_field('message-id')[1:-1]
 
@@ -386,12 +407,21 @@ def format_stat(mails_to_show):
     return lines
 
 def mails_to_str(
-        mails_to_show, mails_filter,
+        mails_to_show, mails_filter, list_decorator,
         show_stat, show_thread_of, descend,
         sort_threads_by, collapse_threads,
         show_lore_link, nr_cols, runtime_profile, show_runtime_profile):
     if len(mails_to_show) == 0:
         return 'no mail'
+
+    if list_decorator is not None:
+        show_stat = not list_decorator.hide_stat
+        descend = not list_decorator.ascend
+        sort_threads_by = list_decorator.sort_threads_by
+        collapse_threads = list_decorator.collapse
+        show_lore_link = list_decorator.lore
+        nr_cols = list_decorator.cols
+        show_runtime_profile = list_decorator.runtime_profile
 
     lines = []
 
@@ -683,13 +713,12 @@ def main(args=None):
         args.min_nr_mails = args.nr_mails
         args.max_nr_mails = args.nr_mails
 
-    nr_cols_in_line = args.cols
-    if nr_cols_in_line is None:
+    if args.cols is None:
         try:
-            nr_cols_in_line = int(os.get_terminal_size().columns * 9 / 10)
+            args.cols = int(os.get_terminal_size().columns * 9 / 10)
         except OSError as e:
             # maybe user is doing pipe
-            nr_cols_in_line = 80
+            args.cols = 80
 
     timestamp = time.time()
     runtime_profile = []
@@ -710,10 +739,11 @@ def main(args=None):
     to_show = mails_to_str(
             mails_to_show,
             MailListFilter(args),
+            MailListDecorator(args),
             not args.hide_stat, None,
             not args.ascend, args.sort_threads_by,
             args.collapse,
-            args.lore, nr_cols_in_line, runtime_profile,
+            args.lore, args.cols, runtime_profile,
             args.runtime_profile)
     hkml_cache.writeback_mails()
     cache_list_str(list_output_cache_key, to_show)
