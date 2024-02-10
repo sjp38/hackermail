@@ -50,7 +50,6 @@ class HkmlMonitorRequest:
             list_decorator.collapse = False
             list_decorator.lore = (
                     _hkml.get_manifest()['site'] == 'https://lore.kernel.org')
-            list_decorator.cols = 80
             list_decorator.show_runtime_profile = False
             self.mail_list_decorator = list_decorator
             return

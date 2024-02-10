@@ -728,8 +728,7 @@ def main(args=None):
         try:
             args.cols = int(os.get_terminal_size().columns * 9 / 10)
         except OSError as e:
-            # maybe user is doing pipe
-            args.cols = 80
+            pass
 
     timestamp = time.time()
     runtime_profile = []
