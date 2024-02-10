@@ -165,10 +165,7 @@ def format_noti_text(request, mails_to_noti):
 
     lines.append(hkml_list.mails_to_str(
         mails_to_noti, mails_filter=None, list_decorator=list_decorator,
-        show_stat=True, show_thread_of=None,
-        descend=True, sort_threads_by=['first_date'], collapse_threads=False,
-        show_lore_link=show_lore_link, nr_cols=80, runtime_profile=[],
-        show_runtime_profile=False))
+        show_thread_of=None, runtime_profile=[]))
     noti_text = '\n'.join(lines)
     return noti_text
 

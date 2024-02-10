@@ -77,10 +77,7 @@ def main(args=None):
 
     to_show = hkml_list.mails_to_str(
             mails_to_show, mails_filter=None, list_decorator=list_decorator,
-            show_stat=False, show_thread_of=args.mail_idx, descend=False,
-            sort_threads_by=['first_date'], collapse_threads=None,
-            show_lore_link=args.lore, nr_cols=nr_cols_in_line,
-            runtime_profile=[], show_runtime_profile=False)
+            show_thread_of=args.mail_idx, runtime_profile=[])
 
     if use_b4:
         hkml_cache.writeback_mails()

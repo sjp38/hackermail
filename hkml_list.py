@@ -406,11 +406,8 @@ def format_stat(mails_to_show):
         lines.append('# newest: %s' % latest.date)
     return lines
 
-def mails_to_str(
-        mails_to_show, mails_filter, list_decorator,
-        show_stat, show_thread_of, descend,
-        sort_threads_by, collapse_threads,
-        show_lore_link, nr_cols, runtime_profile, show_runtime_profile):
+def mails_to_str(mails_to_show, mails_filter, list_decorator, show_thread_of,
+                 runtime_profile):
     if len(mails_to_show) == 0:
         return 'no mail'
 
@@ -736,15 +733,8 @@ def main(args=None):
     if args.max_nr_mails is not None:
         mails_to_show = mails_to_show[:args.max_nr_mails]
 
-    to_show = mails_to_str(
-            mails_to_show,
-            MailListFilter(args),
-            MailListDecorator(args),
-            not args.hide_stat, None,
-            not args.ascend, args.sort_threads_by,
-            args.collapse,
-            args.lore, args.cols, runtime_profile,
-            args.runtime_profile)
+    to_show = mails_to_str(mails_to_show, MailListFilter(args),
+                           MailListDecorator(args), None, runtime_profile)
     hkml_cache.writeback_mails()
     cache_list_str(list_output_cache_key, to_show)
 
