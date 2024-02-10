@@ -14,6 +14,15 @@ import hkml_cache
 import hkml_fetch
 import hkml_open
 
+'''
+Contains list command generated things to cache for later fast processing.
+Keys are the json string of the list command arguments, or 'thread_output'.
+Values are a dict containing below key/values.
+- 'output': the list command's terminal output string.
+- 'index_to_cache_key': a dict having the mail index on the output as keys, and
+  the corresponding mail's key in the mail cache as values.
+- 'date': last accessed date
+'''
 list_output_cache = None
 
 def list_output_cache_file_path():
