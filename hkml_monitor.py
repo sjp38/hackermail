@@ -16,6 +16,7 @@ import hkml_write
 class HkmlMonitorRequest:
     mailing_lists = None
     mail_list_filter = None
+    mail_list_decorator = None
 
     noti_mails = None
     noti_files = None
@@ -24,10 +25,11 @@ class HkmlMonitorRequest:
 
     name = None
 
-    def __init__(self, mailing_lists, mail_list_filter,
+    def __init__(self, mailing_lists, mail_list_filter, mail_list_decorator,
                  noti_mails, noti_files, monitor_interval, name):
         self.mailing_lists = mailing_lists
         self.mail_list_filter = mail_list_filter
+        self.mail_list_decorator = mail_list_decorator
         self.noti_mails = noti_mails
         self.noti_files = noti_files
         self.monitor_interval = monitor_interval
@@ -36,18 +38,38 @@ class HkmlMonitorRequest:
     def to_kvpairs(self):
         kvpairs = copy.deepcopy(vars(self))
         kvpairs['mail_list_filter'] = self.mail_list_filter.to_kvpairs()
+        kvpairs['mail_list_decorator'] = self.mail_list_decorator.to_kvpairs()
         return {k: v for k, v in kvpairs.items() if v is not None}
+
+    def set_mail_list_decorator_from_kvpairs(self, kvpairs):
+        if kvpairs is None:
+            list_decorator = hkml_list.MailListDecorator(None)
+            list_decorator.show_stat = True
+            list_decorator.ascend = False
+            list_decorator.sort_threads_by = ['first_date']
+            list_decorator.collapse = False
+            list_decorator.lore = (
+                    _hkml.get_manifest()['site'] == 'https://lore.kernel.org')
+            list_decorator.cols = 80
+            list_decorator.show_runtime_profile = False
+            self.mail_list_decorator = list_decorator
+            return
+        self.mail_list_decorator = hkml_list.MailListDecorator.from_kvpairs(
+                kvpairs)
 
     @classmethod
     def from_kvpairs(cls, kvpairs):
-        self = cls(*[None] * 6)
+        self = cls(*[None] * 7)
         for key, value in kvpairs.items():
-            if key == 'mail_list_filter':
+            if key in ['mail_list_filter', 'mail_list_decorator']:
                 continue
             setattr(self, key, value)
 
         self.mail_list_filter = hkml_list.MailListFilter.from_kvpairs(
                 kvpairs['mail_list_filter'])
+        self.set_mail_list_decorator_from_kvpairs(
+                kvpairs['mail_list_decorator']
+                if 'mail_list_decorator' in kvpairs else None)
         return self
 
     def __str__(self):
@@ -145,19 +167,6 @@ def get_mails_to_noti(mails_to_check, request):
 
     return mails_to_noti
 
-def default_list_decorator():
-    show_lore_link = _hkml.get_manifest()['site'] == 'https://lore.kernel.org'
-    list_decorator = hkml_list.MailListDecorator(None)
-    list_decorator.show_stat = True
-    list_decorator.ascend = False
-    list_decorator.sort_threads_by = ['first_date']
-    list_decorator.collapse = False
-    list_decorator.lore = show_lore_link
-    list_decorator.cols = 80
-    list_decorator.show_runtime_profile = False
-
-    return list_decorator
-
 def format_noti_text(request, mails_to_noti):
     lines = [
             'monitor result noti at %s' % datetime.datetime.now(),
@@ -166,7 +175,7 @@ def format_noti_text(request, mails_to_noti):
             '',
             ]
 
-    list_decorator = default_list_decorator()
+    list_decorator = request.mail_list_decorator
 
     lines.append(hkml_list.mails_to_str(
         mails_to_noti, mails_filter=None, list_decorator=list_decorator,
@@ -250,6 +259,7 @@ def main(args):
     if args.action == 'add':
         add_requests(HkmlMonitorRequest(
             args.mailing_lists, hkml_list.MailListFilter(args),
+            hkml_list.MailListDecorator(args),
             args.noti_mails, args.noti_files, args.monitor_interval,
             args.name))
     elif args.action == 'status':
@@ -285,6 +295,7 @@ def set_add_arguments(parser):
             help='monitoring target mailing lists')
 
     hkml_list.add_mails_filter_arguments(parser)
+    hkml_list.add_decoration_arguments(parser)
 
     parser.add_argument(
             '--noti_mails', nargs='+', metavar='<email address>',
