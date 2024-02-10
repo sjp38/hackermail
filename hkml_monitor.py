@@ -145,15 +145,8 @@ def get_mails_to_noti(mails_to_check, request):
 
     return mails_to_noti
 
-def format_noti_text(request, mails_to_noti):
+def default_list_decorator():
     show_lore_link = _hkml.get_manifest()['site'] == 'https://lore.kernel.org'
-    lines = [
-            'monitor result noti at %s' % datetime.datetime.now(),
-            'monitor request',
-            '%s' % request,
-            '',
-            ]
-
     list_decorator = hkml_list.MailListDecorator(None)
     list_decorator.show_stat = True
     list_decorator.ascend = False
@@ -162,6 +155,18 @@ def format_noti_text(request, mails_to_noti):
     list_decorator.lore = show_lore_link
     list_decorator.cols = 80
     list_decorator.show_runtime_profile = False
+
+    return list_decorator
+
+def format_noti_text(request, mails_to_noti):
+    lines = [
+            'monitor result noti at %s' % datetime.datetime.now(),
+            'monitor request',
+            '%s' % request,
+            '',
+            ]
+
+    list_decorator = default_list_decorator()
 
     lines.append(hkml_list.mails_to_str(
         mails_to_noti, mails_filter=None, list_decorator=list_decorator,
