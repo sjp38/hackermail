@@ -278,11 +278,16 @@ def main(args):
         else:
             try:
                 ignore_mails_before = datetime.datetime.strptime(
-                        args.since, '%Y-%m-%d %H:%M:%S')
+                        args.since, '%Y-%m-%d')
             except:
-                print('parsing --since failed')
-                print('the argument should be in \'%Y-%m-%d %H:%M:%S\' format')
-                exit(1)
+                try:
+                    ignore_mails_before = datetime.datetime.strptime(
+                            args.since, '%Y-%m-%d %H:%M:%S')
+                except:
+                    print('parsing --since failed')
+                    print(' '.join(['the argument should be in \'%Y-%m-%d\'',
+                                    'or \'%Y-%m-%d %H:%M:%S\' format']))
+                    exit(1)
 
         start_monitoring(ignore_mails_before)
     elif args.action == 'stop':
@@ -329,7 +334,7 @@ def set_argparser(parser):
     parser_start = subparsers.add_parser(
             'start', help='start monitoring')
     parser_start.add_argument(
-            '--since', metavar='<%Y-%m-%d %H:%M:%S>',
+            '--since', metavar='<%Y-%m-%d[ %H:%M:%S]>',
             help='Ignore monitoring target mails that sent before this time')
 
     parser_stop = subparsers.add_parser(
