@@ -23,11 +23,6 @@ def get_mail_idx_key_mapping():
         mail_idx_key_mapping = {}
     return mail_idx_key_mapping
 
-def get_last_mail_idx_key_cache():
-    cache = get_list_output_cache()
-    last_key = sorted(cache.keys(), key=lambda x: cache[x]['date'])[-1]
-    return cache[last_key]['index_to_cache_key']
-
 def get_mail(idx, no_thread_output=False):
     cache = get_list_output_cache()
     sorted_keys = sorted(cache.keys(), key=lambda x: cache[x]['date'])
