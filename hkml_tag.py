@@ -75,13 +75,24 @@ def remove_tags(mail_idx, tags):
         existing_tags.remove(tag)
     write_tags_file(tags_map)
 
+def list_tags():
+    tag_nr_mails = {}
+    tags_map = read_tags_file()
+    for msgid in tags_map:
+        for tag in tags_map[msgid]['tags']:
+            if not tag in tag_nr_mails:
+                tag_nr_mails[tag] = 0
+            tag_nr_mails[tag] += 1
+    for tag, nr_mails in tag_nr_mails.items():
+        print('%s: %d mails' % (tag, nr_mails))
+
 def main(args):
     if args.action == 'add':
         return add_tags(args.mail_idx, args.tags)
     elif args.action == 'remove':
         return remove_tags(args.mail_idx, args.tags)
     elif args.action == 'list':
-        pirnt('list')
+        return list_tags()
 
 def set_argparser(parser):
     parser.description = 'manage tags of mails'
