@@ -13,6 +13,7 @@ import _hkml
 import hkml_cache
 import hkml_fetch
 import hkml_open
+import hkml_tag
 
 '''
 Contains list command generated outputs to cache for later fast processing.
@@ -591,6 +592,16 @@ def get_mails(source, fetch, since, until,
         mails.sort(key=lambda mail: mail.date)
         return mails
 
+    # now, source should be mailing list or hkml tag.
+    source_is_tag = True
+    manifest = _hkml.get_manifest()
+    for mail_list_git_path in manifest.keys():
+        if mail_list_git_path.startswith('/%s/' % source):
+            source_is_tag = False
+            break
+    if source_is_tag is True:
+        return hkml_tag.mails_of_tag(source)
+
     if fetch:
         hkml_fetch.fetch_mail([source], True, 1)
 
@@ -669,7 +680,8 @@ def set_argparser(parser=None):
             '2) Path to mbox file in the local filesyste.',
             '3) Special keyword, \'clipboard\'.',
             '\'clipboard\' means mbox string in the clipboard.',
-            '4) If nothing is given, show last list output.',
+            '4) \'hkml tag\'-added tag.',
+            '5) If nothing is given, show last list output.',
             ]))
     parser.add_argument('--since', metavar='<date>', type=str,
             default=DEFAULT_SINCE,
