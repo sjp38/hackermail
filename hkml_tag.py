@@ -1,7 +1,58 @@
 # SPDX-License-Identifier: GPL-2.0
 
+import json
+import os
+
+import _hkml
+import hkml_list
+
+'''
+Tags information is saved in a json file called 'tags' under the hkml
+directory.
+
+The data structure is a map.  Keys are msgid of mails.  Values are map having
+keys 'mail' and 'tags'.  'mail' is _hkml.Mail.to_kvpairs() output of the mail
+of the message id.  'tags' is a list of tags for the mail.
+'''
+
+def tag_file_path():
+    return os.path.join(_hkml.get_hkml_dir(), 'tags')
+
+def read_tags_file():
+    if not os.path.isfile(tag_file_path()):
+        return {}
+    with open(tag_file_path(), 'r') as f:
+        return json.load(f)
+
+def write_tags_file(tags):
+    with open(tag_file_path(), 'w') as f:
+        json.dump(tags, f, indent=4)
+
+def add_tags(mail_idx, tags):
+    mail = hkml_list.get_mail(mail_idx)
+    if mail is None:
+        print('failed getting mail of the index.  Maybe wrong index?')
+        exit(1)
+
+    msgid = mail.get_field('message-id')
+
+    tags_map = read_tags_file()
+    if not msgid in tags_map:
+        tags_map[msgid] = {'mail': mail.to_kvpairs(), 'tags': tags}
+    else:
+        existing_tags = tags_map[msgid]['tags']
+        for tag in tags:
+            if not tag in existing_tags:
+                existing_tags.append(tag)
+    write_tags_file(tags_map)
+
 def main(args):
-    print(args)
+    if args.action == 'add':
+        return add_tags(args.mail_idx, args.tags)
+    elif args.action == 'remove':
+        print('remove')
+    elif args.action == 'list':
+        pirnt('list')
 
 def set_argparser(parser):
     parser.description = 'manage tags of mails'
@@ -10,7 +61,7 @@ def set_argparser(parser):
 
     parser_add = subparsers.add_parser('add', help='add tags to a mail')
     parser_add.add_argument(
-            'mail_idx', metavar='<index>',
+            'mail_idx', metavar='<index>', type=int,
             help='index of the mail to add tags')
     parser_add.add_argument(
             'tags', metavar='<string>', nargs='+',
