@@ -55,11 +55,31 @@ def add_tags(mail_idx, tags):
                 existing_tags.append(tag)
     write_tags_file(tags_map)
 
+def remove_tags(mail_idx, tags):
+    mail = hkml_list.get_mail(mail_idx)
+    if mail is None:
+        print('failed getting mail of the index.  Maybe wrong index?')
+        exit(1)
+
+    msgid = mail.get_field('message-id')
+
+    tags_map = read_tags_file()
+    if not msgid in tags_map:
+        print('seems the index is wrong, or having no tag')
+        exit(1)
+    existing_tags = tags_map[msgid]['tags']
+    for tag in tags:
+        if not tag in existing_tags:
+            print('the mail is not having the tag')
+            exit(1)
+        existing_tags.remove(tag)
+    write_tags_file(tags_map)
+
 def main(args):
     if args.action == 'add':
         return add_tags(args.mail_idx, args.tags)
     elif args.action == 'remove':
-        print('remove')
+        return remove_tags(args.mail_idx, args.tags)
     elif args.action == 'list':
         pirnt('list')
 
@@ -76,9 +96,10 @@ def set_argparser(parser):
             'tags', metavar='<string>', nargs='+',
             help='tags to add to the mail')
 
-    parser_remove = subparsers.add_parser('remove', help='remove tags from a mail')
+    parser_remove = subparsers.add_parser(
+            'remove', help='remove tags from a mail')
     parser_remove.add_argument(
-            'mail_idx', metavar='<index>',
+            'mail_idx', metavar='<index>', type=int,
             help='index of the mail to remove tags')
     parser_remove.add_argument(
             'tags', metavar='<string>', nargs='+',
