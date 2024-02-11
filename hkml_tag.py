@@ -28,6 +28,15 @@ def write_tags_file(tags):
     with open(tag_file_path(), 'w') as f:
         json.dump(tags, f, indent=4)
 
+def mails_of_tag(tag):
+    tags_map = read_tags_file()
+    mails = []
+    for msgid in tags_map:
+        tags = tags_map[msgid]['tags']
+        if tag in tags:
+            mails.append(_hkml.Mail(kvpairs=tags_map[msgid]['mail']))
+    return mails
+
 def add_tags(mail_idx, tags):
     mail = hkml_list.get_mail(mail_idx)
     if mail is None:
