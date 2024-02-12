@@ -173,6 +173,11 @@ class MailListDecorator:
         self.runtime_profile = args.runtime_profile
         self.max_len = args.max_len_list
 
+        if args.hot:
+            self.ascend = False
+            self.sort_threads_by = ['last_date', 'nr_comments']
+            self.collapse = True
+
     def to_kvpairs(self):
         kvpairs = copy.deepcopy(vars(self))
         return {k: v for k, v in kvpairs.items() if v is not None}
@@ -731,11 +736,6 @@ def main(args=None):
     else:
         for source in args.sources:
             invalidate_cached_outputs(source)
-
-    if args.hot:
-        args.ascend = False
-        args.sort_threads_by = ['last_date', 'nr_comments']
-        args.collapse = True
 
     if args.nr_mails is not None:
         args.since = (datetime.datetime.strptime(args.until, '%Y-%m-%d') -
