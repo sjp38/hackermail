@@ -40,6 +40,10 @@ Forward the 5th mail to others:
 
     $ ./hkml forward 5
 
+List entire mails of the 5th mail's thread of the list:
+
+    $ ./hkml thread 5
+
 Write and send a mail to the mailing list:
 
     $ ./hkml write --cc damon@lists.linux.dev
