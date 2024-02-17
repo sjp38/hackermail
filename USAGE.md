@@ -150,17 +150,18 @@ The output maybe intuitive to understand.  The first column of the each mail is
 called index or identifier of the mail, and be used by other sub-commands that
 will be described below.
 
-Listing only Thread of Given Mail
-=================================
+Listing Entire Thread of a Given Mail
+=====================================
 
-On huge mailing list, reading all `hkml list` output takes time.  Users can
-list mails of only specific threads containing specific mail using `thread`
+On huge mailing list, reading all `hkml list` output takes time.  Also, because
+`hkml list` lists mails that sent in user-specified time range (last three days
+by default), some old mails of some threads may not listed.  Users can list all
+mails of a specific threads containing a specific mail using `thread`
 sub-command.  The mail of the thread can be specified by passing the mail
 identifier of the mail to the sub-command.  The mail identifier should be that
-of previously generated list.  In other words, `thread` sub-command cannot be
-used before `list` sub-command is executed at least once.
+of previously generated list.
 
-For example, below command show the thread for mail identifier 13 of the above
+For example, below command shows the thread for mail identifier 13 of the above
 `hkml list` example.
 
 ```
