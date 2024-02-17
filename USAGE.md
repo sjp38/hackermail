@@ -109,41 +109,31 @@ mbox files.  You can pass the path to the mbox file instead of the mailing list
 name.
 
 Below example lists mails that sent to [DAMON](https://damonitor.github.io/)
-mailing list from 2024-01-10 to 2024-01-20.
+mailing list from 2024-02-15 to 2024-02-17.
 
 ```
-$ hkml list damon --fetch --since 2024-01-10 --until 2024-01-20 --min_nr_mails 0
-# 22 mails, 8 threads, 1 new threads
-# 21 patches, 1 series
-# oldest: 2024-01-13 10:42:50-08:00
-# newest: 2024-01-18 12:17:12-08:00
-[00] Re: [PATCH 5.15 00/59] 5.15.147-rc1 review (SeongJae Park, 01/13 10:42)
-[01] Re: [PATCH 6.1 0/4] 6.1.73-rc1 review (SeongJae Park, 01/13 10:43)
-[02] Re: [PATCH 6.6 0/1] 6.6.12-rc1 review (SeongJae Park, 01/13 10:44)
-[03] Re: DAMON Beer/Coffee/Tea chat series (SeongJae Park, 01/16 10:09)
-[04] [RFC PATCH 0/4] DAMON based 2-tier memory management for CXL memory (Honggyu
-     Kim, 01/14 20:52)
-[05]   [RFC PATCH 1/4] mm/vmscan: refactor reclaim_pages with
-       reclaim_or_migrate_folios (Honggyu Kim, 01/14 20:52)
-[06]     re: (SeongJae Park, 01/16 12:32)
-[07]   [RFC PATCH 2/4] mm/damon: introduce DAMOS_DEMOTE action for demotion (Honggyu
-       Kim, 01/14 20:52)
-[08]     re: (SeongJae Park, 01/16 12:32)
-[09]   [RFC PATCH 3/4] mm/memory-tiers: add next_promotion_node to find promotion
-       target (Honggyu Kim, 01/14 20:52)
-[10]     re: (SeongJae Park, 01/16 12:32)
-[11]   [RFC PATCH 4/4] mm/damon: introduce DAMOS_PROMOTE action for promotion
-       (Honggyu Kim, 01/14 20:52)
-[12]     re: (SeongJae Park, 01/16 12:32)
-[13]   re: (SeongJae Park, 01/16 12:31)
-[14]     re: (Honggyu Kim, 01/17 03:49)
-[15]       re: (SeongJae Park, 01/17 13:11)
-[16]         re: (SeongJae Park, 01/17 13:24)
-[17]         re: (Hyeongtak Ji, 01/18 02:40)
-[18]           re: (SeongJae Park, 01/18 09:17)
-[19] Re: [PATCH 6.1 000/100] 6.1.74-rc1 review (SeongJae Park, 01/18 10:35)
-[20] Re: [PATCH 6.6 000/150] 6.6.13-rc1 review (SeongJae Park, 01/18 10:36)
-[21] Re: [PATCH 6.7 00/28] 6.7.1-rc1 review (SeongJae Park, 01/18 12:17)
+$ hkml list damon --fetch --since 2024-02-15 --until 2024-02-17 --min_nr_mails 0
+# 9 mails, 2 threads, 2 new threads
+# 9 patches, 2 series
+# oldest: 2024-02-16 11:40:23-08:00
+# newest: 2024-02-16 16:58:42-08:00
+[0] [PATCH 0/5] Docs/mm/damon: misc readability improvements (SeongJae Park, 24/02/16 16:58)
+[1]   [PATCH 1/5] Docs/mm/damon/maintainer-profile: fix reference links for mm-[un]stable tree
+      (SeongJae Park, 24/02/16 16:58)
+[2]   [PATCH 2/5] Docs/mm/damon: move the list of DAMOS actions to design doc (SeongJae Park,
+      24/02/16 16:58)
+[3]   [PATCH 3/5] Docs/mm/damon: move DAMON operation sets list from the usage to the design
+      document (SeongJae Park, 24/02/16 16:58)
+[4]   [PATCH 4/5] Docs/mm/damon: move monitoring target regions setup detail from the usage to
+      the design document (SeongJae Park, 24/02/16 16:58)
+[5]   [PATCH 5/5] Docs/admin-guide/mm/damon/usage: fix wrong quotas diabling condition
+      (SeongJae Park, 24/02/16 16:58)
+[6] [PATCH 0/2] mm/damon: fix quota status loss due to online tunings (SeongJae Park, 24/02/16
+    11:40)
+[7]   [PATCH 1/2] mm/damon/reclaim: fix quota stauts loss due to online tunings (SeongJae
+      Park, 24/02/16 11:40)
+[8]   [PATCH 2/2] mm/damon/lru_sort: fix quota status loss due to online tunings (SeongJae
+      Park, 24/02/16 11:40)
 ```
 
 The output maybe intuitive to understand.  The first column of the each mail is
@@ -161,37 +151,33 @@ sub-command.  The mail of the thread can be specified by passing the mail
 identifier of the mail to the sub-command.  The mail identifier should be that
 of previously generated list.
 
-For example, below command shows the thread for mail identifier 13 of the above
-`hkml list` example.
+For example, below command shows the thread of the third mail on the above
+`hkml list` output.
 
 ```
-$ hkml thread 13
-[00] [RFC PATCH 0/4] DAMON based 2-tier memory management for CXL memory (Honggyu Kim, 01/14
-     20:52)
-[01]   re: (SeongJae Park, 01/16 12:31)
-[02]     re: (Honggyu Kim, 01/17 03:49)
-[03]       re: (SeongJae Park, 01/17 13:11)
-[04]         re: (SeongJae Park, 01/17 13:24)
-[05]         re: (Hyeongtak Ji, 01/18 02:40)
-[06]           re: (SeongJae Park, 01/18 09:17)
-[07]   [RFC PATCH 4/4] mm/damon: introduce DAMOS_PROMOTE action for promotion (Honggyu Kim,
-       01/14 20:52)
-[08]     re: (SeongJae Park, 01/16 12:32)
-[09]   [RFC PATCH 3/4] mm/memory-tiers: add next_promotion_node to find promotion target
-       (Honggyu Kim, 01/14 20:52)
-[10]     re: (SeongJae Park, 01/16 12:32)
-[11]   [RFC PATCH 2/4] mm/damon: introduce DAMOS_DEMOTE action for demotion (Honggyu Kim,
-       01/14 20:52)
-[12]     re: (SeongJae Park, 01/16 12:32)
-[13]   [RFC PATCH 1/4] mm/vmscan: refactor reclaim_pages with reclaim_or_migrate_folios
-       (Honggyu Kim, 01/14 20:52)
-[14]     re: (SeongJae Park, 01/16 12:32)
+$ hkml thread 3
+# 6 mails, 1 threads, 1 new threads
+# 6 patches, 1 series
+# oldest: 2024-02-16 16:58:37-08:00
+# newest: 2024-02-16 16:58:42-08:00
+[0] [PATCH 0/5] Docs/mm/damon: misc readability improvements (SeongJae Park, 24/02/16 16:58)
+[1]   [PATCH 1/5] Docs/mm/damon/maintainer-profile: fix reference links for mm-[un]stable tree
+      (SeongJae Park, 24/02/16 16:58)
+[2]   [PATCH 2/5] Docs/mm/damon: move the list of DAMOS actions to design doc (SeongJae Park,
+      24/02/16 16:58)
+[3]   [PATCH 3/5] Docs/mm/damon: move DAMON operation sets list from the usage to the design
+      document (SeongJae Park, 24/02/16 16:58)
+[4]   [PATCH 4/5] Docs/mm/damon: move monitoring target regions setup detail from the usage to
+      the design document (SeongJae Park, 24/02/16 16:58)
+[5]   [PATCH 5/5] Docs/admin-guide/mm/damon/usage: fix wrong quotas diabling condition
+      (SeongJae Park, 24/02/16 16:58)
 ```
 
-If the system is having [b4](https://b4.docs.kernel.org/), the command
-downloads whole mails of the thread and shows the list.  If the system is not
-having `b4`, only the mails of the thread in the previously generated list is
-listed.  Note that the mail identifiers are newly generated when `b4` is used.
+If the system is having [b4](https://b4.docs.kernel.org/) installed, the
+command downloads whole mails of the thread and shows the list.  If the system
+is not having `b4`, only the mails of the thread in the previously generated
+list is listed.  Note that the mail identifiers are newly generated when `b4`
+is used.
 
 Reading Mails
 =============
@@ -203,33 +189,23 @@ generated `list` or `thread` output.
 For example, below command shows the 18-th mail of the above list.
 
 ```
-$ hkml open 18
-Local-Date: 2024-01-18 09:17:56-08:00
-Date: Thu, 18 Jan 2024 09:17:56 -0800
-Subject: Re: [RFC PATCH 0/4] DAMON based 2-tier memory management for CXL memory
-Message-Id: <20240118171756.80356-1-sj@kernel.org>
+$ hkml open 3
+Local-Date: 2024-02-16 16:58:40-08:00
+Date: Fri, 16 Feb 2024 16:58:40 -0800
+Subject: [PATCH 3/5] Docs/mm/damon: move DAMON operation sets list from the usage to the design document
+Message-Id: <20240217005842.87348-4-sj@kernel.org>
 From: SeongJae Park <sj@kernel.org>
-To: Hyeongtak Ji <hyeongtak.ji@sk.com>
-CC: sj@kernel.org, akpm@linux-foundation.org, apopple@nvidia.com, baolin.wang@linux.alibaba.com, damon@lists.linux.dev, dave.jiang@intel.com, honggyu.kim@sk.com, kernel_team@skhynix.com, linmiaohe@huawei.com, linux-kernel@vger.kernel.org, linux-mm@kvack.org, linux-trace-kernel@vger.kernel.org, lizhijian@cn.fujitsu.com, mathieu.desnoyers@efficios.com, mhiramat@kernel.org, rakie.kim@sk.com, rostedt@goodmis.org, surenb@google.com, yangx.jy@fujitsu.com, ying.huang@intel.com, ziy@nvidia.com
+To: Andrew Morton <akpm@linux-foundation.org>
+CC: SeongJae Park <sj@kernel.org>, Jonathan Corbet <corbet@lwn.net>, damon@lists.linux.dev, linux-mm@kvack.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
 
-On Thu, 18 Jan 2024 19:40:16 +0900 Hyeongtak Ji <hyeongtak.ji@sk.com> wrote:
+The list of DAMON operation sets and their explanation, which may better
+to be on design document, is written on the usage document.  Move the
+detail to design document and make the usage document only reference the
+design document.
 
-> Hi SeongJae,
->
-> On Wed, 17 Jan 2024 SeongJae Park <sj@kernel.org> wrote:
->
-> [...]
-> >> Let's say there are 3 nodes in the system and the first node0 and node1
-> >> are the first tier, and node2 is the second tier.
-> >>
-> >>   $ cat /sys/devices/virtual/memory_tiering/memory_tier4/nodelist
-> >>   0-1
-> >>
-> >>   $ cat /sys/devices/virtual/memory_tiering/memory_tier22/nodelist
-> >>   2
+Signed-off-by: SeongJae Park <sj@kernel.org>
 [...]
 ```
-
 
 Tagging
 =======
@@ -352,23 +328,22 @@ will save the exported mail.  The file name should have `.mbox` suffix.  Users
 can specify which mails from the list need to be exported via `--range` option
 of the sub-command.
 
-For example, below exports the second to six mails from above example mails
+For example, below exports the second to fourth mails from above example mails
 list to `foo.mbox` file, and then lists the exported mails in it again.
 
 ```
-$ hkml export --range 2 7 foo.mbox
-$ ./hkml list foo.mbox --since 2024-01-10 --until 2024-01-20
-# 5 mails, 3 threads, 1 new threads
-# 4 patches, 1 series
-# oldest: 2024-01-13 10:44:55-08:00
-# newest: 2024-01-16 12:32:10-08:00
-[0] Re: [PATCH 6.6 0/1] 6.6.12-rc1 review (SeongJae Park, 01/13 10:44)
-[1] Re: DAMON Beer/Coffee/Tea chat series (SeongJae Park, 01/16 10:09)
-[2] [RFC PATCH 0/4] DAMON based 2-tier memory management for CXL memory (Honggyu Kim,
-    01/14 20:52)
-[3]   [RFC PATCH 1/4] mm/vmscan: refactor reclaim_pages with
-      reclaim_or_migrate_folios (Honggyu Kim, 01/14 20:52)
-[4]     re: (SeongJae Park, 01/16 12:32)
+$ hkml export --range 1 4 foo.mbox
+$ hkml list foo.mbox --since 2024-02-15 --until 2024-02-17
+# 3 mails, 3 threads, 0 new threads
+# 3 patches, 0 series
+# oldest: 2024-02-16 16:58:38-08:00
+# newest: 2024-02-16 16:58:40-08:00
+[0] [PATCH 3/5] Docs/mm/damon: move DAMON operation sets list from the usage to the design
+    document (SeongJae Park, 24/02/16 16:58)
+[1] [PATCH 2/5] Docs/mm/damon: move the list of DAMOS actions to design doc (SeongJae Park,
+    24/02/16 16:58)
+[2] [PATCH 1/5] Docs/mm/damon/maintainer-profile: fix reference links for mm-[un]stable tree
+    (SeongJae Park, 24/02/16 16:58)
 ```
 
 Users could also import the mbox file on their other mbox-supporting mail
