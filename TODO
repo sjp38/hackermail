@@ -4,6 +4,5 @@
     - message id
     - lore link
  - Let user identify type of the source
- - Sort mails by date when non-git source is used
 - Document tag command
 - Document monitor command on README
