@@ -5,6 +5,3 @@
     - lore link
 - Document tag command
 - Document monitor command on README
-- Support --hot from monitor
-- Warn adding tag that having name-conflicting mailing list
-- Avoid adding duplicated tag names to a mail
