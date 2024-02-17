@@ -230,6 +230,70 @@ On Thu, 18 Jan 2024 19:40:16 +0900 Hyeongtak Ji <hyeongtak.ji@sk.com> wrote:
 [...]
 ```
 
+
+Tagging
+=======
+
+Some classification of mails, e.g., important, unread, to-read-next, etc, can
+be helpful for managing flooding mails.  Users can add, remove, or list tags
+for mails using 'hkml tag'.  The command receives a sub-command for the three
+different actions.
+
+`hkml list` supports tags as source of the mails to list up.  Users can
+therefore use `hkml list` to list mails of a specific tag.  Below example lists
+mails of a tag `tag_damon`.
+
+```
+$ hkml list tag_damon
+[...]
+[0] Re: [PATCH 1/2] mm/damon/sysfs: Implement recording feature (cuiyangpei, 24/02/05 19:26)
+[1] [PATCH] mm/damon/sysfs: handle 'state' file inputs for every sampling interval if possible
+    (SeongJae Park, 24/02/05 18:51)
+```
+
+`hkml tag add`
+--------------
+
+Add tags to a specific mail.  The mail could be specified with the index of the
+mail from the last-generated list or thread output.  Tags can be any arbitrary
+string.  Below example adds three tags namely `tag_example`, `damon_patch`, and
+`not_yet_merged` to the fifth mail of the last-generated list output.
+
+```
+$ hkml tag add 5 tag_example damon_patch not_yet_merged
+```
+
+`hkml tag list`
+---------------
+
+Users can show generated tags using `hkml tag list` command like below:
+
+```
+$ hkml tag list
+tag_damon: 2 mails
+tag_example: 1 mails
+damon_patch: 1 mails
+not_yet_merged: 1 mails
+```
+
+`hkml tag remove`
+-----------------
+
+Users can remove tags from a specific mail using `hkml tag remove` command.
+The mail to remove the tags from can be specified by the index of the mail from
+the last-generated list or thread output.  Below example removes tag
+`tag_damon` from the 0-th mail on the list and confirm it has removed using
+`hkml tag list`.
+
+```
+$ hkml tag remove 0 tag_damon
+$ hkml tag list
+tag_damon: 1 mails
+tag_example: 1 mails
+damon_patch: 1 mails
+not_yet_merged: 1 mails
+```
+
 Replying
 ========
 
