@@ -337,22 +337,20 @@ will save the exported mail.  The file name should have `.mbox` suffix.  Users
 can specify which mails from the list need to be exported via `--range` option
 of the sub-command.
 
-For example, below exports the second to fourth mails from above example mails
+For example, below exports the first to fourth mails from above example mails
 list to `foo.mbox` file, and then lists the exported mails in it again.
 
 ```
-$ hkml export --range 1 4 foo.mbox
+$ hkml export --range 0 4 foo.mbox
 $ hkml list foo.mbox --since 2024-02-15 --until 2024-02-17
-# 3 mails, 3 threads, 0 new threads
-# 3 patches, 0 series
-# oldest: 2024-02-16 16:58:38-08:00
-# newest: 2024-02-16 16:58:40-08:00
-[0] [PATCH 3/5] Docs/mm/damon: move DAMON operation sets list from the usage to the design
-    document (SeongJae Park, 24/02/16 16:58)
-[1] [PATCH 2/5] Docs/mm/damon: move the list of DAMOS actions to design doc (SeongJae Park,
-    24/02/16 16:58)
-[2] [PATCH 1/5] Docs/mm/damon/maintainer-profile: fix reference links for mm-[un]stable tree
-    (SeongJae Park, 24/02/16 16:58)
+[...]
+[0] [PATCH 0/5] Docs/mm/damon: misc readability improvements (SeongJae Park, 24/02/16 16:58)
+[1]   [PATCH 1/5] Docs/mm/damon/maintainer-profile: fix reference links for mm-[un]stable tree
+      (SeongJae Park, 24/02/16 16:58)
+[2]   [PATCH 2/5] Docs/mm/damon: move the list of DAMOS actions to design doc (SeongJae Park,
+      24/02/16 16:58)
+[3]   [PATCH 3/5] Docs/mm/damon: move DAMON operation sets list from the usage to the design
+      document (SeongJae Park, 24/02/16 16:58)
 ```
 
 Users could also import the mbox file on their other mbox-supporting mail
