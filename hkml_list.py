@@ -578,9 +578,27 @@ def get_mails_from_git(mail_list, since, until,
                 mails.append(mail)
     return mails
 
+def is_mailing_list(name):
+    manifest = _hkml.get_manifest()
+    for mail_list_git_path in manifest.keys():
+        if mail_list_git_path.startswith('/%s/' % name):
+            return True
+    return False
+
 def get_mails(source, fetch, since, until,
-              min_nr_mails, max_nr_mails, commits_range=None):
-    if source == 'clipboard':
+              min_nr_mails, max_nr_mails, commits_range=None,
+              source_type=None):
+    if source_type is None:
+        if source == 'clipboard':
+            source_type = 'clipboard'
+        elif os.path.isfile(source):
+            source_type = 'mbox'
+        elif is_mailing_list(source):
+            source_type = 'mailing_list'
+        else:
+            source_type = 'tag'
+
+    if source_type == 'clipboard':
         mails, err = _hkml.read_mails_from_clipboard()
         if err != None:
             print('reading mails from clipboard failed: %s' % err)
@@ -590,23 +608,17 @@ def get_mails(source, fetch, since, until,
         mails.sort(key=lambda mail: mail.date)
         return mails
 
-    if os.path.isfile(source):
+    if source_type == 'mbox':
         mails = _hkml.read_mbox_file(source)
         if max_nr_mails is not None:
             mails = mails[:max_nr_mails]
         mails.sort(key=lambda mail: mail.date)
         return mails
 
-    # now, source should be mailing list or hkml tag.
-    source_is_tag = True
-    manifest = _hkml.get_manifest()
-    for mail_list_git_path in manifest.keys():
-        if mail_list_git_path.startswith('/%s/' % source):
-            source_is_tag = False
-            break
-    if source_is_tag is True:
+    if source_type == 'tag':
         return hkml_tag.mails_of_tag(source)
 
+    # Now, source_type is'mailing_list'
     if fetch:
         hkml_fetch.fetch_mail([source], True, 1)
 
@@ -688,6 +700,10 @@ def set_argparser(parser=None):
             '4) \'hkml tag\'-added tag.',
             '5) If nothing is given, show last list output.',
             ]))
+    parser.add_argument(
+            '--source_type',
+            choices=['mailing_list', 'mbox', 'clipboard', 'tag'],
+            help='type of sources')
     parser.add_argument('--since', metavar='<date>', type=str,
             default=DEFAULT_SINCE,
             help='show mails sent after a specific date')
@@ -756,7 +772,8 @@ def main(args=None):
     for source in args.sources:
         for mail in get_mails(
                 source, args.fetch, args.since, args.until,
-                args.min_nr_mails, args.max_nr_mails, None):
+                args.min_nr_mails, args.max_nr_mails, None,
+                source_type=args.source_type):
             msgid = mail.get_field('message-id')
             if not msgid in msgids:
                 mails_to_show.append(mail)
