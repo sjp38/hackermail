@@ -142,6 +142,10 @@ def pr_cache_stat(cache_path):
     print('%f seconds for parsing mails' % (time.time() - before_timestamp))
 
 def show_cache_status():
+    print('max active cache file size: %s bytes' % max_active_cache_file_size)
+    print('max archived caches: %d' % max_archived_caches)
+    print()
+
     cache_path = os.path.join(_hkml.get_hkml_dir(), 'mails_cache_active')
     if not os.path.isfile(cache_path):
         print('no cache exist')
