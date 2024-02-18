@@ -43,9 +43,7 @@ def set_cache_config(max_active_cache_sz, max_archived_caches):
 
 archived_caches = []
 active_cache = None
-total_cache = {}
 
-mails_cache = None
 need_file_update = False
 
 def get_cache_key(gitid=None, gitdir=None, msgid=None):
