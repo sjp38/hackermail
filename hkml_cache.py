@@ -140,7 +140,7 @@ def writeback_mails():
     with open(cache_path, 'w') as f:
         json.dump(get_active_mails_cache(), f, indent=4)
 
-def pr_cache_stat(cache_path):
+def pr_cache_stat(cache_path, profile_mail_parsing_time):
     print('Stat of %s' % cache_path)
     cache_stat = os.stat(cache_path)
     print('cache size: %.3f MiB' % (cache_stat.st_size / 1024 / 1024))
@@ -152,12 +152,14 @@ def pr_cache_stat(cache_path):
     print('%f seconds for json-loading cache' %
           (time.time() - before_timestamp))
 
+    if profile_mail_parsing_time is not True:
+        return
     before_timestamp = time.time()
     for key in cache:
         mail = _hkml.Mail(kvpairs=cache[key])
     print('%f seconds for parsing mails' % (time.time() - before_timestamp))
 
-def show_cache_status(config_only):
+def show_cache_status(config_only, profile_mail_parsing_time):
     cache_config = load_cache_config()
     print('max active cache file size: %s bytes' %
           cache_config['max_active_cache_sz'])
@@ -171,15 +173,15 @@ def show_cache_status(config_only):
         print('no cache exist')
         exit(1)
 
-    pr_cache_stat(cache_path)
+    pr_cache_stat(cache_path, profile_mail_parsing_time)
     print('')
     for archived_cache in list_archive_files():
-        pr_cache_stat(archived_cache)
+        pr_cache_stat(archived_cache, profile_mail_parsing_time)
         print('')
 
 def main(args):
     if args.action == 'status':
-        show_cache_status(args.config_only)
+        show_cache_status(args.config_only, args.profile_mail_parsing_time)
     elif args.action == 'config':
         set_cache_config(args.max_active_cache_sz, args.max_archived_caches)
 
@@ -192,6 +194,9 @@ def set_argparser(parser):
     parser_status = subparsers.add_parser('status', help='show cache status')
     parser_status.add_argument('--config_only', action='store_true',
                                help='show configuration status only')
+    parser_status.add_argument('--profile_mail_parsing_time',
+                               action='store_true',
+                               help='measure and show mails parsing time')
 
     parser_config = subparsers.add_parser(
             'config', help='setup cache configuration')
