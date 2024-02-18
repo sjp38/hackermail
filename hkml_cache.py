@@ -141,9 +141,11 @@ def pr_cache_stat(cache_path):
         mail = _hkml.Mail(kvpairs=cache[key])
     print('%f seconds for parsing mails' % (time.time() - before_timestamp))
 
-def show_cache_status():
+def show_cache_status(config_only):
     print('max active cache file size: %s bytes' % max_active_cache_file_size)
     print('max archived caches: %d' % max_archived_caches)
+    if config_only is True:
+        return
     print()
 
     cache_path = os.path.join(_hkml.get_hkml_dir(), 'mails_cache_active')
@@ -159,7 +161,7 @@ def show_cache_status():
 
 def main(args):
     if args.action == 'status':
-        show_cache_status()
+        show_cache_status(args.config_only)
 
 def set_argparser(parser):
     parser.description = 'manage mails cache'
@@ -168,3 +170,5 @@ def set_argparser(parser):
             title='action', dest='action', metavar='<action>')
 
     parser_status = subparsers.add_parser('status', help='show cache status')
+    parser_status.add_argument('--config_only', action='store_true',
+                               help='show configuration status only')
