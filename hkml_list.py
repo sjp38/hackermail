@@ -405,7 +405,7 @@ def format_stat(mails_to_show):
             nr_threads += 1
         if not mail.get_field('in-reply-to'):
             nr_new_threads += 1
-        if 'patch' in mail.subject_tags and not 'reply' in mail.subject_tags:
+        if 'patch' in mail.subject_tags:
             nr_patches += 1
         if 'patch' in mail.subject_tags and not mail.get_field('in-reply-to'):
             nr_patchsets += 1
