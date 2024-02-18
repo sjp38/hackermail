@@ -37,11 +37,11 @@ class Mail:
     def set_subject_tags_series(self):
         subject = self.subject
         tag_start_idx = subject.find('[')
-        if tag_start_idx == -1:
+        if tag_start_idx != 0:
             return
 
         tag_end_idx = subject.find(']')
-        if tag_end_idx == -1 or tag_end_idx < tag_start_idx:
+        if tag_end_idx == -1:
             return
 
         tag = subject[tag_start_idx + 1: tag_end_idx].strip().lower()
