@@ -295,11 +295,9 @@ def last_reply_date(mail, prev_last_date):
 
 def nr_comments(mail):
     nr_comments = nr_replies_of(mail)
-    # Treat replies posted within 5 minutes as not comments, but mails sent
-    # together by the author, probably the patchset case.
-    for reply in mail.replies:
-        if (reply.date - mail.date).seconds < 300:
-            nr_comments -= 1
+    # Exclude replies that sent together as a patch series
+    if not mail.get_field('in-reply-to') and mail.series is not None:
+        nr_comments -= mail.series[1]
     return nr_comments
 
 def sort_threads(threads, category):
