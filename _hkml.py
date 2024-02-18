@@ -34,7 +34,7 @@ class Mail:
     replies = None
     parent_mail = None
 
-    def set_tags_series(self):
+    def set_subject_tags_series(self):
         subject = self.subject
         tag_start_idx = subject.find('[')
         if tag_start_idx == -1:
@@ -71,7 +71,7 @@ class Mail:
             self.date = datetime.datetime.strptime(
                     date, '%Y-%m-%dT%H:%M:%S%z').astimezone()
         self.subject = subject
-        self.set_tags_series()
+        self.set_subject_tags_series()
         hkml_cache.set_mail(self)
         return self
 
@@ -101,7 +101,7 @@ class Mail:
         self.subject = self.get_field('subject')
         if self.subject == None:
             return
-        self.set_tags_series()
+        self.set_subject_tags_series()
         hkml_cache.set_mail(self)
 
     def broken(self):
