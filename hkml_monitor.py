@@ -218,6 +218,7 @@ def do_monitor(request, ignore_mails_before, last_monitored_mails):
             f.write(mail_content)
 
         _hkml.cmd_str_output(['git', 'send-email', tmp_path,
+                              '--compose-encoding=UTF-8', '--confirm', 'never',
                               '--to'] + request.noti_mails)
         os.remove(tmp_path)
 
