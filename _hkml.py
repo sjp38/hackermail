@@ -27,7 +27,7 @@ class Mail:
     gitdir = None
     subject = None
     date = None
-    tags = None
+    subject_tags = None
     series = None
     __mbox_parsed = None
     mbox = None
@@ -45,9 +45,9 @@ class Mail:
             return
 
         tag = subject[tag_start_idx + 1: tag_end_idx].strip().lower()
-        self.tags += tag.split()
+        self.subject_tags += tag.split()
 
-        series = self.tags[-1].split('/')
+        series = self.subject_tags[-1].split('/')
         if (len(series) == 2 and series[0].isdigit() and
                 series[1].isdigit()):
             self.series = [int(x) for x in series]
@@ -77,7 +77,7 @@ class Mail:
 
     def __init__(self, mbox=None, kvpairs=None):
         self.replies = []
-        self.tags = []
+        self.subject_tags = []
 
         if mbox is None and kvpairs is None:
             return

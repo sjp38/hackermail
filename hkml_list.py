@@ -405,9 +405,9 @@ def format_stat(mails_to_show):
             nr_threads += 1
         if not mail.get_field('in-reply-to'):
             nr_new_threads += 1
-        if 'patch' in mail.tags and not 'reply' in mail.tags:
+        if 'patch' in mail.subject_tags and not 'reply' in mail.subject_tags:
             nr_patches += 1
-        if 'patch' in mail.tags and not mail.get_field('in-reply-to'):
+        if 'patch' in mail.subject_tags and not mail.get_field('in-reply-to'):
             nr_patchsets += 1
         if oldest is None or mail.date < oldest.date:
             oldest = mail
