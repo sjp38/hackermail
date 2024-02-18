@@ -13,14 +13,14 @@ import _hkml
 # archieved cache: Contains cache entries that added older than oldest one in
 # the active cache.
 #
-# Size of cache files are limited to about 100 MiB.
-# Up to 9 archived cache files can exist.
+# Size of cache files are limited to about 100 MiB by default.
+# Up to 9 archived cache files can exist by default.
 # When the size of active cache becomes >=100 MiB, delete oldest archived
 # cache, make the active cache a newest archived cache, and create a new active
 # cache.
 #
-# When reading the cache, active cache is first read, then archived caches one by
-# one, recent archive first, until the item is found.
+# When reading the cache, active cache is first read, then archived caches one
+# by one, recent archive first, until the item is found.
 
 def load_cache_config():
     cache_config_path = os.path.join(_hkml.get_hkml_dir(),
