@@ -32,6 +32,13 @@ def load_cache_config():
     with open(cache_config_path, 'r') as f:
         return json.load(f)
 
+def set_cache_config(max_active_cache_sz, max_archived_caches):
+    cache_config_path = os.path.join(_hkml.get_hkml_dir(),
+                                     'mails_cache_config')
+    with open(cache_config_path, 'w') as f:
+        json.dump({'max_active_cache_sz': max_active_cache_sz,
+                   'max_archived_caches': max_archived_caches}, f, indent=4)
+
 # dict having gitid/gitdir as key, Mail kvpairs as value
 
 archived_caches = []
@@ -173,6 +180,8 @@ def show_cache_status(config_only):
 def main(args):
     if args.action == 'status':
         show_cache_status(args.config_only)
+    elif args.action == 'config':
+        set_cache_config(args.max_active_cache_sz, args.max_archived_caches)
 
 def set_argparser(parser):
     parser.description = 'manage mails cache'
@@ -183,3 +192,12 @@ def set_argparser(parser):
     parser_status = subparsers.add_parser('status', help='show cache status')
     parser_status.add_argument('--config_only', action='store_true',
                                help='show configuration status only')
+
+    parser_config = subparsers.add_parser(
+            'config', help='setup cache configuration')
+    parser_config.add_argument(
+            'max_active_cache_sz', type=int, metavar='<bytes>',
+            help='maximum size of active cache')
+    parser_config.add_argument(
+            'max_archived_caches', type=int, metavar='<int>',
+            help='maximum number of archived caches')
