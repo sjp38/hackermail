@@ -141,16 +141,7 @@ def pr_cache_stat(cache_path):
         mail = _hkml.Mail(kvpairs=cache[key])
     print('%f seconds for parsing mails' % (time.time() - before_timestamp))
 
-
-def set_argparser(parser):
-    return
-
-def main(args=None):
-    if not args:
-        parser = argparse.ArgumentParser()
-        set_argparser(parser)
-        args = parser.parse_args()
-
+def main(args):
     cache_path = os.path.join(_hkml.get_hkml_dir(), 'mails_cache_active')
     if not os.path.isfile(cache_path):
         print('no cache exist')
@@ -162,5 +153,5 @@ def main(args=None):
         pr_cache_stat(archived_cache)
         print('')
 
-if __name__ == '__main__':
-    main()
+def set_argparser(parser):
+    return
