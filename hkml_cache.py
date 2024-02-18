@@ -22,9 +22,18 @@ import _hkml
 # When reading the cache, active cache is first read, then archived caches one by
 # one, recent archive first, until the item is found.
 
+def load_cache_config():
+    cache_config_path = os.path.join(_hkml.get_hkml_dir(),
+                                     'mails_cache_config')
+    if not os.path.isfile(cache_config_path):
+        return {'max_active_cache_sz': 100 * 1024 * 1024,
+                'max_archived_caches': 9}
+
+    with open(cache_config_path, 'r') as f:
+        return json.load(f)
+
 # dict having gitid/gitdir as key, Mail kvpairs as value
-max_active_cache_file_size = 100 * 1024 * 1024
-max_archived_caches = 9
+
 archived_caches = []
 active_cache = None
 total_cache = {}
@@ -58,13 +67,13 @@ def get_active_mails_cache():
     cache_path = os.path.join(_hkml.get_hkml_dir(), 'mails_cache_active')
     if os.path.isfile(cache_path):
         stat = os.stat(cache_path)
-        if stat.st_size >= max_active_cache_file_size:
+        if stat.st_size >= load_cache_config()['max_active_cache_sz']:
             os.rename(
                     cache_path, os.path.join(
                         _hkml.get_hkml_dir(), 'mails_cache_archive_%s' %
                         datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')))
             archive_files = list_archive_files()
-            if len(archive_files) > max_archived_caches:
+            if len(archive_files) > load_cache_config()['max_archived_caches']:
                 os.remove(archive_files[-1])
         else:
             with open(cache_path, 'r') as f:
@@ -142,8 +151,10 @@ def pr_cache_stat(cache_path):
     print('%f seconds for parsing mails' % (time.time() - before_timestamp))
 
 def show_cache_status(config_only):
-    print('max active cache file size: %s bytes' % max_active_cache_file_size)
-    print('max archived caches: %d' % max_archived_caches)
+    cache_config = load_cache_config()
+    print('max active cache file size: %s bytes' %
+          cache_config['max_active_cache_sz'])
+    print('max archived caches: %d' % cache_config['max_archived_caches'])
     if config_only is True:
         return
     print()
