@@ -591,10 +591,9 @@ def get_mails(source, fetch, since, until,
             source_type = 'clipboard'
         elif os.path.isfile(source):
             source_type = 'mbox'
-        elif is_mailing_list(source):
-            source_type = 'mailing_list'
+        # It can be a mailing list or a tag
         else:
-            source_type = 'tag'
+            source_type = ''
 
     if source_type == 'clipboard':
         mails, err = _hkml.read_mails_from_clipboard()
@@ -613,10 +612,12 @@ def get_mails(source, fetch, since, until,
         mails.sort(key=lambda mail: mail.date)
         return mails
 
-    if source_type == 'tag':
-        return hkml_tag.mails_of_tag(source)
+    # First check if the tag exists
+    mails = hkml_tag.mails_of_tag(source)
+    if mails:
+        return mails
 
-    # Now, source_type is'mailing_list'
+    # If the source wasn't a tag, it's meant to be a mailing list
     if fetch:
         hkml_fetch.fetch_mail([source], True, 1)
 
