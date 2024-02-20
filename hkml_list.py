@@ -705,10 +705,10 @@ def set_argparser(parser=None):
             help='type of sources')
     parser.add_argument('--since', metavar='<date>', type=str,
             default=DEFAULT_SINCE,
-            help='show mails sent after a specific date')
+            help='show mails sent after a specific date. Format: YYYY-MM-DD')
     parser.add_argument('--until', metavar='<date>', type=str,
             default=DEFAULT_UNTIL,
-            help='show mails sent before a specific date')
+            help='show mails sent before a specific date. Format: YYYY-MM-DD')
     parser.add_argument('--nr_mails', type=int, metavar='<int>',
             help='number of mails to list')
     parser.add_argument('--min_nr_mails', metavar='<int>', type=int,
