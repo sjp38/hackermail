@@ -593,7 +593,7 @@ def infer_source_type(source):
         candidates.append('mbox')
     if hkml_tag.tag_exists(source):
         candidates.append('tag')
-    if _hkml.mail_list_data_paths(source, _hkml.get_manifest()):
+    if _hkml.is_valid_mail_list(source):
         candidates.append('mailing_list')
 
     if len(candidates) == 0:
