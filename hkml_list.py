@@ -600,6 +600,9 @@ def get_mails(source, fetch, since, until,
               source_type=None):
     if source_type is None:
         source_type = infer_source_type(source)
+        if source_type is None:
+            print('source type inference for %s failed' % source)
+            exit(1)
 
     if source_type == 'clipboard':
         mails, err = _hkml.read_mails_from_clipboard()
