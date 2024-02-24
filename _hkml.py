@@ -272,11 +272,15 @@ def __get_epoch_from_git_path(git_path):
     # git_path is, e.g., '.../0.git'
     return int(os.path.basename(git_path).split('.git')[0])
 
-def mail_list_repo_paths(mail_list, manifest):
+def mail_list_repo_paths(mail_list, manifest=None):
     '''Returns git trees in the manifest for the given mailing lists.
 
     Note that the paths are sorted by the epochs of the git trees in
     descsending order.'''
+
+    if manifest is None:
+        manifest = get_manifest()
+
     paths = []
     for path in manifest:
         if path.startswith('/%s/' % mail_list):
