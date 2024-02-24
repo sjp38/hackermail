@@ -283,11 +283,14 @@ def mail_list_repo_paths(mail_list, manifest):
             paths.append(path)
     return sorted(paths, key=__get_epoch_from_git_path, reverse=True)
 
-def mail_list_data_paths(mail_list, manifest):
+def mail_list_data_paths(mail_list, manifest=None):
     '''Returns git trees in this machine for the given mailing lists.
 
     Note that the paths are sorted by the epochs of the git trees in
     descsending order.'''
+
+    if manifest is None:
+        manifest = get_manifest()
 
     repo_paths = mail_list_repo_paths(mail_list, manifest)
     mdir_paths = []
