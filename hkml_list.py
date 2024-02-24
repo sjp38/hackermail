@@ -576,13 +576,6 @@ def get_mails_from_git(mail_list, since, until,
                 mails.append(mail)
     return mails
 
-def is_mailing_list(name):
-    manifest = _hkml.get_manifest()
-    for mail_list_git_path in manifest.keys():
-        if mail_list_git_path.startswith('/%s/' % name):
-            return True
-    return False
-
 def infer_source_type(source):
     '''Return source type and error string'''
     candidates = []
