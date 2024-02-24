@@ -295,8 +295,11 @@ def mail_list_data_paths(mail_list, manifest):
         mdir_paths.append(os.path.join(get_hkml_dir(), 'archives' + path))
     return sorted(mdir_paths, key=__get_epoch_from_git_path, reverse=True)
 
-def is_valid_mail_list(mail_list):
-    return mail_list_data_paths(mail_list, get_manifest())
+def is_valid_mail_list(name):
+    for mail_list_git_path in get_manifest().keys():
+        if mail_list_git_path.startswith('/%s/' % name):
+            return True
+    return False
 
 def set_manifest_option(parser):
     parser.add_argument('--manifest', metavar='<file>', type=str,
