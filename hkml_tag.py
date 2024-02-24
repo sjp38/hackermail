@@ -75,7 +75,10 @@ def remove_tags(mail_idx, tags):
         existing_tags.remove(tag)
     write_tags_file(tags_map)
 
-def list_tags():
+def get_tag_nr_mails():
+    '''
+    Return dict having tags as key, numbers of mails of the tag as value
+    '''
     tag_nr_mails = {}
     tags_map = read_tags_file()
     for msgid in tags_map:
@@ -83,7 +86,10 @@ def list_tags():
             if not tag in tag_nr_mails:
                 tag_nr_mails[tag] = 0
             tag_nr_mails[tag] += 1
-    for tag, nr_mails in tag_nr_mails.items():
+    return tag_nr_mails
+
+def list_tags():
+    for tag, nr_mails in get_tag_nr_mails().items():
         print('%s: %d mails' % (tag, nr_mails))
 
 def main(args):
