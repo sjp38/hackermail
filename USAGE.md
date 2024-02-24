@@ -8,6 +8,17 @@ Demo
 
 [![asciicast](https://asciinema.org/a/632442.svg)](https://asciinema.org/a/632442)
 
+Pre-requisites
+==============
+
+To use full features of hackermail, your system shoule be able to use below
+commands.
+
+- `git`: Required for reading mails from the mailing list.
+- `git send-email`: Required for sending mails.
+- [`b4`](https://b4.docs.kernel.org/en/latest/installing.html): Can make `hkml
+  thread` output much better.
+
 Commands
 ========
 
