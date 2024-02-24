@@ -584,24 +584,31 @@ def is_mailing_list(name):
     return False
 
 def infer_source_type(source):
+    '''Return source type and error string'''
+    candidates = []
+
     if source == 'clipboard':
-        return 'clipboard'
-    elif os.path.isfile(source):
-        return 'mbox'
-    # It can be a mailing list or a tag
-    elif source in hkml_tag.get_tag_nr_mails():
-        return 'tag'
-    elif _hkml.mail_list_data_paths(source, _hkml.get_manifest()):
-        return 'mailing_list'
-    return None
+        candidates.append('clipboard')
+    if os.path.isfile(source):
+        candidates.append('mbox')
+    if source in hkml_tag.get_tag_nr_mails():
+        candidates.append('tag')
+    if _hkml.mail_list_data_paths(source, _hkml.get_manifest()):
+        candidates.append('mailing_list')
+
+    if len(candidates) == 0:
+        return None, 'no candidate'
+    elif len(candidates) > 1:
+        return None, 'multiple candidates (%s)' % ', '.join(candidates)
+    return candidates[0], None
 
 def get_mails(source, fetch, since, until,
               min_nr_mails, max_nr_mails, commits_range=None,
               source_type=None):
     if source_type is None:
-        source_type = infer_source_type(source)
-        if source_type is None:
-            print('source type inference for %s failed' % source)
+        source_type, err = infer_source_type(source)
+        if err is not None:
+            print('source type inference for %s failed: %s' % (source, err))
             exit(1)
 
     if source_type == 'clipboard':
