@@ -609,6 +609,7 @@ def get_mails(source, fetch, since, until,
         source_type, err = infer_source_type(source)
         if err is not None:
             print('source type inference for %s failed: %s' % (source, err))
+            print('you could use --source_type option to solve this')
             exit(1)
 
     if source_type == 'clipboard':
