@@ -88,6 +88,9 @@ def get_tag_nr_mails():
             tag_nr_mails[tag] += 1
     return tag_nr_mails
 
+def tag_exists(tagname):
+    return tagname in get_tag_nr_mails()
+
 def list_tags():
     for tag, nr_mails in get_tag_nr_mails().items():
         print('%s: %d mails' % (tag, nr_mails))
