@@ -591,7 +591,7 @@ def infer_source_type(source):
         candidates.append('clipboard')
     if os.path.isfile(source):
         candidates.append('mbox')
-    if source in hkml_tag.get_tag_nr_mails():
+    if hkml_tag.tag_exists(source):
         candidates.append('tag')
     if _hkml.mail_list_data_paths(source, _hkml.get_manifest()):
         candidates.append('mailing_list')
