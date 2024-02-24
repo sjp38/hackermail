@@ -714,7 +714,7 @@ def set_argparser(parser=None):
             '5) If nothing is given, show last list output.',
             ]))
     parser.add_argument(
-            '--source_type',
+            '--source_type', nargs='+',
             choices=['mailing_list', 'mbox', 'clipboard', 'tag'],
             help='type of sources')
     parser.add_argument('--since', metavar='<date>', type=str,
@@ -745,6 +745,15 @@ def main(args=None):
         parser = argparse.ArgumentParser()
         set_argparser(parser)
         args = parser.parse_args()
+
+    if args.source_type is not None:
+        if len(args.source_type) == 1:
+            args.source_type = args.source_type * len(args.sources)
+        else:
+            print('numbers of --source_type and --sources mismatch')
+            exit(1)
+    else:
+        args.source_type = [None] * len(args.sources)
 
     list_output_cache_key = args_to_list_output_key(args)
     if args.fetch == False or args.sources == []:
@@ -782,11 +791,11 @@ def main(args=None):
     runtime_profile = []
     mails_to_show = []
     msgids = {}
-    for source in args.sources:
+    for idx, source in enumerate(args.sources):
         for mail in get_mails(
                 source, args.fetch, args.since, args.until,
                 args.min_nr_mails, args.max_nr_mails, None,
-                source_type=args.source_type):
+                source_type=args.source_type[idx]):
             msgid = mail.get_field('message-id')
             if not msgid in msgids:
                 mails_to_show.append(mail)
