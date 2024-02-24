@@ -9,13 +9,11 @@ import _hkml
 import hkml_list
 
 def fetch_mail(mail_lists, quiet=False, epochs=1):
-    manifest = _hkml.get_manifest()
-
-    site = manifest['site']
+    site = _hkml.get_manifest()['site']
     for mlist in mail_lists:
         hkml_list.invalidate_cached_outputs(mlist)
-        repo_paths = _hkml.mail_list_repo_paths(mlist, manifest)[:epochs]
-        local_paths = _hkml.mail_list_data_paths(mlist, manifest)[:epochs]
+        repo_paths = _hkml.mail_list_repo_paths(mlist)[:epochs]
+        local_paths = _hkml.mail_list_data_paths(mlist)[:epochs]
 
         for idx, repo_path in enumerate(repo_paths):
             git_url = '%s%s' % (site, repo_path)

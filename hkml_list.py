@@ -530,7 +530,7 @@ def git_log_output_line_to_mail(line, mdir):
 def get_mails_from_git(mail_list, since, until,
                        min_nr_mails, max_nr_mails, commits_range=None):
     lines = []
-    mdirs = _hkml.mail_list_data_paths(mail_list, _hkml.get_manifest())
+    mdirs = _hkml.mail_list_data_paths(mail_list)
     if not mdirs:
         print("Mailing list '%s' in manifest not found." % mail_list)
         exit(1)
