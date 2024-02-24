@@ -583,19 +583,22 @@ def is_mailing_list(name):
             return True
     return False
 
+def infer_source_type(source):
+    if source == 'clipboard':
+        return 'clipboard'
+    elif os.path.isfile(source):
+        return 'mbox'
+    # It can be a mailing list or a tag
+    elif source in hkml_tag.get_tag_nr_mails():
+        return 'tag'
+    else:
+        return 'mailing_list'
+
 def get_mails(source, fetch, since, until,
               min_nr_mails, max_nr_mails, commits_range=None,
               source_type=None):
     if source_type is None:
-        if source == 'clipboard':
-            source_type = 'clipboard'
-        elif os.path.isfile(source):
-            source_type = 'mbox'
-        # It can be a mailing list or a tag
-        elif source in hkml_tag.get_tag_nr_mails():
-            source_type = 'tag'
-        else:
-            source_type = 'mailing_list'
+        source_type = infer_source_type(source)
 
     if source_type == 'clipboard':
         mails, err = _hkml.read_mails_from_clipboard()
