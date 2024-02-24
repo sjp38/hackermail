@@ -591,8 +591,9 @@ def infer_source_type(source):
     # It can be a mailing list or a tag
     elif source in hkml_tag.get_tag_nr_mails():
         return 'tag'
-    else:
+    elif _hkml.mail_list_data_paths(source, _hkml.get_manifest()):
         return 'mailing_list'
+    return None
 
 def get_mails(source, fetch, since, until,
               min_nr_mails, max_nr_mails, commits_range=None,
