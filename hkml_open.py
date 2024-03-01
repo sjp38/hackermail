@@ -41,11 +41,12 @@ def mail_display_str(mail, use_lore, show_lore_link):
     if use_lore:
         return mail_display_str_via_lore(lore_url(mail))
 
-    lines = ['Local-Date: %s' % mail.date]
-    for head in ['Date', 'Subject', 'Message-Id', 'From', 'To', 'CC']:
+    lines = []
+    for head in ['From', 'To', 'CC', 'Message-Id', 'Date']:
         value = mail.get_field(head)
         if value:
             lines.append('%s: %s' % (head, value))
+    lines.append('Local-Date: %s' % mail.date)
     lines.append('\n%s' % mail.get_field('body'))
     if show_lore_link:
         lines.append('\n%s\n' % lore_url(mail))
