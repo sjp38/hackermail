@@ -42,7 +42,7 @@ def mail_display_str(mail, use_lore, show_lore_link):
         return mail_display_str_via_lore(lore_url(mail))
 
     lines = []
-    for head in ['From', 'To', 'CC', 'Message-Id', 'Date']:
+    for head in ['From', 'To', 'CC', 'Subject', 'Message-Id', 'Date']:
         value = mail.get_field(head)
         if value:
             lines.append('%s: %s' % (head, value))
