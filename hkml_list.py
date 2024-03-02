@@ -193,6 +193,13 @@ def lore_url(mail):
     return 'https://lore.kernel.org/r/%s' % mail.get_field('message-id')[1:-1]
 
 def wrap_line(prefix, line, nr_cols):
+    '''Wrap a string for a limited columns and returns a list of resulting
+    lines.  Second and below lines starts with spaces of 'prefix' length.
+    For example:
+    >>> print('\n'.join(hkml_list.wrap_line('[something]', 'foo bar baz asdf', 20)))
+    [something] foo bar
+                baz asdf
+    '''
     lines = []
     words = [prefix] + line.split(' ')
     words_to_print = []
