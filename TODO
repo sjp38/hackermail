@@ -1,1 +1,5 @@
-Cleanup code
+- Cleanup code
+- Support patches handling better
+  - Support getting all patches of a thread (could use b4 internally)
+  - Support adding Link: to the patches (could use b4 internally)
+  - Support running arbitrary patch checkers
