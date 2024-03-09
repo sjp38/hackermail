@@ -37,7 +37,7 @@ def mail_display_str_via_lore(mail_url):
         lines.append(line)
     return '\n'.join(lines)
 
-def mail_display_str(mail, use_lore, show_lore_link):
+def mail_display_str(mail, use_lore, show_lore_link, head_columns=None):
     if use_lore:
         return mail_display_str_via_lore(lore_url(mail))
 
@@ -45,7 +45,10 @@ def mail_display_str(mail, use_lore, show_lore_link):
     for head in ['From', 'To', 'CC', 'Subject', 'Message-Id', 'Date']:
         value = mail.get_field(head)
         if value:
-            lines.append('%s: %s' % (head, value))
+            if head_columns is not None:
+                lines += hkml_list.wrap_line('%s:' % head, value, head_columns)
+            else:
+                lines.append('%s: %s' % (head, value))
     lines.append('Local-Date: %s' % mail.date)
     lines.append('\n%s' % mail.get_field('body'))
     if show_lore_link:
@@ -94,7 +97,8 @@ def main(args=None):
     with open(os.path.join(_hkml.get_hkml_dir(), 'last_open_idx'), 'w') as f:
         f.write('%d' % args.mail_idx)
 
-    mail_str = mail_display_str(mail, False, False)
+    head_columns = int(os.get_terminal_size().columns * 9 / 10)
+    mail_str = mail_display_str(mail, False, False, head_columns)
 
     if args.stdout:
         print(mail_str)
