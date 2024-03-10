@@ -19,6 +19,24 @@ def handle_with_b4(args, mail):
             print('applying the patch series failed')
         return rc
 
+def handle_without_b4(args, mail):
+    fd, patch_file = tempfile.mkstemp(prefix='hkml_patch_')
+    with open(patch_file, 'w') as f:
+        f.write(hkml_open.mail_display_str(mail, False, False))
+
+    if args.action == 'check':
+        rc = subprocess.call([args.checker, patch_file])
+        if rc != 0:
+            print('checker complains something')
+        return rc
+
+    if args.action == 'apply':
+        rc = subprocess.call(['git', '-C', args.repo, 'am', patch_file])
+        if rc == 0:
+            os.remove(patch_file)
+        else:
+            print('applying patch (%s) failed' % patch_file)
+
 def main(args):
     if args.mail.isdigit():
         mail = hkml_list.get_mail(int(args.mail))
@@ -38,22 +56,7 @@ def main(args):
         if args.action == 'apply' and args.dont_use_b4 is not True:
             return handle_with_b4(args, mail)
 
-    fd, patch_file = tempfile.mkstemp(prefix='hkml_patch_')
-    with open(patch_file, 'w') as f:
-        f.write(hkml_open.mail_display_str(mail, False, False))
-
-    if args.action == 'check':
-        rc = subprocess.call([args.checker, patch_file])
-        if rc != 0:
-            print('checker complains something')
-        return rc
-
-    if args.action == 'apply':
-        rc = subprocess.call(['git', '-C', args.repo, 'am', patch_file])
-        if rc == 0:
-            os.remove(patch_file)
-        else:
-            print('applying patch (%s) failed' % patch_file)
+    handle_without_b4(args, mail)
 
 def set_argparser(parser):
     parser.description = 'handle patch series mail thread'
