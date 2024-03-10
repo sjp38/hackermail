@@ -7,6 +7,18 @@ import tempfile
 import hkml_list
 import hkml_open
 
+def handle_with_b4(args, mail):
+    msgid = mail.get_field('message-id')
+
+    if args.action == 'apply':
+        to_return = os.getcwd()
+        os.chdir(args.repo)
+        rc = subprocess.call(['b4', 'shazam', msgid])
+        os.chdir(to_return)
+        if rc != 0:
+            print('applying the patch series failed')
+        return rc
+
 def main(args):
     if args.mail.isdigit():
         mail = hkml_list.get_mail(int(args.mail))
@@ -21,6 +33,10 @@ def main(args):
         mail = mails[0]
     else:
         print('unsupported <mail> (%s)' % args.mail)
+
+    if subprocess.call(['which', 'b4'], stdout=subprocess.DEVNULL) == 0:
+        if args.action == 'apply':
+            return handle_with_b4(args, mail)
 
     fd, patch_file = tempfile.mkstemp(prefix='hkml_patch_')
     with open(patch_file, 'w') as f:
