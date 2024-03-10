@@ -35,7 +35,7 @@ def main(args):
         print('unsupported <mail> (%s)' % args.mail)
 
     if subprocess.call(['which', 'b4'], stdout=subprocess.DEVNULL) == 0:
-        if args.action == 'apply':
+        if args.action == 'apply' and args.dont_use_b4 is not True:
             return handle_with_b4(args, mail)
 
     fd, patch_file = tempfile.mkstemp(prefix='hkml_patch_')
@@ -68,6 +68,9 @@ def set_argparser(parser):
                 'Could be index on the list, or \'clipboard\'']))
     parser_apply.add_argument('--repo', metavar='<dir>', default='./',
                               help='git repo to apply the patch')
+    # Maybe fore some internet disconnected case.
+    parser_apply.add_argument('--dont_use_b4', action='store_true',
+                              help='avoid use of b4')
 
     parser_check = subparsers.add_parser('check',
                                          help='run checker for the patch')
