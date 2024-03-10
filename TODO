@@ -1,5 +1,4 @@
 - Cleanup code
-- Support patches handling better
-  - Support getting all patches of a thread (could use b4 internally)
-  - Support adding Link: to the patches (could use b4 internally)
-  - Support running arbitrary patch checkers
+- patch
+  - Check subject to filter out non-patches on the thread
+  - Sort patches of the series based on subject, for non-b4 use case
