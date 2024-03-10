@@ -97,7 +97,11 @@ def main(args=None):
     with open(os.path.join(_hkml.get_hkml_dir(), 'last_open_idx'), 'w') as f:
         f.write('%d' % args.mail_idx)
 
-    head_columns = int(os.get_terminal_size().columns * 9 / 10)
+    try:
+        head_columns = int(os.get_terminal_size().columns * 9 / 10)
+    except:
+        # maybe user is pipe-ing the output
+        head_columns = None
     mail_str = mail_display_str(mail, False, False, head_columns)
 
     if args.stdout:
