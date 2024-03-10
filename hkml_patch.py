@@ -26,29 +26,39 @@ def main(args):
     with open(patch_file, 'w') as f:
         f.write(hkml_open.mail_display_str(mail, False, False))
 
-    if args.checker is not None:
+    if args.action == 'check':
         rc = subprocess.call([args.checker, patch_file])
         if rc != 0:
             print('checker complains something')
-        if args.check_only:
-            return rc
+        return rc
 
-    rc = subprocess.call(['git', '-C', args.repo, 'am', patch_file])
-    if rc == 0:
-        os.remove(patch_file)
-    else:
-        print('applying patch (%s) failed' % patch_file)
+    if args.action == 'apply':
+        rc = subprocess.call(['git', '-C', args.repo, 'am', patch_file])
+        if rc == 0:
+            os.remove(patch_file)
+        else:
+            print('applying patch (%s) failed' % patch_file)
 
 def set_argparser(parser):
-    parser.description = 'apply the mail as a patch on a git repo'
-    parser.add_argument(
+    parser.description = 'handle patch series mail thread'
+    subparsers = parser.add_subparsers(
+            title='action', dest='action', metavar='<action>')
+
+    parser_apply = subparsers.add_parser('apply', help='apply the patch')
+    parser_apply.add_argument(
             'mail', metavar='<mail>',
             help=' '.join(
                 ['The mail to apply as a patch.',
                 'Could be index on the list, or \'clipboard\'']))
-    parser.add_argument('--repo', metavar='<dir>', default='./',
-                        help='git repo to apply this patch')
-    parser.add_argument('--checker', metavar='<program>',
-                        help='patch checker program to run first')
-    parser.add_argument('--check_only', action='store_true',
-                        help='skip applying the patch')
+    parser_apply.add_argument('--repo', metavar='<dir>', default='./',
+                              help='git repo to apply the patch')
+
+    parser_check = subparsers.add_parser('check',
+                                         help='run checker for the patch')
+    parser_check.add_argument(
+            'mail', metavar='<mail>',
+            help=' '.join(
+                ['The mail to apply as a patch.',
+                'Could be index on the list, or \'clipboard\'']))
+    parser_check.add_argument('checker', metavar='<program>',
+                              help='patch checker program to run first')
