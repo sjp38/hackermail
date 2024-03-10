@@ -25,6 +25,7 @@ def handle_without_b4(args, mail):
         f.write(hkml_open.mail_display_str(mail, False, False))
 
     if args.action == 'check':
+        print(mail.subject)
         rc = subprocess.call([args.checker, patch_file])
         if rc != 0:
             print('checker complains something')
@@ -56,7 +57,19 @@ def main(args):
         if args.action == 'apply' and args.dont_use_b4 is not True:
             return handle_with_b4(args, mail)
 
-    handle_without_b4(args, mail)
+    msgid = mail.get_field('message-id')
+
+    mails = hkml_list.last_listed_mails()
+    threads = hkml_list.threads_of(mails)
+    for mail in threads:
+        if mail.get_field('message-id') == msgid:
+            break
+
+    if len(mail.replies) == 0:
+        handle_without_b4(args, mail)
+        return
+    for reply in mail.replies:
+        handle_without_b4(args, reply)
 
 def set_argparser(parser):
     parser.description = 'handle patch series mail thread'
