@@ -579,6 +579,9 @@ def get_mails_from_git(mail_list, since, until,
 
         for line in lines:
             mail = git_log_output_line_to_mail(line, mdir)
+            # mbox can be empty string if the commit is invalid one.
+            if mail.mbox == '':
+                continue
             if mail:
                 mails.append(mail)
     return mails
