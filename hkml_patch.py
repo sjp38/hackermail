@@ -69,6 +69,10 @@ def main(args):
         print('thread of the mail not found.')
         exit(1)
 
+    if not 'patch' in mail.subject_tags:
+        print('seems the mail is not patch mail')
+        exit(1)
+
     if len(mail.replies) == 0:
         handle_without_b4(args, mail)
         return
