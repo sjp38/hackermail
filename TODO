@@ -1,4 +1,3 @@
 - Cleanup code
 - patch
-  - Check subject to filter out non-patches on the thread
-  - Sort patches of the series based on subject, for non-b4 use case
+  - Support checking patch from thread
