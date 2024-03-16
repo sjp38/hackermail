@@ -46,10 +46,15 @@ def get_patch_index(mail):
             continue
         if idx_total[0].isdigit() and idx_total[1].isdigit():
             return int(idx_total[0])
+    return None
 
-def get_patch_replies(mail):
-    '''Return list of replies to the given mail that written as patch'''
-    patch_mails = [r for r in mail.replies if 'patch' in r.subject_tags]
+def get_patch_mails(thread_root_mail):
+    # Not patchset but single patch
+    if get_patch_index(thread_root_mail) is None:
+        return [thread_root_mail]
+
+    patch_mails += [r for r in thread_root_mail.replies
+                   if 'patch' in r.subject_tags]
     patch_mails.sort(key=lambda m: get_patch_index(m))
     return patch_mails
 
@@ -88,11 +93,8 @@ def main(args):
         print('seems the mail is not patch mail')
         exit(1)
 
-    if len(mail.replies) == 0:
-        handle_without_b4(args, mail)
-        return
-    for reply in get_patch_replies(mail):
-        handle_without_b4(args, reply)
+    for patch_mail in get_patch_mails(mail):
+        handle_without_b4(args, patch_mail)
 
 def set_argparser(parser):
     parser.description = 'handle patch series mail thread'
