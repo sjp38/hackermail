@@ -38,9 +38,20 @@ def handle_without_b4(args, mail):
         else:
             print('applying patch (%s) failed' % patch_file)
 
+def get_patch_index(mail):
+    tag_end_idx = mail.subject.find(']')
+    for field in mail.subject[:tag_end_idx].split():
+        idx_total = field.split('/')
+        if len(idx_total) != 2:
+            continue
+        if idx_total[0].isdigit() and idx_total[1].isdigit():
+            return int(idx_total[0])
+
 def get_patch_replies(mail):
     '''Return list of replies to the given mail that written as patch'''
-    return [r for r in mail.replies if 'patch' in r.subject_tags]
+    patch_mails = [r for r in mail.replies if 'patch' in r.subject_tags]
+    patch_mails.sort(key=lambda m: get_patch_index(m))
+    return patch_mails
 
 def main(args):
     if args.mail.isdigit():
