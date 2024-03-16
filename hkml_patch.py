@@ -112,7 +112,7 @@ def set_argparser(parser):
                               help='avoid use of b4')
 
     parser_check = subparsers.add_parser('check',
-                                         help='run checker for the patch')
+                                         help='run a checker for the patch')
     parser_check.add_argument(
             'mail', metavar='<mail>',
             help=' '.join(
