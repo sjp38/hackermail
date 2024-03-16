@@ -58,12 +58,16 @@ def main(args):
             return handle_with_b4(args, mail)
 
     msgid = mail.get_field('message-id')
-
     mails = hkml_list.last_listed_mails()
     threads = hkml_list.threads_of(mails)
+    found = False
     for mail in threads:
         if mail.get_field('message-id') == msgid:
+            found = True
             break
+    if found is False:
+        print('thread of the mail not found.')
+        exit(1)
 
     if len(mail.replies) == 0:
         handle_without_b4(args, mail)
