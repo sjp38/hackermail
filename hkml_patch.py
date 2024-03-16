@@ -119,4 +119,4 @@ def set_argparser(parser):
                 ['The mail to apply as a patch.',
                 'Could be index on the list, or \'clipboard\'']))
     parser_check.add_argument('checker', metavar='<program>',
-                              help='patch checker program to run first')
+                              help='patch checker program')
