@@ -44,6 +44,7 @@ def main(args=None):
     if args.mail_idx is None:
         to_show = hkml_list.get_last_thread_str()
         hkml_open.pr_with_pager_if_needed(to_show)
+        hkml_list.writeback_list_output()
         return
 
     if subprocess.call(['which', 'b4'], stdout=subprocess.DEVNULL) == 0:
