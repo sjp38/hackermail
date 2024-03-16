@@ -38,6 +38,10 @@ def handle_without_b4(args, mail):
         else:
             print('applying patch (%s) failed' % patch_file)
 
+def get_patch_replies(mail):
+    '''Return list of replies to the given mail that written as patch'''
+    return [r for r in mail.replies if 'patch' in r.subject_tags]
+
 def main(args):
     if args.mail.isdigit():
         mail = hkml_list.get_mail(int(args.mail))
@@ -76,7 +80,7 @@ def main(args):
     if len(mail.replies) == 0:
         handle_without_b4(args, mail)
         return
-    for reply in mail.replies:
+    for reply in get_patch_replies(mail):
         handle_without_b4(args, reply)
 
 def set_argparser(parser):
