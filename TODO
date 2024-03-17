@@ -1,1 +1,4 @@
 - Cleanup code
+- Document patch command
+- Implement backup command
+  - backup/restore personal data including manifest and tagged mails
