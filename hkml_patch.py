@@ -50,6 +50,7 @@ def get_patch_index(mail):
 
 def get_patch_mails(thread_root_mail):
     # Not patchset but single patch
+    patch_mails = []
     if get_patch_index(thread_root_mail) is None:
         return [thread_root_mail]
 
