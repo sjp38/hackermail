@@ -367,6 +367,87 @@ $ hkml list foo.mbox --since 2024-02-15 --until 2024-02-17
 Users could also import the mbox file on their other mbox-supporting mail
 client.
 
+Patches Management
+==================
+
+For mails of patches, `hkml patch` command is supported.  Using the comamnd,
+users can check the patches and/or apply the patches on top of their local
+source tree.  For the two purpose, it provides sub-command, `check` and
+`apply`.
+
+The two subcommands receives the identifier of the patch mail.  If it is given
+with an index of a mail on last-generated list or thread, and if the index is
+not for the real patch mail but a cover letter mail of the patch series, the
+command fetches all patches of the thread and applies the action to those.
+
+Checking Patches
+----------------
+
+`hkml patch check` receives the identifier of the mail of the patches and a
+patch checker program to use for checking the patches.  The checker program
+should be executable and receive the patch file as a positional argument.
+Then, this command fetches the patches and run the checker program.
+
+For example, below runs Linux' `checkpatch.pl` for a patch series.
+
+```
+$ hkml list damon
+[...]
+[28] [RFC PATCH v2 0/4] mm/damon: add a DAMOS filter type for page granularity access recheck
+     (SeongJae Park, 2024/03/11 13:45)
+[29]   [RFC PATCH v2 1/4] mm/damon/paddr: implement damon_folio_young() (SeongJae Park,
+       2024/03/11 13:45)
+[...]
+$
+$
+$ hkml patch check 28 ../linux/scripts/checkpatch.pl
+[RFC PATCH v2 1/4] mm/damon/paddr: implement damon_folio_young()
+total: 0 errors, 0 warnings, 65 lines checked
+
+/tmp/hkml_patch_7fkfxxat has no obvious style problems and is ready for submission.
+[RFC PATCH v2 2/4] mm/damon/paddr: implement damon_folio_mkold()
+total: 0 errors, 0 warnings, 57 lines checked
+
+/tmp/hkml_patch_s9i6r8xh has no obvious style problems and is ready for submission.
+[RFC PATCH v2 3/4] mm/damon: add DAMOS filter type YOUNG
+total: 0 errors, 0 warnings, 21 lines checked
+
+/tmp/hkml_patch_8223u8v9 has no obvious style problems and is ready for submission.
+[RFC PATCH v2 4/4] mm/damon/paddr: support DAMOS filter type YOUNG
+total: 0 errors, 0 warnings, 11 lines checked
+
+/tmp/hkml_patch_4anxkvj3 has no obvious style problems and is ready for submission.
+```
+
+Applying Patches
+----------------
+
+`hkml patch apply` receives the identifier of the mail of the patches and apply
+the patches to local source tree.  The command assumes current working
+directory is the local source tree.  If not, the user can set the path to the
+tree via `--repo` option.  If the system has `b4` installed, it uses `b4` to
+retrieve the patches, add `Link:` line, and do some basic checks before
+applying.
+
+For example, below applies the patche series that `hkml patch check` example
+was used for.
+
+```
+$ hkml patch apply 28 --repo ../linux
+[...]
+Applying: mm/damon/paddr: implement damon_folio_young()
+Applying: mm/damon/paddr: implement damon_folio_mkold()
+Applying: mm/damon: add DAMOS filter type YOUNG
+Applying: mm/damon/paddr: support DAMOS filter type YOUNG
+$
+$
+$ git -C ../linux log -4 --oneline
+af5c978e1153 (HEAD) mm/damon/paddr: support DAMOS filter type YOUNG
+d8e76d9430ed mm/damon: add DAMOS filter type YOUNG
+f76e7c473942 mm/damon/paddr: implement damon_folio_mkold()
+29829d099dd9 mm/damon/paddr: implement damon_folio_young()
+```
+
 Monitoring Mails
 ================
 
