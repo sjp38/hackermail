@@ -426,8 +426,7 @@ Applying Patches
 the patches to local source tree.  The command assumes current working
 directory is the local source tree.  If not, the user can set the path to the
 tree via `--repo` option.  If the system has `b4` installed, it uses `b4` to
-retrieve the patches, add `Link:` line, and do some basic checks before
-applying.
+retrieve the patches and do some basic checks before applying.
 
 For example, below applies the patche series that `hkml patch check` example
 was used for.
