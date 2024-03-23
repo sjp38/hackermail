@@ -21,6 +21,17 @@ def setup_git(hkml_dir, remote):
             git_cmd + ['remote', 'add', 'sync-target', remote]) != 0:
         print('adding remote failed')
         exit(1)
+    if subprocess.call(git_cmd + ['fetch', 'sync-target']) != 0:
+        print('fetching remote failed')
+        exit(1)
+    branches = subprocess.check_output(
+            git_cmd + ['branch', '-a']).decode().split()
+    if 'sync-target/latest' in branches:
+        if subprocess.git(
+                git_cmd + ['reset', '--hard', 'sync-target/latest']) != 0:
+            print('checking remote out failed')
+            exit(1)
+
     for file in ['manifest', 'monitor_requests', 'tags']:
         file_path = os.path.join(hkml_dir, file)
         if os.path.isfile(file_path):
