@@ -18,13 +18,15 @@ def main(args=None):
     os.mkdir('.hkm/archives')
 
     if args.manifest != None:
-        if not os.path.isfile(args.manifest):
-            print('--manifest (%s) not found' % args.manifest)
-            exit(1)
-        with open(args.manifest, 'r') as f:
-            content = f.read()
-        with open(os.path.join('.hkm', 'manifest'), 'w') as f:
-            f.write(content)
+        args.manifest = os.path.join(
+                os.path.dirname(__file__), 'manifests', 'lore.js')
+    elif not os.path.isfile(args.manifest):
+        print('--manifest (%s) not found' % args.manifest)
+        exit(1)
+    with open(args.manifest, 'r') as f:
+        content = f.read()
+    with open(os.path.join('.hkm', 'manifest'), 'w') as f:
+        f.write(content)
 
 if __name__ == '__main__':
     main()
