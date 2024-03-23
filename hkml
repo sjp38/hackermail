@@ -16,6 +16,7 @@ import hkml_forward
 import hkml_tag
 import hkml_send
 import hkml_write
+import hkml_sync
 import hkml_export
 import hkml_monitor
 import hkml_patch
@@ -70,6 +71,10 @@ hkml_write.set_argparser(parser_fmtml)
 parser_send = subparsers.add_parser('send', help = 'send mails')
 hkml_send.set_argparser(parser_send)
 
+parser_sync = subparsers.add_parser('sync',
+                                    help = 'synchronize setups and outputs')
+hkml_sync.set_argparser(parser_sync)
+
 parser_export = subparsers.add_parser('export', help = 'export mails')
 hkml_export.set_argparser(parser_export)
 
@@ -115,6 +120,8 @@ elif args.command == 'tag':
     hkml_tag.main(args)
 elif args.command == 'write':
     hkml_write.main(args)
+elif args.command == 'sync':
+    hkml_sync.main(args)
 elif args.command == 'send':
     hkml_send.main(args)
 elif args.command == 'export':
