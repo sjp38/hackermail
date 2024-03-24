@@ -35,12 +35,12 @@ def add_draft(draft_file):
             break
     draft['subject'] = subject
     drafts.append(draft)
+    drafts.sort(key=lambda x: x['date'])
 
     store_drafts(drafts)
 
 def list_drafts():
     drafts = get_drafts()
-    drafts.sort(key=lambda x: x['date'])
     for idx, draft in enumerate(drafts):
         print('[%d] %s (saved at %s)' % (idx, draft['subject'], draft['date']))
 
@@ -49,7 +49,6 @@ def remove_draft(draft_idx):
     if draft_idx >= len(drafts):
         print('too high index')
         exit(1)
-    drafts.sort(key=lambda x: x['date'])
     del drafts[draft_idx]
     store_drafts(drafts)
 
