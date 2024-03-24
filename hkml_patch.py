@@ -13,7 +13,7 @@ def handle_with_b4(args, mail):
     if args.action == 'apply':
         to_return = os.getcwd()
         os.chdir(args.repo)
-        rc = subprocess.call(['b4', 'shazam', msgid])
+        rc = subprocess.call(['b4', 'shazam', '--add-link', msgid])
         os.chdir(to_return)
         if rc != 0:
             print('applying the patch series failed')
