@@ -17,6 +17,9 @@ def commit_changes(hkml_dir):
             if subprocess.call(git_cmd + ['add', file_path]) != 0:
                 print('git-addding file (%s) failed' % file_path)
                 exit(1)
+        else:
+            # may fail if already removed, or this is first call
+            subprocess.call(git_cmd + ['rm', file_path])
     # don't check the return value, since it could fail if no change is really
     # made.
     subprocess.call(git_cmd + ['commit', '-m', 'hkml sync commit'])
