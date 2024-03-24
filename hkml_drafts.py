@@ -6,6 +6,16 @@ import os
 
 import _hkml
 
+def get_drafts():
+    hkml_dir = _hkml.get_hkml_dir()
+    drafts_file = os.path.join(hkml_dir, 'drafts.json')
+    if not os.path.isfile(drafts_file):
+        drafts = []
+    else:
+        with open(drafts_file, 'r') as f:
+            drafts = json.load(f)
+    return drafts
+
 def add_draft(draft_file):
     hkml_dir = _hkml.get_hkml_dir()
     drafts_file = os.path.join(hkml_dir, 'drafts.json')
