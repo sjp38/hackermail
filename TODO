@@ -1,6 +1,10 @@
 - Cleanup code
 - Add 'From:' on reply draft using 'git config sendemail.from'
 - Support draft listing, reading, re-writing, and remote-syncing
+  - Save draft mails to an mbox file under .hkm
+  - Let 'hkml list' support it with special keyword, say, 'drafts'
+  - Add '--draft <mail>' to 'write' command (open in send mode)
+  - Make 'hkml sync' support the drafts mbox file
 - patch apply
   - Support b4 failure (internet unconnected?)
   - Add 'Link:' tag when b4 is unavailable
