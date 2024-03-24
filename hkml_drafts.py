@@ -23,14 +23,7 @@ def store_drafts(drafts):
         json.dump(drafts, f, indent=4)
 
 def add_draft(draft_file):
-    hkml_dir = _hkml.get_hkml_dir()
-    drafts_file = os.path.join(hkml_dir, 'drafts.json')
-    if not os.path.isfile(drafts_file):
-        drafts = []
-    else:
-        with open(drafts_file, 'r') as f:
-            drafts = json.load(f)
-
+    drafts = get_drafts()
     draft = {'date': datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
     with open(draft_file, 'r') as f:
         draft_content = f.read()
@@ -43,36 +36,22 @@ def add_draft(draft_file):
     draft['subject'] = subject
     drafts.append(draft)
 
-    with open(drafts_file, 'w') as f:
-        json.dump(drafts, f, indent=4)
+    store_drafts(drafts)
 
 def list_drafts():
-    hkml_dir = _hkml.get_hkml_dir()
-    drafts_file = os.path.join(hkml_dir, 'drafts.json')
-    if not os.path.isfile(drafts_file):
-        drafts = []
-    else:
-        with open(drafts_file, 'r') as f:
-            drafts = json.load(f)
+    drafts = get_drafts()
     drafts.sort(key=lambda x: x['date'])
     for idx, draft in enumerate(drafts):
         print('[%d] %s (saved at %s)' % (idx, draft['subject'], draft['date']))
 
 def remove_draft(draft_idx):
-    hkml_dir = _hkml.get_hkml_dir()
-    drafts_file = os.path.join(hkml_dir, 'drafts.json')
-    if not os.path.isfile(drafts_file):
-        drafts = []
-    else:
-        with open(drafts_file, 'r') as f:
-            drafts = json.load(f)
+    drafts = get_drafts()
     if draft_idx >= len(drafts):
         print('too high index')
         exit(1)
     drafts.sort(key=lambda x: x['date'])
     del drafts[draft_idx]
-    with open(drafts_file, 'w') as f:
-        json.dump(drafts, f, indent=4)
+    store_drafts(drafts)
 
 def main(args):
     if args.action == 'add':
