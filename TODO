@@ -1,7 +1,4 @@
 - Cleanup code
-- Document patch command
-- Implement backup command
-  - backup/restore personal data including manifest and tagged mails
 - Add 'From:' on reply draft using 'git config sendemail.from'
 - Support draft listing, reading, re-writing, and remote-syncing
 - patch apply: Add 'Link:' tag
