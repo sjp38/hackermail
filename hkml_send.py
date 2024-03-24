@@ -18,6 +18,9 @@ def send_mail(mboxfile, get_confirm=False):
             print(f.read())
         answer = input('Will send above mail.  Okay? [y/N] ')
         if answer.lower() != 'y':
+            answer = input('Add to the drafts list? [Y/n] ')
+            if answer.lower() != 'n':
+                hkml_drafts.add_draft(mboxfile)
             answer = input('Leave the draft message? [Y/n] ')
             if answer.lower() == 'n':
                 os.remove(mboxfile)
