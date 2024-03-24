@@ -339,6 +339,49 @@ line.  Then `write` sub-command formats the basic mail, and let the user
 additionally make more edits interactively and finally send it, in a way pretty
 similar to that of `reply`.  Again, `git send-email` setup is required.
 
+Synchronizing
+=============
+
+Users may use `hkml` on multiple devices or need to change their devices.  In
+such cases, users can backup and restore some `hkml` settings and outputs via
+remote storage using `sync` command.  Currently supported data includes
+
+- manifest (created via `hkml init`),
+- monitoring request (created via `hkml monitor`), and
+- mails tagging information (created via `hkml tag`).
+
+The command backs up and synchronizes the data using remote `git` repository.
+Users therefore need to first create a `git` repository that accespts pushing
+commits from the `hkml`-running machine.  The backup repo could be on the local
+storage, a private server, or public git hosting services like `Gitlab` or
+`GitHub`.  Then, the user could do the synchronization by running `hkml sync`.
+For the first time of synchronization, user should provide the valid `git` url
+for the backup repo to `hkml sync` via `--remote` option.
+
+Below example shows how the mails tagging information can be synchronized
+between two different machines using a GitHub repo.
+
+```
+$ # from the first machine
+$ ssh machine_1
+machine_1:~$ hkml tag list
+to_read_later: 3 mails
+to_review_later: 3 mails
+to_test_later: 4 mails
+machine_1:~$ hkml sync --remote git@github.com:$USER/hkml_backup_repo.git
+$
+$ # move to the second machine
+$ ssh machine_2
+machine_2:~$ hkml tag list
+machine_2:~$
+machine_2:~$ hkml sync --remote git@github.com:$USER/hkml_backup_repo.git
+[...]
+machine_2:~$ hkml tag list
+to_read_later: 3 mails
+to_review_later: 3 mails
+to_test_later: 4 mails
+```
+
 Exporting Mails
 ===============
 
