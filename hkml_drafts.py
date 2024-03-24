@@ -16,6 +16,12 @@ def get_drafts():
             drafts = json.load(f)
     return drafts
 
+def store_drafts(drafts):
+    hkml_dir = _hkml.get_hkml_dir()
+    drafts_file = os.path.join(hkml_dir, 'drafts.json')
+    with open(drafts_file, 'w') as f:
+        json.dump(drafts, f, indent=4)
+
 def add_draft(draft_file):
     hkml_dir = _hkml.get_hkml_dir()
     drafts_file = os.path.join(hkml_dir, 'drafts.json')
