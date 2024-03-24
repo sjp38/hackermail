@@ -9,6 +9,18 @@ import _hkml
 Synchronize personal files in .hkm/ via user-specified git repo.
 '''
 
+def commit_changes(hkml_dir):
+    git_cmd = ['git', '-C', hkml_dir]
+    for file in ['manifest', 'monitor_requests', 'tags']:
+        file_path = os.path.join(hkml_dir, file)
+        if os.path.isfile(file_path):
+            if subprocess.call(git_cmd + ['add', file_path]) != 0:
+                print('git-addding file (%s) failed' % file_path)
+                exit(1)
+    # don't check the return value, since it could fail if no change is really
+    # made.
+    subprocess.call(git_cmd + ['commit', '-m', 'hkml sync commit'])
+
 def setup_git(hkml_dir, remote):
     if remote is None:
         print('This is initial time of sync.  Please provide --remote')
@@ -32,15 +44,7 @@ def setup_git(hkml_dir, remote):
             print('checking remote out failed')
             exit(1)
 
-    for file in ['manifest', 'monitor_requests', 'tags']:
-        file_path = os.path.join(hkml_dir, file)
-        if os.path.isfile(file_path):
-            if subprocess.call(git_cmd + ['add', file_path]) != 0:
-                print('git-addding file (%s) failed' % file_path)
-                exit(1)
-    if subprocess.call(git_cmd + ['commit', '-m', 'hkml sync commit']) != 0:
-        print('git-commit failed')
-        exit(1)
+    commit_changes(hkml_dir)
 
     if subprocess.call(git_cmd + ['push', 'sync-target', 'HEAD:latest']) != 0:
         print('push failed')
@@ -49,16 +53,7 @@ def setup_git(hkml_dir, remote):
 def syncup(hkml_dir, remote):
     git_cmd = ['git', '-C', hkml_dir]
 
-    for file in ['manifest', 'monitor_requests', 'tags']:
-        file_path = os.path.join(hkml_dir, file)
-        if os.path.isfile(file_path):
-            if subprocess.call(git_cmd + ['add', file_path]) != 0:
-                print('git-addding file (%s) failed' % file_path)
-                exit(1)
-
-    # if there's no change, this will fail.  But don't care because later
-    # rebase/push will fail if something wrong in real.
-    subprocess.call(git_cmd + ['commit', '-m', 'hkml sync commit'])
+    commit_changes(hkml_dir)
 
     if remote is not None:
         cmd = git_cmd + ['remote', 'get-url', 'sync-target']
