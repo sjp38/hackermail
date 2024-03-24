@@ -23,8 +23,9 @@ def send_mail(mboxfile, get_confirm=False):
                 os.remove(mboxfile)
             else:
                 print('The draft message is at %s' % mboxfile)
-            exit(0)
+            return
     _hkml.cmd_str_output(['git', 'send-email', mboxfile])
+    os.remove(mboxfile)
 
 def main(args=None):
     if not args:

@@ -78,8 +78,6 @@ def main(args=None):
                 reply_tmp_path)
         exit(1)
     hkml_send.send_mail(reply_tmp_path, get_confirm=True)
-    os.remove(reply_tmp_path)
-    return
 
 if __name__ == 'main__':
     main()
