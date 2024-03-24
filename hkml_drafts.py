@@ -85,3 +85,13 @@ def set_argparser(parser):
     parser_remove.add_argument(
             'draft', metavar='<index>', type=int,
             help='index of the draft on the list')
+
+    parser_open = subparsers.add_parser('open', help='read the draft')
+    parser_open.add_argument(
+            'draft', metavar='<index>', type=int,
+            help='index of the draft on the list')
+
+    parser_resume = subparsers.add_parser('resume', help='resume writing')
+    parser_resume.add_argument(
+            'draft', metavar='<index>', type=int,
+            help='index of the draft on the list')
