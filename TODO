@@ -9,3 +9,4 @@
   - Support b4 failure (internet unconnected?)
   - Add 'Link:' tag when b4 is unavailable
   - Make b4 behavior consistent (support per-single-patch applying)
+- Support sent mails saving
