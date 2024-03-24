@@ -1,4 +1,7 @@
 - Cleanup code
 - Add 'From:' on reply draft using 'git config sendemail.from'
 - Support draft listing, reading, re-writing, and remote-syncing
-- patch apply: Add 'Link:' tag
+- patch apply
+  - Support b4 failure (internet unconnected?)
+  - Add 'Link:' tag when b4 is unavailable
+  - Make b4 behavior consistent (support per-single-patch applying)
