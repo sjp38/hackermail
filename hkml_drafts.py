@@ -30,9 +30,24 @@ def add_draft(draft_file):
     with open(drafts_file, 'w') as f:
         json.dump(drafts, f, indent=4)
 
+def list_drafts():
+    hkml_dir = _hkml.get_hkml_dir()
+    drafts_file = os.path.join(hkml_dir, 'drafts.json')
+    if not os.path.isfile(drafts_file):
+        drafts = []
+    else:
+        with open(drafts_file, 'r') as f:
+            drafts = json.load(f)
+    drafts.sort(key=lambda x: x['date'])
+    for idx, draft in enumerate(drafts):
+        print('[%d] %s (saved at %s)' % (idx, draft['subject'], draft['date']))
+
 def main(args):
     if args.action == 'add':
         return add_draft(args.draft)
+    elif args.action == 'list':
+        list_drafts()
+        return
 
 def set_argparser(parser):
     parser.description = 'manage draft mails'
@@ -43,3 +58,6 @@ def set_argparser(parser):
             'add', help='add a draft to the drafts list')
     parser_add.add_argument(
             'draft', metavar='<file>', help='file containing the draft mail')
+
+    parser_list = subparsers.add_parser(
+            'list', help='list draft mails on the list')
