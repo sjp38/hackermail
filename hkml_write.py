@@ -29,7 +29,7 @@ def git_sendemail_valid_recipients(recipients):
     lines[-1] = lines[-1][:-1]
     return '\n'.join(lines)
 
-def format_mbox(subject, in_reply_to, to, cc, body):
+def format_mbox(subject, in_reply_to, to, cc, body, from_=None):
     lines = []
     if not subject:
         subject = '/* write subject here */'
@@ -37,7 +37,12 @@ def format_mbox(subject, in_reply_to, to, cc, body):
         to = ['/* write recipients here */']
     if not cc:
         cc = ['/* wrtite cc recipients here */']
+    if from_ is None:
+        from_ = subprocess.check_output(
+                ['git', 'config', 'sendemail.from']).decode().strip()
+
     lines.append('Subject: %s' % subject)
+    lines.append('From: %s' % from_)
     if in_reply_to:
         lines.append('In-Reply-To: %s' % in_reply_to)
     for addr in to:
