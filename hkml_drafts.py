@@ -42,12 +42,30 @@ def list_drafts():
     for idx, draft in enumerate(drafts):
         print('[%d] %s (saved at %s)' % (idx, draft['subject'], draft['date']))
 
+def remove_draft(draft_idx):
+    hkml_dir = _hkml.get_hkml_dir()
+    drafts_file = os.path.join(hkml_dir, 'drafts.json')
+    if not os.path.isfile(drafts_file):
+        drafts = []
+    else:
+        with open(drafts_file, 'r') as f:
+            drafts = json.load(f)
+    if draft_idx >= len(drafts):
+        print('too high index')
+        exit(1)
+    drafts.sort(key=lambda x: x['date'])
+    del drafts[draft_idx]
+    with open(drafts_file, 'w') as f:
+        json.dump(drafts, f, indent=4)
+
 def main(args):
     if args.action == 'add':
         return add_draft(args.draft)
     elif args.action == 'list':
         list_drafts()
         return
+    elif args.action == 'remove':
+        remove_draft(args.draft)
 
 def set_argparser(parser):
     parser.description = 'manage draft mails'
@@ -61,3 +79,9 @@ def set_argparser(parser):
 
     parser_list = subparsers.add_parser(
             'list', help='list draft mails on the list')
+
+    parser_remove = subparsers.add_parser(
+            'remove', help='remove a draft mail from the list')
+    parser_remove.add_argument(
+            'draft', metavar='<index>', type=int,
+            help='index of the draft on the list')
