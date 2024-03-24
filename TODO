@@ -10,3 +10,4 @@
   - Add 'Link:' tag when b4 is unavailable
   - Make b4 behavior consistent (support per-single-patch applying)
 - Support sent mails saving
+- thread: Use http://lore.kernel.org/all/<Message-ID>/t.mbox.gz instead of b4
