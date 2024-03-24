@@ -52,6 +52,13 @@ def remove_draft(draft_idx):
     del drafts[draft_idx]
     store_drafts(drafts)
 
+def open_draft(draft_idx):
+    drafts = get_drafts()
+    if draft_idx >= len(drafts):
+        print('too high index')
+        exit(1)
+    print(drafts[draft_idx]['content'])
+
 def main(args):
     if args.action == 'add':
         return add_draft(args.draft)
@@ -60,6 +67,8 @@ def main(args):
         return
     elif args.action == 'remove':
         remove_draft(args.draft)
+    elif args.action == 'open':
+        open_draft(args.draft)
 
 def set_argparser(parser):
     parser.description = 'manage draft mails'
