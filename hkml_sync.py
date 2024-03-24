@@ -25,9 +25,9 @@ def setup_git(hkml_dir, remote):
         print('fetching remote failed')
         exit(1)
     branches = subprocess.check_output(
-            git_cmd + ['branch', '-a']).decode().split()
+            git_cmd + ['branch', '-r']).decode().split()
     if 'sync-target/latest' in branches:
-        if subprocess.git(
+        if subprocess.call(
                 git_cmd + ['reset', '--hard', 'sync-target/latest']) != 0:
             print('checking remote out failed')
             exit(1)
@@ -46,7 +46,7 @@ def setup_git(hkml_dir, remote):
         print('push failed')
         exit(1)
 
-def syncup(hkml_dir):
+def syncup(hkml_dir, remote):
     git_cmd = ['git', '-C', hkml_dir]
 
     for file in ['manifest', 'monitor_requests', 'tags']:
@@ -59,6 +59,14 @@ def syncup(hkml_dir):
     # if there's no change, this will fail.  But don't care because later
     # rebase/push will fail if something wrong in real.
     subprocess.call(git_cmd + ['commit', '-m', 'hkml sync commit'])
+
+    if remote is not None:
+        cmd = git_cmd + ['remote', 'get-url', 'sync-target']
+        current_sync_target = subprocess.check_output(cmd).decode().strip()
+        if remote != current_sync_target:
+            cmd = git_cmd + ['remote', 'set-url', 'sync-target', remote]
+            if subprocess.call(cmd) != 0:
+                print('remote url update failed')
 
     if subprocess.call(git_cmd + ['fetch', 'sync-target']) != 0:
         print('fetching remote failed')
@@ -75,7 +83,7 @@ def main(args):
     hkml_dir = _hkml.get_hkml_dir()
     if not os.path.isdir(os.path.join(hkml_dir, '.git')):
         setup_git(hkml_dir, args.remote)
-    syncup(hkml_dir)
+    syncup(hkml_dir, args.remote)
 
 def set_argparser(parser):
     parser.description = 'synchronize the outputs and setups'
