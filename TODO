@@ -12,3 +12,4 @@
 - Support sent mails saving
 - thread: Use http://lore.kernel.org/all/<Message-ID>/t.mbox.gz instead of b4
 - Check if sync is setup and do sync when tag is updated
+- draft tagging: Check if From: is missed
