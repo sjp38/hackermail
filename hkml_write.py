@@ -8,6 +8,7 @@ import sys
 import tempfile
 
 import _hkml
+import hkml_list
 import hkml_send
 
 def git_sendemail_valid_recipients(recipients):
@@ -30,7 +31,21 @@ def git_sendemail_valid_recipients(recipients):
     lines[-1] = lines[-1][:-1]
     return '\n'.join(lines)
 
-def format_mbox(subject, in_reply_to, to, cc, body, from_=None):
+def format_mbox(subject, in_reply_to, to, cc, body, from_=None, draft=None):
+    if draft is not None:
+        mail = hkml_list.get_mail(draft)
+        if mail is None:
+            print('failed getting draft mail of the index.')
+            exit(1)
+        lines = []
+        for line in mail.mbox.split('\n')[1:]:
+            if line.startswith('Message-ID: '):
+                continue
+            if line.startswith('Date: '):
+                continue
+            lines.append(line)
+        return '\n'.join(lines)
+
     lines = []
     if not subject:
         subject = '/* write subject here */'
@@ -72,6 +87,8 @@ def set_argparser(parser=None):
             help='body message of the mail')
     parser.add_argument('--format_only', action='store_true',
             help='print formatted mail template only')
+    parser.add_argument('--draft', metavar='<index>', type=int,
+                        help='resume writing from the given draft')
 
 def main(args=None):
     if not args:
@@ -80,7 +97,7 @@ def main(args=None):
         args = parser.parse_args()
 
     mbox = format_mbox(args.subject, args.in_reply_to, args.to, args.cc,
-        args.body)
+        args.body, None, args.draft)
 
     if args.format_only:
         print(mbox)
