@@ -77,6 +77,9 @@ def syncup(hkml_dir, remote):
         print('push failed')
         exit(1)
 
+def syncup_ready():
+    return os.path.isdir(os.path.join(_hkml.get_hkml_dir(), '.git'))
+
 def main(args):
     hkml_dir = _hkml.get_hkml_dir()
     if not os.path.isdir(os.path.join(hkml_dir, '.git')):

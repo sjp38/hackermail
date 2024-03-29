@@ -5,6 +5,7 @@ import os
 
 import _hkml
 import hkml_list
+import hkml_sync
 
 '''
 Tags information is saved in a json file called 'tags' under the hkml
@@ -27,6 +28,10 @@ def read_tags_file():
 def write_tags_file(tags):
     with open(tag_file_path(), 'w') as f:
         json.dump(tags, f, indent=4)
+    if hkml_sync.syncup_ready():
+        answer = input('Tags updated.  Sync? [Y/n] ')
+        if answer.lower() != 'n':
+            hkml_sync.syncup(_hkml.get_hkml_dir(), remote=None)
 
 def mails_of_tag(tag):
     tags_map = read_tags_file()
