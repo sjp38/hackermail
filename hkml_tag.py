@@ -37,12 +37,7 @@ def mails_of_tag(tag):
             mails.append(_hkml.Mail(kvpairs=tags_map[msgid]['mail']))
     return mails
 
-def add_tags(mail_idx, tags):
-    mail = hkml_list.get_mail(mail_idx)
-    if mail is None:
-        print('failed getting mail of the index.  Maybe wrong index?')
-        exit(1)
-
+def do_add_tags(mail, tags):
     msgid = mail.get_field('message-id')
 
     tags_map = read_tags_file()
@@ -54,6 +49,14 @@ def add_tags(mail_idx, tags):
             if not tag in existing_tags:
                 existing_tags.append(tag)
     write_tags_file(tags_map)
+
+def add_tags(mail_idx, tags):
+    mail = hkml_list.get_mail(mail_idx)
+    if mail is None:
+        print('failed getting mail of the index.  Maybe wrong index?')
+        exit(1)
+
+    do_add_tags(mail, tags)
 
 def remove_tags(mail_idx, tags):
     mail = hkml_list.get_mail(mail_idx)
