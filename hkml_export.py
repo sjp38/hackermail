@@ -17,7 +17,7 @@ def export_mails(mails, export_file):
             if mail.mbox is None:
                 mail.get_field('message-id')
             f.write('\n'.join(
-                ['From mboxrd@z Thu Jan  1 00:00:00 1970', mail.mbox,'']))
+                ['From hackermail Thu Jan  1 00:00:00 1970', mail.mbox,'']))
 
 def set_argparser(parser):
     parser.description = 'export mails'
