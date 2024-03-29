@@ -1,15 +1,9 @@
 - Cleanup code
-- Add 'From:' on reply draft using 'git config sendemail.from'
-- Support draft listing, reading, re-writing, and remote-syncing
-  - Save draft mails to an mbox file under .hkm
-  - Let 'hkml list' support it with special keyword, say, 'drafts'
-  - Add '--draft <mail>' to 'write' command (open in send mode)
-  - Make 'hkml sync' support the drafts mbox file
 - patch apply
   - Support b4 failure (internet unconnected?)
   - Add 'Link:' tag when b4 is unavailable
   - Make b4 behavior consistent (support per-single-patch applying)
 - Support sent mails saving
 - thread: Use http://lore.kernel.org/all/<Message-ID>/t.mbox.gz instead of b4
-- Check if sync is setup and do sync when tag is updated
 - draft tagging: Check if From: is missed
+- Don't use cached output for tags
