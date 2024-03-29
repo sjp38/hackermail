@@ -36,9 +36,6 @@ def send_mail(mboxfile, get_confirm=False):
             answer = input('Tag as drafts? [Y/n] ')
             if answer.lower() != 'n':
                 tag_as_draft(mboxfile)
-            answer = input('Add to the drafts list? [Y/n] ')
-            if answer.lower() != 'n':
-                hkml_drafts.add_draft(mboxfile)
             answer = input('Leave the draft message? [Y/n] ')
             if answer.lower() == 'n':
                 os.remove(mboxfile)
