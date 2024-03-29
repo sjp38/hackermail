@@ -33,7 +33,7 @@ def send_mail(mboxfile, get_confirm=False):
             print(f.read())
         answer = input('Will send above mail.  Okay? [y/N] ')
         if answer.lower() != 'y':
-            answer = input('Tag as draft? [Y/n] ')
+            answer = input('Tag as drafts? [Y/n] ')
             if answer.lower() != 'n':
                 tag_as_draft(mboxfile)
             answer = input('Add to the drafts list? [Y/n] ')
