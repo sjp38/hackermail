@@ -36,11 +36,7 @@ def send_mail(mboxfile, get_confirm=False):
             answer = input('Tag as drafts? [Y/n] ')
             if answer.lower() != 'n':
                 tag_as_draft(mboxfile)
-            answer = input('Leave the draft message? [Y/n] ')
-            if answer.lower() == 'n':
-                os.remove(mboxfile)
-            else:
-                print('The draft message is at %s' % mboxfile)
+            os.remove(mboxfile)
             return
     _hkml.cmd_str_output(['git', 'send-email', mboxfile])
     os.remove(mboxfile)
