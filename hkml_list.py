@@ -655,6 +655,75 @@ def last_listed_mails():
             mails.append(mail)
     return mails
 
+def main(args):
+    if args.source_type is not None:
+        if len(args.source_type) == 1:
+            args.source_type = args.source_type * len(args.sources)
+        else:
+            print('numbers of --source_type and --sources mismatch')
+            exit(1)
+    else:
+        args.source_type = [None] * len(args.sources)
+
+    list_output_cache_key = args_to_list_output_key(args)
+    if args.fetch == False or args.sources == []:
+        if args.sources == []:
+            to_show = get_last_list_str()
+            if to_show is None:
+                print('no valid last list output exists')
+                exit(1)
+        else:
+            to_show = get_list_str(list_output_cache_key)
+        if to_show is not None:
+            if args.stdout:
+                print(to_show)
+            else:
+                hkml_open.pr_with_pager_if_needed(to_show)
+            writeback_list_output()
+            return
+    else:
+        for source in args.sources:
+            invalidate_cached_outputs(source)
+
+    if args.nr_mails is not None:
+        args.since = (datetime.datetime.strptime(args.until, '%Y-%m-%d') -
+                      datetime.timedelta(days=1)).strftime('%Y-%m-%d')
+        args.min_nr_mails = args.nr_mails
+        args.max_nr_mails = args.nr_mails
+
+    if args.cols is None:
+        try:
+            args.cols = int(os.get_terminal_size().columns * 9 / 10)
+        except OSError as e:
+            pass
+
+    timestamp = time.time()
+    runtime_profile = []
+    mails_to_show = []
+    msgids = {}
+    for idx, source in enumerate(args.sources):
+        for mail in get_mails(
+                source, args.fetch, args.since, args.until,
+                args.min_nr_mails, args.max_nr_mails, None,
+                source_type=args.source_type[idx]):
+            msgid = mail.get_field('message-id')
+            if not msgid in msgids:
+                mails_to_show.append(mail)
+            msgids[mail.get_field('message-id')] = True
+    runtime_profile = [['get_mails', time.time() - timestamp]]
+    if args.max_nr_mails is not None:
+        mails_to_show = mails_to_show[:args.max_nr_mails]
+
+    to_show = mails_to_str(mails_to_show, MailListFilter(args),
+                           MailListDecorator(args), None, runtime_profile)
+    hkml_cache.writeback_mails()
+    cache_list_str(list_output_cache_key, to_show)
+
+    if args.stdout:
+        print(to_show)
+        return
+    hkml_open.pr_with_pager_if_needed(to_show)
+
 def add_mails_filter_arguments(parser):
     parser.add_argument(
             '--from_keywords', metavar='<keyword>', nargs='+',
@@ -741,72 +810,3 @@ def set_argparser(parser=None):
             help='fetch mails before listing')
     parser.add_argument('--stdout', action='store_true',
             help='print to stdout instead of using the pager')
-
-def main(args):
-    if args.source_type is not None:
-        if len(args.source_type) == 1:
-            args.source_type = args.source_type * len(args.sources)
-        else:
-            print('numbers of --source_type and --sources mismatch')
-            exit(1)
-    else:
-        args.source_type = [None] * len(args.sources)
-
-    list_output_cache_key = args_to_list_output_key(args)
-    if args.fetch == False or args.sources == []:
-        if args.sources == []:
-            to_show = get_last_list_str()
-            if to_show is None:
-                print('no valid last list output exists')
-                exit(1)
-        else:
-            to_show = get_list_str(list_output_cache_key)
-        if to_show is not None:
-            if args.stdout:
-                print(to_show)
-            else:
-                hkml_open.pr_with_pager_if_needed(to_show)
-            writeback_list_output()
-            return
-    else:
-        for source in args.sources:
-            invalidate_cached_outputs(source)
-
-    if args.nr_mails is not None:
-        args.since = (datetime.datetime.strptime(args.until, '%Y-%m-%d') -
-                      datetime.timedelta(days=1)).strftime('%Y-%m-%d')
-        args.min_nr_mails = args.nr_mails
-        args.max_nr_mails = args.nr_mails
-
-    if args.cols is None:
-        try:
-            args.cols = int(os.get_terminal_size().columns * 9 / 10)
-        except OSError as e:
-            pass
-
-    timestamp = time.time()
-    runtime_profile = []
-    mails_to_show = []
-    msgids = {}
-    for idx, source in enumerate(args.sources):
-        for mail in get_mails(
-                source, args.fetch, args.since, args.until,
-                args.min_nr_mails, args.max_nr_mails, None,
-                source_type=args.source_type[idx]):
-            msgid = mail.get_field('message-id')
-            if not msgid in msgids:
-                mails_to_show.append(mail)
-            msgids[mail.get_field('message-id')] = True
-    runtime_profile = [['get_mails', time.time() - timestamp]]
-    if args.max_nr_mails is not None:
-        mails_to_show = mails_to_show[:args.max_nr_mails]
-
-    to_show = mails_to_str(mails_to_show, MailListFilter(args),
-                           MailListDecorator(args), None, runtime_profile)
-    hkml_cache.writeback_mails()
-    cache_list_str(list_output_cache_key, to_show)
-
-    if args.stdout:
-        print(to_show)
-        return
-    hkml_open.pr_with_pager_if_needed(to_show)
