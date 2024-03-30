@@ -1,5 +1,10 @@
 This file contains major changes in each version since v1.0.0
 
+v1.0.2
+- Implement a feature for tagging written mail as drafts
+- Implement an option for continue writing draft mails ('hkml write --draft')
+- Ask synchronization for every tag update
+
 v1.0.1
 - Implement a command, 'sync', to support remote backup/restore
 - patch: Support patch series and use b4 internally if available
