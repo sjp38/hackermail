@@ -27,7 +27,7 @@ def set_argparser(parser=None):
     parser.add_argument('mbox_file', metavar='<mboxfile>',
             help='Mbox format file of the mail to send.')
 
-def send_mail(mboxfile, get_confirm=False):
+def send_mail(mboxfile, get_confirm=False, erase_mbox=True):
     do_send = True
     if get_confirm:
         with open(mboxfile, 'r') as f:
@@ -40,7 +40,8 @@ def send_mail(mboxfile, get_confirm=False):
             tag_as_draft(mboxfile)
     else:
         _hkml.cmd_str_output(['git', 'send-email', mboxfile])
-    os.remove(mboxfile)
+    if erase_mbox:
+        os.remove(mboxfile)
 
 def main(args=None):
     if not args:
@@ -48,7 +49,7 @@ def main(args=None):
         set_argparser(parser)
         args = parser.parse_args()
 
-    send_mail(args.mbox_file, get_confirm=False)
+    send_mail(args.mbox_file, get_confirm=False, erase_mbox=False)
 
 if __name__ == '__main__':
     main()
