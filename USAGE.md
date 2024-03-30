@@ -301,9 +301,7 @@ The command formats reply mail for the given mail and open VIM for the user's
 interactive writing of the content.  Once the user finishes writing it and
 close the editor, the command will show the content of the written reply mail
 and ask it is ok to send the mail.  If the user answers the mail is correct and
-ok to send, `reply` sub-command will send it.  If the user answers to not send
-the mail, `reply` sub-command will further ask if the user want to delete the
-draft or save it for further edit.
+ok to send, `reply` sub-command will send it.
 
 For example,
 
@@ -312,8 +310,6 @@ $ hkml reply 3
 [...] # hkml reply open VIM.  Below is an example output after closing VIM.
 
 Will send above mail.  Okay? [y/N] n
-Leave the draft message? [Y/n] y
-The draft message is at /tmp/hkml_reply_py9o_yec
 ```
 
 Note that `hkml` send mail using `git send-email`.  Hence `git send-email`
