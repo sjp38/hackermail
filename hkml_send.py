@@ -28,17 +28,18 @@ def set_argparser(parser=None):
             help='Mbox format file of the mail to send.')
 
 def send_mail(mboxfile, get_confirm=False):
+    do_send = True
     if get_confirm:
         with open(mboxfile, 'r') as f:
             print(f.read())
         answer = input('Will send above mail.  Okay? [y/N] ')
-        if answer.lower() != 'y':
-            answer = input('Tag as drafts? [Y/n] ')
-            if answer.lower() != 'n':
-                tag_as_draft(mboxfile)
-            os.remove(mboxfile)
-            return
-    _hkml.cmd_str_output(['git', 'send-email', mboxfile])
+        do_send = answer.lower() == 'y'
+    if do_send is False:
+        answer = input('Tag as drafts? [Y/n] ')
+        if answer.lower() != 'n':
+            tag_as_draft(mboxfile)
+    else:
+        _hkml.cmd_str_output(['git', 'send-email', mboxfile])
     os.remove(mboxfile)
 
 def main(args=None):
