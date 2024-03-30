@@ -315,6 +315,20 @@ Will send above mail.  Okay? [y/N] n
 Note that `hkml` send mail using `git send-email`.  Hence `git send-email`
 should be configured correctly on the user's system.
 
+Drafts
+------
+
+Regardless of users answer for the sending mail confirmation question, the
+command further asks if the user wants to tag and save the written content as
+`drafts`.  Like other drafts management, it is for a case that the user wants
+to continue writing the mail later.
+
+Hackermail tag and saves it as a draft by converting the written content to a
+normal mail with fake headers, and add a [tag](#tagging) named `drafts`.  Hence
+users can manage the drafts as usual tagged mails.  Refer to
+[Tagging](#tagging) section for the detail.  The user can continue writing and
+sending the drafts using [`write`](#writing-new-mails) command.
+
 Forwarding
 ==========
 
@@ -334,6 +348,30 @@ sub-command.  Users can specify subject, recipients, Cc list, etc via command
 line.  Then `write` sub-command formats the basic mail, and let the user
 additionally make more edits interactively and finally send it, in a way pretty
 similar to that of `reply`.  Again, `git send-email` setup is required.
+
+Users can write a mail using another mail as the original draft, using
+`--draft` option.  The option receives a mail identifier from the previously
+generated `list` or `thread` output.  Then, it format the content of the mail
+as same to the specified mail, and allow user continue writing and sending it.
+
+For example,
+
+```
+$ hkml reply 3
+[...] # hkml reply open VIM.  Below is an example output after closing VIM.
+
+Will send above mail.  Okay? [y/N] n
+Tag as drafts? [Y/n] y
+$ hkml tag list
+[...]
+drafts: 5 mails
+$ hkml list drafts
+[...]
+$ hkml write --draft 0
+[...] # hkml write open VIM.  Below is an example output after closing VIM.
+Will send above mail.  Okay? [y/N] n
+Tag as drafts? [Y/n] y
+```
 
 Synchronizing
 =============
