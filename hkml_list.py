@@ -674,7 +674,12 @@ def main(args):
             args.source_type.append(source_type)
 
     list_output_cache_key = args_to_list_output_key(args)
-    if args.fetch == False or args.sources == []:
+    use_cached_output = True
+    for source_type in args.source_type:
+        if source_type != 'mailing_list':
+            use_cached_output = False
+            break
+    if use_cached_output and (args.fetch == False or args.sources == []):
         if args.sources == []:
             to_show = get_last_list_str()
             if to_show is None:
