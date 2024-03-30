@@ -742,12 +742,7 @@ def set_argparser(parser=None):
     parser.add_argument('--stdout', action='store_true',
             help='print to stdout instead of using the pager')
 
-def main(args=None):
-    if not args:
-        parser = argparse.ArgumentParser()
-        set_argparser(parser)
-        args = parser.parse_args()
-
+def main(args):
     if args.source_type is not None:
         if len(args.source_type) == 1:
             args.source_type = args.source_type * len(args.sources)
@@ -815,6 +810,3 @@ def main(args=None):
         print(to_show)
         return
     hkml_open.pr_with_pager_if_needed(to_show)
-
-if __name__ == '__main__':
-    main()
