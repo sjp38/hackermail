@@ -19,11 +19,14 @@ def tag_as_draft(draft_file):
         header_lines = paragraphs[0].split('\n')
     has_date = False
     has_msgid = False
+    has_from = False
     for line in header_lines:
         if line.startswith('Date: '):
             has_date = True
         if line.startswith('Messagge-ID: '):
             has_msgid = True
+        if line.startswith('From: '):
+            has_from = True
 
     fake_header = ['From hkml_draft Thu Jan  1 00:00:00 1970']
     if has_date is False:
@@ -32,6 +35,8 @@ def tag_as_draft(draft_file):
     if has_msgid is False:
         fake_header.append('Message-ID: %s' % datetime.datetime.now().strftime(
             'hkml_draft-%Y-%m-%d-%H-%M-%S'))
+    if has_from is False:
+        fake_header.append('From: ')
     draft_mbox_str = '\n'.join(fake_header + [draft_content])
     draft_mail = _hkml.Mail(mbox=draft_mbox_str)
     hkml_tag.do_add_tags(draft_mail, ['drafts'])
