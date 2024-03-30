@@ -34,11 +34,10 @@ def send_mail(mboxfile, get_confirm=False, erase_mbox=True):
             print(f.read())
         answer = input('Will send above mail.  Okay? [y/N] ')
         do_send = answer.lower() == 'y'
-    if do_send is False:
         answer = input('Tag as drafts? [Y/n] ')
         if answer.lower() != 'n':
             tag_as_draft(mboxfile)
-    else:
+    if do_send:
         _hkml.cmd_str_output(['git', 'send-email', mboxfile])
     if erase_mbox:
         os.remove(mboxfile)
