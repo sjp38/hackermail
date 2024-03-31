@@ -163,6 +163,11 @@ sources.  All types of the supported sources of mails are as below.
 - Nothing.  If no source of mails is given, `hkml list` shows the
   last-generated list output again.
 
+`hkml list` tries to infer the type of given source with its best effort.  If
+it cannot find the type of there are multiple possible types, the command will
+fail with an error message.  To avoid such failures, users can provide the type
+of the given source via `--source_type` option.
+
 Listing Entire Thread of a Given Mail
 =====================================
 
