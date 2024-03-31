@@ -115,19 +115,6 @@ mails every day.  Threads sorting key can also be customized using
 descendent order.  `--hot` option is a short cut for sorting threads by number
 of comments in descendent way.
 
-The sub-command support not only mailing lists on the manifest file, but more
-sources.  All types of the supported sources of mails are as below.
-
-- mailing lists.  Name of the mailing lists on the manifest can be passed.
-- mbox files.  Paths to the mbox files of the mails can be passed.
-- Special keyword, 'clipboard'.  If this keyword is passed as source of mails,
-  the command assumes users have copied mbox-format string of the mails to list
-  on the clipboard, read the clipboard, and show the mails.
-- `hkml tag`-added tags.  Users can add arbitrary tags to specific mails using
-  `hkml tag` command, which explained below.  The tags can be used here.
-- Nothing.  If no source of mails is given, `hkml list` shows the
-  last-generated list output again.
-
 Below example lists mails that sent to [DAMON](https://damonitor.github.io/)
 mailing list from 2024-02-15 to 2024-02-17.
 
@@ -159,6 +146,22 @@ $ hkml list damon --fetch --since 2024-02-15 --until 2024-02-17 --min_nr_mails 0
 The output maybe intuitive to understand.  The first column of the each mail is
 called index or identifier of the mail, and be used by other sub-commands that
 will be described below.
+
+Supporting Mail Source Types
+----------------------------
+
+The sub-command support not only mailing lists on the manifest file, but more
+sources.  All types of the supported sources of mails are as below.
+
+- mailing lists.  Name of the mailing lists on the manifest can be passed.
+- mbox files.  Paths to the mbox files of the mails can be passed.
+- Special keyword, 'clipboard'.  If this keyword is passed as source of mails,
+  the command assumes users have copied mbox-format string of the mails to list
+  on the clipboard, read the clipboard, and show the mails.
+- [`hkml tag`](#tagging)-added tags.  Users can add arbitrary tags to specific mails using
+  `hkml tag` command, which explained below.  The tags can be used here.
+- Nothing.  If no source of mails is given, `hkml list` shows the
+  last-generated list output again.
 
 Listing Entire Thread of a Given Mail
 =====================================
