@@ -265,7 +265,8 @@ $ hkml tag add 5 tag_example damon_patch not_yet_merged
 `hkml tag list`
 ---------------
 
-Users can show generated tags using `hkml tag list` command like below:
+Users can show generated tags and how many mails of the tag exsits, using `hkml
+tag list` command like below:
 
 ```
 $ hkml tag list
@@ -274,6 +275,9 @@ tag_example: 1 mails
 damon_patch: 1 mails
 not_yet_merged: 1 mails
 ```
+
+Users can show the list of mails for specific tags using `hkml list` by
+providing the tag name as the source of mails.
 
 `hkml tag remove`
 -----------------
