@@ -9,7 +9,7 @@ import subprocess
 import _hkml
 import hkml_tag
 
-def tag_as_draft(draft_file):
+def tag_as_draft(draft_file, tag_name):
     with open(draft_file, 'r') as f:
         draft_content = f.read()
     paragraphs = draft_content.split('\n\n')
@@ -39,7 +39,7 @@ def tag_as_draft(draft_file):
         fake_header.append('From: ')
     draft_mbox_str = '\n'.join(fake_header + [draft_content])
     draft_mail = _hkml.Mail(mbox=draft_mbox_str)
-    hkml_tag.do_add_tags(draft_mail, ['drafts'])
+    hkml_tag.do_add_tags(draft_mail, [tag_name])
 
 def set_argparser(parser=None):
     parser.description = 'send a mail'
@@ -53,9 +53,13 @@ def send_mail(mboxfile, get_confirm=False, erase_mbox=True):
             print(f.read())
         answer = input('Will send above mail.  Okay? [y/N] ')
         do_send = answer.lower() == 'y'
-        answer = input('Tag as drafts? [Y/n] ')
+        if do_send is False:
+            tag_name = 'drafts'
+        else:
+            tag_name = 'drafts_sent'
+        answer = input('Tag as %s? [Y/n] ' % tag_name)
         if answer.lower() != 'n':
-            tag_as_draft(mboxfile)
+            tag_as_draft(mboxfile, tag_name)
     if do_send:
         _hkml.cmd_str_output(['git', 'send-email', mboxfile])
     if erase_mbox:
