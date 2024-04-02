@@ -7,3 +7,5 @@
 - thread: Use http://lore.kernel.org/all/<Message-ID>/t.mbox.gz instead of b4
 - draft tagging: Check if From: is missed
 - Don't use cached output for tags
+- Consider supporting lore.kernel.org search results by downloading it from
+  Atom feed.
