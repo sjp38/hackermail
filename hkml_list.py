@@ -739,19 +739,19 @@ def main(args):
 
 def add_mails_filter_arguments(parser):
     parser.add_argument(
-            '--from', '--from_keywords', metavar='<keyword>', nargs='+',
+            '--from_keywords', '--from', metavar='<keyword>', nargs='+',
             help='show mails having the keywords in from: field')
     parser.add_argument(
-            '--from_to', '--from_to_keywords', metavar='<keyword>', nargs='+',
+            '--from_to_keywords', '--from_to', metavar='<keyword>', nargs='+',
             help='same to --from except chekcing to: fields together')
     parser.add_argument(
-            '--from_to_cc', '--from_to_cc_keywords', metavar='<keyword>',
+            '--from_to_cc_keywords', '--from_to_cc', metavar='<keyword>',
             nargs='+',
             help='same to --from except chekcing to: and cc: fields together')
-    parser.add_argument('--subject', '--subject_keywords', metavar='<words>',
+    parser.add_argument('--subject_keywords', '--subject', metavar='<words>',
             type=str, nargs='+',
             help='list mails containing the keyword in their subject')
-    parser.add_argument('--body', '--body_keywords', metavar='<keyword>',
+    parser.add_argument('--body_keywords', '--body', metavar='<keyword>',
             type=str, nargs='+',
             help='list mails containing the keyword in their body')
     parser.add_argument('--new', '-n', action='store_true',
