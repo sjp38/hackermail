@@ -27,6 +27,7 @@ def parse_entry(entry):
 def main(args):
     manifest = _hkml.get_manifest()
     pi_url = manifest['site']
+    args.query = args.query.replace(' ', '+')
     query_url = '%s/%s/?q=%s&x=A' % (pi_url, args.mailing_list, args.query)
     print(query_url)
     query_output = 'lore_search.xml'
