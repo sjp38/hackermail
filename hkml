@@ -22,6 +22,7 @@ import hkml_monitor
 import hkml_patch
 import hkml_manifest
 import hkml_cache
+import hkml_pisearch
 
 import _hkml
 
@@ -90,6 +91,9 @@ hkml_manifest.set_argparser(parser_manifest)
 parser_cache = subparsers.add_parser('cache', help = 'manage cache')
 hkml_cache.set_argparser(parser_cache)
 
+parser_pisearch = subparsers.add_parser('pisearch', help = 'search public inbox')
+hkml_pisearch.set_argparser(parser_pisearch)
+
 args = parser.parse_args()
 
 if not args.command == 'init':
@@ -134,6 +138,8 @@ elif args.command == 'manifest':
     hkml_manifest.main(args)
 elif args.command == 'cache':
     hkml_cache.main(args)
+elif args.command == 'pisearch':
+    hkml_pisearch.main(args)
 else:
     print('wrong command (%s)' % args.command)
     exit(1)
