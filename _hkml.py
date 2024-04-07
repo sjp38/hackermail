@@ -124,7 +124,7 @@ class Mail:
         if tag == 'subject' and self.subject:
             return self.subject
 
-        if not self.__fields:
+        if not tag in self.__fields:
             self.__parse_mbox()
 
         if not tag in self.__fields:
