@@ -23,6 +23,12 @@ def cmd_str_output(cmd):
 def cmd_lines_output(cmd):
     return cmd_str_output(cmd).split('\n')
 
+def atom_tag(node):
+    prefix = '{http://www.w3.org/2005/Atom}'
+    if not node.tag.startswith(prefix):
+        return node.tag
+    return node.tag[len(prefix):]
+
 class Mail:
     gitid = None
     gitdir = None
@@ -77,11 +83,39 @@ class Mail:
         hkml_cache.set_mail(self)
         return self
 
-    def __init__(self, mbox=None, kvpairs=None):
+    def parse_atom(self, entry, mailing_list):
+        self.__fields = {}
+        pi_url = get_manifest()['site']
+        http_prefix_len = len('%s/%s/' % (pi_url, mailing_list)) - 1
+        for node in entry:
+            tagname = atom_tag(node)
+            if tagname == 'author':
+                for child in node:
+                    name = ''
+                    email = ''
+                    if atom_tag(child) == 'name':
+                        name = child.text
+                    elif atom_tag(child) == 'email':
+                        email = child.text
+                self.__fields['from'] = ' '.join([name, email])
+            elif tagname == 'title':
+                self.subject = node.text
+            elif tagname == 'updated':
+                self.date = datetime.datetime.strptime(
+                        node.text, '%Y-%m-%dT%H:%M:%S%z').astimezone()
+            elif tagname == 'link':
+                link = node.attrib['href']
+                msgid = link[http_prefix_len:-1]
+                self.__fields['message-id'] = '<%s>' % msgid
+            elif tagname.endswith('}in-reply-to'):
+                link = node.attrib['href']
+                self.__fields['in-reply-to'] = link[http_prefix_len:-1]
+
+    def __init__(self, mbox=None, kvpairs=None, atom_entry=None, atom_ml=None):
         self.replies = []
         self.subject_tags = []
 
-        if mbox is None and kvpairs is None:
+        if mbox is None and kvpairs is None and atom_entry is None:
             return
 
         if mbox is not None:
@@ -91,6 +125,9 @@ class Mail:
             self.gitdir = kvpairs['gitdir']
             self.subject = kvpairs['subject']
             self.mbox = kvpairs['mbox']
+        elif atom_entry is not None:
+            self.parse_atom(atom_entry, atom_ml)
+            return
 
         self.__parse_mbox()
         date_str = self.get_field('date')
