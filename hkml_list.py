@@ -347,6 +347,11 @@ class MailListFilter:
         self.body_keywords = args.body_keywords
 
     def should_filter_out(self, mail):
+        if (not self.new_threads_only and not self.from_keywords and
+            not self.from_to_keywords and not self.from_to_cc_keywords and
+            not self.subject_keywords and not self.body_keywords):
+            return False
+
         if self.new_threads_only and mail.get_field('in-reply-to'):
             return True
         if not keywords_in(self.from_keywords, mail.get_field('from')):
