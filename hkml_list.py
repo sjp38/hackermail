@@ -7,7 +7,10 @@ import datetime
 import json
 import math
 import os
+import subprocess
+import tempfile
 import time
+import xml.etree.ElementTree as ET
 
 import _hkml
 import hkml_cache
@@ -604,9 +607,68 @@ def infer_source_type(source):
         return None, 'multiple candidates (%s)' % ', '.join(candidates)
     return candidates[0], None
 
+def pisearch_tag(node):
+    prefix='{http://www.w3.org/2005/Atom}'
+    if not node.tag.startswith(prefix):
+        return ''
+    return node.tag[len(prefix):]
+
+def get_mails_from_pisearch(mailing_list, query_str):
+    '''Get mails from public inbox search query'''
+    pi_url = _hkml.get_manifest()['site']
+    query_str = query_str.replace(' ', '+')
+    query_url = '%s/%s/?q=%s&x=A' % (pi_url, mailing_list, query_str)
+    _, query_output = tempfile.mkstemp(prefix='hkml_pisearch_atom-')
+    if subprocess.call(['curl', query_url, '-o', query_output],
+                       stderr=subprocess.DEVNULL) != 0:
+        print('fetching query result from %s failed' % query_url)
+        return []
+    try:
+        root = ET.parse(query_output).getroot()
+    except:
+        print('parsing query result of %s at %s failed' %
+              (query_url, query_output))
+        return []
+    os.remove(query_output)
+    entries = [node for node in root if pisearch_tag(node) == 'entry']
+    parsed = []
+    for entry in entries:
+        kvs = {}
+        for node in entry:
+            tagname = pisearch_tag(node)
+            if tagname == 'author':
+                for child in node:
+                    if pisearch_tag(child) in ['name', 'email']:
+                        kvs['author.%s' % pisearch_tag(child)] = child.text
+            elif tagname in ['title', 'updated']:
+                kvs[tagname] = node.text
+            elif tagname == 'link':
+                link = node.attrib['href']
+                kvs['msgid'] = link[len('%s/%s/' % (pi_url, mailing_list)) - 1:-1]
+                parsed.append(kvs)
+
+    mails = []
+    for idx, kvs in enumerate(parsed):
+        print('downloading %d/%d mail' % (idx, len(parsed)))
+        if not 'msgid' in kvs:
+            continue
+        msgid = kvs['msgid']
+        _, mbox_output = tempfile.mkstemp(prefix='hkml_pisearch_mbox-')
+        mbox_url = '%s/%s/%s/raw' % (pi_url, mailing_list, msgid)
+        # don't overload the public inbox server
+        time.sleep(0.3)
+        if subprocess.call(['curl', mbox_url, '-o', mbox_output],
+                           stderr=subprocess.DEVNULL) != 0:
+            print('warning: getting mbox for %s failed' % kvs['title'])
+            continue
+        with open(mbox_output, 'r') as f:
+            mails.append(_hkml.Mail(mbox=f.read()))
+        os.remove(mbox_output)
+    return mails
+
 def get_mails(source, fetch, since, until,
               min_nr_mails, max_nr_mails, commits_range=None,
-              source_type=None):
+              source_type=None, pisearch=None):
     if source_type is None:
         source_type, err = infer_source_type(source)
         if err is not None:
@@ -633,6 +695,9 @@ def get_mails(source, fetch, since, until,
 
     if source_type == 'tag':
         return hkml_tag.mails_of_tag(source)
+
+    if pisearch:
+        return get_mails_from_pisearch(source, pisearch)
 
     if fetch:
         hkml_fetch.fetch_mail([source], True, 1)
@@ -718,7 +783,7 @@ def main(args):
         for mail in get_mails(
                 source, args.fetch, args.since, args.until,
                 args.min_nr_mails, args.max_nr_mails, None,
-                source_type=args.source_type[idx]):
+                source_type=args.source_type[idx], pisearch=args.pisearch):
             msgid = mail.get_field('message-id')
             if not msgid in msgids:
                 mails_to_show.append(mail)
@@ -816,6 +881,8 @@ def set_argparser(parser=None):
             help='minimum number of mails to list')
     parser.add_argument('--max_nr_mails', metavar='<int>', type=int,
             help='maximum number of mails to list')
+    parser.add_argument('--pisearch', metavar='<query>',
+                        help='get mails via given public inbox search query')
 
     add_mails_filter_arguments(parser)
     add_decoration_arguments(parser)
