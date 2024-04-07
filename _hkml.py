@@ -29,7 +29,7 @@ class Mail:
     date = None
     subject_tags = None
     series = None
-    __mbox_parsed = None
+    __fields = None
     mbox = None
     replies = None
     parent_mail = None
@@ -123,12 +123,12 @@ class Mail:
         if tag == 'subject' and self.subject:
             return self.subject
 
-        if not self.__mbox_parsed:
+        if not self.__fields:
             self.__parse_mbox()
 
-        if not tag in self.__mbox_parsed:
+        if not tag in self.__fields:
             return None
-        return self.__mbox_parsed[tag]
+        return self.__fields[tag]
 
     def __parse_mbox(self):
         if not self.mbox:
@@ -185,7 +185,7 @@ class Mail:
             if tokens[-2:] == ['[thread', 'overview]']:
                 parsed['date'] = ' '.join(tokens[:-2])
 
-        self.__mbox_parsed = parsed
+        self.__fields = parsed
 
 def read_mbox_file(filepath):
     mails = []
