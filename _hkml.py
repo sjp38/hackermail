@@ -131,6 +131,7 @@ class Mail:
                 self.__fields = {'message-id': kvpairs['msgid']}
         elif atom_entry is not None:
             self.parse_atom(atom_entry, atom_ml)
+            hkml_cache.set_mail(self, overwrite=True)
             return
 
         self.__parse_mbox()
