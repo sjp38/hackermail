@@ -127,6 +127,8 @@ class Mail:
             self.gitdir = kvpairs['gitdir']
             self.subject = kvpairs['subject']
             self.mbox = kvpairs['mbox']
+            if 'msgid' in kvpairs:
+                self.__fields = {'message-id': kvpairs['msgid']}
         elif atom_entry is not None:
             self.parse_atom(atom_entry, atom_ml)
             return
@@ -156,6 +158,7 @@ class Mail:
                 'gitid': self.gitid,
                 'gitdir': self.gitdir,
                 'subject': self.subject,
+                'msgid': self.__fields['message-id'],
                 'mbox': self.mbox}
 
     def get_field(self, tag):
