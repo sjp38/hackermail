@@ -649,10 +649,14 @@ def get_mails_from_pisearch(mailing_list, query_str):
 
     mails = []
     for idx, kvs in enumerate(parsed):
-        print('downloading %d/%d mail' % (idx, len(parsed)))
         if not 'msgid' in kvs:
             continue
         msgid = kvs['msgid']
+        mail = hkml_cache.get_mail(key='<%s>' % msgid)
+        if mail is not None:
+            mails.append(mail)
+            continue
+        print('downloading %d/%d mail' % (idx, len(parsed)))
         _, mbox_output = tempfile.mkstemp(prefix='hkml_pisearch_mbox-')
         mbox_url = '%s/%s/%s/raw' % (pi_url, mailing_list, msgid)
         # don't overload the public inbox server
