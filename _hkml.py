@@ -131,17 +131,33 @@ class Mail:
             return None
         return self.__fields[tag]
 
-    def __parse_mbox(self):
-        if not self.mbox:
-            if not self.gitdir or not self.gitid:
-                print('cannot get mbox')
-                exit(1)
+    def set_mbox(self):
+        if self.gitdir is not None and self.gitid is not None:
             cmd = ['git', '--git-dir=%s' % self.gitdir,
                     'show', '%s:m' % self.gitid]
             try:
                 self.mbox = cmd_str_output(cmd)
             except:
                 self.mbox = ''
+            return
+        if 'message-id' in self.__fields:
+            msgid = self.__fields['message-id']
+            pi_url = get_manifest()['site']
+            mbox_url = '%s/all/%s/raw' % (pi_url, msgid)
+            # don't overload the public inbox server
+            time.sleep(0.3)
+            try:
+                self.mbox = subprocess.check_output(
+                        ['curl', mbox_url], stderr=subprocess.DEVNULL)
+            except:
+                print('cannot get mbox from public-inbox server')
+                self.mbox = ''
+        print('cannot get mbox')
+        exit(1)
+
+    def __parse_mbox(self):
+        if not self.mbox:
+            self.set_mbox()
 
         in_header = True
         parsed = {}
