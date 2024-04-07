@@ -636,43 +636,9 @@ def get_mails_from_pisearch(mailing_list, query_str):
         return []
     os.remove(query_output)
     entries = [node for node in root if pisearch_tag(node) == 'entry']
-    parsed = []
-    for entry in entries:
-        kvs = {}
-        for node in entry:
-            tagname = pisearch_tag(node)
-            if tagname == 'author':
-                for child in node:
-                    if pisearch_tag(child) in ['name', 'email']:
-                        kvs['author.%s' % pisearch_tag(child)] = child.text
-            elif tagname in ['title', 'updated']:
-                kvs[tagname] = node.text
-            elif tagname == 'link':
-                link = node.attrib['href']
-                kvs['msgid'] = link[len('%s/%s/' % (pi_url, mailing_list)) - 1:-1]
-                parsed.append(kvs)
-
     mails = []
-    for idx, kvs in enumerate(parsed):
-        if not 'msgid' in kvs:
-            continue
-        msgid = kvs['msgid']
-        mail = hkml_cache.get_mail(key='<%s>' % msgid)
-        if mail is not None:
-            mails.append(mail)
-            continue
-        print('downloading %d/%d mail' % (idx, len(parsed)))
-        _, mbox_output = tempfile.mkstemp(prefix='hkml_pisearch_mbox-')
-        mbox_url = '%s/%s/%s/raw' % (pi_url, mailing_list, msgid)
-        # don't overload the public inbox server
-        time.sleep(0.3)
-        if subprocess.call(['curl', mbox_url, '-o', mbox_output],
-                           stderr=subprocess.DEVNULL) != 0:
-            print('warning: getting mbox for %s failed' % kvs['title'])
-            continue
-        with open(mbox_output, 'r') as f:
-            mails.append(_hkml.Mail(mbox=f.read()))
-        os.remove(mbox_output)
+    for entry in entries:
+        mails.append(_hkml.Mail(atom_entry=entry, atom_ml=mailing_list))
     return mails
 
 def get_mails(source, fetch, since, until,
