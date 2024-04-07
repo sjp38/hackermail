@@ -168,6 +168,27 @@ it cannot find the type of there are multiple possible types, the command will
 fail with an error message.  To avoid such failures, users can provide the type
 of the given source via `--source_type` option.
 
+Public-inbox Search
+-------------------
+
+Note: this feature is experimental.
+
+`hkml list` provides only simple filtering options.  In case of public-inbox
+based mails fetching setup, users can use the sophisticated search query of
+public-inbox using `--pisearch` option.  For example:
+
+```
+$ hkml list damon --pisearch "foo AND range damos filter"
+# 2 mails, 2 threads, 0 new threads
+# 2 patches, 0 series
+# oldest: 2023-07-28 13:34:35-07:00
+# newest: 2023-08-02 14:43:03-07:00
+[0] [PATCH 04/13] selftests/damon/sysfs: test address range damos filter (SeongJae Park,
+    2023/08/02 14:43)
+[1] [RFC PATCH 04/13] selftests/damon/sysfs: test address range damos filter (SeongJae Park,
+    2023/07/28 13:34)
+```
+
 Listing Entire Thread of a Given Mail
 =====================================
 
