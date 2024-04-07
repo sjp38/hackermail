@@ -8,6 +8,7 @@ import json
 import mailbox
 import os
 import subprocess
+import time
 import sys
 
 import hkml_cache
@@ -143,15 +144,17 @@ class Mail:
         if 'message-id' in self.__fields:
             msgid = self.__fields['message-id']
             pi_url = get_manifest()['site']
-            mbox_url = '%s/all/%s/raw' % (pi_url, msgid)
+            # mail.msgid is having '<' and '>' pre/suffix
+            mbox_url = '%s/all/%s/raw' % (pi_url, msgid[1:-1])
             # don't overload the public inbox server
             time.sleep(0.3)
             try:
                 self.mbox = subprocess.check_output(
-                        ['curl', mbox_url], stderr=subprocess.DEVNULL)
+                        ['curl', mbox_url], stderr=subprocess.DEVNULL).decode()
             except:
                 print('cannot get mbox from public-inbox server')
                 self.mbox = ''
+            return
         print('cannot get mbox')
         exit(1)
 
