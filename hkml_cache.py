@@ -112,7 +112,7 @@ def get_mail(gitid=None, gitdir=None, key=None):
             return _hkml.Mail(kvpairs=archived_caches[-1][key])
     return None
 
-def set_mail(mail):
+def set_mail(mail, overwrite=False):
     global need_file_update
 
     if mail.broken():
@@ -123,11 +123,12 @@ def set_mail(mail):
         key = get_cache_key(mail.gitid, mail.gitdir)
     else:
         key = mail.get_field('message-id')
-    if key in cache:
-        return
-    for archived_cache in archived_caches:
-        if key in archived_cache:
+    if overwrite is False:
+        if key in cache and overwrite:
             return
+        for archived_cache in archived_caches:
+            if key in archived_cache:
+                return
     cache[key] = mail.to_kvpairs()
     need_file_update = True
 
