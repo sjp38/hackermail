@@ -110,6 +110,8 @@ class Mail:
             elif tagname.endswith('}in-reply-to'):
                 link = node.attrib['href']
                 self.__fields['in-reply-to'] = link[http_prefix_len:-1]
+        if not 'in-reply-to' in self.__fields:
+            self.__fields['in-reply-to'] = None
 
     def __init__(self, mbox=None, kvpairs=None, atom_entry=None, atom_ml=None):
         self.replies = []
