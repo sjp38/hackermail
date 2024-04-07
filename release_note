@@ -1,5 +1,9 @@
 This file contains major changes in each version since v1.0.0
 
+v1.0.3
+- Support public-inbox search ('hkml list --pisearch')
+- Support keywords option without '_keywords' suffices
+
 v1.0.2
 - Support tagging written mail as drafts
 - Support resuming writing of draft mails ('hkml write --draft')
