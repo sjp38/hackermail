@@ -24,8 +24,8 @@ def set_argparser(parser=None):
     parser.add_argument('--lore', action='store_true',
             help='print lore link for mails')
     parser.add_argument(
-            '--dont_use_b4', action='store_true',
-            help='don\'t use b4 but only previous list\'s output')
+            '--dont_use_internet', action='store_true',
+            help='don\'t use internet do get the mails')
 
 def get_thread_mails_use_b4(msgid):
     fd, tmp_path = tempfile.mkstemp(prefix='hkml_thread_')
@@ -70,10 +70,7 @@ def main(args=None):
     else:
         msgid = args.mail_id
 
-    if subprocess.call(['which', 'b4'], stdout=subprocess.DEVNULL) == 0:
-        use_b4 = args.dont_use_b4 is False
-
-    if use_b4:
+    if args.dont_use_internet is False:
         if msgid is None:
             mail = hkml_list.get_mail(args.mail_id, not_thread_idx=True)
             if mail is None:
@@ -81,7 +78,7 @@ def main(args=None):
                 exit(1)
             msgid = mail.get_field('message-id')
 
-        mails_to_show, err = get_thread_mails_use_b4(msgid)
+        mails_to_show, err = get_thread_mails_from_web(msgid)
         if err is not None:
             print(err)
             exit(1)
@@ -105,7 +102,7 @@ def main(args=None):
             mails_to_show, mails_filter=None, list_decorator=list_decorator,
             show_thread_of=args.mail_id, runtime_profile=[])
 
-    if use_b4:
+    if args.dont_use_internet is False:
         hkml_cache.writeback_mails()
         hkml_list.cache_list_str('thread_output', to_show)
     hkml_open.pr_with_pager_if_needed(to_show)
