@@ -60,6 +60,7 @@ def main(args=None):
     else:
         msgid = args.mail_id
 
+    mails_to_show = None
     if args.dont_use_internet is False:
         if msgid is None:
             mail = hkml_list.get_mail(args.mail_id, not_thread_idx=True)
@@ -71,10 +72,9 @@ def main(args=None):
         mails_to_show, err = get_thread_mails_from_web(msgid)
         if err is not None:
             print(err)
-            exit(1)
-
-        args.mail_id = None
-    else:
+        else:
+            args.mail_id = None
+    if mails_to_show is None:
         mails_to_show = hkml_list.last_listed_mails()
         # TODO: Support msgid
 
