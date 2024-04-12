@@ -37,6 +37,21 @@ def get_thread_mails_use_b4(msgid):
     os.remove(tmp_path)
     return mails, None
 
+def get_thread_mails_from_web(msgid):
+    tmp_path = tempfile.mkdtemp(prefix='hkml_thread_')
+    pi_url = _hkml.get_manifest()['site']
+    down_url = '%s/all/%s/t.mbox.gz' % (pi_url, msgid)
+    if subprocess.call(['wget', down_url, '--directory-prefix=%s' % tmp_path],
+                       stderr=subprocess.DEVNULL) != 0:
+        return None, 'downloading mbox failed'
+    if subprocess.call(['gunzip', os.path.join(tmp_path, 't.mbox.gz')]) != 0:
+        return None, 'extracting mbox failed'
+    mails = hkml_list.get_mails(
+            os.path.join(tmp_path, 't.mbox'), False, None, None, None, None)
+    os.remove(os.path.join(tmp_path, 't.mbox'))
+    os.rmdir(tmp_path)
+    return mails, None
+
 def main(args=None):
     if not args:
         parser = argparse.ArgumentParser()
