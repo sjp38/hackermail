@@ -27,16 +27,6 @@ def set_argparser(parser=None):
             '--dont_use_internet', action='store_true',
             help='don\'t use internet do get the mails')
 
-def get_thread_mails_use_b4(msgid):
-    fd, tmp_path = tempfile.mkstemp(prefix='hkml_thread_')
-    if subprocess.call(['b4', 'mbox', '--mbox-name', tmp_path, msgid],
-                       stderr=subprocess.DEVNULL) != 0:
-        return None, 'b4 mbox failed'
-    mails = hkml_list.get_mails(
-            tmp_path, False, None, None, None, None)
-    os.remove(tmp_path)
-    return mails, None
-
 def get_thread_mails_from_web(msgid):
     tmp_path = tempfile.mkdtemp(prefix='hkml_thread_')
     pi_url = _hkml.get_manifest()['site']
