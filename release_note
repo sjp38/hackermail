@@ -1,5 +1,9 @@
 This file contains major changes in each version since v1.0.0
 
+v1.0.4
+- Support message id input to 'hkml thread'
+- Drop b4 requirement from 'hkml thread'
+
 v1.0.3
 - Support public-inbox search ('hkml list --pisearch')
 - Support keywords option without '_keywords' suffices
