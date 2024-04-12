@@ -14,9 +14,11 @@ def set_argparser(parser=None):
     parser.description='list mails of a thread'
     _hkml.set_manifest_option(parser)
     parser.add_argument(
-            'mail_idx', metavar='<mail index>', type=int, nargs='?',
+            'mail_id', metavar='<mail identifier>', nargs='?',
             help=' '.join([
-                'Index of any mail in the thread to list.',
+                'Identifier of any mail in the thread to list.',
+                'Could be the index on the last-generated list or thread,',
+                'or the Message-ID of the mail.'
                 'If this is not given, shows last thread output.',
                 ]))
     parser.add_argument('--lore', action='store_true',
@@ -41,30 +43,38 @@ def main(args=None):
         set_argparser(parser)
         args = parser.parse_args()
 
-    if args.mail_idx is None:
+    if args.mail_id is None:
         to_show = hkml_list.get_last_thread_str()
         hkml_open.pr_with_pager_if_needed(to_show)
         hkml_list.writeback_list_output()
         return
 
+    if args.mail_id.isdigit():
+        args.mail_id = int(args.mail_id)
+        msgid = None
+    else:
+        msgid = args.mail_id
+
     if subprocess.call(['which', 'b4'], stdout=subprocess.DEVNULL) == 0:
         use_b4 = args.dont_use_b4 is False
 
     if use_b4:
-        mail = hkml_list.get_mail(args.mail_idx, not_thread_idx=True)
-        if mail is None:
-            print('wrong <mail_idx>')
-            exit(1)
-        msgid = mail.get_field('message-id')
+        if msgid is None:
+            mail = hkml_list.get_mail(args.mail_id, not_thread_idx=True)
+            if mail is None:
+                print('wrong <mail_id>')
+                exit(1)
+            msgid = mail.get_field('message-id')
 
         mails_to_show, err = get_thread_mails_use_b4(msgid)
         if err is not None:
             print(err)
             exit(1)
 
-        args.mail_idx = None
+        args.mail_id = None
     else:
         mails_to_show = hkml_list.last_listed_mails()
+        # TODO: Support msgid
 
     nr_cols_in_line = int(os.get_terminal_size().columns * 9 / 10)
     list_decorator = hkml_list.MailListDecorator(None)
@@ -78,7 +88,7 @@ def main(args=None):
 
     to_show = hkml_list.mails_to_str(
             mails_to_show, mails_filter=None, list_decorator=list_decorator,
-            show_thread_of=args.mail_idx, runtime_profile=[])
+            show_thread_of=args.mail_id, runtime_profile=[])
 
     if use_b4:
         hkml_cache.writeback_mails()
