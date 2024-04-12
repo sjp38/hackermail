@@ -12,3 +12,12 @@
 - Avoid pisearch's mbox download
   - Allow Mail object having no mbox; download mbox when 'get_field' is
     required.
+- implement stat command
+  - For a sort of dashboard.
+  - Number of total mails
+  - Number of new mails
+  - Number of new threads
+  - Number of new patches
+  - Top 10 long threads
+  - Top 10 writers
+- Support message-id for open, thread, reply
