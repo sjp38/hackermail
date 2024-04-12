@@ -17,7 +17,7 @@ commands.
 - `git`: Required for reading mails from the mailing list.
 - `git send-email`: Required for sending mails.
 - [`b4`](https://b4.docs.kernel.org/en/latest/installing.html): Can make `hkml
-  thread` output much better.
+  patch apply` do additional works.
 
 Commands
 ========
@@ -222,11 +222,11 @@ $ hkml thread 3
       (SeongJae Park, 24/02/16 16:58)
 ```
 
-If the system is having [b4](https://b4.docs.kernel.org/) installed, the
-command downloads whole mails of the thread and shows the list.  If the system
-is not having `b4`, only the mails of the thread in the previously generated
-list is listed.  Note that the mail identifiers are newly generated when `b4`
-is used.
+The command downloads whole mails of the thread from the internet and shows the
+list.  If the system is not able to download the mials from the internet, only
+the mails of the thread in the previously generated list is listed.  Note that
+the mail identifiers are newly generated when mails are downloaded from the
+internet.
 
 Reading Mails
 =============
