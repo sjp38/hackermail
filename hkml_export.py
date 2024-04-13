@@ -7,7 +7,7 @@ import _hkml
 import hkml_list
 
 def export_mails(mails, export_file):
-    if export_file[-5:] != '.mbox':
+    if export_file[-5:] == '.json':
         with open(export_file, 'w') as f:
             json.dump([m.to_kvpairs() for m in mails], f, indent=4)
         return
