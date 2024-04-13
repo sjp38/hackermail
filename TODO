@@ -3,15 +3,9 @@
   - Support b4 failure (internet unconnected?)
   - Add 'Link:' tag when b4 is unavailable
   - Make b4 behavior consistent (support per-single-patch applying)
-- thread: Use http://lore.kernel.org/all/<Message-ID>/t.mbox.gz instead of b4
-- Consider supporting lore.kernel.org search results by downloading it from
-  Atom feed.
 - Support draft-sending case better
   - If 'hkml write' was invoked with --draft and user really send it, ask if
     they want the drafts be removed.
-- Avoid pisearch's mbox download
-  - Allow Mail object having no mbox; download mbox when 'get_field' is
-    required.
 - implement stat command
   - For a sort of dashboard.
   - Number of total mails
