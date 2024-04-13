@@ -68,14 +68,17 @@ def find_add_tags(patch_mail, mail_to_check):
     for reply in mail_to_check.replies:
         find_add_tags(patch_mail, reply)
 
-def get_patch_mails(thread_root_mail):
+def get_patch_mails(mail, is_cv):
     # Not patchset but single patch
     patch_mails = []
-    if get_patch_index(thread_root_mail) is None:
-        return [thread_root_mail]
+    if get_patch_index(mail) is None:
+        return [mail]
 
-    patch_mails += [r for r in thread_root_mail.replies
-                   if 'patch' in r.subject_tags]
+    if is_cv is False:
+        patch_mails = [mail]
+    else:
+        patch_mails += [r for r in mail.replies
+                       if 'patch' in r.subject_tags]
     for patch_mail in patch_mails:
         msgid = patch_mail.get_field('message-id')
         if msgid.startswith('<') and msgid.endswith('>'):
@@ -94,6 +97,16 @@ def get_patch_mails(thread_root_mail):
         patch_mail.add_tag('Signed-off-by: %s <%s>' % (user_name, user_email))
     patch_mails.sort(key=lambda m: get_patch_index(m))
     return patch_mails
+
+def find_mail_from_thread(thread, msgid):
+    if thread.get_field('message-id') == msgid:
+        return thread
+    if thread.replies is None:
+        return None
+    for reply in thread.replies:
+        found_mail = find_mail_from_thread(reply, msgid)
+        if found_mail is not None:
+            return found_mail
 
 def main(args):
     if args.mail.isdigit():
@@ -117,20 +130,22 @@ def main(args):
     msgid = mail.get_field('message-id')
     mails = hkml_list.last_listed_mails()
     threads = hkml_list.threads_of(mails)
-    found = False
-    for mail in threads:
-        if mail.get_field('message-id') == msgid:
-            found = True
+    is_cv = False
+    for thread_root_mail in threads:
+        mail = find_mail_from_thread(thread_root_mail, msgid) 
+        if mail is not None:
+            if mail == thread_root_mail:
+                is_cv = True
             break
-    if found is False:
-        print('thread of the mail not found.')
+    if mail is None:
+        print('cannot find the mail')
         exit(1)
 
     if not 'patch' in mail.subject_tags:
         print('seems the mail is not patch mail')
         exit(1)
 
-    for patch_mail in get_patch_mails(mail):
+    for patch_mail in get_patch_mails(mail, is_cv):
         handle_without_b4(args, patch_mail)
 
 def set_argparser(parser):
