@@ -87,6 +87,11 @@ def get_patch_mails(thread_root_mail):
             continue
         for reply in patch_mail.replies:
             find_add_tags(patch_mail, reply)
+        user_name = subprocess.check_output(
+                ['git', 'config', 'user.name']).decode().strip()
+        user_email = subprocess.check_output(
+                ['git', 'config', 'user.email']).decode().strip()
+        patch_mail.add_tag('Signed-off-by: %s <%s>' % (user_name, user_email))
     patch_mails.sort(key=lambda m: get_patch_index(m))
     return patch_mails
 
