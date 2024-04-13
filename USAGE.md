@@ -16,8 +16,6 @@ commands.
 
 - `git`: Required for reading mails from the mailing list.
 - `git send-email`: Required for sending mails.
-- [`b4`](https://b4.docs.kernel.org/en/latest/installing.html): Can make `hkml
-  patch apply` do additional works.
 
 Commands
 ========
@@ -533,12 +531,10 @@ total: 0 errors, 0 warnings, 11 lines checked
 Applying Patches
 ----------------
 
-`hkml patch apply` receives the identifier of the mail of the patches and apply
-the patches to local source tree.  The command assumes current working
-directory is the local source tree.  If not, the user can set the path to the
-tree via `--repo` option.  If the system has `b4` installed, it uses `b4` to
-retrieve the patches, do some basic checks before applying, and add tags
-including `Link:` and `Signed-off-by:` for the user.
+`hkml patch apply` receives the identifier of the patch mail and apply the
+patches to local source tree.  The command assumes current working directory is
+the local source tree.  If not, the user can set the path to the tree via
+`--repo` option.
 
 For example, below applies the patche series that `hkml patch check` example
 was used for.
