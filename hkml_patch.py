@@ -4,6 +4,7 @@ import os
 import subprocess
 import tempfile
 
+import _hkml
 import hkml_list
 import hkml_open
 
@@ -76,6 +77,12 @@ def get_patch_mails(thread_root_mail):
     patch_mails += [r for r in thread_root_mail.replies
                    if 'patch' in r.subject_tags]
     for patch_mail in patch_mails:
+        msgid = patch_mail.get_field('message-id')
+        if msgid.startswith('<') and msgid.endswith('>'):
+            msgid = msgid[1:-1]
+        site = _hkml.get_manifest()['site']
+        url = '%s/%s' % (site, msgid)
+        patch_mail.add_tag('Link: %s' % url)
         if patch_mail.replies is None:
             continue
         for reply in patch_mail.replies:
