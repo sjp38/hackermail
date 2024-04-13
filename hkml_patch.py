@@ -49,6 +49,24 @@ def get_patch_index(mail):
             return int(idx_total[0])
     return None
 
+def find_add_tags(patch_mail, mail_to_check):
+    for line in mail_to_check.get_field('body').split('\n'):
+        for tag in ['Tested', 'Reviewed', 'Acked']:
+            if not line.startswith('%s-by:' % tag):
+                continue
+            print('Found below from "%s"' %
+                  mail_to_check.get_field('subject'))
+            print('    %s' % line)
+            answer = input('add the tag to the patch? [Y/n] ')
+            if answer.lower() != 'n':
+                err = patch_mail.add_tag(line)
+                if err is not None:
+                    print(err)
+    if mail_to_check.replies is None:
+        return
+    for reply in mail_to_check.replies:
+        find_add_tags(patch_mail, reply)
+
 def get_patch_mails(thread_root_mail):
     # Not patchset but single patch
     patch_mails = []
@@ -57,6 +75,11 @@ def get_patch_mails(thread_root_mail):
 
     patch_mails += [r for r in thread_root_mail.replies
                    if 'patch' in r.subject_tags]
+    for patch_mail in patch_mails:
+        if patch_mail.replies is None:
+            continue
+        for reply in patch_mail.replies:
+            find_add_tags(patch_mail, reply)
     patch_mails.sort(key=lambda m: get_patch_index(m))
     return patch_mails
 
