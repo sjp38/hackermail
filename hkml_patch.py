@@ -8,20 +8,7 @@ import _hkml
 import hkml_list
 import hkml_open
 
-def handle_with_b4(args, mail):
-    msgid = mail.get_field('message-id')
-
-    if args.action == 'apply':
-        to_return = os.getcwd()
-        os.chdir(args.repo)
-        rc = subprocess.call(
-                ['b4', 'shazam', '--add-link', '--add-my-sob', msgid])
-        os.chdir(to_return)
-        if rc != 0:
-            print('applying the patch series failed')
-        return rc
-
-def handle_without_b4(args, mail):
+def apply_action(args, mail):
     fd, patch_file = tempfile.mkstemp(prefix='hkml_patch_')
     with open(patch_file, 'w') as f:
         f.write(hkml_open.mail_display_str(mail, False, False))
@@ -122,10 +109,6 @@ def main(args):
     else:
         print('unsupported <mail> (%s)' % args.mail)
 
-    if subprocess.call(['which', 'b4'], stdout=subprocess.DEVNULL) == 0:
-        if args.action == 'apply' and args.use_b4 is True:
-            return handle_with_b4(args, mail)
-
     msgid = mail.get_field('message-id')
     mails = hkml_list.last_listed_mails()
     threads = hkml_list.threads_of(mails)
@@ -145,7 +128,7 @@ def main(args):
         exit(1)
 
     for patch_mail in get_patch_mails(mail, is_cv):
-        handle_without_b4(args, patch_mail)
+        apply_action(args, patch_mail)
 
 def set_argparser(parser):
     parser.description = 'handle patch series mail thread'
@@ -160,9 +143,6 @@ def set_argparser(parser):
                 'Could be index on the list, or \'clipboard\'']))
     parser_apply.add_argument('--repo', metavar='<dir>', default='./',
                               help='git repo to apply the patch')
-    # Maybe fore some internet disconnected case.
-    parser_apply.add_argument('--use_b4', action='store_true',
-                              help='use b4')
 
     parser_check = subparsers.add_parser('check',
                                          help='run a checker for the patch')
