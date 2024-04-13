@@ -489,6 +489,11 @@ with an index of a mail on last-generated list or thread, and if the index is
 not for the real patch mail but a cover letter mail of the patch series, the
 command fetches all patches of the thread and applies the action to those.
 
+The command automatically adds 'Link:' and 'Signed-off-by:' tag of the user to
+the patches.  It also check if others provided 'Tested-by:', 'Reviewed-by:', or
+'Acked-by:' tags via reply, reports the finding to the user, and add the tags
+to the patches before applying the actions if the user asks to do.
+
 Checking Patches
 ----------------
 
