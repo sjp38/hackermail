@@ -250,6 +250,19 @@ class Mail:
 
         self.__fields = parsed
 
+    def add_tag(self, tag):
+        body = self.get_field('body')
+        if body is None:
+            return 'getting body text failed'
+        lines = body.split('\n')
+        for idx, line in enumerate(lines):
+            if line != '---':
+                continue
+            lines.insert(idx, tag)
+            self.__fields['body'] = '\n'.join(lines)
+            return None
+        return 'cannot find line to add the tag'
+
 def read_mbox_file(filepath):
     mails = []
     if filepath[-5:] == '.json':
