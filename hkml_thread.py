@@ -28,6 +28,8 @@ def set_argparser(parser=None):
             help='don\'t use internet do get the mails')
 
 def get_thread_mails_from_web(msgid):
+    if msgid.startswith('<') and msgid.endswith('>'):
+        msgid = msgid[1:-1]
     tmp_path = tempfile.mkdtemp(prefix='hkml_thread_')
     pi_url = _hkml.get_manifest()['site']
     down_url = '%s/all/%s/t.mbox.gz' % (pi_url, msgid)
