@@ -107,7 +107,14 @@ def main(args):
     if args.action == 'add':
         return add_tags(args.mail_idx, args.tags)
     elif args.action == 'remove':
-        return remove_tags(args.mail_idx, args.tags)
+        if args.mail_idx is None and len(args.mails) == 0:
+            print('mail to remove tags are not specified')
+            exit(1)
+        if args.mail_idx is not None:
+            args.mails.append(args.mail_idx)
+        for mail_idx in args.mails:
+            remove_tags(mail_idx, args.tags)
+        return
     elif args.action == 'list':
         return list_tags()
 
@@ -127,10 +134,13 @@ def set_argparser(parser):
     parser_remove = subparsers.add_parser(
             'remove', help='remove tags from a mail')
     parser_remove.add_argument(
-            'mail_idx', metavar='<index>', type=int,
+            'mail_idx', metavar='<index>', type=int, nargs='?',
             help='index of the mail to remove tags')
     parser_remove.add_argument(
             'tags', metavar='<string>', nargs='+',
             help='tags to remove from the mail')
+    parser_remove.add_argument('--mails', metavar='<index>', type=int,
+                               nargs='+', default=[],
+                               help='indexes of the mails to remove tags')
 
     parser_list = subparsers.add_parser('list', help='list tags')
