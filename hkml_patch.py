@@ -72,9 +72,8 @@ def get_patch_mails(mail, is_cv):
     # Not patchset but single patch
     patch_mails = []
     if get_patch_index(mail) is None:
-        return [mail]
-
-    if is_cv is False:
+        patch_mails = [mail]
+    elif is_cv is False:
         patch_mails = [mail]
     else:
         patch_mails += [r for r in mail.replies
