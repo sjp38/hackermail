@@ -12,6 +12,7 @@ import time
 import sys
 
 import hkml_cache
+import hkml_list
 
 def cmd_str_output(cmd):
     output = subprocess.check_output(cmd)
@@ -265,8 +266,12 @@ class Mail:
 
     def add_cv(self, cvmail, sz_patchset):
         new_body_lines = []
+
         cv_subject = cvmail.get_field('subject')
-        new_body_lines.append('Patch series \'%s\'.' % cv_subject)
+        first_paragraph = hkml_list.wrap_line(
+                'Patch series', '\'%s\'' % cv_subject, 72)
+        first_paragraph = '\n'.join(first_paragraph)
+        new_body_lines.append(first_paragraph)
         new_body_lines.append('')
 
         cv_paragraphs = cvmail.get_field('body').strip().split('\n\n')
