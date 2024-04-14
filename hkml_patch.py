@@ -133,7 +133,7 @@ def main(args):
     if args.action == 'export':
         hkml_export.export_mails(patch_mails, args.export_file)
 
-    for patch_mail in get_patch_mails(mail, is_cv):
+    for patch_mail in patch_mails:
         apply_action(args, patch_mail)
 
 def set_argparser(parser):
