@@ -55,7 +55,7 @@ def find_add_tags(patch_mail, mail_to_check):
     for reply in mail_to_check.replies:
         find_add_tags(patch_mail, reply)
 
-def get_patch_mails(mail, is_cv):
+def get_patch_mails(mail, is_cv, dont_add_cv):
     # Not patchset but single patch
     patch_mails = []
     if get_patch_index(mail) is None:
@@ -82,7 +82,7 @@ def get_patch_mails(mail, is_cv):
                 ['git', 'config', 'user.email']).decode().strip()
         patch_mail.add_tag('Signed-off-by: %s <%s>' % (user_name, user_email))
     patch_mails.sort(key=lambda m: get_patch_index(m))
-    if is_cv:
+    if is_cv and dont_add_cv is False:
         patch_mails[0].add_cv(mail, len(patch_mails))
     return patch_mails
 
@@ -129,11 +129,14 @@ def main(args):
         print('seems the mail is not patch mail')
         exit(1)
 
-    for patch_mail in get_patch_mails(mail, is_cv):
+    for patch_mail in get_patch_mails(mail, is_cv, args.dont_add_cv):
         apply_action(args, patch_mail)
 
 def set_argparser(parser):
     parser.description = 'handle patch series mail thread'
+    parser.add_argument('--dont_add_cv', action='store_true',
+                        help='don\'t add cover letter to first patch')
+
     subparsers = parser.add_subparsers(
             title='action', dest='action', metavar='<action>')
 
