@@ -489,6 +489,11 @@ with an index of a mail on last-generated list or thread, and if the index is
 not for the real patch mail but a cover letter mail of the patch series, the
 command fetches all patches of the thread and applies the action to those.
 
+In the cover letter mail provided use case, the command will add the message in
+cover letter into the first patch, like Andrew Morton usually
+[does](https://git.kernel.org/sj/c/78f2f60377ee4).  Users can turn off the
+behavior using `--dont_add_cv` option.
+
 The command automatically adds 'Link:' and 'Signed-off-by:' tag of the user to
 the patches.  It also check if others provided 'Tested-by:', 'Reviewed-by:', or
 'Acked-by:' tags via reply, reports the finding to the user, and add the tags
