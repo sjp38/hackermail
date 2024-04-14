@@ -5,7 +5,6 @@ import subprocess
 import tempfile
 
 import _hkml
-import hkml_export
 import hkml_list
 import hkml_open
 
@@ -130,12 +129,7 @@ def main(args):
         print('seems the mail is not patch mail')
         exit(1)
 
-    patch_mails = get_patch_mails(mail, is_cv)
-
-    if args.action == 'export':
-        hkml_export.export_mails(patch_mails, args.export_file)
-
-    for patch_mail in patch_mails:
+    for patch_mail in get_patch_mails(mail, is_cv):
         apply_action(args, patch_mail)
 
 def set_argparser(parser):
@@ -161,13 +155,3 @@ def set_argparser(parser):
                 'Could be index on the list, or \'clipboard\'']))
     parser_check.add_argument('checker', metavar='<program>',
                               help='patch checker program')
-
-    parser_export = subparsers.add_parser('export',
-                                          help='save patches as files')
-    parser_export.add_argument(
-            'mail', metavar='<mail>',
-            help=' '.join(
-                ['The mail to apply as a patch.',
-                'Could be index on the list, or \'clipboard\'']))
-    parser_export.add_argument('export_file', metavar='<file>',
-                               help='file to save exported mail')
