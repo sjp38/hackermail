@@ -268,7 +268,11 @@ class Mail:
         cv_subject = cvmail.get_field('subject')
         new_body_lines.append('Patch series \'%s\'.' % cv_subject)
         new_body_lines.append('')
-        new_body_lines.append(cvmail.get_field('body'))
+
+        cv_paragraphs = cvmail.get_field('body').strip().split('\n\n')
+        cv_msg = '\n\n'.join(cv_paragraphs[:-3])
+        new_body_lines.append(cv_msg)
+
         new_body_lines += ['', 'This patch (of %d):' % sz_patchset, '']
         new_body_lines.append(self.get_field('body'))
         new_body = '\n'.join(new_body_lines)
