@@ -4,6 +4,7 @@ v1.0.4
 - Optimize 'hkml list --pisearch'
 - Support message id input to 'hkml thread'
 - Drop internal b4 usages
+- Support merging cover letter into first patch of the series ('hkml patch')
 
 v1.0.3
 - Support public-inbox search ('hkml list --pisearch')
