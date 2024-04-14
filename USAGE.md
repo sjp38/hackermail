@@ -156,8 +156,9 @@ sources.  All types of the supported sources of mails are as below.
 - Special keyword, 'clipboard'.  If this keyword is passed as source of mails,
   the command assumes users have copied mbox-format string of the mails to list
   on the clipboard, read the clipboard, and show the mails.
-- [`hkml tag`](#tagging)-added tags.  Users can add arbitrary tags to specific mails using
-  `hkml tag` command, which explained below.  The tags can be used here.
+- [`hkml tag`](#tagging)-added tags.  Users can add arbitrary tags to specific
+  mails using `hkml tag` command, which explained below.  The tags can be used
+  here.
 - Nothing.  If no source of mails is given, `hkml list` shows the
   last-generated list output again.
 
@@ -494,10 +495,10 @@ cover letter into the first patch, like Andrew Morton usually
 [does](https://git.kernel.org/sj/c/78f2f60377ee4).  Users can turn off the
 behavior using `--dont_add_cv` option.
 
-The command automatically adds 'Link:' and 'Signed-off-by:' tag of the user to
-the patches.  It also check if others provided 'Tested-by:', 'Reviewed-by:', or
-'Acked-by:' tags via reply, reports the finding to the user, and add the tags
-to the patches before applying the actions if the user asks to do.
+The command automatically adds 'Link:' and the user's 'Signed-off-by:' tags to
+the patches.  It also checks if others provided 'Tested-by:', 'Reviewed-by:',
+or 'Acked-by:' tags via reply, reports the finding to the user, and add the
+tags to the patches before applying the actions if the user asks to do.
 
 Checking Patches
 ----------------
