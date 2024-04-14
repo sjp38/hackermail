@@ -92,7 +92,7 @@ def main(args=None):
 
     to_show = hkml_list.mails_to_str(
             mails_to_show, mails_filter=None, list_decorator=list_decorator,
-            show_thread_of=args.mail_id, runtime_profile=[])
+            show_thread_of=args.mail_id, runtime_profile=[], stat_only=False)
 
     if args.dont_use_internet is False:
         hkml_cache.writeback_mails()

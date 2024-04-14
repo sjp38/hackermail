@@ -439,7 +439,7 @@ def format_stat(mails_to_show):
     return lines
 
 def mails_to_str(mails_to_show, mails_filter, list_decorator, show_thread_of,
-                 runtime_profile):
+                 runtime_profile, stat_only):
     if len(mails_to_show) == 0:
         return 'no mail'
 
@@ -531,6 +531,9 @@ def mails_to_str(mails_to_show, mails_filter, list_decorator, show_thread_of,
         for key, value in runtime_profile:
             runtime_profile_lines.append('# %s: %s' % (key, value))
         runtime_profile_lines.append('#')
+
+    if stat_only:
+        return '\n'.join(stat_lines)
     lines = runtime_profile_lines + stat_lines + lines
     return '\n'.join(lines)
 
@@ -768,7 +771,8 @@ def main(args):
         mails_to_show = mails_to_show[:args.max_nr_mails]
 
     to_show = mails_to_str(mails_to_show, MailListFilter(args),
-                           MailListDecorator(args), None, runtime_profile)
+                           MailListDecorator(args), None, runtime_profile,
+                           args.stat_only)
     hkml_cache.writeback_mails()
     cache_list_str(list_output_cache_key, to_show)
 
@@ -858,6 +862,8 @@ def set_argparser(parser=None):
             help='maximum number of mails to list')
     parser.add_argument('--pisearch', metavar='<query>',
                         help='get mails via given public inbox search query')
+    parser.add_argument('--stat_only', action='store_true',
+                        help='print statistics only')
 
     add_mails_filter_arguments(parser)
     add_decoration_arguments(parser)
