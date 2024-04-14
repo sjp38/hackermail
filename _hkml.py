@@ -263,6 +263,17 @@ class Mail:
             return None
         return 'cannot find line to add the tag'
 
+    def add_cv(self, cvmail, sz_patchset):
+        new_body_lines = []
+        cv_subject = cvmail.get_field('subject')
+        new_body_lines.append('Patch series \'%s\'.' % cv_subject)
+        new_body_lines.append('')
+        new_body_lines.append(cvmail.get_field('body'))
+        new_body_lines += ['', 'This patch (of %d):' % sz_patchset, '']
+        new_body_lines.append(self.get_field('body'))
+        new_body = '\n'.join(new_body_lines)
+        self.__fields['body'] = new_body
+
 def read_mbox_file(filepath):
     mails = []
     if filepath[-5:] == '.json':
