@@ -18,7 +18,7 @@ def set_argparser(parser=None):
             help=' '.join([
                 'Identifier of any mail in the thread to list.',
                 'Could be the index on the last-generated list or thread,',
-                'or the Message-ID of the mail.'
+                'or the Message-ID of the mail.',
                 'If this is not given, shows last thread output.',
                 ]))
     parser.add_argument('--lore', action='store_true',
