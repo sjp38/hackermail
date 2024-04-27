@@ -10,7 +10,7 @@ import hkml_list
 
 def pr_with_pager_if_needed(text):
     try:
-        if text.count('\n') < os.get_terminal_size().lines:
+        if text.count('\n') < (os.get_terminal_size().lines * 9 / 10):
             print(text)
             return
     except OSError as e:
