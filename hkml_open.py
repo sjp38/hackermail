@@ -8,7 +8,7 @@ import tempfile
 import _hkml
 import hkml_list
 
-def colorize_last_reference(text):
+def decorate_last_reference(text):
     lines = text.split('\n')
     if not lines[0].startswith('# last reference: '):
         return text
@@ -27,13 +27,14 @@ def colorize_last_reference(text):
         if mail_idx != last_reference_idx:
             continue
         line = u'\u001b[32m' + line + u'\u001b[0m'
+        line = '\x1B[3m' + line + '\x1B[0m'
         del lines[idx]
         lines.insert(idx, line)
         text = '\n'.join(lines)
     return text
 
 def pr_with_pager_if_needed(text):
-    text = colorize_last_reference(text)
+    text = decorate_last_reference(text)
 
     try:
         if text.count('\n') < (os.get_terminal_size().lines * 9 / 10):
