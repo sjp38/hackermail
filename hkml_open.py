@@ -8,7 +8,33 @@ import tempfile
 import _hkml
 import hkml_list
 
+def colorize_last_reference(text):
+    lines = text.split('\n')
+    if not lines[0].startswith('# last reference: '):
+        return text
+
+    fields = lines[0].split()
+    if len(fields) != 4:
+        return text
+    last_reference_idx = int(lines[0].split()[3])
+    for idx, line in enumerate(lines):
+        fields = line.split()
+        if len(fields) == 0:
+            continue
+        if not fields[0].startswith('[') or not fields[0].endswith(']'):
+            continue
+        mail_idx = int(fields[0][1:-1])
+        if mail_idx != last_reference_idx:
+            continue
+        line = u'\u001b[32m' + line + u'\u001b[0m'
+        del lines[idx]
+        lines.insert(idx, line)
+        text = '\n'.join(lines)
+    return text
+
 def pr_with_pager_if_needed(text):
+    text = colorize_last_reference(text)
+
     try:
         if text.count('\n') < (os.get_terminal_size().lines * 9 / 10):
             print(text)
