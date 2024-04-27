@@ -47,7 +47,7 @@ def pr_with_pager_if_needed(text):
     fd, tmp_path = tempfile.mkstemp(prefix='hkml_open-')
     with open(tmp_path, 'w') as f:
         f.write(text)
-    subprocess.call(['less', '-M', '--no-init', tmp_path])
+    subprocess.call(['less', '-R', '-M', '--no-init', tmp_path])
     os.remove(tmp_path)
 
 def mail_display_str_via_lore(mail_url):
