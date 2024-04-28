@@ -14,6 +14,13 @@ def apply_action(args, mail):
         f.write(hkml_open.mail_display_str(mail, False, False))
 
     if args.action == 'check':
+        if args.checker is None:
+            checkpatch = os.path.join('scripts', 'checkpatch.pl')
+            if os.path.isfile(checkpatch):
+                args.checker = checkpatch
+            else:
+                print('<cheker> is not given; checkpatch.pl is also not found')
+                exit(1)
         print(mail.subject)
         rc = subprocess.call([args.checker, patch_file])
         if rc != 0:
@@ -158,5 +165,5 @@ def set_argparser(parser):
             help=' '.join(
                 ['The mail to apply as a patch.',
                 'Could be index on the list, or \'clipboard\'']))
-    parser_check.add_argument('checker', metavar='<program>',
+    parser_check.add_argument('checker', metavar='<program>', nargs='?',
                               help='patch checker program')
