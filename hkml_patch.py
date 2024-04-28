@@ -83,6 +83,8 @@ def get_patch_mails(mail, is_cv, dont_add_cv):
         patch_mail.add_tag('Signed-off-by: %s <%s>' % (user_name, user_email))
     patch_mails.sort(key=lambda m: get_patch_index(m))
     if is_cv and dont_add_cv is False:
+        print('Given mail seems the cover letter of the patchset.')
+        print('Adding the cover letter on the first patch.')
         patch_mails[0].add_cv(mail, len(patch_mails))
     return patch_mails
 
