@@ -505,8 +505,9 @@ Checking Patches
 
 `hkml patch check` receives the identifier of the mail of the patches and a
 patch checker program to use for checking the patches.  The checker program
-should be executable and receive the patch file as a positional argument.
-Then, this command fetches the patches and run the checker program.
+should be executable and receive the patch file as a positional argument.  If
+there is `./scripts/checkpatch.pl`, it is used as the checker program by
+default.  Then, this command fetches the patches and run the checker program.
 
 For example, below runs Linux' `checkpatch.pl` for a patch series.
 
