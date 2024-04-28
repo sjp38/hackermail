@@ -119,11 +119,12 @@ def main(args):
     is_cv = False
     for thread_root_mail in threads:
         mail = find_mail_from_thread(thread_root_mail, msgid) 
-        if mail is not None:
-            if mail == thread_root_mail:
-                if mail.series is not None and mail.series[0] == 0:
-                    is_cv = True
-            break
+        if mail is None:
+            continue
+        if mail == thread_root_mail:
+            if mail.series is not None and mail.series[0] == 0:
+                is_cv = True
+        break
     if mail is None:
         print('cannot find the mail')
         exit(1)
