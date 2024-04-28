@@ -2,6 +2,8 @@ This file contains major changes in each version since v1.0.0
 
 v1.0.5
 - Decorate last-referenced mail on list/thread
+- Fix wrong cover letter identification of 'patch apply'
+- Use 'scripts/checkpatch.pl' from 'patch check' by default
 
 v1.0.4
 - Optimize 'hkml list --pisearch'
