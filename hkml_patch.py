@@ -55,8 +55,9 @@ def find_add_tags(patch_mail, mail_to_check):
     for reply in mail_to_check.replies:
         find_add_tags(patch_mail, reply)
 
-def get_patch_mails(mail, is_cv, dont_add_cv):
+def get_patch_mails(mail, dont_add_cv):
     # Not patchset but single patch
+    is_cv = mail.series is not None and mail.series[0] == 0
     patch_mails = []
     if get_patch_index(mail) is None:
         patch_mails = [mail]
@@ -126,13 +127,11 @@ def main(args):
         print('cannot find the mail')
         exit(1)
 
-    is_cv = mail.series is not None and mail.series[0] == 0
-
     if not 'patch' in mail.subject_tags:
         print('seems the mail is not patch mail')
         exit(1)
 
-    for patch_mail in get_patch_mails(mail, is_cv, args.dont_add_cv):
+    for patch_mail in get_patch_mails(mail, args.dont_add_cv):
         apply_action(args, patch_mail)
 
 def set_argparser(parser):
