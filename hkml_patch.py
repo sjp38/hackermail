@@ -39,8 +39,8 @@ def get_patch_index(mail):
 
 def find_add_tags(patch_mail, mail_to_check):
     for line in mail_to_check.get_field('body').split('\n'):
-        for tag in ['Tested', 'Reviewed', 'Acked']:
-            if not line.startswith('%s-by:' % tag):
+        for tag in ['Tested-by:', 'Reviewed-by:', 'Acked-by:', 'Fixes:']:
+            if not line.startswith(tag):
                 continue
             print('Found below from "%s"' %
                   mail_to_check.get_field('subject'))
