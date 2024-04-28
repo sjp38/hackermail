@@ -121,21 +121,12 @@ def main(args):
     else:
         print('unsupported <mail> (%s)' % args.mail)
 
-    msgid = mail.get_field('message-id')
-    mails = hkml_list.last_listed_mails()
-    threads = hkml_list.threads_of(mails)
-    is_cv = False
-    for thread_root_mail in threads:
-        mail = find_mail_from_thread(thread_root_mail, msgid) 
-        if mail is None:
-            continue
-        if mail == thread_root_mail:
-            if mail.series is not None and mail.series[0] == 0:
-                is_cv = True
-        break
+    mail = get_mail_with_replies(mail.get_field('message-id'))
     if mail is None:
         print('cannot find the mail')
         exit(1)
+
+    is_cv = mail.series is not None and mail.series[0] == 0
 
     if not 'patch' in mail.subject_tags:
         print('seems the mail is not patch mail')
