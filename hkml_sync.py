@@ -81,10 +81,9 @@ def syncup_ready():
     return os.path.isdir(os.path.join(_hkml.get_hkml_dir(), '.git'))
 
 def main(args):
-    hkml_dir = _hkml.get_hkml_dir()
-    if not os.path.isdir(os.path.join(hkml_dir, '.git')):
-        setup_git(hkml_dir, args.remote)
-    syncup(hkml_dir, args.remote)
+    if not syncup_ready():
+        setup_git(_hkml.get_hkml_dir(), args.remote)
+    syncup(_hkml.get_hkml_dir(), args.remote)
 
 def set_argparser(parser):
     parser.description = 'synchronize the outputs and setups'
