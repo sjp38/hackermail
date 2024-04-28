@@ -98,6 +98,14 @@ def find_mail_from_thread(thread, msgid):
         if found_mail is not None:
             return found_mail
 
+def get_mail_with_replies(msgid):
+    mails = hkml_list.last_listed_mails()
+    threads = hkml_list.threads_of(mails)
+    for thread_root_mail in threads:
+        mail_with_replies = find_mail_from_thread(thread_root_mail, msgid)
+        if mail_with_replies is not None:
+            return mail_with_replies
+
 def main(args):
     if args.mail.isdigit():
         mail = hkml_list.get_mail(int(args.mail))
