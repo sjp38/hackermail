@@ -10,3 +10,4 @@
 - More interactive setup
   - Do git send-email setup instead
   - Ask if lore.manifest is what they want
+- Get message-id of sent-draft from git send-email output (Use --confirm always)
