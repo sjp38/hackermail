@@ -9,7 +9,7 @@ import subprocess
 import _hkml
 import hkml_tag
 
-def tag_as_draft(draft_file, tag_name):
+def tag_as_draft(draft_file, tag_name, msgid):
     with open(draft_file, 'r') as f:
         draft_content = f.read()
     paragraphs = draft_content.split('\n\n')
@@ -33,8 +33,10 @@ def tag_as_draft(draft_file, tag_name):
         fake_header.append('Date: %s' % datetime.datetime.now().strftime(
             '%a, %d %b %Y %H:%M:%S %z'))
     if has_msgid is False:
-        fake_header.append('Message-ID: %s' % datetime.datetime.now().strftime(
-            'hkml_draft-%Y-%m-%d-%H-%M-%S'))
+        if msgid is None:
+            msgid = '%s' % datetime.datetime.now().strftime(
+                    'hkml_draft-%Y-%m-%d-%H-%M-%S')
+        fake_header.append('Message-ID: %s' % msgid)
     if has_from is False:
         fake_header.append('From: ')
     draft_mbox_str = '\n'.join(fake_header + [draft_content])
@@ -53,15 +55,21 @@ def send_mail(mboxfile, get_confirm=False, erase_mbox=True):
             print(f.read())
         answer = input('Will send above mail.  Okay? [y/N] ')
         do_send = answer.lower() == 'y'
-        if do_send is False:
-            tag_name = 'drafts'
-        else:
+        msgid = None
+        if do_send is True:
+            for line in _hkml.cmd_lines_output(['git', 'send-email', mboxfile,
+                                                # for getting message-id
+                                                '--confirm', 'always']):
+                fields = line.split()
+                if len(fields) == 2 and fields[0] == 'Message-Id:':
+                    msgid = fields[1]
+                    break
             tag_name = 'drafts_sent'
+        else:
+            tag_name = 'drafts'
         answer = input('Tag as %s? [Y/n] ' % tag_name)
         if answer.lower() != 'n':
-            tag_as_draft(mboxfile, tag_name)
-    if do_send:
-        _hkml.cmd_str_output(['git', 'send-email', mboxfile])
+            tag_as_draft(mboxfile, tag_name, msgid)
     if erase_mbox:
         os.remove(mboxfile)
 
