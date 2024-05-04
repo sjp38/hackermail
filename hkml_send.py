@@ -64,7 +64,7 @@ def send_mail(mboxfile, get_confirm=False, erase_mbox=True):
                 if len(fields) == 2 and fields[0] == 'Message-Id:':
                     msgid = fields[1]
                     break
-            tag_name = 'drafts_sent'
+            tag_name = 'sent'
         else:
             tag_name = 'drafts'
         answer = input('Tag as %s? [Y/n] ' % tag_name)
