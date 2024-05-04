@@ -1,5 +1,9 @@
 This file contains major changes in each version since v1.0.0
 
+v1.0.6
+- Suggest tagging sent mail as 'sent' instead of 'drafts_sent'
+- Save message id to 'sent' tagged mails
+
 v1.0.5
 - Decorate last-referenced mail on list/thread
 - Fix wrong cover letter identification of 'patch apply'
