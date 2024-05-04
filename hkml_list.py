@@ -599,7 +599,7 @@ def get_mails_from_git(mail_list, since, until,
             mails.append(mail)
     return mails
 
-def infer_source_type(source):
+def infer_source_type(source, is_pisearch):
     '''Return source type and error string'''
     candidates = []
 
@@ -610,6 +610,8 @@ def infer_source_type(source):
     if hkml_tag.tag_exists(source):
         candidates.append('tag')
     if _hkml.is_valid_mail_list(source):
+        candidates.append('mailing_list')
+    elif source == 'all' and is_pisearch is True:
         candidates.append('mailing_list')
 
     if len(candidates) == 0:
@@ -651,7 +653,7 @@ def get_mails(source, fetch, since, until,
               min_nr_mails, max_nr_mails, commits_range=None,
               source_type=None, pisearch=None):
     if source_type is None:
-        source_type, err = infer_source_type(source)
+        source_type, err = infer_source_type(source, pisearch is not None)
         if err is not None:
             print('source type inference for %s failed: %s' % (source, err))
             print('you could use --source_type option to solve this')
@@ -711,7 +713,8 @@ def main(args):
     else:
         args.source_type = []
         for source in args.sources:
-            source_type, err = infer_source_type(source)
+            source_type, err = infer_source_type(
+                    source, args.pisearch is not None)
             if err is not None:
                 print('source type inference for %s failed: %s' %
                       (source, err))
