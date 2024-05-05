@@ -521,10 +521,10 @@ def mails_to_str(mails_to_show, mails_filter, list_decorator, show_thread_of,
             stat_lines += total_stat_lines
         else:
             stat_lines.append('# stat for total mails')
-            stat_lines += format_stat(mails_to_show)
+            stat_lines += total_stat_lines
             stat_lines.append('#')
             stat_lines.append('# stat for filtered mails')
-            stat_lines += format_stat(filtered_mails)
+            stat_lines += filtered_stat_lines
 
     runtime_profile_lines = []
     total_profiled_time = sum([profile[1] for profile in runtime_profile])
