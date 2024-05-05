@@ -6,12 +6,11 @@ lists.  It requires no complicated setup but just `git`.  Using it, you can
 fetch mailing list archives, read mails in those, and post replies or new
 mails.
 
-For now, hackermail supports public-inbox[1] managed mailing list archives and
-manually exported mbox file contents.  Linux Kernel Mailing Lists (LKML)[2] are
-good examples of the public-inbox managed mailing list archives.
-
-[1] https://public-inbox.org/design_notes.html<br>
-[2] https://www.kernel.org/lore.html
+For now, hackermail supports
+[public-inbox](https://public-inbox.org/design_notes.html) managed mailing list
+archives and manually exported mbox file contents.  Linux Kernel Mailing Lists
+[(LKML)](https://kernel.org/lore.html) are good examples of the public-inbox
+managed mailing list archives.
 
 
 Demo
