@@ -24,7 +24,7 @@ def main(args):
     else:
         print('unsupported <mail> (%s)' % args.mail)
 
-    mail_str = hkml_open.mail_display_str(mail, False)
+    mail_str = hkml_open.mail_display_str(mail)
 
     subject = args.subject
     if subject is None:

@@ -64,10 +64,7 @@ def mail_display_str_via_lore(mail_url):
         lines.append(line)
     return '\n'.join(lines)
 
-def mail_display_str(mail, use_lore, head_columns=None):
-    if use_lore:
-        return mail_display_str_via_lore(lore_url(mail))
-
+def mail_display_str(mail, head_columns=None):
     lines = []
     for head in ['From', 'To', 'CC', 'Subject', 'Message-Id', 'Date']:
         value = mail.get_field(head)
@@ -127,7 +124,7 @@ def main(args=None):
     except:
         # maybe user is pipe-ing the output
         head_columns = None
-    mail_str = mail_display_str(mail, False, head_columns)
+    mail_str = mail_display_str(mail, head_columns)
 
     if args.stdout:
         print(mail_str)
