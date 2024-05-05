@@ -283,6 +283,10 @@ class Mail:
         new_body = '\n'.join(new_body_lines)
         self.__fields['body'] = new_body
 
+    def url(self):
+        site = get_manifest()['site']
+        return '%s/%s' % (site, self.get_field('message-id')[1:-1])
+
 def read_mbox_file(filepath):
     mails = []
     if filepath[-5:] == '.json':
