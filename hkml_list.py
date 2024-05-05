@@ -411,13 +411,14 @@ def should_filter_out(mail, ls_range, new_threads_only,
 
     return False
 
-def format_stat(mails_to_show):
+def format_stat(mails_to_show, stat_authors):
     nr_threads = 0
     nr_new_threads = 0
     nr_patches = 0
     nr_patchsets = 0
     oldest = None
     latest = None
+    authors_nr_mails = {}
     for mail in mails_to_show:
         if mail.parent_mail is None:
             nr_threads += 1
@@ -431,6 +432,10 @@ def format_stat(mails_to_show):
             oldest = mail
         if latest is None or latest.date < mail.date:
             latest = mail
+        author = mail.get_field('from')
+        if not author in authors_nr_mails:
+            authors_nr_mails[author] = 0
+        authors_nr_mails[author] += 1
 
     lines = []
     lines.append('# %d mails, %d threads, %d new threads' %
@@ -439,10 +444,17 @@ def format_stat(mails_to_show):
     if oldest is not None:
         lines.append('# oldest: %s' % oldest.date)
         lines.append('# newest: %s' % latest.date)
+    if stat_authors:
+        authors = [[x, authors_nr_mails[x]]
+                   for x in sorted(authors_nr_mails.keys(), reverse=True,
+                                   key=lambda x: authors_nr_mails[x])[:10]]
+        lines.append('# top 10 authors')
+        for author, nr_mails in authors:
+            lines.append('# %s: %d' % (author, nr_mails))
     return lines
 
 def mails_to_str(mails_to_show, mails_filter, list_decorator, show_thread_of,
-                 runtime_profile, stat_only):
+                 runtime_profile, stat_only, stat_authors=False):
     if len(mails_to_show) == 0:
         return 'no mail'
 
@@ -515,8 +527,8 @@ def mails_to_str(mails_to_show, mails_filter, list_decorator, show_thread_of,
 
     stat_lines = []
     if show_stat:
-        total_stat_lines = format_stat(mails_to_show)
-        filtered_stat_lines = format_stat(filtered_mails)
+        total_stat_lines = format_stat(mails_to_show, stat_authors)
+        filtered_stat_lines = format_stat(filtered_mails, stat_authors)
         if total_stat_lines == filtered_stat_lines:
             stat_lines += total_stat_lines
         else:
@@ -778,7 +790,7 @@ def main(args):
 
     to_show = mails_to_str(mails_to_show, MailListFilter(args),
                            MailListDecorator(args), None, runtime_profile,
-                           args.stat_only)
+                           args.stat_only, args.stat_authors)
     hkml_cache.writeback_mails()
     cache_list_str(list_output_cache_key, to_show)
 
@@ -870,6 +882,8 @@ def set_argparser(parser=None):
                         help='get mails via given public inbox search query')
     parser.add_argument('--stat_only', action='store_true',
                         help='print statistics only')
+    parser.add_argument('--stat_authors', action='store_true',
+                        help='print mail authors statistics')
 
     add_mails_filter_arguments(parser)
     add_decoration_arguments(parser)
