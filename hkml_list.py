@@ -454,7 +454,7 @@ def format_stat(mails_to_show, stat_authors):
     return lines
 
 def mails_to_str(mails_to_show, mails_filter, list_decorator, show_thread_of,
-                 runtime_profile, stat_only, stat_authors=False):
+                 runtime_profile, stat_only, stat_authors):
     if len(mails_to_show) == 0:
         return 'no mail'
 
