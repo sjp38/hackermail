@@ -355,12 +355,12 @@ command further asks if the user wants to tag and save the written content as
 `drafts`.  Like other drafts management, it is for a case that the user wants
 to continue writing the mail later.
 
-Hackermail tag and saves it as a draft by converting the written content to a
-normal mail with fake headers, and add a [tag](#tagging).  The name of the tag
-becomes `drafts_sent` or `drafts`, depending on if the user approved posting
-the mail.  Hence users can manage the drafts as usual tagged mails.  Refer to
-[Tagging](#tagging) section for the detail.  The user can continue writing and
-sending the drafts using [`write`](#writing-new-mails) command.
+Hackermail tags and saves it as a draft by converting the written content to a
+normal mail, and add a [tag](#tagging).  The name of the tag becomes `sent` or
+`drafts`, depending on if the user approved posting the mail.  Hence users can
+manage the drafts as usual tagged mails.  Refer to [Tagging](#tagging) section
+for the detail.  The user can continue writing and sending the drafts using
+[`write`](#writing-new-mails) command.
 
 Forwarding
 ==========
