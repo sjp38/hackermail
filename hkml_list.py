@@ -450,7 +450,7 @@ def format_stat(mails_to_show, stat_authors):
                                    key=lambda x: authors_nr_mails[x])[:10]]
         lines.append('# top %d authors' % len(authors))
         for author, nr_mails in authors:
-            lines.append('# %s: %d' % (author, nr_mails))
+            lines.append('# - %s: %d' % (author, nr_mails))
     return lines
 
 def mails_to_str(mails_to_show, mails_filter, list_decorator, show_thread_of,
