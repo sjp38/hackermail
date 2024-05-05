@@ -21,8 +21,8 @@ def set_argparser(parser=None):
                 'or the Message-ID of the mail.',
                 'If this is not given, shows last thread output.',
                 ]))
-    parser.add_argument('--lore', action='store_true',
-            help='print lore link for mails')
+    parser.add_argument('--url', action='store_true',
+            help='print URLs for mails')
     parser.add_argument(
             '--dont_use_internet', action='store_true',
             help='don\'t use internet do get the mails')
@@ -86,7 +86,7 @@ def main(args=None):
     list_decorator.ascend = True,
     list_decorator.sort_threads_by = ['first_date'],
     list_decorator.collapse = False
-    list_decorator.show_url = args.lore
+    list_decorator.show_url = args.url
     list_decorator.cols = nr_cols_in_line
     list_decorator.show_runtime_profile = False
 
