@@ -50,20 +50,6 @@ def pr_with_pager_if_needed(text):
     subprocess.call(['less', '-R', '-M', '--no-init', tmp_path])
     os.remove(tmp_path)
 
-def mail_display_str_via_lore(mail_url):
-    lines = []
-    try:
-        from_lore = _hkml.cmd_lines_output(['w3m', '-dump', mail_url])[3:]
-    except:
-        sys.stderr.write('\'w3m\' invocation failed.\n')
-        exit(1)
-    divide_line = '━' * 79
-    for line in from_lore:
-        if line.strip() == divide_line:
-            break
-        lines.append(line)
-    return '\n'.join(lines)
-
 def mail_display_str(mail, head_columns=None):
     lines = []
     for head in ['From', 'To', 'CC', 'Subject', 'Message-Id', 'Date']:
