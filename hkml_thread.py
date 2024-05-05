@@ -86,7 +86,7 @@ def main(args=None):
     list_decorator.ascend = True,
     list_decorator.sort_threads_by = ['first_date'],
     list_decorator.collapse = False
-    list_decorator.lore = args.lore
+    list_decorator.show_url = args.lore
     list_decorator.cols = nr_cols_in_line
     list_decorator.show_runtime_profile = False
 

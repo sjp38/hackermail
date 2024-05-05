@@ -158,7 +158,7 @@ class MailListDecorator:
     sort_threads_by = None
     ascend = None
     cols = None
-    lore = None
+    show_url = None
     hide_stat = None
     runtime_profile = None
     max_len = None
@@ -171,7 +171,7 @@ class MailListDecorator:
         self.sort_threads_by = args.sort_threads_by
         self.ascend = args.ascend
         self.cols = args.cols
-        self.lore = args.url
+        self.show_url = args.url
         self.hide_stat = args.hide_stat
         self.runtime_profile = args.runtime_profile
         self.max_len = args.max_len_list
@@ -460,7 +460,7 @@ def mails_to_str(mails_to_show, mails_filter, list_decorator, show_thread_of,
         descend = not list_decorator.ascend
         sort_threads_by = list_decorator.sort_threads_by
         collapse_threads = list_decorator.collapse
-        show_lore_link = list_decorator.lore
+        show_lore_link = list_decorator.show_url
         nr_cols = list_decorator.cols
         show_runtime_profile = list_decorator.runtime_profile
 

@@ -46,7 +46,7 @@ class HkmlMonitorRequest:
             list_decorator.ascend = False
             list_decorator.sort_threads_by = ['first_date']
             list_decorator.collapse = False
-            list_decorator.lore = (
+            list_decorator.show_url = (
                     _hkml.get_manifest()['site'] == 'https://lore.kernel.org')
             list_decorator.show_runtime_profile = False
             self.mail_list_decorator = list_decorator
