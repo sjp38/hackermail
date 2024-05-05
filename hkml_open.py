@@ -64,7 +64,7 @@ def mail_display_str_via_lore(mail_url):
         lines.append(line)
     return '\n'.join(lines)
 
-def mail_display_str(mail, use_lore, show_lore_link, head_columns=None):
+def mail_display_str(mail, use_lore, head_columns=None):
     if use_lore:
         return mail_display_str_via_lore(lore_url(mail))
 
@@ -78,8 +78,6 @@ def mail_display_str(mail, use_lore, show_lore_link, head_columns=None):
                 lines.append('%s: %s' % (head, value))
     lines.append('Local-Date: %s' % mail.date)
     lines.append('\n%s' % mail.get_field('body'))
-    if show_lore_link:
-        lines.append('\n%s\n' % lore_url(mail))
     return '\n'.join(lines)
 
 def last_open_mail_idx():
@@ -129,7 +127,7 @@ def main(args=None):
     except:
         # maybe user is pipe-ing the output
         head_columns = None
-    mail_str = mail_display_str(mail, False, False, head_columns)
+    mail_str = mail_display_str(mail, False, head_columns)
 
     if args.stdout:
         print(mail_str)

@@ -11,7 +11,7 @@ import hkml_open
 def apply_action(args, mail):
     fd, patch_file = tempfile.mkstemp(prefix='hkml_patch_')
     with open(patch_file, 'w') as f:
-        f.write(hkml_open.mail_display_str(mail, False, False))
+        f.write(hkml_open.mail_display_str(mail, False))
 
     if args.action == 'check':
         if args.checker is None:
