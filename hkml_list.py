@@ -238,8 +238,7 @@ def orig_subject_formatted(mail):
         return True
     return orig_subject_formatted(mail.parent_mail)
 
-def format_entry(mail, max_digits_for_idx, show_nr_replies, show_lore_link,
-                 nr_cols):
+def format_entry(mail, max_digits_for_idx, show_nr_replies, show_url, nr_cols):
     index = '%d' % mail.pridx
     nr_zeroes = max_digits_for_idx - len(index)
     index = '%s%s' % ('0' * nr_zeroes, index)
@@ -261,7 +260,7 @@ def format_entry(mail, max_digits_for_idx, show_nr_replies, show_lore_link,
     suffices = [' '.join(from_fields), mail.date.strftime('%Y/%m/%d %H:%M')]
     if show_nr_replies:
         suffices.append('%d+ msgs' % nr_replies_of(mail))
-    if show_lore_link:
+    if show_url:
         suffices.append(mail.url())
     suffix = ' (%s)' % ', '.join(suffices)
 
@@ -460,7 +459,7 @@ def mails_to_str(mails_to_show, mails_filter, list_decorator, show_thread_of,
         descend = not list_decorator.ascend
         sort_threads_by = list_decorator.sort_threads_by
         collapse_threads = list_decorator.collapse
-        show_lore_link = list_decorator.show_url
+        show_url = list_decorator.show_url
         nr_cols = list_decorator.cols
         show_runtime_profile = list_decorator.runtime_profile
 
@@ -520,7 +519,7 @@ def mails_to_str(mails_to_show, mails_filter, list_decorator, show_thread_of,
                 continue
             show_nr_replies = True
         lines += format_entry(mail, max_digits_for_idx, show_nr_replies,
-                              show_lore_link, nr_cols)
+                              show_url, nr_cols)
 
     stat_lines = []
     if show_stat:
