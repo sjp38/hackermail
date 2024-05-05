@@ -265,7 +265,7 @@ def format_entry(mail, max_digits_for_idx, show_nr_replies, show_lore_link,
     if show_nr_replies:
         suffices.append('%d+ msgs' % nr_replies_of(mail))
     if show_lore_link:
-        suffices.append(lore_url(mail))
+        suffices.append(mail.url())
     suffix = ' (%s)' % ', '.join(suffices)
 
     lines = wrap_line(prefix, subject + suffix, nr_cols)
