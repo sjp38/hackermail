@@ -171,7 +171,7 @@ class MailListDecorator:
         self.sort_threads_by = args.sort_threads_by
         self.ascend = args.ascend
         self.cols = args.cols
-        self.lore = args.lore
+        self.lore = args.url
         self.hide_stat = args.hide_stat
         self.runtime_profile = args.runtime_profile
         self.max_len = args.max_len_list
@@ -829,8 +829,8 @@ def add_decoration_arguments(parser):
             help='show threads having more comments and later updated first.')
     parser.add_argument('--cols', metavar='<int>', type=int,
             help='number of columns for each line')
-    parser.add_argument('--lore', action='store_true',
-            help='print lore link for mails')
+    parser.add_argument('--url', action='store_true',
+            help='print URLs of the mails')
     parser.add_argument('--hide_stat', action='store_true',
             help='hide stat of the mails')
     parser.add_argument('--runtime_profile', action='store_true',
