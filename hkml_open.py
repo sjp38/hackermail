@@ -23,7 +23,10 @@ def decorate_last_reference(text):
             continue
         if not fields[0].startswith('[') or not fields[0].endswith(']'):
             continue
-        mail_idx = int(fields[0][1:-1])
+        try:
+            mail_idx = int(fields[0][1:-1])
+        except:
+            continue
         if mail_idx != last_reference_idx:
             continue
         line = u'\u001b[32m' + line + u'\u001b[0m'
