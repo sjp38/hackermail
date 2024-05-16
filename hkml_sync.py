@@ -14,7 +14,7 @@ def commit_changes(hkml_dir):
     for file in ['manifest', 'monitor_requests', 'tags']:
         file_path = os.path.join(hkml_dir, file)
         if os.path.isfile(file_path):
-            if subprocess.call(git_cmd + ['add', file_path]) != 0:
+            if subprocess.call(git_cmd + ['add', file]) != 0:
                 print('git-addding file (%s) failed' % file_path)
                 exit(1)
         else:
