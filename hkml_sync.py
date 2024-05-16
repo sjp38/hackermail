@@ -47,12 +47,6 @@ def setup_git(hkml_dir, remote):
             print('checking remote out failed')
             exit(1)
 
-    commit_changes(hkml_dir)
-
-    if subprocess.call(git_cmd + ['push', 'sync-target', 'HEAD:latest']) != 0:
-        print('push failed')
-        exit(1)
-
 def syncup(hkml_dir, remote):
     git_cmd = ['git', '-C', hkml_dir]
 
