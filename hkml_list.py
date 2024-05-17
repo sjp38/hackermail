@@ -736,6 +736,8 @@ def main(args):
         if source_type != 'mailing_list':
             use_cached_output = False
             break
+    if args.ignore_cache is True:
+        use_cached_output = False
     if use_cached_output and (args.fetch == False or args.sources == []):
         if args.sources == []:
             to_show = get_last_list_str()
@@ -887,5 +889,7 @@ def set_argparser(parser=None):
     # misc
     parser.add_argument('--fetch', action='store_true',
             help='fetch mails before listing')
+    parser.add_argument('--ignore_cache', action='store_true',
+            help='ignore cached previous list output')
     parser.add_argument('--stdout', action='store_true',
             help='print to stdout instead of using the pager')
