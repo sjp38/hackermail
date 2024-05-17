@@ -54,8 +54,11 @@ def format_mbox(subject, in_reply_to, to, cc, body, from_=None, draft=None):
     if not cc:
         cc = ['/* wrtite cc recipients here */']
     if from_ is None:
-        from_ = subprocess.check_output(
-                ['git', 'config', 'sendemail.from']).decode().strip()
+        try:
+            from_ = subprocess.check_output(
+                    ['git', 'config', 'sendemail.from']).decode().strip()
+        except:
+            from_ = '/* fill up please */'
 
     lines.append('Subject: %s' % subject)
     lines.append('From: %s' % from_)
