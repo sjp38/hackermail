@@ -14,15 +14,25 @@ def main(args=None):
         set_argparser(parser)
         args = parser.parse_args()
 
-    os.mkdir('.hkm')
-    os.mkdir('.hkm/archives')
-
     if args.manifest is None:
-        args.manifest = os.path.join(
+        print('--manifest is not specified')
+        lore_js = os.path.join(
                 os.path.dirname(__file__), 'manifests', 'lore.js')
+        question = '  '.join([
+            '%s is the manifest for lore.kernel.org.' % lore_js,
+            'Use it as the manifest? [Y/n] '])
+        answer = input(question)
+        if answer.lower() == 'n':
+            print('Cannot proceed initialization')
+            exit(1)
+        args.manifest = lore_js
     elif not os.path.isfile(args.manifest):
         print('--manifest (%s) not found' % args.manifest)
         exit(1)
+
+    os.mkdir('.hkm')
+    os.mkdir('.hkm/archives')
+
     with open(args.manifest, 'r') as f:
         content = f.read()
     with open(os.path.join('.hkm', 'manifest'), 'w') as f:
