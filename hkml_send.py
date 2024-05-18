@@ -53,17 +53,18 @@ def send_mail(mboxfile, get_confirm=False, erase_mbox=True):
     if get_confirm:
         with open(mboxfile, 'r') as f:
             print(f.read())
-        answer = input('Will send above mail.  Okay? [y/N] ')
-        do_send = answer.lower() == 'y'
+        print('Will send above mail.')
+        sent = False
         msgid = None
-        if do_send is True:
-            for line in _hkml.cmd_lines_output(['git', 'send-email', mboxfile,
-                                                # for getting message-id
-                                                '--confirm', 'always']):
-                fields = line.split()
-                if len(fields) == 2 and fields[0] == 'Message-Id:':
-                    msgid = fields[1]
-                    break
+        for line in _hkml.cmd_lines_output(['git', 'send-email', mboxfile,
+                                            # for getting message-id
+                                            '--confirm', 'always']):
+            fields = line.split()
+            if len(fields) == 2 and fields[0] == 'Message-Id:':
+                msgid = fields[1]
+            if fields == ['Result:', '250']:
+                sent = True
+        if sent:
             tag_name = 'sent'
         else:
             tag_name = 'drafts'
