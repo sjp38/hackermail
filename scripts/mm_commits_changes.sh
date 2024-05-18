@@ -37,5 +37,5 @@ since=$(date --date="-$duration_days day" +%Y-%m-%d)
 
 bindir=$(dirname "$0")
 
-"$bindir/hkml" list mm-commits --fetch -cn --since "$since" --min_nr_mails 0 \
-	--stdout | "$bindir/__summary_mm_commits.py"
+"$bindir/../hkml" list mm-commits --fetch -cn --since "$since" \
+	--min_nr_mails 0 --stdout | "$bindir/__summary_mm_commits.py"
