@@ -197,7 +197,7 @@ by default), some old mails of some threads may not listed.  Users can list all
 mails of a specific threads containing a specific mail using `thread`
 sub-command.  The mail of the thread can be specified by passing the mail
 identifier of the mail to the sub-command.  The mail identifier should be that
-of previously generated list.
+of previously generated list, or the message-id.
 
 For example, below command shows the thread of the third mail on the above
 `hkml list` output.
