@@ -1,5 +1,4 @@
 - Cleanup code
 - More interactive setup
   - Do git send-email setup instead
-  - Ask if lore.manifest is what they want
 - Monitoring --pisearch updates
