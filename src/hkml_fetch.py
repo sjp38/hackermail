@@ -35,22 +35,7 @@ def fetched_mail_lists():
     return [d for d in os.listdir(archive_dir)
             if os.path.isdir(os.path.join(archive_dir, d))]
 
-def set_argparser(parser):
-    parser.description = 'fetch mails'
-    _hkml.set_manifest_option(parser)
-    parser.add_argument('mlist', metavar='<mailing list>', nargs='*',
-            help='mailing list to fetch.')
-    parser.add_argument('--quiet', '-q', default=False, action='store_true',
-            help='Work silently.')
-    parser.add_argument('--epochs', type=int, default=1,
-            help='Minimum number of last epochs to fetch')
-
-def main(args=None):
-    if not args:
-        parser = argparse.ArgumentParser()
-        set_argparser(parser)
-        args = parser.parse_args()
-
+def main(args):
     mail_lists = args.mlist
     if not mail_lists:
         mail_lists = fetched_mail_lists()
@@ -60,5 +45,12 @@ def main(args=None):
     quiet = args.quiet
     fetch_mail(mail_lists, quiet, args.epochs)
 
-if __name__ == '__main__':
-    main()
+def set_argparser(parser):
+    parser.description = 'fetch mails'
+    _hkml.set_manifest_option(parser)
+    parser.add_argument('mlist', metavar='<mailing list>', nargs='*',
+            help='mailing list to fetch.')
+    parser.add_argument('--quiet', '-q', default=False, action='store_true',
+            help='Work silently.')
+    parser.add_argument('--epochs', type=int, default=1,
+            help='Minimum number of last epochs to fetch')

@@ -5,10 +5,6 @@ import argparse
 import os
 import subprocess
 
-def set_argparser(parser=None):
-    parser.add_argument('--manifest', metavar='<file>',
-            help='manifest file to use')
-
 def config_sendemail():
     send_configured = subprocess.call(
             ['git', 'config', 'sendemail.smtpserver'],
@@ -31,12 +27,7 @@ def config_sendemail():
     subprocess.call(cmd + ['sendemail.smtpencryption', 'tls'])
     subprocess.call(cmd + ['sendemail.smtpuser', mail_account])
 
-def main(args=None):
-    if args == None:
-        parser = argparse.ArgumentParser()
-        set_argparser(parser)
-        args = parser.parse_args()
-
+def main(args):
     if args.manifest is None:
         print('--manifest is not specified')
         lore_js = os.path.join(
@@ -63,5 +54,6 @@ def main(args=None):
 
     config_sendemail()
 
-if __name__ == '__main__':
-    main()
+def set_argparser(parser=None):
+    parser.add_argument('--manifest', metavar='<file>',
+            help='manifest file to use')

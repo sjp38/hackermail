@@ -76,24 +76,7 @@ def format_mbox(subject, in_reply_to, to, cc, body, from_=None, draft=None):
     lines.append(body)
     return '\n'.join(lines)
 
-def set_argparser(parser=None):
-    parser.description = 'write a mail'
-    parser.add_argument('--subject', metavar='<subject>', type=str,
-            help='Subject of the mail.')
-    parser.add_argument('--in-reply-to', metavar='<message id>',
-            help='Add in-reply-to field in the mail header')
-    parser.add_argument('--to', metavar='<email address>', nargs='+',
-            help='recipients of the mail')
-    parser.add_argument('--cc', metavar='<email address>', nargs='+',
-            help='cc recipients of the mail')
-    parser.add_argument('--body', metavar='<body>',
-            help='body message of the mail')
-    parser.add_argument('--format_only', action='store_true',
-            help='print formatted mail template only')
-    parser.add_argument('--draft', metavar='<index>', type=int,
-                        help='resume writing from the given draft')
-
-def main(args=None):
+def main(args):
     if not args:
         parser = argparse.ArgumentParser()
         set_argparser(parser)
@@ -114,5 +97,19 @@ def main(args=None):
         exit(1)
     hkml_send.send_mail(tmp_path, get_confirm=True)
 
-if __name__ == '__main__':
-    main()
+def set_argparser(parser=None):
+    parser.description = 'write a mail'
+    parser.add_argument('--subject', metavar='<subject>', type=str,
+            help='Subject of the mail.')
+    parser.add_argument('--in-reply-to', metavar='<message id>',
+            help='Add in-reply-to field in the mail header')
+    parser.add_argument('--to', metavar='<email address>', nargs='+',
+            help='recipients of the mail')
+    parser.add_argument('--cc', metavar='<email address>', nargs='+',
+            help='cc recipients of the mail')
+    parser.add_argument('--body', metavar='<body>',
+            help='body message of the mail')
+    parser.add_argument('--format_only', action='store_true',
+            help='print formatted mail template only')
+    parser.add_argument('--draft', metavar='<index>', type=int,
+                        help='resume writing from the given draft')

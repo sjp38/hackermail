@@ -10,23 +10,6 @@ import hkml_cache
 import hkml_list
 import hkml_open
 
-def set_argparser(parser=None):
-    parser.description='list mails of a thread'
-    _hkml.set_manifest_option(parser)
-    parser.add_argument(
-            'mail_id', metavar='<mail identifier>', nargs='?',
-            help=' '.join([
-                'Identifier of any mail in the thread to list.',
-                'Could be the index on the last-generated list or thread,',
-                'or the Message-ID of the mail.',
-                'If this is not given, shows last thread output.',
-                ]))
-    parser.add_argument('--url', action='store_true',
-            help='print URLs for mails')
-    parser.add_argument(
-            '--dont_use_internet', action='store_true',
-            help='don\'t use internet do get the mails')
-
 def get_thread_mails_from_web(msgid):
     if msgid.startswith('<') and msgid.endswith('>'):
         msgid = msgid[1:-1]
@@ -44,12 +27,7 @@ def get_thread_mails_from_web(msgid):
     os.rmdir(tmp_path)
     return mails, None
 
-def main(args=None):
-    if not args:
-        parser = argparse.ArgumentParser()
-        set_argparser(parser)
-        args = parser.parse_args()
-
+def main(args):
     if args.mail_id is None:
         to_show = hkml_list.get_last_thread_str()
         hkml_open.pr_with_pager_if_needed(to_show)
@@ -100,5 +78,19 @@ def main(args=None):
         hkml_list.cache_list_str('thread_output', to_show)
     hkml_open.pr_with_pager_if_needed(to_show)
 
-if __name__ == '__main__':
-    main()
+def set_argparser(parser=None):
+    parser.description='list mails of a thread'
+    _hkml.set_manifest_option(parser)
+    parser.add_argument(
+            'mail_id', metavar='<mail identifier>', nargs='?',
+            help=' '.join([
+                'Identifier of any mail in the thread to list.',
+                'Could be the index on the last-generated list or thread,',
+                'or the Message-ID of the mail.',
+                'If this is not given, shows last thread output.',
+                ]))
+    parser.add_argument('--url', action='store_true',
+            help='print URLs for mails')
+    parser.add_argument(
+            '--dont_use_internet', action='store_true',
+            help='don\'t use internet do get the mails')

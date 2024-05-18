@@ -31,23 +31,7 @@ def format_reply(mail):
 
     return hkml_write.format_mbox(subject, in_reply_to, to, cc, body)
 
-def set_argparser(parser):
-    parser.description = 'reply to a mail'
-    parser.add_argument(
-            'mail', metavar='<mail>',
-            help=' '.join(
-                ['The mail to reply to.',
-                'Could be index on the list, or \'clipboard\'']))
-    parser.add_argument(
-            '--format_only', action='store_true',
-            help='print formatted reply template only')
-
-def main(args=None):
-    if not args:
-        parser = argparser.ArgumentParser()
-        set_Argparser(parser)
-        args = parser.parse_args()
-
+def main(args):
     if args.mail.isdigit():
         mail = hkml_list.get_mail(int(args.mail))
     elif args.mail == 'clipboard':
@@ -79,5 +63,13 @@ def main(args=None):
         exit(1)
     hkml_send.send_mail(reply_tmp_path, get_confirm=True)
 
-if __name__ == 'main__':
-    main()
+def set_argparser(parser):
+    parser.description = 'reply to a mail'
+    parser.add_argument(
+            'mail', metavar='<mail>',
+            help=' '.join(
+                ['The mail to reply to.',
+                'Could be index on the list, or \'clipboard\'']))
+    parser.add_argument(
+            '--format_only', action='store_true',
+            help='print formatted reply template only')

@@ -43,11 +43,6 @@ def tag_as_draft(draft_file, tag_name, msgid):
     draft_mail = _hkml.Mail(mbox=draft_mbox_str)
     hkml_tag.do_add_tags(draft_mail, [tag_name])
 
-def set_argparser(parser=None):
-    parser.description = 'send a mail'
-    parser.add_argument('mbox_file', metavar='<mboxfile>',
-            help='Mbox format file of the mail to send.')
-
 def send_mail(mboxfile, get_confirm=False, erase_mbox=True):
     do_send = True
     if get_confirm:
@@ -74,13 +69,10 @@ def send_mail(mboxfile, get_confirm=False, erase_mbox=True):
     if erase_mbox:
         os.remove(mboxfile)
 
-def main(args=None):
-    if not args:
-        parser = argparse.ArgumentParser()
-        set_argparser(parser)
-        args = parser.parse_args()
-
+def main(args):
     send_mail(args.mbox_file, get_confirm=False, erase_mbox=False)
 
-if __name__ == '__main__':
-    main()
+def set_argparser(parser=None):
+    parser.description = 'send a mail'
+    parser.add_argument('mbox_file', metavar='<mboxfile>',
+            help='Mbox format file of the mail to send.')

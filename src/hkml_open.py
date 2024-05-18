@@ -70,24 +70,7 @@ def last_open_mail_idx():
     with open(os.path.join(_hkml.get_hkml_dir(), 'last_open_idx'), 'r') as f:
         return int(f.read())
 
-def set_argparser(parser):
-    parser.description = 'open a mail'
-    parser.add_argument(
-            'mail_idx', metavar='<index>',
-            help=' '.join(
-            [
-            'Index of the mail to open.',
-            '\'next\'/\'prev\' mean last open mail index plus/minus one.',
-            ]))
-    parser.add_argument(
-            '--stdout', action='store_true', help='print without a pager')
-
-def main(args=None):
-    if not args:
-        parser = argparser.ArgumentParser()
-        set_Argparser(parser)
-        args = parser.parse_args()
-
+def main(args):
     noti_current_index = True
     if args.mail_idx == 'prev':
         args.mail_idx = last_open_mail_idx() - 1
@@ -123,5 +106,14 @@ def main(args=None):
     if noti_current_index is True:
         print('# you were reading %d-th index' % args.mail_idx)
 
-if __name__ == 'main__':
-    main()
+def set_argparser(parser):
+    parser.description = 'open a mail'
+    parser.add_argument(
+            'mail_idx', metavar='<index>',
+            help=' '.join(
+            [
+            'Index of the mail to open.',
+            '\'next\'/\'prev\' mean last open mail index plus/minus one.',
+            ]))
+    parser.add_argument(
+            '--stdout', action='store_true', help='print without a pager')

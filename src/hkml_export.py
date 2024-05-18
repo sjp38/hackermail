@@ -19,6 +19,13 @@ def export_mails(mails, export_file):
             f.write('\n'.join(
                 ['From hackermail Thu Jan  1 00:00:00 1970', mail.mbox,'']))
 
+def main(args):
+    mails = hkml_list.last_listed_mails()
+    if args.range is not None:
+        mails = [mail for mail in mails
+                 if mail.pridx >= args.range[0] and mail.pridx < args.range[1]]
+    return export_mails(mails, args.export_file)
+
 def set_argparser(parser):
     parser.description = 'export mails'
     parser.add_argument(
@@ -27,18 +34,3 @@ def set_argparser(parser):
     parser.add_argument(
             '--range', nargs=2, metavar=('<start>', '<end>'), type=int,
             help='a half-open range of mails from the list to export')
-
-def main(args=None):
-    if args is None:
-        parser = argparse.ArgumentParser()
-        set_argparser(parser)
-        args = parser.parse_args()
-
-    mails = hkml_list.last_listed_mails()
-    if args.range is not None:
-        mails = [mail for mail in mails
-                 if mail.pridx >= args.range[0] and mail.pridx < args.range[1]]
-    return export_mails(mails, args.export_file)
-
-if __name__ == '__main__':
-    main()
