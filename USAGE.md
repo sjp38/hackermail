@@ -222,9 +222,9 @@ $ hkml thread 3
 ```
 
 The command downloads whole mails of the thread from the internet and shows the
-list.  If the system is not able to download the mials from the internet, only
+list.  If the system is not able to download the mails from the internet, only
 the mails of the thread in the previously generated list is listed.  Note that
-the mail identifiers are newly generated when mails are downloaded from the
+the mail indices are newly generated when mails are downloaded from the
 internet.
 
 Reading Mails
