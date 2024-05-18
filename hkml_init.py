@@ -17,7 +17,7 @@ def main(args=None):
     os.mkdir('.hkm')
     os.mkdir('.hkm/archives')
 
-    if args.manifest != None:
+    if args.manifest is None:
         args.manifest = os.path.join(
                 os.path.dirname(__file__), 'manifests', 'lore.js')
     elif not os.path.isfile(args.manifest):
