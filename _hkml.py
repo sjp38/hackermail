@@ -202,30 +202,7 @@ class Mail:
         print('cannot get mbox')
         exit(1)
 
-    def __parse_mbox(self):
-        if not self.mbox:
-            self.set_mbox()
-
-        in_header = True
-        parsed = {}
-        mbox_lines = self.mbox.split('\n')
-        for idx, line in enumerate(mbox_lines):
-            if in_header:
-                if line and line[0] in [' ', '\t'] and key:
-                    parsed[key] += ' %s' % line.strip()
-                    continue
-                line = line.strip()
-                key = line.split(':')[0].lower()
-                if key:
-                    val = line[len(key) + 2:]
-                    if key == 'message-id':
-                        if len(val.split()) >= 1:
-                            val = val.split()[0]
-                    parsed[key] = val
-                elif line == '':
-                    in_header = False
-                continue
-            break
+    def __parse_body(self, parsed, mbox_lines, idx):
         try:
             # 'm' doesn't have start 'From' line in some case.  Add a fake one.
             mbox_str = '\n'.join(['From mboxrd@z Thu Jan  1 00:00:00 1970',
@@ -252,6 +229,32 @@ class Mail:
                     parsed['body'] = base64.b64decode(parsed['body']).decode()
                 except:
                     pass
+
+    def __parse_mbox(self):
+        if not self.mbox:
+            self.set_mbox()
+
+        in_header = True
+        parsed = {}
+        mbox_lines = self.mbox.split('\n')
+        for idx, line in enumerate(mbox_lines):
+            if in_header:
+                if line and line[0] in [' ', '\t'] and key:
+                    parsed[key] += ' %s' % line.strip()
+                    continue
+                line = line.strip()
+                key = line.split(':')[0].lower()
+                if key:
+                    val = line[len(key) + 2:]
+                    if key == 'message-id':
+                        if len(val.split()) >= 1:
+                            val = val.split()[0]
+                    parsed[key] = val
+                elif line == '':
+                    in_header = False
+                continue
+            break
+        self.__parse_body(parsed, mbox_lines, idx)
 
         # for lore-pasted string case
         if 'date' in parsed:
