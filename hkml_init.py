@@ -13,9 +13,23 @@ def config_sendemail():
     send_configured = subprocess.call(
             ['git', 'config', 'sendemail.smtpserver'],
             stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT) == 0
-    if send_configured is False:
-        print('Seems git send-emtail is not configured')
-        print('Please configure it if you want to send email using hkml')
+    if send_configured is True:
+        return
+    question = '  '.join([
+        'Seems git send-emtail is not configured.',
+        'Please configure it if you want to send email using hkml.',
+        'If you use gmail, I can do the configuration instead.',
+        'Are you gonna use gmail, and want me to do the configuration? [Y/n] '
+        ])
+    answer = input(question)
+    if answer.lower() == 'n':
+        return
+    mail_account = input('enter your gmail account (e.g., foo@gmail.com): ')
+    cmd = ['git', 'config']
+    subprocess.call(cmd + ['sendemail.smtpserver', 'smtp.gmail.com'])
+    subprocess.call(cmd + ['sendemail.smtpserverport', '587'])
+    subprocess.call(cmd + ['sendemail.smtpencryption', 'tls'])
+    subprocess.call(cmd + ['sendemail.smtpuser', mail_account])
 
 def main(args=None):
     if args == None:
