@@ -230,8 +230,18 @@ class Mail:
             # 'm' doesn't have start 'From' line in some case.  Add a fake one.
             mbox_str = '\n'.join(['From mboxrd@z Thu Jan  1 00:00:00 1970',
                 self.mbox])
-            parsed['body'] = mailbox.Message(
-                    mbox_str).get_payload(decode=True).decode()
+            msg = mailbox.Message(mbox_str)
+            while msg.is_multipart():
+                msg = msg.get_payload()[0]
+            payload = msg.get_payload(decode=True)
+            chrsets = set({})
+            for chrset in msg.get_charsets():
+                if chrset is None:
+                    continue
+                chrsets.update([chrset])
+            for chrset in chrsets:
+                payload = payload.decode(chrset)
+            parsed['body'] = payload
         except:
             # Still decode() could fail due to encoding
             parsed['body'] = '\n'.join(mbox_lines[idx:])
