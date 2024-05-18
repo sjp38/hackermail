@@ -3,10 +3,19 @@
 
 import argparse
 import os
+import subprocess
 
 def set_argparser(parser=None):
     parser.add_argument('--manifest', metavar='<file>',
             help='manifest file to use')
+
+def config_sendemail():
+    send_configured = subprocess.call(
+            ['git', 'config', 'sendemail.smtpserver'],
+            stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT) == 0
+    if send_configured is False:
+        print('Seems git send-emtail is not configured')
+        print('Please configure it if you want to send email using hkml')
 
 def main(args=None):
     if args == None:
@@ -37,6 +46,8 @@ def main(args=None):
         content = f.read()
     with open(os.path.join('.hkm', 'manifest'), 'w') as f:
         f.write(content)
+
+    config_sendemail()
 
 if __name__ == '__main__':
     main()
