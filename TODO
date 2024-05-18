@@ -5,3 +5,5 @@
 - Handle broken message bodies
   - 20240514213402.GB295811@maniforge
   - 20240512193657.79298-1-sj@kernel.org
+- Monitoring --pisearch updates
+- Do not ask whether to send the mail twice
