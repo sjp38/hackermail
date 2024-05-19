@@ -216,6 +216,8 @@ class Mail:
                 if chrset is None:
                     continue
                 chrsets.update([chrset])
+            if len(chrsets) == 0:
+                payload = payload.decode()
             for chrset in chrsets:
                 payload = payload.decode(chrset)
             parsed['body'] = payload
