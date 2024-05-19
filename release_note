@@ -1,7 +1,7 @@
 This file contains major changes in each version since v1.0.0
 
 v1.0.7
-- Fix mail body decoding bug for non-plain-text
+- Decode mail payload with proper character sets
 - Confirm mail sending only once
 - Help git-email SMTP setup from init command
 
