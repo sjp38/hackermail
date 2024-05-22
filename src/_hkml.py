@@ -160,7 +160,7 @@ class Mail:
                 'gitid': self.gitid,
                 'gitdir': self.gitdir,
                 'subject': self.subject,
-                'msgid': self.__fields['message-id'],
+                'msgid': self.get_field('message-id'),
                 'mbox': self.mbox}
 
     def get_field(self, tag):
