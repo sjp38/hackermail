@@ -48,7 +48,7 @@ def send_mail(mboxfile, get_confirm=False, erase_mbox=True):
     if get_confirm:
         with open(mboxfile, 'r') as f:
             print(f.read())
-        print('Will send above mail.')
+        print('Above is what you wrote.')
     sent = False
     msgid = None
     for line in _hkml.cmd_lines_output(['git', 'send-email', mboxfile,
