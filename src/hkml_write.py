@@ -58,6 +58,7 @@ def format_mbox(subject, in_reply_to, to, cc, body, from_=None, draft=None):
             try:
                 from_ = subprocess.check_output(
                         ['git', 'config', conf]).decode().strip()
+                break
             except:
                 pass
 
