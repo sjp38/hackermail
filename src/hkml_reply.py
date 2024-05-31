@@ -27,15 +27,10 @@ def format_reply(mail, attach_file):
     body = mail.get_field('body')
     for line in body.split('\n'):
         body_lines.append('> %s' % line)
-
-    if attach_file is not None:
-        with open(attach_file, 'r') as f:
-            to_attach = f.read()
-        body_lines.append('\n\n%s\n%s' % ('=' * 79, to_attach))
     body = '\n'.join(body_lines)
-
     return hkml_write.format_mbox(subject, in_reply_to, to, cc, body,
-                                  from_=None, draft=None)
+                                  from_=None, draft=None,
+                                  attach_file=attach_file)
 
 def main(args):
     if args.mail.isdigit():
