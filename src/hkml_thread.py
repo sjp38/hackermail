@@ -25,7 +25,16 @@ def get_thread_mails_from_web(msgid):
             os.path.join(tmp_path, 't.mbox'), False, None, None, None, None)
     os.remove(os.path.join(tmp_path, 't.mbox'))
     os.rmdir(tmp_path)
-    return mails, None
+
+    deduped_mails = []
+    msgids = {}
+    for mail in mails:
+        msgid = mail.get_field('message-id')
+        if msgid in msgids:
+            continue
+        msgids[msgid] = True
+        deduped_mails.append(mail)
+    return deduped_mails, None
 
 def main(args):
     if args.mail_id is None:
