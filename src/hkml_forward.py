@@ -7,6 +7,7 @@ import tempfile
 import _hkml
 import hkml_list
 import hkml_open
+import hkml_send
 import hkml_write
 
 def main(args):
@@ -44,20 +45,7 @@ def main(args):
     if subprocess.call(['vim', tmp_path]) != 0:
         print('writing mail with editor failed')
         exit(1)
-    with open(tmp_path, 'r') as f:
-        mbox = f.read()
-
-    print(mbox)
-
-    answer = input('Will send above mail.  Okay? [y/N] ')
-    if answer.lower() != 'y':
-        answer = input('Save the mail as a file for later update? [Y/n] ')
-        if answer.lower() != 'n':
-            print('The mail is saved at %s' % tmp_path)
-            return
-        os.remove(tmp_path)
-        return
-    _hkml.cmd_str_output(['git', 'send-email', tmp_path])
+    hkml_send.send_mail(tmp_path, get_confirm=True)
 
 def set_argparser(parser):
     parser.description = 'forward a mail'
