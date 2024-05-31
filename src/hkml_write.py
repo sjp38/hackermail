@@ -31,7 +31,7 @@ def git_sendemail_valid_recipients(recipients):
     lines[-1] = lines[-1][:-1]
     return '\n'.join(lines)
 
-def format_mbox(subject, in_reply_to, to, cc, body, from_=None, draft=None):
+def format_mbox(subject, in_reply_to, to, cc, body, from_, draft):
     if draft is not None:
         mail = hkml_list.get_mail(draft)
         if mail is None:

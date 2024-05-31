@@ -31,7 +31,7 @@ def main(args):
         subject = 'Fwd: %s' % mail.subject
 
     mbox = hkml_write.format_mbox(subject, args.in_reply_to, args.to,
-                                  args.cc, mail_str)
+                                  args.cc, mail_str, from_=None, draft=None)
 
     if args.format_only:
         print(mbox)

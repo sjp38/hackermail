@@ -34,7 +34,8 @@ def format_reply(mail, attach_file):
         body_lines.append('\n\n%s\n%s' % ('=' * 79, to_attach))
     body = '\n'.join(body_lines)
 
-    return hkml_write.format_mbox(subject, in_reply_to, to, cc, body)
+    return hkml_write.format_mbox(subject, in_reply_to, to, cc, body,
+                                  from_=None, draft=None)
 
 def main(args):
     if args.mail.isdigit():
