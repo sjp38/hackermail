@@ -781,7 +781,7 @@ def main(args):
             msgid = mail.get_field('message-id')
             if not msgid in msgids:
                 mails_to_show.append(mail)
-            msgids[mail.get_field('message-id')] = True
+            msgids[msgid] = True
     runtime_profile = [['get_mails', time.time() - timestamp]]
     if args.max_nr_mails is not None:
         mails_to_show = mails_to_show[:args.max_nr_mails]
