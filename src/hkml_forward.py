@@ -62,7 +62,4 @@ def set_argparser(parser):
             help='recipients of the mail')
     parser.add_argument('--cc', metavar='<email address>', nargs='+',
             help='cc recipients of the mail')
-    parser.add_argument('--format_only', action='store_true',
-            help='print formatted mail template only')
-    parser.add_argument('--attach', metavar='<file>', nargs='+',
-                        help='file to paste at the end of the body')
+    hkml_write.add_common_arguments(parser)
