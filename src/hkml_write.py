@@ -109,6 +109,12 @@ def main(args):
         exit(1)
     hkml_send.send_mail(tmp_path, get_confirm=True)
 
+def add_common_arguments(parser):
+    parser.add_argument('--attach', metavar='<file>', nargs='+',
+                        help='file to paste at the end of the body')
+    parser.add_argument('--format_only', action='store_true',
+            help='print formatted mail template only')
+
 def set_argparser(parser=None):
     parser.description = 'write a mail'
     parser.add_argument('--subject', metavar='<subject>', type=str,
@@ -121,9 +127,6 @@ def set_argparser(parser=None):
             help='cc recipients of the mail')
     parser.add_argument('--body', metavar='<body>',
             help='body message of the mail')
-    parser.add_argument('--format_only', action='store_true',
-            help='print formatted mail template only')
     parser.add_argument('--draft', metavar='<index>', type=int,
                         help='resume writing from the given draft')
-    parser.add_argument('--attach', metavar='<file>', nargs='+',
-                        help='file to paste at the end of the body')
+    add_common_arguments(parser)
