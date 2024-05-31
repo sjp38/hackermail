@@ -30,7 +30,7 @@ def format_reply(mail, attach_file):
     body = '\n'.join(body_lines)
     return hkml_write.format_mbox(subject, in_reply_to, to, cc, body,
                                   from_=None, draft=None,
-                                  attach_file=attach_file)
+                                  attach_files=attach_file)
 
 def main(args):
     if args.mail.isdigit():
@@ -75,5 +75,5 @@ def set_argparser(parser):
             '--format_only', action='store_true',
             help='print formatted reply template only')
     parser.add_argument(
-            '--attach', metavar='<file>',
+            '--attach', metavar='<file>', nargs='+',
             help='file to attach on end of the body, e.g., patch file')

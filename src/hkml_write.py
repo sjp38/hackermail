@@ -32,7 +32,7 @@ def git_sendemail_valid_recipients(recipients):
     return '\n'.join(lines)
 
 def format_mbox(subject, in_reply_to, to, cc, body, from_, draft,
-                attach_file=None):
+                attach_files=None):
     if draft is not None:
         mail = hkml_list.get_mail(draft)
         if mail is None:
@@ -81,9 +81,11 @@ def format_mbox(subject, in_reply_to, to, cc, body, from_, draft,
         body = '/* write your message here (keep the above blank line) */'
     lines.append(body)
 
-    if attach_file is not None:
-        with open(attach_file, 'r') as f:
-            lines.append('\n%s\n%s' % ('=' * 79, f.read()))
+    if attach_files is not None:
+        for idx, attach_file in enumerate(attach_files):
+            marker_line = '==== Attachment %d (%s) ====' % (idx, attach_file)
+            with open(attach_file, 'r') as f:
+                lines.append('\n%s\n%s' % (marker_line, f.read()))
     return '\n'.join(lines)
 
 def main(args):
@@ -123,5 +125,5 @@ def set_argparser(parser=None):
             help='print formatted mail template only')
     parser.add_argument('--draft', metavar='<index>', type=int,
                         help='resume writing from the given draft')
-    parser.add_argument('--attach', metavar='<file>',
+    parser.add_argument('--attach', metavar='<file>', nargs='+',
                         help='file to paste at the end of the body')

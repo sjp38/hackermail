@@ -32,7 +32,7 @@ def main(args):
 
     mbox = hkml_write.format_mbox(subject, args.in_reply_to, args.to,
                                   args.cc, mail_str, from_=None, draft=None,
-                                  attach_file=args.attach)
+                                  attach_files=args.attach)
 
     if args.format_only:
         print(mbox)
@@ -76,5 +76,5 @@ def set_argparser(parser):
             help='cc recipients of the mail')
     parser.add_argument('--format_only', action='store_true',
             help='print formatted mail template only')
-    parser.add_argument('--attach', metavar='<file>',
+    parser.add_argument('--attach', metavar='<file>', nargs='+',
                         help='file to paste at the end of the body')
