@@ -31,7 +31,8 @@ def git_sendemail_valid_recipients(recipients):
     lines[-1] = lines[-1][:-1]
     return '\n'.join(lines)
 
-def format_mbox(subject, in_reply_to, to, cc, body, from_, draft):
+def format_mbox(subject, in_reply_to, to, cc, body, from_, draft,
+                attach_file=None):
     if draft is not None:
         mail = hkml_list.get_mail(draft)
         if mail is None:
@@ -79,6 +80,10 @@ def format_mbox(subject, in_reply_to, to, cc, body, from_, draft):
     if not body:
         body = '/* write your message here (keep the above blank line) */'
     lines.append(body)
+
+    if attach_file is not None:
+        with open(attach_file, 'r') as f:
+            lines.append('\n%s\n%s' % ('=' * 79, f.read()))
     return '\n'.join(lines)
 
 def main(args):
