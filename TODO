@@ -1,5 +1,6 @@
 - Cleanup code
 - Monitoring --pisearch updates
+- Monitoring tagged threads
 - Implement way to easily attach patches in body of the mail
   - https://github.com/sjp38/hackermail/issues/6
 - Fliter out duplicated mails on thread output
