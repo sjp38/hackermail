@@ -93,7 +93,7 @@ def main(args):
         args = parser.parse_args()
 
     mbox = format_mbox(args.subject, args.in_reply_to, args.to, args.cc,
-        args.body, None, args.draft)
+        args.body, None, args.draft, args.attach)
 
     if args.format_only:
         print(mbox)
@@ -123,3 +123,5 @@ def set_argparser(parser=None):
             help='print formatted mail template only')
     parser.add_argument('--draft', metavar='<index>', type=int,
                         help='resume writing from the given draft')
+    parser.add_argument('--attach', metavar='<file>',
+                        help='file to paste at the end of the body')
