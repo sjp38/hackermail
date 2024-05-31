@@ -71,9 +71,4 @@ def set_argparser(parser):
             help=' '.join(
                 ['The mail to reply to.',
                 'Could be index on the list, or \'clipboard\'']))
-    parser.add_argument(
-            '--format_only', action='store_true',
-            help='print formatted reply template only')
-    parser.add_argument(
-            '--attach', metavar='<file>', nargs='+',
-            help='file to attach on end of the body, e.g., patch file')
+    hkml_write.add_common_arguments(parser)
