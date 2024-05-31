@@ -10,7 +10,7 @@ import hkml_list
 import hkml_send
 import hkml_write
 
-def format_reply(mail):
+def format_reply(mail, attach_file):
     subject = mail.get_field('subject')
     if subject and subject.split()[0].lower() != 're:':
         subject = 'Re: %s' % subject
@@ -27,6 +27,11 @@ def format_reply(mail):
     body = mail.get_field('body')
     for line in body.split('\n'):
         body_lines.append('> %s' % line)
+
+    if attach_file is not None:
+        with open(attach_file, 'r') as f:
+            to_attach = f.read()
+        body_lines.append('\n\n%s\n%s' % ('=' * 79, to_attach))
     body = '\n'.join(body_lines)
 
     return hkml_write.format_mbox(subject, in_reply_to, to, cc, body)
@@ -49,7 +54,7 @@ def main(args):
     if mail is None:
         print('mail is not cached')
         exit(1)
-    reply_mbox_str = format_reply(mail)
+    reply_mbox_str = format_reply(mail, args.attach)
     if args.format_only:
         print(reply_mbox_str)
         return
@@ -73,3 +78,6 @@ def set_argparser(parser):
     parser.add_argument(
             '--format_only', action='store_true',
             help='print formatted reply template only')
+    parser.add_argument(
+            '--attach', metavar='<file>',
+            help='file to attach on end of the body, e.g., patch file')
