@@ -35,7 +35,7 @@ def __view(stdscr):
     normal_color = curses.color_pair(2)
 
     while True:
-        stdscr.clear()
+        stdscr.erase()
         rows, cols = stdscr.getmaxyx()
         start_row = max(int(focus_row - rows / 2), 0)
 
