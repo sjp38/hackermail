@@ -3,6 +3,9 @@
 
 import curses
 
+import hkml_list
+import hkml_open
+
 '''
 Curses-based TUI viewer for hkml list output.
 Menus:
@@ -42,6 +45,14 @@ def display(scr, lines, focus_row, focus_color, normal_color):
     scr.addstr(scr_rows - 1, 0,
                '# focus: %d/%d row' % (focus_row, scr_rows))
 
+def focused_mail(lines, focus_row):
+    for idx in range(focus_row, 0, -1):
+        line = lines[idx]
+        if not line.startswith('['):
+            continue
+        mail_idx = int(line.split()[0][1:-1])
+        return hkml_list.get_mail(mail_idx)
+
 def __view(stdscr):
     focus_row = 0
     text_lines = text_to_show.split('\n')
@@ -66,10 +77,17 @@ def __view(stdscr):
             display(stdscr, [
                 'j: move focus down',
                 'k: move focus up',
+                'o, <enter>: open mail',
                 'q: quit',
                 '?: show this',
                 '',
                 'Press any key to return'], 0, focus_color, normal_color)
+            stdscr.refresh()
+            x = stdscr.getch()
+        elif c in ['o', '\n']:
+            mail = focused_mail(text_lines, focus_row)
+            display(stdscr, hkml_open.mail_display_str(mail, 80).split('\n'),
+                    0, focus_color, normal_color)
             stdscr.refresh()
             x = stdscr.getch()
 
