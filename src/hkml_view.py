@@ -36,10 +36,10 @@ def __view(stdscr):
 
     while True:
         stdscr.erase()
-        rows, cols = stdscr.getmaxyx()
-        start_row = max(int(focus_row - rows / 2), 0)
+        scr_rows, scr_cols = stdscr.getmaxyx()
+        start_row = max(int(focus_row - scr_rows / 2), 0)
 
-        for row in range(rows):
+        for row in range(scr_rows - 1):
             line_idx = start_row + row
             if line_idx >= len(text_lines):
                 break
@@ -48,6 +48,8 @@ def __view(stdscr):
             else:
                 color = normal_color
             stdscr.addstr(row, 0, text_lines[line_idx], color)
+        stdscr.addstr(scr_rows - 1, 0,
+                      '# focus: %d/%d row' % (focus_row, scr_rows))
 
         x = stdscr.getch()
         c = chr(x)
