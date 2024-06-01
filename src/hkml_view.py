@@ -27,28 +27,34 @@ text_to_show = None
 
 def __view(stdscr):
     focus_row = 0
+    text_lines = text_to_show.split('\n')
+
     curses.init_pair(1, curses.COLOR_GREEN, curses.COLOR_BLACK)
     focus_color = curses.color_pair(1)
     curses.init_pair(2, curses.COLOR_WHITE, curses.COLOR_BLACK)
     normal_color = curses.color_pair(2)
 
-    stdscr.clear()
     while True:
+        stdscr.clear()
         rows, cols = stdscr.getmaxyx()
-        for idx, line in enumerate(text_to_show.split('\n')):
-            if idx == focus_row:
+        start_row = max(int(focus_row - rows / 2), 0)
+
+        for row in range(rows):
+            line_idx = start_row + row
+            if line_idx >= len(text_lines):
+                break
+            if line_idx == focus_row:
                 color = focus_color
             else:
                 color = normal_color
-            stdscr.addstr(idx, 0, line, color)
-            if idx == rows - 1:
-                break
+            stdscr.addstr(row, 0, text_lines[line_idx], color)
+
         x = stdscr.getch()
         c = chr(x)
         if c == 'j':
-            focus_row += 1
+            focus_row = min(focus_row + 1, len(text_lines) - 1)
         elif c == 'k':
-            focus_row -= 1
+            focus_row = max(focus_row - 1, 0)
         elif c == 'q':
             break
 
