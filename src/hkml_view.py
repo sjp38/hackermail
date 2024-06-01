@@ -49,6 +49,8 @@ def __view(stdscr):
             focus_row += 1
         elif c == 'k':
             focus_row -= 1
+        elif c == 'q':
+            break
 
 def view(text):
     global text_to_show
