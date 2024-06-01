@@ -25,6 +25,23 @@ W: write new
 
 text_to_show = None
 
+def display(scr, lines, focus_row, focus_color, normal_color):
+    scr.erase()
+    scr_rows, scr_cols = scr.getmaxyx()
+    start_row = max(int(focus_row - scr_rows / 2), 0)
+
+    for row in range(scr_rows - 1):
+        line_idx = start_row + row
+        if line_idx >= len(lines):
+            break
+        if line_idx == focus_row:
+            color = focus_color
+        else:
+            color = normal_color
+        scr.addstr(row, 0, lines[line_idx], color)
+    scr.addstr(scr_rows - 1, 0,
+               '# focus: %d/%d row' % (focus_row, scr_rows))
+
 def __view(stdscr):
     focus_row = 0
     text_lines = text_to_show.split('\n')
@@ -35,21 +52,7 @@ def __view(stdscr):
     normal_color = curses.color_pair(2)
 
     while True:
-        stdscr.erase()
-        scr_rows, scr_cols = stdscr.getmaxyx()
-        start_row = max(int(focus_row - scr_rows / 2), 0)
-
-        for row in range(scr_rows - 1):
-            line_idx = start_row + row
-            if line_idx >= len(text_lines):
-                break
-            if line_idx == focus_row:
-                color = focus_color
-            else:
-                color = normal_color
-            stdscr.addstr(row, 0, text_lines[line_idx], color)
-        stdscr.addstr(scr_rows - 1, 0,
-                      '# focus: %d/%d row' % (focus_row, scr_rows))
+        display(stdscr, text_lines, focus_row, focus_color, normal_color)
 
         x = stdscr.getch()
         c = chr(x)
@@ -60,19 +63,15 @@ def __view(stdscr):
         elif c == 'q':
             break
         elif c == '?':
-            stdscr.erase()
-            help_msg = '''
-j: move focus down
-k: move focus up
-q: quit
-?: show this
-
-Press any key to return to the list'''
-            stdscr.addstr(0, 0, help_msg)
+            display(stdscr, [
+                'j: move focus down',
+                'k: move focus up',
+                'q: quit',
+                '?: show this',
+                '',
+                'Press any key to return'], 0, focus_color, normal_color)
             stdscr.refresh()
             x = stdscr.getch()
-
-
 
 def view(text):
     global text_to_show
