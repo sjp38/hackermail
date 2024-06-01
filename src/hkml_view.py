@@ -44,6 +44,11 @@ def __view(stdscr):
             if idx == rows - 1:
                 break
         x = stdscr.getch()
+        c = chr(x)
+        if c == 'j':
+            focus_row += 1
+        elif c == 'k':
+            focus_row -= 1
 
 def view(text):
     global text_to_show
