@@ -2,6 +2,7 @@ This file contains major changes in each version since v1.0.0
 
 v1.0.8
 - Implement --attach option for write,reply,forward commands
+- Implement interactive mail list interface (hkml list --interactive)
 
 v1.0.7
 - Decode mail payload with proper character sets
