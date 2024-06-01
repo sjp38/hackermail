@@ -28,22 +28,58 @@ W: write new
 
 text_to_show = None
 
-def display(scr, lines, focus_row, focus_color, normal_color):
-    scr.erase()
-    scr_rows, scr_cols = scr.getmaxyx()
-    start_row = max(int(focus_row - scr_rows / 2), 0)
+class ScrollableList:
+    screen = None
+    lines = None
+    focus_row = None
+    focus_color = None
+    normal_color = None
+    input_handler = None
 
-    for row in range(scr_rows - 1):
-        line_idx = start_row + row
-        if line_idx >= len(lines):
-            break
-        if line_idx == focus_row:
-            color = focus_color
-        else:
-            color = normal_color
-        scr.addstr(row, 0, lines[line_idx], color)
-    scr.addstr(scr_rows - 1, 0,
-               '# focus: %d/%d row' % (focus_row, scr_rows))
+    def __init__(self, screen, lines, focus_row, focus_color, normal_color,
+                 input_handler):
+        self.screen = screen
+        self.lines = lines
+        self.focus_row = focus_row
+        self.focus_color = focus_color
+        self.normal_color = normal_color
+        self.input_handler = input_handler
+
+    def __draw(self):
+        self.screen.erase()
+        scr_rows, scr_cols = self.screen.getmaxyx()
+        start_row = max(int(self.focus_row - scr_rows / 2), 0)
+
+        for row in range(scr_rows - 1):
+            line_idx = start_row + row
+            if line_idx >= len(self.lines):
+                break
+            if line_idx == self.focus_row:
+                color = self.focus_color
+            else:
+                color = self.normal_color
+            self.screen.addstr(row, 0, self.lines[line_idx], color)
+        self.screen.addstr(scr_rows - 1, 0,
+               '# focus: %d/%d row' % (self.focus_row, scr_rows))
+
+    def draw(self):
+        while True:
+            self.__draw()
+
+            x = self.screen.getch()
+            c = chr(x)
+            if c == 'j':
+                self.focus_row = min(self.focus_row + 1, len(self.lines) - 1)
+            elif c == 'k':
+                self.focus_row = max(self.focus_row - 1, 0)
+            elif c == 'q':
+                break
+            else:
+                if self.input_handler is None:
+                    continue
+                rc = self.input_handler(self, c)
+                if rc != 0:
+                    break
 
 def focused_mail(lines, focus_row):
     for idx in range(focus_row, 0, -1):
@@ -52,6 +88,14 @@ def focused_mail(lines, focus_row):
             continue
         mail_idx = int(line.split()[0][1:-1])
         return hkml_list.get_mail(mail_idx)
+
+def mail_list_input_handler(slist, c):
+    if c in ['o', '\n']:
+        mail = focused_mail(slist.lines, slist.focus_row)
+        lines = hkml_open.mail_display_str(mail, 80).split('\n')
+        ScrollableList(slist.screen, lines, 0, slist.focus_color,
+                       slist.normal_color, None).draw()
+    return 0
 
 def __view(stdscr):
     focus_row = 0
@@ -62,34 +106,8 @@ def __view(stdscr):
     curses.init_pair(2, curses.COLOR_WHITE, curses.COLOR_BLACK)
     normal_color = curses.color_pair(2)
 
-    while True:
-        display(stdscr, text_lines, focus_row, focus_color, normal_color)
-
-        x = stdscr.getch()
-        c = chr(x)
-        if c == 'j':
-            focus_row = min(focus_row + 1, len(text_lines) - 1)
-        elif c == 'k':
-            focus_row = max(focus_row - 1, 0)
-        elif c == 'q':
-            break
-        elif c == '?':
-            display(stdscr, [
-                'j: move focus down',
-                'k: move focus up',
-                'o, <enter>: open mail',
-                'q: quit',
-                '?: show this',
-                '',
-                'Press any key to return'], 0, focus_color, normal_color)
-            stdscr.refresh()
-            x = stdscr.getch()
-        elif c in ['o', '\n']:
-            mail = focused_mail(text_lines, focus_row)
-            display(stdscr, hkml_open.mail_display_str(mail, 80).split('\n'),
-                    0, focus_color, normal_color)
-            stdscr.refresh()
-            x = stdscr.getch()
+    ScrollableList(stdscr, text_lines, focus_row, focus_color, normal_color,
+                   mail_list_input_handler).draw()
 
 def view(text):
     global text_to_show
