@@ -59,6 +59,20 @@ def __view(stdscr):
             focus_row = max(focus_row - 1, 0)
         elif c == 'q':
             break
+        elif c == '?':
+            stdscr.erase()
+            help_msg = '''
+j: move focus down
+k: move focus up
+q: quit
+?: show this
+
+Press any key to return to the list'''
+            stdscr.addstr(0, 0, help_msg)
+            stdscr.refresh()
+            x = stdscr.getch()
+
+
 
 def view(text):
     global text_to_show
