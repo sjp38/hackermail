@@ -17,6 +17,7 @@ import hkml_cache
 import hkml_fetch
 import hkml_open
 import hkml_tag
+import hkml_view
 
 '''
 Contains list command generated outputs to cache for later fast processing.
@@ -795,6 +796,8 @@ def main(args):
     if args.stdout:
         print(to_show)
         return
+    if args.interactive:
+        return hkml_view.view(to_show)
     hkml_open.pr_with_pager_if_needed(to_show)
 
 def add_mails_filter_arguments(parser):
@@ -893,3 +896,5 @@ def set_argparser(parser=None):
             help='ignore cached previous list output')
     parser.add_argument('--stdout', action='store_true',
             help='print to stdout instead of using the pager')
+    parser.add_argument('--interactive', action='store_true',
+                        help='use interactive tui viewer')
