@@ -80,6 +80,9 @@ class ScrollableList:
             self.screen.addstr(row, 0, self.lines[line_idx], color)
         self.screen.addstr(scr_rows - 1, 0,
                '# focus: %d/%d row' % (self.focus_row, len(self.lines)))
+        help_msg = 'Press ? for help'
+        self.screen.addstr(scr_rows - 1, scr_cols - len(help_msg) - 1,
+                           help_msg)
 
     def draw(self):
         while True:
