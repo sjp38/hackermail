@@ -35,15 +35,23 @@ class ScrollableList:
     focus_color = None
     normal_color = None
     input_handler = None
+    help_msg = None
 
     def __init__(self, screen, lines, focus_row, focus_color, normal_color,
-                 input_handler):
+                 input_handler, help_msg):
         self.screen = screen
         self.lines = lines
         self.focus_row = focus_row
         self.focus_color = focus_color
         self.normal_color = normal_color
         self.input_handler = input_handler
+        self.help_msg = [
+                'j: focus down',
+                'k: focus up',
+                'q: quit']
+        if help_msg is not None:
+            self.help_msg += help_msg
+        self.help_msg += ['?: show help message']
 
     def __draw(self):
         self.screen.erase()
@@ -74,6 +82,9 @@ class ScrollableList:
                 self.focus_row = max(self.focus_row - 1, 0)
             elif c == 'q':
                 break
+            elif c == '?':
+                ScrollableList(self.screen, self.help_msg, 0, self.focus_color,
+                               self.normal_color, None, None).draw()
             else:
                 if self.input_handler is None:
                     continue
@@ -94,7 +105,7 @@ def mail_list_input_handler(slist, c):
         mail = focused_mail(slist.lines, slist.focus_row)
         lines = hkml_open.mail_display_str(mail, 80).split('\n')
         ScrollableList(slist.screen, lines, 0, slist.focus_color,
-                       slist.normal_color, None).draw()
+                       slist.normal_color, None, None).draw()
     return 0
 
 def __view(stdscr):
@@ -107,7 +118,7 @@ def __view(stdscr):
     normal_color = curses.color_pair(2)
 
     ScrollableList(stdscr, text_lines, focus_row, focus_color, normal_color,
-                   mail_list_input_handler).draw()
+                   mail_list_input_handler, ['o or Enter: open mail']).draw()
 
 def view(text):
     global text_to_show
