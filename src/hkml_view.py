@@ -61,6 +61,8 @@ class ScrollableList:
         self.screen.erase()
         scr_rows, scr_cols = self.screen.getmaxyx()
         start_row = max(int(self.focus_row - scr_rows / 2), 0)
+        start_row = min(start_row, len(self.lines) - scr_rows + 1)
+        start_row = max(start_row, 0)
 
         for row in range(scr_rows - 1):
             line_idx = start_row + row
