@@ -2,9 +2,13 @@
 # SPDX-License-Identifier: GPL-2.0
 
 import curses
+import subprocess
+import tempfile
 
 import hkml_list
 import hkml_open
+import hkml_reply
+import hkml_send
 
 '''
 Curses-based TUI viewer for hkml list output.
@@ -114,6 +118,26 @@ def mail_list_input_handler(slist, c):
         lines = hkml_open.mail_display_str(mail, 80).split('\n')
         ScrollableList(slist.screen, lines, slist.focus_color,
                        slist.normal_color, None, None).draw()
+    if c == 'r':
+        # reply
+
+        mail = focused_mail(slist.lines, slist.focus_row)
+        if mail is None:
+            return 0
+
+        # stop curses
+        curses.reset_shell_mode()
+        reply_mbox_str = hkml_reply.format_reply(mail, None)
+        fd, reply_tmp_path = tempfile.mkstemp(prefix='hkml_interactive_reply_')
+        with open(reply_tmp_path, 'w') as f:
+            f.write(reply_mbox_str)
+        if subprocess.call(['vim', reply_tmp_path]) != 0:
+            print('editing the reply failed.  The draft is at %s' % reply_tmp_path)
+        else:
+            hkml_send.send_mail(reply_tmp_path, get_confirm=True)
+        curses.reset_prog_mode()
+        slist.screen.clear()
+
     return 0
 
 def __view(stdscr):
@@ -126,7 +150,8 @@ def __view(stdscr):
 
     ScrollableList(stdscr, text_lines, focus_color, normal_color,
                    mail_list_input_handler,[
-                       'o or Enter: open the focused mail']).draw()
+                       'o or Enter: open the focused mail',
+                       'r: reply to the focused mail']).draw()
 
 def view(text):
     global text_to_show
