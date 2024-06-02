@@ -37,11 +37,15 @@ class ScrollableList:
     input_handler = None
     help_msg = None
 
-    def __init__(self, screen, lines, focus_row, focus_color, normal_color,
-                 input_handler, help_msg):
+    def __init__(self, screen, lines, focus_color, normal_color, input_handler,
+                 help_msg):
         self.screen = screen
         self.lines = lines
-        self.focus_row = focus_row
+
+        # set focus on middle of the screen or the content
+        scr_rows, _ = screen.getmaxyx()
+        self.focus_row = int(min(scr_rows / 2, len(lines) / 2))
+
         self.focus_color = focus_color
         self.normal_color = normal_color
         self.input_handler = input_handler
@@ -83,7 +87,7 @@ class ScrollableList:
             elif c == 'q':
                 break
             elif c == '?':
-                ScrollableList(self.screen, self.help_msg, 0, self.focus_color,
+                ScrollableList(self.screen, self.help_msg, self.focus_color,
                                self.normal_color, None, None).draw()
             else:
                 if self.input_handler is None:
@@ -106,12 +110,11 @@ def mail_list_input_handler(slist, c):
         if mail is None:
             return 0
         lines = hkml_open.mail_display_str(mail, 80).split('\n')
-        ScrollableList(slist.screen, lines, 0, slist.focus_color,
+        ScrollableList(slist.screen, lines, slist.focus_color,
                        slist.normal_color, None, None).draw()
     return 0
 
 def __view(stdscr):
-    focus_row = 0
     text_lines = text_to_show.split('\n')
 
     curses.init_pair(1, curses.COLOR_GREEN, curses.COLOR_BLACK)
@@ -119,7 +122,7 @@ def __view(stdscr):
     curses.init_pair(2, curses.COLOR_WHITE, curses.COLOR_BLACK)
     normal_color = curses.color_pair(2)
 
-    ScrollableList(stdscr, text_lines, focus_row, focus_color, normal_color,
+    ScrollableList(stdscr, text_lines, focus_color, normal_color,
                    mail_list_input_handler, ['o or Enter: open mail']).draw()
 
 def view(text):
