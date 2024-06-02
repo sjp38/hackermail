@@ -30,6 +30,21 @@ def format_reply(mail, attach_file):
                                   from_=None, draft=None,
                                   attach_files=attach_file)
 
+def reply(mail, attach_files, format_only):
+    reply_mbox_str = format_reply(mail, attach_files)
+    if format_only:
+        print(reply_mbox_str)
+        return
+
+    fd, reply_tmp_path = tempfile.mkstemp(prefix='hkml_reply_')
+    with open(reply_tmp_path, 'w') as f:
+        f.write(reply_mbox_str)
+    if subprocess.call(['vim', reply_tmp_path]) != 0:
+        print('editing the reply failed.  The draft is at %s' %
+                reply_tmp_path)
+        exit(1)
+    hkml_send.send_mail(reply_tmp_path, get_confirm=True)
+
 def main(args):
     if args.mail.isdigit():
         mail = hkml_list.get_mail(int(args.mail))
@@ -48,19 +63,8 @@ def main(args):
     if mail is None:
         print('mail is not cached')
         exit(1)
-    reply_mbox_str = format_reply(mail, args.attach)
-    if args.format_only:
-        print(reply_mbox_str)
-        return
 
-    fd, reply_tmp_path = tempfile.mkstemp(prefix='hkml_reply_')
-    with open(reply_tmp_path, 'w') as f:
-        f.write(reply_mbox_str)
-    if subprocess.call(['vim', reply_tmp_path]) != 0:
-        print('editing the reply failed.  The draft is at %s' %
-                reply_tmp_path)
-        exit(1)
-    hkml_send.send_mail(reply_tmp_path, get_confirm=True)
+    reply(mail, args.attach, args.format_only)
 
 def set_argparser(parser):
     parser.description = 'reply to a mail'
