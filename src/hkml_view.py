@@ -103,6 +103,8 @@ def focused_mail(lines, focus_row):
 def mail_list_input_handler(slist, c):
     if c in ['o', '\n']:
         mail = focused_mail(slist.lines, slist.focus_row)
+        if mail is None:
+            return 0
         lines = hkml_open.mail_display_str(mail, 80).split('\n')
         ScrollableList(slist.screen, lines, 0, slist.focus_color,
                        slist.normal_color, None, None).draw()
