@@ -125,7 +125,8 @@ def __view(stdscr):
     normal_color = curses.color_pair(2)
 
     ScrollableList(stdscr, text_lines, focus_color, normal_color,
-                   mail_list_input_handler, ['o or Enter: open mail']).draw()
+                   mail_list_input_handler,[
+                       'o or Enter: open the focused mail']).draw()
 
 def view(text):
     global text_to_show
