@@ -4,6 +4,7 @@
 import curses
 import subprocess
 import tempfile
+import time
 
 import hkml_list
 import hkml_open
@@ -101,6 +102,12 @@ class ScrollableList:
                 rc = self.input_handler(self, c)
                 if rc != 0:
                     break
+
+    def toast(self, message):
+        scr_rows, scr_cols = self.screen.getmaxyx()
+        self.screen.addstr(scr_rows - 1, 0, '# %s' % message)
+        self.screen.refresh()
+        time.sleep(1)
 
 def focused_mail(lines, focus_row):
     for idx in range(focus_row, 0, -1):
