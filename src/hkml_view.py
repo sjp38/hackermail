@@ -68,7 +68,7 @@ class ScrollableList:
                 color = self.normal_color
             self.screen.addstr(row, 0, self.lines[line_idx], color)
         self.screen.addstr(scr_rows - 1, 0,
-               '# focus: %d/%d row' % (self.focus_row, scr_rows))
+               '# focus: %d/%d row' % (self.focus_row, len(self.lines)))
 
     def draw(self):
         while True:
