@@ -755,11 +755,8 @@ def main(args):
         else:
             to_show = get_list_str(list_output_cache_key)
         if to_show is not None:
-            if args.stdout:
-                print(to_show)
-            else:
-                hkml_open.pr_with_pager_if_needed(to_show)
             writeback_list_output()
+            show_list(to_show, args.stdout, args.use_less)
             return
     else:
         for source in args.sources:
