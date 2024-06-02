@@ -17,6 +17,7 @@ Demo
 ====
 
 [![asciicast](https://asciinema.org/a/632442.svg)](https://asciinema.org/a/632442)
+![interactive list](images/hkml_interactive_list_demo.gif)
 
 
 Getting Started
