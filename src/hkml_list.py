@@ -712,6 +712,13 @@ def last_listed_mails():
             mails.append(mail)
     return mails
 
+def show_list(text, to_stdout, to_less):
+    if to_stdout:
+        print(text)
+    if to_less:
+        hkml_open.pr_with_pager_if_needed(text)
+    hkml_view.view(text)
+
 def main(args):
     if args.source_type is not None:
         if len(args.source_type) == 1:
@@ -793,13 +800,7 @@ def main(args):
     hkml_cache.writeback_mails()
     cache_list_str(list_output_cache_key, to_show)
 
-    if args.stdout:
-        print(to_show)
-        return
-    if args.use_less:
-        hkml_open.pr_with_pager_if_needed(to_show)
-        return
-    hkml_view.view(to_show)
+    show_list(to_show, args.stdout, args.use_less)
 
 def add_mails_filter_arguments(parser):
     parser.add_argument(
