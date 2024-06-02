@@ -127,14 +127,8 @@ def mail_list_input_handler(slist, c):
 
         # stop curses
         curses.reset_shell_mode()
-        reply_mbox_str = hkml_reply.format_reply(mail, None)
-        fd, reply_tmp_path = tempfile.mkstemp(prefix='hkml_interactive_reply_')
-        with open(reply_tmp_path, 'w') as f:
-            f.write(reply_mbox_str)
-        if subprocess.call(['vim', reply_tmp_path]) != 0:
-            print('editing the reply failed.  The draft is at %s' % reply_tmp_path)
-        else:
-            hkml_send.send_mail(reply_tmp_path, get_confirm=True)
+
+        hkml_reply.reply(mail, attach_files=None, format_only=None)
         curses.reset_prog_mode()
         slist.screen.clear()
 
