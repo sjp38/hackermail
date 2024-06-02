@@ -8,7 +8,6 @@ import tempfile
 import _hkml
 import hkml_cache
 import hkml_list
-import hkml_open
 
 def get_thread_mails_from_web(msgid):
     if msgid.startswith('<') and msgid.endswith('>'):
@@ -39,8 +38,9 @@ def get_thread_mails_from_web(msgid):
 def main(args):
     if args.mail_id is None:
         to_show = hkml_list.get_last_thread_str()
-        hkml_open.pr_with_pager_if_needed(to_show)
         hkml_list.writeback_list_output()
+        hkml_list.show_list(to_show, to_stdout=False,
+                            to_less=args.no_interactive)
         return
 
     if args.mail_id.isdigit():
@@ -85,7 +85,7 @@ def main(args):
     if args.dont_use_internet is False:
         hkml_cache.writeback_mails()
         hkml_list.cache_list_str('thread_output', to_show)
-    hkml_open.pr_with_pager_if_needed(to_show)
+    hkml_list.show_list(to_show, to_stdout=False, to_less=args.no_interactive)
 
 def set_argparser(parser=None):
     parser.description='list mails of a thread'
@@ -103,3 +103,6 @@ def set_argparser(parser=None):
     parser.add_argument(
             '--dont_use_internet', action='store_true',
             help='don\'t use internet do get the mails')
+    parser.add_argument(
+            '--no_interactive', action='store_true',
+            help='don\'t use hkml interactive list viewer')
