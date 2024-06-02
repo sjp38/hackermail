@@ -796,9 +796,10 @@ def main(args):
     if args.stdout:
         print(to_show)
         return
-    if args.interactive:
-        return hkml_view.view(to_show)
-    hkml_open.pr_with_pager_if_needed(to_show)
+    if args.use_less:
+        hkml_open.pr_with_pager_if_needed(to_show)
+        return
+    hkml_view.view(to_show)
 
 def add_mails_filter_arguments(parser):
     parser.add_argument(
@@ -896,5 +897,5 @@ def set_argparser(parser=None):
             help='ignore cached previous list output')
     parser.add_argument('--stdout', action='store_true',
             help='print to stdout instead of using the pager')
-    parser.add_argument('--interactive', action='store_true',
-                        help='use interactive tui viewer')
+    parser.add_argument('--use_less', action='store_true',
+                        help='use \'less\' for output paging')
