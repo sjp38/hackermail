@@ -118,23 +118,17 @@ def focused_mail(lines, focus_row):
         return hkml_list.get_mail(mail_idx)
 
 def mail_list_input_handler(slist, c):
+    mail = focused_mail(slist.lines, slist.focus_row)
+    if mail is None:
+        slist.toast('no mail focused?')
+        return 0
+
     if c in ['o', '\n']:
-        mail = focused_mail(slist.lines, slist.focus_row)
-        if mail is None:
-            return 0
         lines = hkml_open.mail_display_str(mail, 80).split('\n')
         ScrollableList(slist.screen, lines, slist.focus_color,
                        slist.normal_color, None, None).draw()
     if c == 'r':
-        # reply
-
-        mail = focused_mail(slist.lines, slist.focus_row)
-        if mail is None:
-            return 0
-
-        # stop curses
         curses.reset_shell_mode()
-
         hkml_reply.reply(mail, attach_files=None, format_only=None)
         curses.reset_prog_mode()
         slist.screen.clear()
