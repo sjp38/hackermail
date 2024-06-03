@@ -4,7 +4,7 @@
 - Interactive UI
   - Support replying from interactive list or opened mail
   - Support complete thread listing from interactive list or opened mail
-  - Make interactive UI as default behavior
+  - Support collapsing/expanding threads
 - Handle encoding of git-fetched mail
   - mail fetched from public-inbox via curl is handled well, while that from
     git is not
