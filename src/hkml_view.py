@@ -6,10 +6,12 @@ import subprocess
 import tempfile
 import time
 
+import hkml_cache
 import hkml_list
 import hkml_open
 import hkml_reply
 import hkml_send
+import hkml_thread
 
 '''
 Curses-based TUI viewer for hkml list output.
@@ -120,6 +122,28 @@ def focused_mail_idx(lines, focus_row):
         return int(line.split()[0][1:-1])
     return None
 
+def thread_input_handler(slist, c):
+    mail_idx = '%d' % focused_mail_idx(slist.lines, slist.focus_row)
+    if not mail_idx in slist.mail_idx_key_map:
+        slist.toast('no mail focused?')
+        return 0
+    mail_key = slist.mail_idx_key_map[mail_idx]
+    mail = hkml_cache.get_mail(key=mail_key)
+    if mail is None:
+        slist.toast('mail not cached?')
+        return 0
+
+    if c in ['o', '\n']:
+        lines = hkml_open.mail_display_str(mail, 80).split('\n')
+        ScrollableList(slist.screen, lines, slist.focus_color,
+                       slist.normal_color, None, None).draw()
+    elif c == 'r':
+        curses.reset_shell_mode()
+        hkml_reply.reply(mail, attach_files=None, format_only=None)
+        curses.reset_prog_mode()
+        slist.screen.clear()
+    return 0
+
 def focused_mail(lines, focus_row):
     mail_idx = focused_mail_idx(lines, focus_row)
     if mail_idx is None:
@@ -141,6 +165,16 @@ def mail_list_input_handler(slist, c):
         hkml_reply.reply(mail, attach_files=None, format_only=None)
         curses.reset_prog_mode()
         slist.screen.clear()
+    if c == 't':
+        thread_txt, mail_idx_key_map = hkml_thread.thread_str(
+                '%d' % focused_mail_idx(slist.lines, slist.focus_row),
+                False, False)
+        thread_list = ScrollableList(slist.screen, thread_txt.split('\n'),
+                slist.focus_color, slist.normal_color, thread_input_handler,
+                ['o or Enter: open the focused mail',
+                    'r: reply to the focused mail'])
+        thread_list.mail_idx_key_map = mail_idx_key_map
+        thread_list.draw()
 
     return 0
 
