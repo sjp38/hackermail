@@ -106,20 +106,17 @@ def writeback_list_output_cache():
     with open(list_output_cache_file_path(), 'w') as f:
         json.dump(cache, f, indent=4)
 
-def cache_list_str(key, list_str):
+def cache_list_str(key, list_str, mail_idx_key_map):
     cache = get_list_output_cache()
     cache[key] = {
             'output': '\n'.join(['# (cached output)', list_str]),
-            'index_to_cache_key': mail_idx_key_mapping,
+            'index_to_cache_key': mail_idx_key_map,
             'date': datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')}
     max_cache_sz = 64
     if len(cache) == max_cache_sz:
         keys = sorted(cache.keys(), key=lambda x: cache[x]['date'])
         del cache[keys[0]]
     writeback_list_output_cache()
-
-# mappings from mail index to the key of the mail in the mail cache
-mail_idx_key_mapping = {}
 
 def get_mail(idx, not_thread_idx=False):
     cache = get_list_output_cache()
@@ -144,15 +141,15 @@ def get_mail(idx, not_thread_idx=False):
     mail_key = idx_to_keys[idx_str]
     return hkml_cache.get_mail(key=mail_key)
 
-def map_idx_to_mail_cache_key(mail):
+def map_idx_to_mail_cache_key(mail, mail_idx_key_map):
     idx = mail.pridx
     key = hkml_cache.get_cache_key(
             mail.gitid, mail.gitdir, mail.get_field('message-id'))
 
     idx_str = '%d' % idx
-    if idx_str in mail_idx_key_mapping:
+    if idx_str in mail_idx_key_map:
         return
-    mail_idx_key_mapping[idx_str] = key
+    mail_idx_key_map[idx_str] = key
 
 class MailListDecorator:
     collapse = None
@@ -279,16 +276,16 @@ def root_of_thread(mail):
         return mail
     return root_of_thread(mail.parent_mail)
 
-def set_index(mail, list_, depth=0):
+def set_index(mail, list_, depth, mail_idx_key_map):
     """ Make mails to be all ready for print in list"""
     mail.pridx = len(list_)
     mail.prdepth = depth
     list_.append(mail)
 
-    map_idx_to_mail_cache_key(mail)
+    map_idx_to_mail_cache_key(mail, mail_idx_key_map)
 
     for mail in mail.replies:
-        set_index(mail, list_, depth + 1)
+        set_index(mail, list_, depth + 1, mail_idx_key_map)
 
 def last_reply_date(mail, prev_last_date):
     if len(mail.replies) == 0:
@@ -453,7 +450,7 @@ def format_stat(mails_to_show, stat_authors):
 def mails_to_str(mails_to_show, mails_filter, list_decorator, show_thread_of,
                  runtime_profile, stat_only, stat_authors):
     if len(mails_to_show) == 0:
-        return 'no mail'
+        return 'no mail', {}
 
     if list_decorator is not None:
         show_stat = not list_decorator.hide_stat
@@ -479,8 +476,9 @@ def mails_to_str(mails_to_show, mails_filter, list_decorator, show_thread_of,
 
     by_pr_idx = []
     timestamp = time.time()
+    mail_idx_key_map = {}
     for mail in threads:
-        set_index(mail, by_pr_idx)
+        set_index(mail, by_pr_idx, 0, mail_idx_key_map)
     runtime_profile.append(['set_index', time.time() - timestamp])
 
     timestamp = time.time()
@@ -545,9 +543,9 @@ def mails_to_str(mails_to_show, mails_filter, list_decorator, show_thread_of,
         runtime_profile_lines.append('#')
 
     if stat_only:
-        return '\n'.join(stat_lines)
+        return '\n'.join(stat_lines), mail_idx_key_map
     lines = runtime_profile_lines + stat_lines + lines
-    return '\n'.join(lines)
+    return '\n'.join(lines), mail_idx_key_map
 
 def git_log_output_line_to_mail(line, mdir):
     fields = line.split()
@@ -791,11 +789,11 @@ def main(args):
     if args.max_nr_mails is not None:
         mails_to_show = mails_to_show[:args.max_nr_mails]
 
-    to_show = mails_to_str(mails_to_show, MailListFilter(args),
-                           MailListDecorator(args), None, runtime_profile,
-                           args.stat_only, args.stat_authors)
+    to_show, mail_idx_key_map = mails_to_str(
+            mails_to_show, MailListFilter(args), MailListDecorator(args), None,
+            runtime_profile, args.stat_only, args.stat_authors)
     hkml_cache.writeback_mails()
-    cache_list_str(list_output_cache_key, to_show)
+    cache_list_str(list_output_cache_key, to_show, mail_idx_key_map)
 
     show_list(to_show, args.stdout, args.use_less)
 

@@ -77,14 +77,14 @@ def main(args):
     list_decorator.cols = nr_cols_in_line
     list_decorator.show_runtime_profile = False
 
-    to_show = hkml_list.mails_to_str(
+    to_show, mail_idx_key_map = hkml_list.mails_to_str(
             mails_to_show, mails_filter=None, list_decorator=list_decorator,
             show_thread_of=args.mail_id, runtime_profile=[], stat_only=False,
             stat_authors=False)
 
     if args.dont_use_internet is False:
         hkml_cache.writeback_mails()
-        hkml_list.cache_list_str('thread_output', to_show)
+        hkml_list.cache_list_str('thread_output', to_show, mail_idx_key_map)
     hkml_list.show_list(to_show, to_stdout=False, to_less=args.no_interactive)
 
 def set_argparser(parser=None):
