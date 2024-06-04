@@ -1,11 +1,10 @@
 - Cleanup code
 - Monitoring --pisearch updates
 - Monitoring tagged threads
-- Interactive UI
-  - Support replying from interactive list or opened mail
-  - Support complete thread listing from interactive list or opened mail
-  - Support collapsing/expanding threads
 - Handle encoding of git-fetched mail
   - mail fetched from public-inbox via curl is handled well, while that from
     git is not
   - e.g., 20240603161530.80789-1-yskelg@gmail.com
+- Improve interactive mail viewer
+  - Find git hashid, do 'git show' or 'git log' of it
+  - Find message id or lore link on body, do 'hkml open' or 'hkml thread' of it
