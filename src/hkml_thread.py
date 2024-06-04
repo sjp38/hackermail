@@ -35,24 +35,17 @@ def get_thread_mails_from_web(msgid):
         deduped_mails.append(mail)
     return deduped_mails, None
 
-def main(args):
-    if args.mail_id is None:
-        to_show = hkml_list.get_last_thread_str()
-        hkml_list.writeback_list_output()
-        hkml_list.show_list(to_show, to_stdout=False,
-                            to_less=args.no_interactive)
-        return
-
-    if args.mail_id.isdigit():
-        args.mail_id = int(args.mail_id)
+def thread_str(mail_id, dont_use_internet, show_url):
+    if mail_id.isdigit():
+        mail_id = int(mail_id)
         msgid = None
     else:
-        msgid = args.mail_id
+        msgid = mail_id
 
     mails_to_show = None
-    if args.dont_use_internet is False:
+    if dont_use_internet is False:
         if msgid is None:
-            mail = hkml_list.get_mail(args.mail_id, not_thread_idx=True)
+            mail = hkml_list.get_mail(mail_id, not_thread_idx=True)
             if mail is None:
                 print('wrong <mail_id>')
                 exit(1)
@@ -62,7 +55,7 @@ def main(args):
         if err is not None:
             print(err)
         else:
-            args.mail_id = None
+            mail_id = None
     if mails_to_show is None:
         mails_to_show = hkml_list.last_listed_mails()
         # TODO: Support msgid
@@ -73,15 +66,25 @@ def main(args):
     list_decorator.ascend = True,
     list_decorator.sort_threads_by = ['first_date'],
     list_decorator.collapse = False
-    list_decorator.show_url = args.url
+    list_decorator.show_url = show_url
     list_decorator.cols = nr_cols_in_line
     list_decorator.show_runtime_profile = False
 
-    to_show, mail_idx_key_map = hkml_list.mails_to_str(
+    return hkml_list.mails_to_str(
             mails_to_show, mails_filter=None, list_decorator=list_decorator,
-            show_thread_of=args.mail_id, runtime_profile=[], stat_only=False,
+            show_thread_of=mail_id, runtime_profile=[], stat_only=False,
             stat_authors=False)
 
+def main(args):
+    if args.mail_id is None:
+        to_show = hkml_list.get_last_thread_str()
+        hkml_list.writeback_list_output()
+        hkml_list.show_list(to_show, to_stdout=False,
+                            to_less=args.no_interactive)
+        return
+
+    to_show, mail_idx_key_map = thread_str(args.mail_id,
+            args.dont_use_internet, args.url)
     if args.dont_use_internet is False:
         hkml_cache.writeback_mails()
         hkml_list.cache_list_str('thread_output', to_show, mail_idx_key_map)
