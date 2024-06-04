@@ -112,13 +112,19 @@ class ScrollableList:
         self.screen.refresh()
         time.sleep(1)
 
-def focused_mail(lines, focus_row):
+def focused_mail_idx(lines, focus_row):
     for idx in range(focus_row, 0, -1):
         line = lines[idx]
         if not line.startswith('['):
             continue
-        mail_idx = int(line.split()[0][1:-1])
-        return hkml_list.get_mail(mail_idx)
+        return int(line.split()[0][1:-1])
+    return None
+
+def focused_mail(lines, focus_row):
+    mail_idx = focused_mail_idx(lines, focus_row)
+    if mail_idx is None:
+        return None
+    return hkml_list.get_mail(mail_idx)
 
 def mail_list_input_handler(slist, c):
     mail = focused_mail(slist.lines, slist.focus_row)
