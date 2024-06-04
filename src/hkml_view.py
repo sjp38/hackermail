@@ -189,7 +189,8 @@ def __view(stdscr):
     ScrollableList(stdscr, text_lines, focus_color, normal_color,
                    mail_list_input_handler,[
                        'o or Enter: open the focused mail',
-                       'r: reply to the focused mail']).draw()
+                       'r: reply to the focused mail',
+                       't: list mails of the thread']).draw()
 
 def view(text):
     global text_to_show
