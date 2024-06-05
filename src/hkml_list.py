@@ -72,14 +72,14 @@ def get_list_for(key):
         return None, None
     return outputs['output'], outputs['index_to_cache_key']
 
-def get_last_list_str():
+def get_last_list():
     cache = get_list_output_cache()
     keys = [k for k in cache if k != 'thread_output']
     key = sorted(keys, key=lambda x: cache[x]['date'])[-1]
     outputs = get_cached_list_outputs(key)
     if outputs is None:
         return None
-    return outputs['output']
+    return outputs['output'], outputs['index_to_cache_key']
 
 def get_last_thread_str():
     cache = get_list_output_cache()
@@ -746,7 +746,7 @@ def main(args):
         use_cached_output = False
     if use_cached_output and (args.fetch == False or args.sources == []):
         if args.sources == []:
-            to_show = get_last_list_str()
+            to_show, _ = get_last_list()
             if to_show is None:
                 print('no valid last list output exists')
                 exit(1)
