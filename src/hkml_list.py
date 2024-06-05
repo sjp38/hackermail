@@ -66,11 +66,11 @@ def get_cached_list_outputs(key):
     outputs['date'] = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
     return outputs
 
-def get_list_str(key):
+def get_list_for(key):
     outputs = get_cached_list_outputs(key)
     if outputs is None:
-        return None
-    return outputs['output']
+        return None, None
+    return outputs['output'], outputs['index_to_cache_key']
 
 def get_last_list_str():
     cache = get_list_output_cache()
@@ -751,7 +751,7 @@ def main(args):
                 print('no valid last list output exists')
                 exit(1)
         else:
-            to_show = get_list_str(list_output_cache_key)
+            to_show, _ = get_list_for(list_output_cache_key)
         if to_show is not None:
             writeback_list_output()
             show_list(to_show, args.stdout, args.use_less)
