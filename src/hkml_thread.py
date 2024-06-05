@@ -77,10 +77,11 @@ def thread_str(mail_id, dont_use_internet, show_url):
 
 def main(args):
     if args.mail_id is None:
-        to_show, _ = hkml_list.get_last_thread()
+        to_show, mail_idx_key_map = hkml_list.get_last_thread()
         hkml_list.writeback_list_output()
         hkml_list.show_list(to_show, to_stdout=False,
-                            to_less=args.no_interactive)
+                            to_less=args.no_interactive,
+                            mail_idx_key_map=mail_idx_key_map)
         return
 
     to_show, mail_idx_key_map = thread_str(args.mail_id,
@@ -88,7 +89,8 @@ def main(args):
     if args.dont_use_internet is False:
         hkml_cache.writeback_mails()
         hkml_list.cache_list_str('thread_output', to_show, mail_idx_key_map)
-    hkml_list.show_list(to_show, to_stdout=False, to_less=args.no_interactive)
+    hkml_list.show_list(to_show, to_stdout=False, to_less=args.no_interactive,
+                        mail_idx_key_map=mail_idx_key_map)
 
 def set_argparser(parser=None):
     parser.description='list mails of a thread'

@@ -710,7 +710,7 @@ def last_listed_mails():
             mails.append(mail)
     return mails
 
-def show_list(text, to_stdout, to_less):
+def show_list(text, to_stdout, to_less, mail_idx_key_map):
     if to_stdout:
         print(text)
     if to_less:
@@ -746,15 +746,15 @@ def main(args):
         use_cached_output = False
     if use_cached_output and (args.fetch == False or args.sources == []):
         if args.sources == []:
-            to_show, _ = get_last_list()
+            to_show, mail_idx_key_map = get_last_list()
             if to_show is None:
                 print('no valid last list output exists')
                 exit(1)
         else:
-            to_show, _ = get_list_for(list_output_cache_key)
+            to_show, mail_idx_key_map = get_list_for(list_output_cache_key)
         if to_show is not None:
             writeback_list_output()
-            show_list(to_show, args.stdout, args.use_less)
+            show_list(to_show, args.stdout, args.use_less, mail_idx_key_map)
             return
     else:
         for source in args.sources:
@@ -795,7 +795,7 @@ def main(args):
     hkml_cache.writeback_mails()
     cache_list_str(list_output_cache_key, to_show, mail_idx_key_map)
 
-    show_list(to_show, args.stdout, args.use_less)
+    show_list(to_show, args.stdout, args.use_less, mail_idx_key_map)
 
 def add_mails_filter_arguments(parser):
     parser.add_argument(
