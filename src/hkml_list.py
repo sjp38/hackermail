@@ -715,7 +715,7 @@ def show_list(text, to_stdout, to_less, mail_idx_key_map):
         print(text)
     if to_less:
         hkml_open.pr_with_pager_if_needed(text)
-    hkml_view.view(text)
+    hkml_view.view(text, mail_idx_key_map)
 
 def main(args):
     if args.source_type is not None:

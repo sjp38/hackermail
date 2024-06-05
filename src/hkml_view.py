@@ -34,6 +34,7 @@ W: write new
 '''
 
 text_to_show = None
+init_mail_idx_key_map = None
 
 class ScrollableList:
     screen = None
@@ -151,9 +152,17 @@ def focused_mail(lines, focus_row):
     return hkml_list.get_mail(mail_idx)
 
 def mail_list_input_handler(slist, c):
-    mail = focused_mail(slist.lines, slist.focus_row)
-    if mail is None:
+    mail_idx = focused_mail_idx(slist.lines, slist.focus_row)
+    if mail_idx is None:
         slist.toast('no mail focused?')
+    mail_idx = '%d' % mail_idx
+    if not mail_idx in slist.mail_idx_key_map:
+        slist.toast('wrong index?')
+        return 0
+    mail_key = slist.mail_idx_key_map[mail_idx]
+    mail = hkml_cache.get_mail(key=mail_key)
+    if mail is None:
+        slist.toast('mail not cached?')
         return 0
 
     if c in ['o', '\n']:
@@ -186,13 +195,17 @@ def __view(stdscr):
     curses.init_pair(2, curses.COLOR_WHITE, curses.COLOR_BLACK)
     normal_color = curses.color_pair(2)
 
-    ScrollableList(stdscr, text_lines, focus_color, normal_color,
+    slist = ScrollableList(stdscr, text_lines, focus_color, normal_color,
                    mail_list_input_handler,[
                        'o or Enter: open the focused mail',
                        'r: reply to the focused mail',
-                       't: list mails of the thread']).draw()
+                       't: list mails of the thread'])
+    slist.mail_idx_key_map = init_mail_idx_key_map
+    slist.draw()
 
-def view(text):
+def view(text, mail_idx_key_map):
     global text_to_show
+    global init_mail_idx_key_map
     text_to_show = text
+    init_mail_idx_key_map = mail_idx_key_map
     curses.wrapper(__view)
