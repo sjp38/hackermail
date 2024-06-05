@@ -81,12 +81,12 @@ def get_last_list():
         return None
     return outputs['output'], outputs['index_to_cache_key']
 
-def get_last_thread_str():
+def get_last_thread():
     cache = get_list_output_cache()
     outputs = get_cached_list_outputs('thread_output')
     if outputs is None:
         return None
-    return outputs['output']
+    return outputs['output'], outputs['index_to_cache_key']
 
 def invalidate_cached_outputs(source):
     keys_to_del = []

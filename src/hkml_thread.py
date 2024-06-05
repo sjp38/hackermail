@@ -77,7 +77,7 @@ def thread_str(mail_id, dont_use_internet, show_url):
 
 def main(args):
     if args.mail_id is None:
-        to_show = hkml_list.get_last_thread_str()
+        to_show, _ = hkml_list.get_last_thread()
         hkml_list.writeback_list_output()
         hkml_list.show_list(to_show, to_stdout=False,
                             to_less=args.no_interactive)
