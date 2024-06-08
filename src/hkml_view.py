@@ -122,8 +122,9 @@ class ScrollableList:
             elif c == 'q':
                 break
             elif c == '?':
-                ScrollableList(self.screen, self.help_msg, self.focus_color,
-                               self.normal_color, None, None, []).draw()
+                ScrollableList(self.screen, self.help_msg_lines(),
+                               self.focus_color, self.normal_color, None, None,
+                               []).draw()
             else:
                 if self.input_handler is None:
                     continue
@@ -136,6 +137,14 @@ class ScrollableList:
         self.screen.addstr(scr_rows - 1, 0, '# %s' % message)
         self.screen.refresh()
         time.sleep(1)
+
+    def help_msg_lines(self):
+        lines = []
+        for handler in self.input_handlers:
+            lines.append(','.join(handler.to_handle) + ': ' + handler.help_msg)
+        if self.help_msg:
+            lines += self.help_msg
+        return lines
 
 def focused_mail_idx(lines, focus_row):
     for idx in range(focus_row, 0, -1):
