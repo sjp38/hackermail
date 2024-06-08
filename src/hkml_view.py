@@ -49,7 +49,7 @@ class InputHandler:
 
     def handle(self, input_chr, arg):
         if not input_chr in self.to_handle:
-            return 0
+            return
         return self.handler_fn(input_chr, arg)
 
 class ScrollableList:
@@ -126,20 +126,17 @@ class ScrollableList:
 
 def focus_down(c, slist):
     slist.focus_row = min(slist.focus_row + 1, len(slist.lines) - 1)
-    return 0
 
 def focus_up(c, slist):
     slist.focus_row = max(slist.focus_row - 1, 0)
-    return 0
 
 def quit_list(c, slist):
-    return -1
+    return 'quit list'
 
 def show_help_msg_list(c, slist):
     ScrollableList(slist.screen, slist.help_msg_lines(), slist.focus_color,
                    slist.normal_color,
                    scrollable_list_default_handlers()).draw()
-    return 0
 
 def scrollable_list_default_handlers():
     return [
@@ -183,7 +180,6 @@ def action_item_handler(c, slist):
         ScrollableList(slist.screen, output, slist.focus_color,
                        slist.normal_color,
                        scrollable_list_default_handlers()).draw()
-    return 0
 
 def is_git_hash(word):
     if len(word) < 10:
@@ -213,10 +209,9 @@ def get_action_item_handlers():
 def show_available_action_items_handler(c, slist):
     items = find_actionable_items(slist)
     if len(items) == 0:
-        return 0
+        return
     ScrollableList(slist.screen, items, slist.focus_color, slist.normal_color,
                    get_action_item_handlers()).draw()
-    return 0
 
 def get_mail_viewer_handlers():
     return scrollable_list_default_handlers() + [
@@ -227,23 +222,21 @@ def get_mail_viewer_handlers():
 def open_mail_handler(c, slist):
     mail = get_focused_mail(slist)
     if mail is None:
-        return 0
+        return
 
     lines = hkml_open.mail_display_str(mail, 80).split('\n')
     ScrollableList(slist.screen, lines, slist.focus_color,
                    slist.normal_color, get_mail_viewer_handlers()).draw()
-    return 0
 
 def reply_mail_handler(c, slist):
     mail = get_focused_mail(slist)
     if mail is None:
-        return 0
+        return
 
     curses.reset_shell_mode()
     hkml_reply.reply(mail, attach_files=None, format_only=None)
     curses.reset_prog_mode()
     slist.screen.clear()
-    return 0
 
 def get_thread_input_handlers():
     return scrollable_list_default_handlers() + [
