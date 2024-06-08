@@ -134,7 +134,9 @@ class ScrollableList:
     def help_msg_lines(self):
         lines = []
         for handler in self.input_handlers:
-            lines.append(','.join(handler.to_handle) + ': ' + handler.help_msg)
+            input_chrs = ','.join(handler.to_handle)
+            input_chrs = input_chrs.replace('\n', '<Enter>')
+            lines.append('%s: %s' % (input_chrs, handler.help_msg))
         if self.help_msg:
             lines += self.help_msg
         return lines
