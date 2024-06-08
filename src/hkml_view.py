@@ -181,14 +181,21 @@ def action_item_handler(c, slist):
                        slist.normal_color,
                        scrollable_list_default_handlers()).draw()
     elif words[:1] == ['hkml']:
-        msgid = words[-1]
-        mails, err = hkml_thread.get_thread_mails_from_web(msgid)
-        if err is not None:
-            slist.toast('cannot fetch mail: %s' % err)
-            return
-        if words[1] == 'open':
-            for mail in mails:
-                if mail.get_field('message-id') == '<%s>' % msgid:
+        msgid = '<%s>' % words[-1]
+        thread_txt, mail_idx_key_map = hkml_thread.thread_str(msgid,
+                False, False)
+        if words[1] == 'thread':
+            thread_list = ScrollableList(
+                    slist.screen, thread_txt.split('\n'), slist.focus_color,
+                    slist.normal_color, get_thread_input_handlers())
+            thread_list.mail_idx_key_map = mail_idx_key_map
+            thread_list.draw()
+        elif words[1] == 'open':
+            for idx, cache_key in mail_idx_key_map.items():
+                mail = hkml_cache.get_mail(key=cache_key)
+                if mail is None:
+                    continue
+                if mail.get_field('message-id') == msgid:
                     lines = hkml_open.mail_display_str(mail, 80).split('\n')
                     ScrollableList(slist.screen, lines, slist.focus_color,
                                    slist.normal_color,
