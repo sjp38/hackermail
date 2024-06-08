@@ -153,7 +153,7 @@ def quit_list(c, slist):
     return -1
 
 def show_help_msg_list(c, slist):
-    ScrollableList(slist.screen, slist.help_msg, slist.focus_color,
+    ScrollableList(slist.screen, slist.help_msg_lines(), slist.focus_color,
                    slist.normal_color, None, None,
                    scrollable_list_default_handlers()).draw()
     return 0
@@ -174,7 +174,7 @@ def focused_mail_idx(lines, focus_row):
         return int(line.split()[0][1:-1])
     return None
 
-def thread_input_handler(slist, c):
+def open_mail_handler(c, slist):
     mail_idx = '%d' % focused_mail_idx(slist.lines, slist.focus_row)
     if not mail_idx in slist.mail_idx_key_map:
         slist.toast('no mail focused?')
@@ -185,17 +185,34 @@ def thread_input_handler(slist, c):
         slist.toast('mail not cached?')
         return 0
 
-    if c in ['o', '\n']:
-        lines = hkml_open.mail_display_str(mail, 80).split('\n')
-        ScrollableList(slist.screen, lines, slist.focus_color,
-                       slist.normal_color, None, None,
-                       scrollable_list_default_handlers()).draw()
-    elif c == 'r':
-        curses.reset_shell_mode()
-        hkml_reply.reply(mail, attach_files=None, format_only=None)
-        curses.reset_prog_mode()
-        slist.screen.clear()
+    lines = hkml_open.mail_display_str(mail, 80).split('\n')
+    ScrollableList(slist.screen, lines, slist.focus_color,
+                   slist.normal_color, None, None,
+                   scrollable_list_default_handlers()).draw()
     return 0
+
+def reply_mail_handler(c, slist):
+    mail_idx = '%d' % focused_mail_idx(slist.lines, slist.focus_row)
+    if not mail_idx in slist.mail_idx_key_map:
+        slist.toast('no mail focused?')
+        return 0
+    mail_key = slist.mail_idx_key_map[mail_idx]
+    mail = hkml_cache.get_mail(key=mail_key)
+    if mail is None:
+        slist.toast('mail not cached?')
+        return 0
+
+    curses.reset_shell_mode()
+    hkml_reply.reply(mail, attach_files=None, format_only=None)
+    curses.reset_prog_mode()
+    slist.screen.clear()
+    return 0
+
+def get_thread_input_handlers():
+    return scrollable_list_default_handlers() + [
+            InputHandler(['o', '\n'], open_mail_handler, 'open focused mail'),
+            InputHandler(['r'], reply_mail_handler, 'reply focused mail'),
+            ]
 
 def focused_mail(lines, focus_row):
     mail_idx = focused_mail_idx(lines, focus_row)
@@ -233,10 +250,8 @@ def mail_list_input_handler(slist, c):
                 '%d' % focused_mail_idx(slist.lines, slist.focus_row),
                 False, False)
         thread_list = ScrollableList(slist.screen, thread_txt.split('\n'),
-                slist.focus_color, slist.normal_color, thread_input_handler,
-                ['o or Enter: open the focused mail',
-                    'r: reply to the focused mail'],
-                                     scrollable_list_default_handlers())
+                slist.focus_color, slist.normal_color, None, None,
+                                     get_thread_input_handlers())
         thread_list.mail_idx_key_map = mail_idx_key_map
         thread_list.draw()
 
