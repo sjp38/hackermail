@@ -181,7 +181,21 @@ def action_item_handler(c, slist):
                        slist.normal_color,
                        scrollable_list_default_handlers()).draw()
     elif words[:1] == ['hkml']:
-        slist.toast('not supported yet')
+        msgid = words[-1]
+        mails, err = hkml_thread.get_thread_mails_from_web(msgid)
+        if err is not None:
+            slist.toast('cannot fetch mail: %s' % err)
+            return
+        if words[1] == 'open':
+            for mail in mails:
+                if mail.get_field('message-id') == '<%s>' % msgid:
+                    lines = hkml_open.mail_display_str(mail, 80).split('\n')
+                    ScrollableList(slist.screen, lines, slist.focus_color,
+                                   slist.normal_color,
+                                   get_mail_viewer_handlers()).draw()
+                    break
+        else:
+            slist.toast('not supported yet')
 
 def is_git_hash(word):
     if len(word) < 10:
