@@ -229,9 +229,9 @@ def find_actionable_items(slist):
         line = line.replace(separator, ' ')
     for word in line.split():
         if is_git_hash(word):
+            action_items.append('git show %s' % word)
             action_items.append('git log -n 5 %s' % word)
             action_items.append('git log --oneline -n 64 %s' % word)
-            action_items.append('git show %s' % word)
 
     line = slist.lines[slist.focus_row]
     for separator in [',', '(', ')', '[', ']', '"']:
