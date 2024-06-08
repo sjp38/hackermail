@@ -218,12 +218,6 @@ def get_thread_input_handlers():
             InputHandler(['r'], reply_mail_handler, 'reply focused mail'),
             ]
 
-def focused_mail(lines, focus_row):
-    mail_idx = focused_mail_idx(lines, focus_row)
-    if mail_idx is None:
-        return None
-    return hkml_list.get_mail(mail_idx)
-
 def mail_list_input_handler(slist, c):
     mail_idx = focused_mail_idx(slist.lines, slist.focus_row)
     if mail_idx is None:
