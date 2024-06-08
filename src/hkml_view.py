@@ -175,7 +175,7 @@ def get_focused_mail(slist):
 
 def action_item_handler(c, slist):
     words = slist.lines[slist.focus_row].split()
-    if words[:2] == ['git', 'log']:
+    if words[:1] == ['git']:
         try:
             output = _hkml.cmd_lines_output(words)
         except Exception as e:
@@ -202,6 +202,7 @@ def find_actionable_items(slist):
     for word in line.split():
         if is_git_hash(word):
             action_items.append('git log -n 5 %s' % word)
+            action_items.append('git show %s' % word)
     return action_items
 
 def get_action_item_handlers():
