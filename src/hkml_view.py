@@ -110,27 +110,20 @@ class ScrollableList:
 
             x = self.screen.getch()
             c = chr(x)
+            break_loop = False
             for input_handler in self.input_handlers:
                 rc = input_handler.handle(c, self)
                 if rc != 0:
+                    break_loop = True
                     break
-
-            if c == 'j':
-                self.focus_row = min(self.focus_row + 1, len(self.lines) - 1)
-            elif c == 'k':
-                self.focus_row = max(self.focus_row - 1, 0)
-            elif c == 'q':
+            if break_loop:
                 break
-            elif c == '?':
-                ScrollableList(self.screen, self.help_msg_lines(),
-                               self.focus_color, self.normal_color, None, None,
-                               []).draw()
-            else:
-                if self.input_handler is None:
-                    continue
-                rc = self.input_handler(self, c)
-                if rc != 0:
-                    break
+
+            if self.input_handler is None:
+                continue
+            rc = self.input_handler(self, c)
+            if rc != 0:
+                break
 
     def toast(self, message):
         scr_rows, scr_cols = self.screen.getmaxyx()
@@ -145,6 +138,31 @@ class ScrollableList:
         if self.help_msg:
             lines += self.help_msg
         return lines
+
+def focus_down(c, slist):
+    slist.focus_row = min(slist.focus_row + 1, len(slist.lines) - 1)
+    return 0
+
+def focus_up(c, slist):
+    slist.focus_row = max(slist.focus_row - 1, 0)
+    return 0
+
+def quit_list(c, slist):
+    return -1
+
+def show_help_msg_list(c, slist):
+    ScrollableList(slist.screen, slist.help_msg, slist.focus_color,
+                   slist.normal_color, None, None,
+                   scrollable_list_default_handlers()).draw()
+    return 0
+
+def scrollable_list_default_handlers():
+    return [
+            InputHandler(['j'], focus_down, 'focus down'),
+            InputHandler(['k'], focus_up, 'focus up'),
+            InputHandler(['q'], quit_list, 'quit'),
+            InputHandler(['?'], show_help_msg_list, 'show help message'),
+            ]
 
 def focused_mail_idx(lines, focus_row):
     for idx in range(focus_row, 0, -1):
@@ -168,7 +186,8 @@ def thread_input_handler(slist, c):
     if c in ['o', '\n']:
         lines = hkml_open.mail_display_str(mail, 80).split('\n')
         ScrollableList(slist.screen, lines, slist.focus_color,
-                       slist.normal_color, None, None, []).draw()
+                       slist.normal_color, None, None,
+                       scrollable_list_default_handlers()).draw()
     elif c == 'r':
         curses.reset_shell_mode()
         hkml_reply.reply(mail, attach_files=None, format_only=None)
@@ -186,6 +205,7 @@ def mail_list_input_handler(slist, c):
     mail_idx = focused_mail_idx(slist.lines, slist.focus_row)
     if mail_idx is None:
         slist.toast('no mail focused?')
+        return 0
     mail_idx = '%d' % mail_idx
     if not mail_idx in slist.mail_idx_key_map:
         slist.toast('wrong index?')
@@ -199,7 +219,8 @@ def mail_list_input_handler(slist, c):
     if c in ['o', '\n']:
         lines = hkml_open.mail_display_str(mail, 80).split('\n')
         ScrollableList(slist.screen, lines, slist.focus_color,
-                       slist.normal_color, None, None, []).draw()
+                       slist.normal_color, None, None,
+                       scrollable_list_default_handlers()).draw()
     if c == 'r':
         curses.reset_shell_mode()
         hkml_reply.reply(mail, attach_files=None, format_only=None)
@@ -212,7 +233,8 @@ def mail_list_input_handler(slist, c):
         thread_list = ScrollableList(slist.screen, thread_txt.split('\n'),
                 slist.focus_color, slist.normal_color, thread_input_handler,
                 ['o or Enter: open the focused mail',
-                    'r: reply to the focused mail'], [])
+                    'r: reply to the focused mail'],
+                                     scrollable_list_default_handlers())
         thread_list.mail_idx_key_map = mail_idx_key_map
         thread_list.draw()
 
@@ -230,7 +252,8 @@ def __view(stdscr):
                    mail_list_input_handler,[
                        'o or Enter: open the focused mail',
                        'r: reply to the focused mail',
-                       't: list mails of the thread'], [])
+                       't: list mails of the thread'],
+                           scrollable_list_default_handlers())
     slist.mail_idx_key_map = init_mail_idx_key_map
     slist.draw()
 
