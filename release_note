@@ -3,8 +3,9 @@ This file contains major changes in each version since v1.0.0
 v1.0.9
 - Support thread listing on interactive mails list ('t' key press)
 - Reduce tag syncing failure possibility (let sync before and after change)
-- Support git-log/show of commit id on mail content screen ('Enter' key press)
-- Support public-inbox URL parsing on mail content screen ('Enter' key press)
+- Support actions from mail content screen ('Enter' key press)
+  - Let git-log/show of commit id
+  - Let thread-listing /opening of public-inbox URL
 
 v1.0.8
 - Implement --attach option for write,reply,forward commands
