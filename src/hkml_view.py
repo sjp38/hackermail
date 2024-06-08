@@ -59,9 +59,10 @@ class ScrollableList:
     normal_color = None
     input_handler = None
     help_msg = None
+    input_handlers = None
 
     def __init__(self, screen, lines, focus_color, normal_color, input_handler,
-                 help_msg):
+                 help_msg, input_handlers):
         self.screen = screen
         self.lines = lines
 
@@ -79,6 +80,7 @@ class ScrollableList:
         if help_msg is not None:
             self.help_msg += help_msg
         self.help_msg += ['?: show help message']
+        self.input_handlers = input_handlers
 
     def __draw(self):
         self.screen.erase()
@@ -108,6 +110,11 @@ class ScrollableList:
 
             x = self.screen.getch()
             c = chr(x)
+            for input_handler in self.input_handlers:
+                rc = input_handler.handle(c, self)
+                if rc != 0:
+                    break
+
             if c == 'j':
                 self.focus_row = min(self.focus_row + 1, len(self.lines) - 1)
             elif c == 'k':
@@ -116,7 +123,7 @@ class ScrollableList:
                 break
             elif c == '?':
                 ScrollableList(self.screen, self.help_msg, self.focus_color,
-                               self.normal_color, None, None).draw()
+                               self.normal_color, None, None, []).draw()
             else:
                 if self.input_handler is None:
                     continue
@@ -152,7 +159,7 @@ def thread_input_handler(slist, c):
     if c in ['o', '\n']:
         lines = hkml_open.mail_display_str(mail, 80).split('\n')
         ScrollableList(slist.screen, lines, slist.focus_color,
-                       slist.normal_color, None, None).draw()
+                       slist.normal_color, None, None, []).draw()
     elif c == 'r':
         curses.reset_shell_mode()
         hkml_reply.reply(mail, attach_files=None, format_only=None)
@@ -183,7 +190,7 @@ def mail_list_input_handler(slist, c):
     if c in ['o', '\n']:
         lines = hkml_open.mail_display_str(mail, 80).split('\n')
         ScrollableList(slist.screen, lines, slist.focus_color,
-                       slist.normal_color, None, None).draw()
+                       slist.normal_color, None, None, []).draw()
     if c == 'r':
         curses.reset_shell_mode()
         hkml_reply.reply(mail, attach_files=None, format_only=None)
@@ -196,7 +203,7 @@ def mail_list_input_handler(slist, c):
         thread_list = ScrollableList(slist.screen, thread_txt.split('\n'),
                 slist.focus_color, slist.normal_color, thread_input_handler,
                 ['o or Enter: open the focused mail',
-                    'r: reply to the focused mail'])
+                    'r: reply to the focused mail'], [])
         thread_list.mail_idx_key_map = mail_idx_key_map
         thread_list.draw()
 
@@ -214,7 +221,7 @@ def __view(stdscr):
                    mail_list_input_handler,[
                        'o or Enter: open the focused mail',
                        'r: reply to the focused mail',
-                       't: list mails of the thread'])
+                       't: list mails of the thread'], [])
     slist.mail_idx_key_map = init_mail_idx_key_map
     slist.draw()
 
