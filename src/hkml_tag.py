@@ -42,7 +42,14 @@ def mails_of_tag(tag):
             mails.append(_hkml.Mail(kvpairs=tags_map[msgid]['mail']))
     return mails
 
+def ask_sync_before_change():
+    if hkml_sync.syncup_ready():
+        answer = input('Gonna update tags.  Sync first? [Y/n] ')
+        if answer.lower() != 'n':
+            hkml_sync.syncup(_hkml.get_hkml_dir(), remote=None)
+
 def do_add_tags(mail, tags):
+    ask_sync_before_change()
     msgid = mail.get_field('message-id')
 
     tags_map = read_tags_file()
@@ -71,6 +78,7 @@ def remove_tags(mail_idx, tags):
 
     msgid = mail.get_field('message-id')
 
+    ask_sync_before_change()
     tags_map = read_tags_file()
     if not msgid in tags_map:
         print('seems the index is wrong, or having no tag')
