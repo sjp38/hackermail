@@ -179,7 +179,7 @@ def action_item_handler(c, slist):
             output = ['failed: %s' % e]
         ScrollableList(slist.screen, output, slist.focus_color,
                        slist.normal_color,
-                       scrollable_list_default_handlers()).draw()
+                       get_mail_viewer_handlers()).draw()
     elif words[:1] == ['hkml']:
         msgid = '<%s>' % words[-1]
         thread_txt, mail_idx_key_map = hkml_thread.thread_str(msgid,
