@@ -6,6 +6,7 @@ import subprocess
 import tempfile
 import time
 
+import _hkml
 import hkml_cache
 import hkml_list
 import hkml_open
@@ -172,6 +173,18 @@ def get_focused_mail(slist):
         return None
     return mail
 
+def action_item_handler(c, slist):
+    words = slist.lines[slist.focus_row].split()
+    if words[:2] == ['git', 'log']:
+        try:
+            output = _hkml.cmd_lines_output(words)
+        except Exception as e:
+            output = ['failed: %s' % e]
+        ScrollableList(slist.screen, output, slist.focus_color,
+                       slist.normal_color,
+                       scrollable_list_default_handlers()).draw()
+    return 0
+
 def is_git_hash(word):
     if len(word) < 10:
         return False
@@ -191,12 +204,17 @@ def find_actionable_items(slist):
             action_items.append('git log -n 5 %s' % word)
     return action_items
 
+def get_action_item_handlers():
+    return scrollable_list_default_handlers() + [
+            InputHandler(['\n'], action_item_handler,
+                         'execute and show the ouptut')]
+
 def show_available_action_items_handler(c, slist):
     items = find_actionable_items(slist)
     if len(items) == 0:
         return 0
     ScrollableList(slist.screen, items, slist.focus_color, slist.normal_color,
-                   scrollable_list_default_handlers()).draw()
+                   get_action_item_handlers()).draw()
     return 0
 
 def get_mail_viewer_handlers():
