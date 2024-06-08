@@ -174,15 +174,25 @@ def focused_mail_idx(lines, focus_row):
         return int(line.split()[0][1:-1])
     return None
 
-def open_mail_handler(c, slist):
-    mail_idx = '%d' % focused_mail_idx(slist.lines, slist.focus_row)
-    if not mail_idx in slist.mail_idx_key_map:
+def get_focused_mail(slist):
+    mail_idx = focused_mail_idx(slist.lines, slist.focus_row)
+    if mail_idx is None:
         slist.toast('no mail focused?')
-        return 0
+        return None
+    mail_idx = '%d' % mail_idx
+    if not mail_idx in slist.mail_idx_key_map:
+        slist.toast('wrong index?')
+        return None
     mail_key = slist.mail_idx_key_map[mail_idx]
     mail = hkml_cache.get_mail(key=mail_key)
     if mail is None:
         slist.toast('mail not cached?')
+        return None
+    return mail
+
+def open_mail_handler(c, slist):
+    mail = get_focused_mail(slist)
+    if mail is None:
         return 0
 
     lines = hkml_open.mail_display_str(mail, 80).split('\n')
@@ -192,14 +202,8 @@ def open_mail_handler(c, slist):
     return 0
 
 def reply_mail_handler(c, slist):
-    mail_idx = '%d' % focused_mail_idx(slist.lines, slist.focus_row)
-    if not mail_idx in slist.mail_idx_key_map:
-        slist.toast('no mail focused?')
-        return 0
-    mail_key = slist.mail_idx_key_map[mail_idx]
-    mail = hkml_cache.get_mail(key=mail_key)
+    mail = get_focused_mail(slist)
     if mail is None:
-        slist.toast('mail not cached?')
         return 0
 
     curses.reset_shell_mode()
