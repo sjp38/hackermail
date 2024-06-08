@@ -172,6 +172,39 @@ def get_focused_mail(slist):
         return None
     return mail
 
+def is_git_hash(word):
+    if len(word) < 10:
+        return False
+    for c in word:
+        if c not in '0123456789abcdef':
+            return False
+    return True
+
+def find_actionable_items(slist):
+    line = slist.lines[slist.focus_row]
+
+    action_items = []
+    for separator in [',', '(', ')', '/', '[', ']', '"']:
+        line = line.replace(separator, ' ')
+    for word in line.split():
+        if is_git_hash(word):
+            action_items.append('git log -n 5 %s' % word)
+    return action_items
+
+def show_available_action_items_handler(c, slist):
+    items = find_actionable_items(slist)
+    if len(items) == 0:
+        return 0
+    ScrollableList(slist.screen, items, slist.focus_color, slist.normal_color,
+                   scrollable_list_default_handlers()).draw()
+    return 0
+
+def get_mail_viewer_handlers():
+    return scrollable_list_default_handlers() + [
+            InputHandler(['\n'], show_available_action_items_handler,
+                         'show available action items')
+                ]
+
 def open_mail_handler(c, slist):
     mail = get_focused_mail(slist)
     if mail is None:
@@ -179,8 +212,7 @@ def open_mail_handler(c, slist):
 
     lines = hkml_open.mail_display_str(mail, 80).split('\n')
     ScrollableList(slist.screen, lines, slist.focus_color,
-                   slist.normal_color,
-                   scrollable_list_default_handlers()).draw()
+                   slist.normal_color, get_mail_viewer_handlers()).draw()
     return 0
 
 def reply_mail_handler(c, slist):
