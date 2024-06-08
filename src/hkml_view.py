@@ -218,6 +218,21 @@ def get_thread_input_handlers():
             InputHandler(['r'], reply_mail_handler, 'reply focused mail'),
             ]
 
+def list_thread_handler(c, slist):
+    thread_txt, mail_idx_key_map = hkml_thread.thread_str(
+            '%d' % focused_mail_idx(slist.lines, slist.focus_row),
+            False, False)
+    thread_list = ScrollableList(slist.screen, thread_txt.split('\n'),
+            slist.focus_color, slist.normal_color, None, None,
+                                 get_thread_input_handlers())
+    thread_list.mail_idx_key_map = mail_idx_key_map
+    thread_list.draw()
+
+def get_mail_list_input_handlers():
+    return get_thread_input_handlers() + [
+            InputHandler(['t'], list_thread_handler, 'list complete thread'),
+            ]
+
 def mail_list_input_handler(slist, c):
     mail_idx = focused_mail_idx(slist.lines, slist.focus_row)
     if mail_idx is None:
@@ -264,11 +279,7 @@ def __view(stdscr):
     normal_color = curses.color_pair(2)
 
     slist = ScrollableList(stdscr, text_lines, focus_color, normal_color,
-                   mail_list_input_handler,[
-                       'o or Enter: open the focused mail',
-                       'r: reply to the focused mail',
-                       't: list mails of the thread'],
-                           scrollable_list_default_handlers())
+                           None, None, get_mail_list_input_handlers())
     slist.mail_idx_key_map = init_mail_idx_key_map
     slist.draw()
 
