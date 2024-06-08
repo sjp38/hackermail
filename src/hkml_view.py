@@ -57,12 +57,10 @@ class ScrollableList:
     focus_row = None
     focus_color = None
     normal_color = None
-    input_handler = None
-    help_msg = None
     input_handlers = None
 
-    def __init__(self, screen, lines, focus_color, normal_color, input_handler,
-                 help_msg, input_handlers):
+    def __init__(self, screen, lines, focus_color, normal_color,
+                 input_handlers):
         self.screen = screen
         self.lines = lines
 
@@ -72,8 +70,6 @@ class ScrollableList:
 
         self.focus_color = focus_color
         self.normal_color = normal_color
-        self.input_handler = input_handler
-        self.help_msg = help_msg
         self.input_handlers = input_handlers
 
     def __draw(self):
@@ -113,12 +109,6 @@ class ScrollableList:
             if break_loop:
                 break
 
-            if self.input_handler is None:
-                continue
-            rc = self.input_handler(self, c)
-            if rc != 0:
-                break
-
     def toast(self, message):
         scr_rows, scr_cols = self.screen.getmaxyx()
         self.screen.addstr(scr_rows - 1, 0, '# %s' % message)
@@ -131,8 +121,6 @@ class ScrollableList:
             input_chrs = ','.join(handler.to_handle)
             input_chrs = input_chrs.replace('\n', '<Enter>')
             lines.append('%s: %s' % (input_chrs, handler.help_msg))
-        if self.help_msg:
-            lines += self.help_msg
         return lines
 
 def focus_down(c, slist):
@@ -148,7 +136,7 @@ def quit_list(c, slist):
 
 def show_help_msg_list(c, slist):
     ScrollableList(slist.screen, slist.help_msg_lines(), slist.focus_color,
-                   slist.normal_color, None, None,
+                   slist.normal_color,
                    scrollable_list_default_handlers()).draw()
     return 0
 
@@ -191,7 +179,7 @@ def open_mail_handler(c, slist):
 
     lines = hkml_open.mail_display_str(mail, 80).split('\n')
     ScrollableList(slist.screen, lines, slist.focus_color,
-                   slist.normal_color, None, None,
+                   slist.normal_color,
                    scrollable_list_default_handlers()).draw()
     return 0
 
@@ -217,8 +205,7 @@ def list_thread_handler(c, slist):
             '%d' % focused_mail_idx(slist.lines, slist.focus_row),
             False, False)
     thread_list = ScrollableList(slist.screen, thread_txt.split('\n'),
-            slist.focus_color, slist.normal_color, None, None,
-                                 get_thread_input_handlers())
+            slist.focus_color, slist.normal_color, get_thread_input_handlers())
     thread_list.mail_idx_key_map = mail_idx_key_map
     thread_list.draw()
 
@@ -236,7 +223,7 @@ def __view(stdscr):
     normal_color = curses.color_pair(2)
 
     slist = ScrollableList(stdscr, text_lines, focus_color, normal_color,
-                           None, None, get_mail_list_input_handlers())
+                           get_mail_list_input_handlers())
     slist.mail_idx_key_map = init_mail_idx_key_map
     slist.draw()
 
