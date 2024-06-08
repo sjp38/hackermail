@@ -233,43 +233,6 @@ def get_mail_list_input_handlers():
             InputHandler(['t'], list_thread_handler, 'list complete thread'),
             ]
 
-def mail_list_input_handler(slist, c):
-    mail_idx = focused_mail_idx(slist.lines, slist.focus_row)
-    if mail_idx is None:
-        slist.toast('no mail focused?')
-        return 0
-    mail_idx = '%d' % mail_idx
-    if not mail_idx in slist.mail_idx_key_map:
-        slist.toast('wrong index?')
-        return 0
-    mail_key = slist.mail_idx_key_map[mail_idx]
-    mail = hkml_cache.get_mail(key=mail_key)
-    if mail is None:
-        slist.toast('mail not cached?')
-        return 0
-
-    if c in ['o', '\n']:
-        lines = hkml_open.mail_display_str(mail, 80).split('\n')
-        ScrollableList(slist.screen, lines, slist.focus_color,
-                       slist.normal_color, None, None,
-                       scrollable_list_default_handlers()).draw()
-    if c == 'r':
-        curses.reset_shell_mode()
-        hkml_reply.reply(mail, attach_files=None, format_only=None)
-        curses.reset_prog_mode()
-        slist.screen.clear()
-    if c == 't':
-        thread_txt, mail_idx_key_map = hkml_thread.thread_str(
-                '%d' % focused_mail_idx(slist.lines, slist.focus_row),
-                False, False)
-        thread_list = ScrollableList(slist.screen, thread_txt.split('\n'),
-                slist.focus_color, slist.normal_color, None, None,
-                                     get_thread_input_handlers())
-        thread_list.mail_idx_key_map = mail_idx_key_map
-        thread_list.draw()
-
-    return 0
-
 def __view(stdscr):
     text_lines = text_to_show.split('\n')
 
