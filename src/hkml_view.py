@@ -73,13 +73,7 @@ class ScrollableList:
         self.focus_color = focus_color
         self.normal_color = normal_color
         self.input_handler = input_handler
-        self.help_msg = [
-                'j: focus down',
-                'k: focus up',
-                'q: quit']
-        if help_msg is not None:
-            self.help_msg += help_msg
-        self.help_msg += ['?: show help message']
+        self.help_msg = help_msg
         self.input_handlers = input_handlers
 
     def __draw(self):
