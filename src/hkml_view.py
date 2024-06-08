@@ -180,6 +180,8 @@ def action_item_handler(c, slist):
         ScrollableList(slist.screen, output, slist.focus_color,
                        slist.normal_color,
                        scrollable_list_default_handlers()).draw()
+    elif words[:1] == ['hkml']:
+        slist.toast('not supported yet')
 
 def is_git_hash(word):
     if len(word) < 10:
@@ -188,6 +190,15 @@ def is_git_hash(word):
         if c not in '0123456789abcdef':
             return False
     return True
+
+def get_msgid_from_public_inbox_link(word):
+    site_url = _hkml.get_manifest()['site']
+    if not word.startswith(site_url) or len(word) < len(site_url) + 1:
+        return None
+    tokens = word.split('/')
+    if tokens[-1] == '':
+        return tokens[-2]
+    return tokens[-1]
 
 def find_actionable_items(slist):
     line = slist.lines[slist.focus_row]
@@ -199,6 +210,15 @@ def find_actionable_items(slist):
         if is_git_hash(word):
             action_items.append('git log -n 5 %s' % word)
             action_items.append('git show %s' % word)
+
+    line = slist.lines[slist.focus_row]
+    for separator in [',', '(', ')', '[', ']', '"']:
+        line = line.replace(separator, ' ')
+    for word in line.split():
+        msgid = get_msgid_from_public_inbox_link(word)
+        if msgid is not None:
+            action_items.append('hkml thread %s' % msgid)
+            action_items.append('hkml open %s' % msgid)
     return action_items
 
 def get_action_item_handlers():
