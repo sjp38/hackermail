@@ -229,6 +229,7 @@ def get_action_item_handlers():
 def show_available_action_items_handler(c, slist):
     items = find_actionable_items(slist)
     if len(items) == 0:
+        slist.toast('no action item found')
         return
     ScrollableList(slist.screen, items, slist.focus_color, slist.normal_color,
                    get_action_item_handlers()).draw()
