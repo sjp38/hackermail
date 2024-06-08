@@ -36,6 +36,21 @@ W: write new
 text_to_show = None
 init_mail_idx_key_map = None
 
+class InputHandler:
+    to_handle = None
+    handler_fn = None   # receives input_chr and an argument (ScrollableList)
+    help_msg = None
+
+    def __init__(self, to_handle, handler_fn, help_msg):
+        self.to_handle = to_handle
+        self.handler_fn = handler_fn
+        self.help_msg = help_msg
+
+    def handle(self, input_chr, arg):
+        if not input_chr in self.to_handle:
+            return 0
+        return self.handler_fn(input_chr, arg)
+
 class ScrollableList:
     screen = None
     lines = None
