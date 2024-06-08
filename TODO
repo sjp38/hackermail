@@ -11,5 +11,3 @@
   - Find git hashid, do 'git show' or 'git log' of it
   - Find message id or lore link on body, do 'hkml open' or 'hkml thread' of it
 - Implement search or highlight keyword feature on interactive viewer
-- Improve sync
-  - Usually syncing json files fails at auto-merging.
