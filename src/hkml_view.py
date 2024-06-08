@@ -103,8 +103,8 @@ class ScrollableList:
             c = chr(x)
             break_loop = False
             for input_handler in self.input_handlers:
-                rc = input_handler.handle(c, self)
-                if rc != 0:
+                err = input_handler.handle(c, self)
+                if err:
                     break_loop = True
                     break
             if break_loop:
