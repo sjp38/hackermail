@@ -38,6 +38,12 @@ def pr_directory(directory, mlists, depth=0):
 
 def main(args):
     if args.action == 'list':
+        if args.mailing_lists is True:
+            for key in _hkml.get_manifest():
+                fields = key.split('/')
+                if len(fields) > 1:
+                    print(fields[1])
+            return
         pr_directory(_hkml.get_manifest(), args.mlists)
     elif args.action == 'convert_public_inbox_manifest':
         if not args.public_inbox_manifest or not args.site:
@@ -59,4 +65,5 @@ def set_argparser(parser):
             help='public inbox manifest which want to convert for hackermail')
     parser.add_argument('--site', metavar='<url>',
             help='site to fetch mail archives')
-
+    parser.add_argument('--mailing_lists', action='store_true',
+                        help='list only names of mailine lists')
