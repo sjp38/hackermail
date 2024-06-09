@@ -25,13 +25,11 @@ def read_tags_file():
     with open(tag_file_path(), 'r') as f:
         return json.load(f)
 
-def write_tags_file(tags):
+def write_tags_file(tags, sync_after):
     with open(tag_file_path(), 'w') as f:
         json.dump(tags, f, indent=4)
-    if hkml_sync.syncup_ready():
-        answer = input('Tags updated.  Sync? [Y/n] ')
-        if answer.lower() != 'n':
-            hkml_sync.syncup(_hkml.get_hkml_dir(), remote=None)
+    if hkml_sync.syncup_ready() and sync_after is True:
+        hkml_sync.syncup(_hkml.get_hkml_dir(), remote=None)
 
 def mails_of_tag(tag):
     tags_map = read_tags_file()
@@ -44,12 +42,14 @@ def mails_of_tag(tag):
 
 def ask_sync_before_change():
     if hkml_sync.syncup_ready():
-        answer = input('Gonna update tags.  Sync first? [Y/n] ')
+        answer = input('Gonna update tags.  Sync before and after? [Y/n] ')
         if answer.lower() != 'n':
             hkml_sync.syncup(_hkml.get_hkml_dir(), remote=None)
+            return True
+    return False
 
 def do_add_tags(mail, tags):
-    ask_sync_before_change()
+    sync_after = ask_sync_before_change()
     msgid = mail.get_field('message-id')
 
     tags_map = read_tags_file()
@@ -60,7 +60,7 @@ def do_add_tags(mail, tags):
         for tag in tags:
             if not tag in existing_tags:
                 existing_tags.append(tag)
-    write_tags_file(tags_map)
+    write_tags_file(tags_map, sync_after)
 
 def add_tags(mail_idx, tags):
     mail = hkml_list.get_mail(mail_idx)
@@ -78,7 +78,7 @@ def remove_tags(mail_idx, tags):
 
     msgid = mail.get_field('message-id')
 
-    ask_sync_before_change()
+    sync_after = ask_sync_before_change()
     tags_map = read_tags_file()
     if not msgid in tags_map:
         print('seems the index is wrong, or having no tag')
@@ -89,7 +89,7 @@ def remove_tags(mail_idx, tags):
             print('the mail is not having the tag')
             exit(1)
         existing_tags.remove(tag)
-    write_tags_file(tags_map)
+    write_tags_file(tags_map, sync_after)
 
 def get_tag_nr_mails():
     '''
