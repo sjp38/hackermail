@@ -7,4 +7,15 @@
   - mail fetched from public-inbox via curl is handled well, while that from
     git is not
   - e.g., 20240603161530.80789-1-yskelg@gmail.com
-- Implement search or highlight keyword feature on interactive viewer
+- Document interactive list/viewer
+- Use the interactive viewer from 'hkml open'
+- Support more inputs from 'hkml open'
+  - message id
+  - commit id
+  - general text file
+  - stdin
+- Interactive viewer imporovements
+  - Implement keyword search/highlight
+  - Handle 'git' failure-causing screen corruption
+  - Further check if git id is correct git id (e.g., do git log and check
+    exception)
