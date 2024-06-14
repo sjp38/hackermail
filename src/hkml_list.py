@@ -62,7 +62,7 @@ def args_to_list_output_key(args):
 
     return json.dumps(dict_, sort_keys=True)
 
-def get_list_output_cache():
+def get_mails_lists_cache():
     global mails_lists_cache
 
     if mails_lists_cache is None:
@@ -76,12 +76,12 @@ def get_list_output_cache():
     return mails_lists_cache
 
 def writeback_list_output():
-    cache = get_list_output_cache()
+    cache = get_mails_lists_cache()
     with open(list_output_cache_file_path(), 'w') as f:
         json.dump(cache, f, indent=4)
 
 def get_cached_list_outputs(key):
-    cache = get_list_output_cache()
+    cache = get_mails_lists_cache()
     if not key in cache:
         return None
     outputs = cache[key]
@@ -95,7 +95,7 @@ def get_list_for(key):
     return outputs['output'], outputs['index_to_cache_key']
 
 def get_last_list():
-    cache = get_list_output_cache()
+    cache = get_mails_lists_cache()
     keys = [k for k in cache if k != 'thread_output']
     key = sorted(keys, key=lambda x: cache[x]['date'])[-1]
     outputs = get_cached_list_outputs(key)
@@ -104,7 +104,7 @@ def get_last_list():
     return outputs['output'], outputs['index_to_cache_key']
 
 def get_last_thread():
-    cache = get_list_output_cache()
+    cache = get_mails_lists_cache()
     outputs = get_cached_list_outputs('thread_output')
     if outputs is None:
         return None
@@ -112,7 +112,7 @@ def get_last_thread():
 
 def invalidate_cached_outputs(source):
     keys_to_del = []
-    cache = get_list_output_cache()
+    cache = get_mails_lists_cache()
     for key in cache.keys():
         try:
             key_dict = json.loads(key)
@@ -124,12 +124,12 @@ def invalidate_cached_outputs(source):
         del cache[key]
 
 def writeback_list_output_cache():
-    cache = get_list_output_cache()
+    cache = get_mails_lists_cache()
     with open(list_output_cache_file_path(), 'w') as f:
         json.dump(cache, f, indent=4)
 
 def cache_list_str(key, list_str, mail_idx_key_map):
-    cache = get_list_output_cache()
+    cache = get_mails_lists_cache()
     cache[key] = {
             'output': '\n'.join(['# (cached output)', list_str]),
             'index_to_cache_key': mail_idx_key_map,
@@ -141,7 +141,7 @@ def cache_list_str(key, list_str, mail_idx_key_map):
     writeback_list_output_cache()
 
 def get_mail(idx, not_thread_idx=False):
-    cache = get_list_output_cache()
+    cache = get_mails_lists_cache()
     sorted_keys = sorted(cache.keys(), key=lambda x: cache[x]['date'])
     if not_thread_idx and sorted_keys[-1] == 'thread_output':
         last_key = sorted_keys[-2]
@@ -720,7 +720,7 @@ def get_mails(source, fetch, since, until,
     return mails
 
 def last_listed_mails():
-    cache = get_list_output_cache()
+    cache = get_mails_lists_cache()
     last_key = sorted(cache.keys(), key=lambda x: cache[x]['date'])[-1]
     idx_to_keys = cache[last_key]['index_to_cache_key']
     mails = []
