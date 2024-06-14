@@ -36,7 +36,6 @@ W: write new
 
 text_to_show = None
 init_mail_idx_key_map = None
-last_drawn = []
 
 class InputHandler:
     to_handle = None
@@ -75,9 +74,7 @@ class ScrollableList:
         self.input_handlers = input_handlers
 
     def __draw(self):
-        global last_drawn
-
-        last_drawn.clear()
+        drawn = []
         self.screen.erase()
         scr_rows, scr_cols = self.screen.getmaxyx()
         start_row = max(int(self.focus_row - scr_rows / 2), 0)
@@ -93,18 +90,19 @@ class ScrollableList:
             else:
                 color = self.normal_color
             self.screen.addstr(row, 0, self.lines[line_idx], color)
-            last_drawn.append(self.lines[line_idx])
+            drawn.append(self.lines[line_idx])
         if len(self.lines) < scr_rows - 1:
-            last_drawn += [''] * (scr_rows - 1  - len(self.lines))
+            drawn += [''] * (scr_rows - 1  - len(self.lines))
         self.screen.addstr(scr_rows - 1, 0,
                '# focus: %d/%d row' % (self.focus_row, len(self.lines)))
         help_msg = 'Press ? for help'
         self.screen.addstr(scr_rows - 1, scr_cols - len(help_msg) - 1,
                            help_msg)
+        return drawn
 
     def draw(self):
         while True:
-            self.__draw()
+            last_drawn = self.__draw()
 
             x = self.screen.getch()
             c = chr(x)
@@ -116,6 +114,7 @@ class ScrollableList:
                     break
             if break_loop:
                 break
+        return last_drawn
 
     def toast(self, message):
         scr_rows, scr_cols = self.screen.getmaxyx()
@@ -321,12 +320,12 @@ def __view(stdscr):
     slist = ScrollableList(stdscr, text_lines, focus_color, normal_color,
                            get_mail_list_input_handlers())
     slist.mail_idx_key_map = init_mail_idx_key_map
-    slist.draw()
+    return slist.draw()
 
 def view(text, mail_idx_key_map):
     global text_to_show
     global init_mail_idx_key_map
     text_to_show = text
     init_mail_idx_key_map = mail_idx_key_map
-    curses.wrapper(__view)
+    last_drawn = curses.wrapper(__view)
     print('\n'.join(last_drawn))
