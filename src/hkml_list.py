@@ -758,7 +758,7 @@ def main(args):
                 exit(1)
             args.source_type.append(source_type)
 
-    list_output_cache_key = args_to_lists_cache_key(args)
+    lists_cache_key = args_to_lists_cache_key(args)
     use_cached_output = True
     for source_type in args.source_type:
         if source_type != 'mailing_list':
@@ -773,7 +773,7 @@ def main(args):
                 print('no valid last list output exists')
                 exit(1)
         else:
-            to_show, mail_idx_key_map = get_list_for(list_output_cache_key)
+            to_show, mail_idx_key_map = get_list_for(lists_cache_key)
         if to_show is not None:
             writeback_list_output()
             show_list(to_show, args.stdout, args.use_less, mail_idx_key_map)
@@ -815,7 +815,7 @@ def main(args):
             mails_to_show, MailListFilter(args), MailListDecorator(args), None,
             runtime_profile, args.stat_only, args.stat_authors)
     hkml_cache.writeback_mails()
-    cache_list_str(list_output_cache_key, to_show, mail_idx_key_map)
+    cache_list_str(lists_cache_key, to_show, mail_idx_key_map)
 
     show_list(to_show, args.stdout, args.use_less, mail_idx_key_map)
 
