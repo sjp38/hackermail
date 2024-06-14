@@ -75,6 +75,8 @@ class ScrollableList:
         self.input_handlers = input_handlers
 
     def __draw(self):
+        global last_drawn
+
         last_drawn.clear()
         self.screen.erase()
         scr_rows, scr_cols = self.screen.getmaxyx()
@@ -93,7 +95,7 @@ class ScrollableList:
             self.screen.addstr(row, 0, self.lines[line_idx], color)
             last_drawn.append(self.lines[line_idx])
         if len(self.lines) < scr_rows - 1:
-            last_dran += [''] * scr_rows - 1  - len(self.lines)
+            last_drawn += [''] * (scr_rows - 1  - len(self.lines))
         self.screen.addstr(scr_rows - 1, 0,
                '# focus: %d/%d row' % (self.focus_row, len(self.lines)))
         help_msg = 'Press ? for help'
@@ -201,7 +203,8 @@ def action_item_handler(c, slist):
                 if mail is None:
                     continue
                 if mail.get_field('message-id') == msgid:
-                    lines = hkml_open.mail_display_str(mail, 80).split('\n')
+                    _, cols = slist.screen.getmaxyx()
+                    lines = hkml_open.mail_display_str(mail, cols).split('\n')
                     ScrollableList(slist.screen, lines, slist.focus_color,
                                    slist.normal_color,
                                    get_mail_viewer_handlers()).draw()
@@ -272,7 +275,8 @@ def open_mail_handler(c, slist):
     if mail is None:
         return
 
-    lines = hkml_open.mail_display_str(mail, 80).split('\n')
+    _, cols = slist.screen.getmaxyx()
+    lines = hkml_open.mail_display_str(mail, cols).split('\n')
     ScrollableList(slist.screen, lines, slist.focus_color,
                    slist.normal_color, get_mail_viewer_handlers()).draw()
 
