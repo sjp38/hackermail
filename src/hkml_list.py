@@ -28,6 +28,8 @@ class MailsList:
         self.txt = txt
         self.map_idx_to_mail_cache_key = mail_idx_to_cache_key
         self.date = date
+        if self.date is None:
+            self.date = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
 
     def to_kvpairs(self):
         return {
