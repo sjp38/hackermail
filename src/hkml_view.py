@@ -187,6 +187,8 @@ def action_item_handler(c, slist):
         msgid = '<%s>' % words[-1]
         thread_txt, mail_idx_key_map = hkml_thread.thread_str(msgid,
                 False, False)
+        hkml_cache.writeback_mails()
+        hkml_list.cache_list_str('thread_output', thread_txt, mail_idx_key_map)
         if words[1] == 'thread':
             thread_list = ScrollableList(
                     slist.screen, thread_txt.split('\n'), slist.focus_color,
@@ -296,6 +298,9 @@ def list_thread_handler(c, slist):
     thread_txt, mail_idx_key_map = hkml_thread.thread_str(
             '%d' % focused_mail_idx(slist.lines, slist.focus_row),
             False, False)
+    hkml_cache.writeback_mails()
+    hkml_list.cache_list_str('thread_output', thread_txt, mail_idx_key_map)
+
     thread_list = ScrollableList(slist.screen, thread_txt.split('\n'),
             slist.focus_color, slist.normal_color, get_thread_input_handlers())
     thread_list.mail_idx_key_map = mail_idx_key_map
