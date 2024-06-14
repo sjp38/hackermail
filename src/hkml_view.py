@@ -34,9 +34,6 @@ W: write new
 ?: help
 '''
 
-text_to_show = None
-init_mail_idx_key_map = None
-
 class InputHandler:
     to_handle = None
     handler_fn = None   # receives input_chr and an argument (ScrollableList)
@@ -309,7 +306,7 @@ def get_mail_list_input_handlers():
             InputHandler(['t'], list_thread_handler, 'list complete thread'),
             ]
 
-def __view(stdscr):
+def __view(stdscr, text_to_show, mail_idx_key_map):
     text_lines = text_to_show.split('\n')
 
     curses.init_pair(1, curses.COLOR_GREEN, curses.COLOR_BLACK)
@@ -319,13 +316,9 @@ def __view(stdscr):
 
     slist = ScrollableList(stdscr, text_lines, focus_color, normal_color,
                            get_mail_list_input_handlers())
-    slist.mail_idx_key_map = init_mail_idx_key_map
+    slist.mail_idx_key_map = mail_idx_key_map
     return slist.draw()
 
 def view(text, mail_idx_key_map):
-    global text_to_show
-    global init_mail_idx_key_map
-    text_to_show = text
-    init_mail_idx_key_map = mail_idx_key_map
-    last_drawn = curses.wrapper(__view)
+    last_drawn = curses.wrapper(__view, text, mail_idx_key_map)
     print('\n'.join(last_drawn))
