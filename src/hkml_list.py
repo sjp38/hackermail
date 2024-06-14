@@ -50,7 +50,7 @@ Values are a dict containing below key/values.
   the corresponding mail's key in the mail cache as values.
 - 'date': last accessed date
 '''
-list_output_cache = None
+mails_lists_cache = None
 
 def list_output_cache_file_path():
     return os.path.join(_hkml.get_hkml_dir(), 'list_output_cache')
@@ -63,17 +63,17 @@ def args_to_list_output_key(args):
     return json.dumps(dict_, sort_keys=True)
 
 def get_list_output_cache():
-    global list_output_cache
+    global mails_lists_cache
 
-    if list_output_cache is None:
+    if mails_lists_cache is None:
         if not os.path.isfile(list_output_cache_file_path()):
-            list_output_cache = {}
+            mails_lists_cache = {}
         else:
             with open(list_output_cache_file_path(), 'r') as f:
-                list_output_cache = json.load(f)
-    if list_output_cache is None:
-        list_output_cache = {}
-    return list_output_cache
+                mails_lists_cache = json.load(f)
+    if mails_lists_cache is None:
+        mails_lists_cache = {}
+    return mails_lists_cache
 
 def writeback_list_output():
     cache = get_list_output_cache()
