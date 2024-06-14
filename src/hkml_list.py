@@ -55,7 +55,7 @@ mails_lists_cache = None
 def list_output_cache_file_path():
     return os.path.join(_hkml.get_hkml_dir(), 'list_output_cache')
 
-def args_to_list_output_key(args):
+def args_to_lists_cache_key(args):
     dict_ = copy.deepcopy(args.__dict__)
     dict_['fetch'] = False
     dict_['stdout'] = False
@@ -758,7 +758,7 @@ def main(args):
                 exit(1)
             args.source_type.append(source_type)
 
-    list_output_cache_key = args_to_list_output_key(args)
+    list_output_cache_key = args_to_lists_cache_key(args)
     use_cached_output = True
     for source_type in args.source_type:
         if source_type != 'mailing_list':
