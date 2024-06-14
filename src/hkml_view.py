@@ -36,6 +36,7 @@ W: write new
 
 text_to_show = None
 init_mail_idx_key_map = None
+last_drawn = []
 
 class InputHandler:
     to_handle = None
@@ -74,6 +75,7 @@ class ScrollableList:
         self.input_handlers = input_handlers
 
     def __draw(self):
+        last_drawn.clear()
         self.screen.erase()
         scr_rows, scr_cols = self.screen.getmaxyx()
         start_row = max(int(self.focus_row - scr_rows / 2), 0)
@@ -89,6 +91,9 @@ class ScrollableList:
             else:
                 color = self.normal_color
             self.screen.addstr(row, 0, self.lines[line_idx], color)
+            last_drawn.append(self.lines[line_idx])
+        if len(self.lines) < scr_rows - 1:
+            last_dran += [''] * scr_rows - 1  - len(self.lines)
         self.screen.addstr(scr_rows - 1, 0,
                '# focus: %d/%d row' % (self.focus_row, len(self.lines)))
         help_msg = 'Press ? for help'
@@ -320,3 +325,4 @@ def view(text, mail_idx_key_map):
     text_to_show = text
     init_mail_idx_key_map = mail_idx_key_map
     curses.wrapper(__view)
+    print('\n'.join(last_drawn))
