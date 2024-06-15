@@ -14,6 +14,7 @@ import hkml_open
 import hkml_reply
 import hkml_send
 import hkml_thread
+import hkml_write
 
 '''
 Curses-based TUI viewer for hkml list output.
@@ -319,6 +320,16 @@ def mails_list_menu_selection_handler(c, slist):
         hkml_forward.forward(mail)
         curses.reset_prog_mode()
         slist.screen.clear()
+    elif focused_line == '- continue draft writing':
+        mail = get_focused_mail(slist.parent_list)
+        if mail is None:
+            return
+        curses.reset_shell_mode()
+        hkml_write.write_send_mail(
+                draft_mail=mail, subject=None, in_reply_to=None, to=None,
+                cc=None, body=None, attach=None, format_only=None)
+        curses.reset_prog_mode()
+        slist.screen.clear()
 
 def get_menu_input_handlers():
     return scrollable_list_default_handlers() + [
@@ -338,7 +349,7 @@ def thread_menu_handler(c, slist):
                 'focus an item below and press Enter',
                 '',
                 '- open', '- reply', '- list complete thread',
-                '- forward'],
+                '- forward', '- continue draft writing'],
             slist.focus_color, slist.normal_color, get_menu_input_handlers())
     menu_list.parent_list = slist
     menu_list.draw()
