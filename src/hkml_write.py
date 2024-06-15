@@ -31,15 +31,11 @@ def git_sendemail_valid_recipients(recipients):
     lines[-1] = lines[-1][:-1]
     return '\n'.join(lines)
 
-def format_mbox(subject, in_reply_to, to, cc, body, from_, draft,
+def format_mbox(subject, in_reply_to, to, cc, body, from_, draft_mail,
                 attach_files=None):
-    if draft is not None:
-        mail = hkml_list.get_mail(draft)
-        if mail is None:
-            print('failed getting draft mail of the index.')
-            exit(1)
+    if draft_mail is not None:
         lines = []
-        for line in mail.mbox.split('\n')[1:]:
+        for line in draft_mail.mbox.split('\n')[1:]:
             if line.startswith('Message-ID: '):
                 continue
             if line.startswith('Date: '):
@@ -94,8 +90,15 @@ def main(args):
         set_argparser(parser)
         args = parser.parse_args()
 
+    draft_mail = None
+    if args.draft is not None:
+        draft_mail = hkml_list.get_mail(args.draft)
+        if draft_mail is None:
+            print('failed getting draft mail of the index.')
+            exit(1)
+
     mbox = format_mbox(args.subject, args.in_reply_to, args.to, args.cc,
-        args.body, None, args.draft, args.attach)
+        args.body, None, draft_mail, args.attach)
 
     if args.format_only:
         print(mbox)
