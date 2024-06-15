@@ -314,7 +314,10 @@ def thread_menu_handler(c, slist):
         return
     menu_list = ScrollableList(
             slist.screen,
-            ['open', 'reply'],
+            [
+                'selected mail: %s' % mail.subject,
+                '',
+                'open', 'reply'],
             slist.focus_color, slist.normal_color, get_menu_input_handlers())
     menu_list.parent_list = slist
     menu_list.draw()
