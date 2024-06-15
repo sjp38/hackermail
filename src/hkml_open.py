@@ -82,10 +82,20 @@ def show_text(text, to_stdout, use_less, string_after_less):
     else:
         hkml_view.view(text, None)
 
+def show_git_commit(commit, to_stdout, use_less, string_after_less):
+    try:
+        show_text(subprocess.check_output(['git', 'show', commit]).decode(),
+                  to_stdout, use_less, string_after_less)
+        return None
+    except:
+        return 'git show failed'
+
 def main(args):
     if os.path.isfile(args.target):
         with open(args.target, 'r') as f:
             return show_text(f.read(), args.stdout, args.use_less, None)
+    if not args.target.isdigit():
+        return show_git_commit(args.target, args.stdout, args.use_less, None)
 
     noti_current_index = True
     if args.target == 'prev':
@@ -101,8 +111,12 @@ def main(args):
         print('mail is not cached.  Try older list')
         mail = hkml_list.get_mail(args.target, not_thread_idx=True)
         if mail is None:
-            print('even not an older list index.  Forgiving.')
-            exit(1)
+            print('even not an older list index.  Maybe git commit?')
+            error = show_git_commit('%s' % args.target, args.stdout,
+                                    args.use_less, None)
+            if error is not None:
+                print('cannot handle the request: %s' % error)
+                exit(1)
 
     with open(os.path.join(_hkml.get_hkml_dir(), 'last_open_idx'), 'w') as f:
         f.write('%d' % args.target)
@@ -130,6 +144,7 @@ def set_argparser(parser):
                     '2. \'next\': last open mail index plus one.',
                     '3. \'prev\': last open mail index minus one.',
                     '4. text file',
+                    '5. Git commit',
                     ]))
     parser.add_argument(
             '--stdout', action='store_true', help='print without a pager')
