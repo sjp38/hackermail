@@ -17,5 +17,4 @@
   - Further check if git id is correct git id (e.g., do git log and check
     exception)
   - Support other features
-    - tagging
     - exporting
