@@ -331,6 +331,29 @@ def mails_list_menu_selection_handler(c, slist):
                 cc=None, body=None, attach=None, format_only=None)
         curses.reset_prog_mode()
         slist.screen.clear()
+    elif focused_line == '- show tags':
+        mail = get_focused_mail(slist.parent_list)
+        if mail is None:
+            return
+        msgid = mail.get_field('message-id')
+        tags_map = hkml_tag.read_tags_file()
+        if not msgid in tags_map:
+            slist.toast('the mail has no tag')
+            return
+        tags = tags_map[msgid]['tags']
+
+        slist.screen.clear()
+        slist.screen.refresh()
+        curses.reset_shell_mode()
+
+        print('the mail has below tags:')
+        for tag in tags:
+            print('- %s' % tag)
+        print()
+        _ = input('Press <Enter> to return')
+        curses.reset_prog_mode()
+        slist.screen.clear()
+
     elif focused_line == '- add tags':
         mail = get_focused_mail(slist.parent_list)
         if mail is None:
@@ -400,7 +423,7 @@ def thread_menu_handler(c, slist):
                 '',
                 '- open', '- reply', '- list complete thread',
                 '- forward', '- continue draft writing',
-                '- add tags', '- remove tags'],
+                '- show tags', '- add tags', '- remove tags'],
             slist.focus_color, slist.normal_color, get_menu_input_handlers())
     menu_list.parent_list = slist
     menu_list.draw()
