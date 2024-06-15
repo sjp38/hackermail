@@ -354,9 +354,6 @@ def list_thread_handler(c, slist):
     thread_list.mail_idx_key_map = mail_idx_key_map
     thread_list.draw()
 
-def get_mail_list_input_handlers():
-    return get_mails_list_input_handlers()
-
 def __view(stdscr, text_to_show, mail_idx_key_map):
     text_lines = text_to_show.split('\n')
 
@@ -367,7 +364,7 @@ def __view(stdscr, text_to_show, mail_idx_key_map):
 
     if mail_idx_key_map is not None:
         slist = ScrollableList(stdscr, text_lines, focus_color, normal_color,
-                               get_mail_list_input_handlers())
+                               get_mails_list_input_handlers())
         slist.mail_idx_key_map = mail_idx_key_map
     else:
         slist = ScrollableList(stdscr, text_lines, focus_color, normal_color,
