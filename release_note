@@ -6,7 +6,7 @@ v1.1.0
   - Support opening text file and git commit
 - interactive viewer improvements
   - Implement general menu ('m' key) for mails list and text viewer
-  - Support forwarding and continuing draft writing
+  - Support forwarding, continuing draft writing, tagging
 
 v1.0.9
 - Support thread listing on interactive mails list ('t' key press)
