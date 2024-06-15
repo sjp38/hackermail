@@ -10,6 +10,29 @@ import hkml_open
 import hkml_send
 import hkml_write
 
+def forward(mail, subject=None, in_reply_to=None, to=None, cc=None,
+            attach_files=None, format_only=None):
+    mail_str = hkml_open.mail_display_str(mail)
+
+    if subject is None:
+        subject = 'Fwd: %s' % mail.subject
+
+    mbox = hkml_write.format_mbox(
+            subject, in_reply_to, to, cc, mail_str, from_=None, draft=None,
+            attach_files=attach_files)
+
+    if format_only:
+        print(mbox)
+        return
+
+    fd, tmp_path = tempfile.mkstemp(prefix='hkml_forward_')
+    with open(tmp_path, 'w') as f:
+        f.write(mbox)
+    if subprocess.call(['vim', tmp_path]) != 0:
+        print('writing mail with editor failed')
+        exit(1)
+    hkml_send.send_mail(tmp_path, get_confirm=True)
+
 def main(args):
     if args.mail.isdigit():
         mail = hkml_list.get_mail(int(args.mail))
@@ -25,27 +48,8 @@ def main(args):
     else:
         print('unsupported <mail> (%s)' % args.mail)
 
-    mail_str = hkml_open.mail_display_str(mail)
-
-    subject = args.subject
-    if subject is None:
-        subject = 'Fwd: %s' % mail.subject
-
-    mbox = hkml_write.format_mbox(subject, args.in_reply_to, args.to,
-                                  args.cc, mail_str, from_=None, draft=None,
-                                  attach_files=args.attach)
-
-    if args.format_only:
-        print(mbox)
-        return
-
-    fd, tmp_path = tempfile.mkstemp(prefix='hkml_forward_')
-    with open(tmp_path, 'w') as f:
-        f.write(mbox)
-    if subprocess.call(['vim', tmp_path]) != 0:
-        print('writing mail with editor failed')
-        exit(1)
-    hkml_send.send_mail(tmp_path, get_confirm=True)
+    forward(mail, args.subject, args.in_reply_to, args.to, args.cc,
+            args.attach, args.format_only)
 
 def set_argparser(parser):
     parser.description = 'forward a mail'
