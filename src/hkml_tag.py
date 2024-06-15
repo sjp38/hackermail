@@ -70,12 +70,7 @@ def add_tags(mail_idx, tags):
 
     do_add_tags(mail, tags)
 
-def remove_tags(mail_idx, tags):
-    mail = hkml_list.get_mail(mail_idx)
-    if mail is None:
-        print('failed getting mail of the index.  Maybe wrong index?')
-        exit(1)
-
+def do_remove_tags(mail, tags):
     msgid = mail.get_field('message-id')
 
     sync_after = ask_sync_before_change()
@@ -90,6 +85,14 @@ def remove_tags(mail_idx, tags):
             exit(1)
         existing_tags.remove(tag)
     write_tags_file(tags_map, sync_after)
+
+def remove_tags(mail_idx, tags):
+    mail = hkml_list.get_mail(mail_idx)
+    if mail is None:
+        print('failed getting mail of the index.  Maybe wrong index?')
+        exit(1)
+
+    do_remove_tags(mail, tags)
 
 def get_tag_nr_mails():
     '''
