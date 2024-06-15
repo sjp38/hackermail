@@ -335,6 +335,7 @@ def get_thread_input_handlers():
     return scrollable_list_default_handlers() + [
             InputHandler(['o', '\n'], open_mail_handler, 'open focused mail'),
             InputHandler(['r'], reply_mail_handler, 'reply focused mail'),
+            InputHandler(['t'], list_thread_handler, 'list complete thread'),
             InputHandler(['m'], thread_menu_handler, 'open menu'),
             ]
 
@@ -351,9 +352,7 @@ def list_thread_handler(c, slist):
     thread_list.draw()
 
 def get_mail_list_input_handlers():
-    return get_thread_input_handlers() + [
-            InputHandler(['t'], list_thread_handler, 'list complete thread'),
-            ]
+    return get_thread_input_handlers()
 
 def __view(stdscr, text_to_show, mail_idx_key_map):
     text_lines = text_to_show.split('\n')
