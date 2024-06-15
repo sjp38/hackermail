@@ -19,4 +19,5 @@
   - Support other features
     - exporting
     - writing
+    - patch check/apply
   - Support refreshing list
