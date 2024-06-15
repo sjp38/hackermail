@@ -73,24 +73,24 @@ def last_open_mail_idx():
 
 def main(args):
     noti_current_index = True
-    if args.mail_idx == 'prev':
-        args.mail_idx = last_open_mail_idx() - 1
-    elif args.mail_idx == 'next':
-        args.mail_idx = last_open_mail_idx() + 1
+    if args.target == 'prev':
+        args.target = last_open_mail_idx() - 1
+    elif args.target == 'next':
+        args.target = last_open_mail_idx() + 1
     else:
         noti_current_index = False
-        args.mail_idx = int(args.mail_idx)
+        args.target = int(args.target)
 
-    mail = hkml_list.get_mail(args.mail_idx)
+    mail = hkml_list.get_mail(args.target)
     if mail is None:
         print('mail is not cached.  Try older list')
-        mail = hkml_list.get_mail(args.mail_idx, not_thread_idx=True)
+        mail = hkml_list.get_mail(args.target, not_thread_idx=True)
         if mail is None:
             print('even not an older list index.  Forgiving.')
             exit(1)
 
     with open(os.path.join(_hkml.get_hkml_dir(), 'last_open_idx'), 'w') as f:
-        f.write('%d' % args.mail_idx)
+        f.write('%d' % args.target)
 
     try:
         head_columns = int(os.get_terminal_size().columns * 9 / 10)
@@ -105,19 +105,21 @@ def main(args):
     if args.use_less:
         pr_with_pager_if_needed(mail_str)
         if noti_current_index is True:
-            print('# you were reading %d-th index' % args.mail_idx)
+            print('# you were reading %d-th index' % args.target)
     else:
         hkml_view.view(mail_str, None)
 
 def set_argparser(parser):
     parser.description = 'open a mail'
     parser.add_argument(
-            'mail_idx', metavar='<index>',
+            'target', metavar='<target>',
             help=' '.join(
-            [
-            'Index of the mail to open.',
-            '\'next\'/\'prev\' mean last open mail index plus/minus one.',
-            ]))
+                [
+                    'Target to open. Following types are supported.',
+                    '1. Index of a mail from the last open mails list/thread.',
+                    '2. \'next\': last open mail index plus one.',
+                    '3. \'prev\': last open mail index minus one.',
+                    ]))
     parser.add_argument(
             '--stdout', action='store_true', help='print without a pager')
     parser.add_argument(
