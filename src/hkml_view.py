@@ -189,7 +189,7 @@ def action_item_handler(c, slist):
             output = ['failed: %s' % e]
         ScrollableList(slist.screen, output, slist.focus_color,
                        slist.normal_color,
-                       get_mail_viewer_handlers()).draw()
+                       get_text_viewer_handlers()).draw()
     elif words[:1] == ['hkml']:
         msgid = '<%s>' % words[-1]
         thread_txt, mail_idx_key_map = hkml_thread.thread_str(msgid,
@@ -212,7 +212,7 @@ def action_item_handler(c, slist):
                     lines = hkml_open.mail_display_str(mail, cols).split('\n')
                     ScrollableList(slist.screen, lines, slist.focus_color,
                                    slist.normal_color,
-                                   get_mail_viewer_handlers()).draw()
+                                   get_text_viewer_handlers()).draw()
                     break
         else:
             slist.toast('not supported yet')
@@ -271,7 +271,7 @@ def show_available_action_items_handler(c, slist):
     ScrollableList(slist.screen, items, slist.focus_color, slist.normal_color,
                    get_action_item_handlers()).draw()
 
-def get_mail_viewer_handlers():
+def get_text_viewer_handlers():
     return scrollable_list_default_handlers() + [
             InputHandler(['m', '\n'], show_available_action_items_handler,
                          'open menu')
@@ -285,7 +285,7 @@ def open_mail_handler(c, slist):
     _, cols = slist.screen.getmaxyx()
     lines = hkml_open.mail_display_str(mail, cols).split('\n')
     ScrollableList(slist.screen, lines, slist.focus_color,
-                   slist.normal_color, get_mail_viewer_handlers()).draw()
+                   slist.normal_color, get_text_viewer_handlers()).draw()
 
 def reply_mail_handler(c, slist):
     mail = get_focused_mail(slist)
@@ -362,7 +362,7 @@ def __view(stdscr, text_to_show, mail_idx_key_map):
         slist.mail_idx_key_map = mail_idx_key_map
     else:
         slist = ScrollableList(stdscr, text_lines, focus_color, normal_color,
-                               get_mail_viewer_handlers())
+                               get_text_viewer_handlers())
     return slist.draw()
 
 def view(text, mail_idx_key_map):
