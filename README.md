@@ -29,36 +29,15 @@ List recent mails in Linux kernel DAMON subsystem mailing list
     $ ./hkml init --manifest ./manifests/lore.js
     $ ./hkml list damon --fetch
 
-Open the fifth mail of the list:
+The first command is required to be executed only once for initialization.
 
-    $ ./hkml open 5
-
-Send a reply to the 5th mail:
-
-    $ ./hkml reply 5
-
-Forward the 5th mail to others:
-
-    $ ./hkml forward 5
-
-List entire mails of the 5th mail's thread of the list:
-
-    $ ./hkml thread 5
-
-Write and send a mail to the mailing list:
-
-    $ ./hkml write --cc damon@lists.linux.dev
-
-Export the [2, 5)-th mails on the list to 'exported.mbox' file:
-
-    $ ./hkml export --range 2 5 exported.mbox
-
-List mails in an .mbox file:
-
-    $ ./hkml list exported.mbox
+The second command opens an interactive list of the mails.  From it, users can
+do actions for mails including opening, replying, and forwarding.  Press '?'
+for help.
 
 For more detail,
 
     $ ./hkml -h
+    $ ./hkml list -h
 
-or, refer to [USAGE.md](USAGE.md) file.
+or refer to [USAGE.md](USAGE.md) file.
