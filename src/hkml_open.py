@@ -7,6 +7,7 @@ import tempfile
 
 import _hkml
 import hkml_list
+import hkml_view
 
 def decorate_last_reference(text):
     lines = text.split('\n')
@@ -101,10 +102,12 @@ def main(args):
     if args.stdout:
         print(mail_str)
         return
-    pr_with_pager_if_needed(mail_str)
-
-    if noti_current_index is True:
-        print('# you were reading %d-th index' % args.mail_idx)
+    if args.use_less:
+        pr_with_pager_if_needed(mail_str)
+        if noti_current_index is True:
+            print('# you were reading %d-th index' % args.mail_idx)
+    else:
+        hkml_view.view(mail_str, None)
 
 def set_argparser(parser):
     parser.description = 'open a mail'
@@ -117,3 +120,6 @@ def set_argparser(parser):
             ]))
     parser.add_argument(
             '--stdout', action='store_true', help='print without a pager')
+    parser.add_argument(
+            '--use_less', action='store_true',
+            help='use less instead of hkml viewer')

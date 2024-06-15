@@ -324,9 +324,13 @@ def __view(stdscr, text_to_show, mail_idx_key_map):
     curses.init_pair(2, curses.COLOR_WHITE, curses.COLOR_BLACK)
     normal_color = curses.color_pair(2)
 
-    slist = ScrollableList(stdscr, text_lines, focus_color, normal_color,
-                           get_mail_list_input_handlers())
-    slist.mail_idx_key_map = mail_idx_key_map
+    if mail_idx_key_map is not None:
+        slist = ScrollableList(stdscr, text_lines, focus_color, normal_color,
+                               get_mail_list_input_handlers())
+        slist.mail_idx_key_map = mail_idx_key_map
+    else:
+        slist = ScrollableList(stdscr, text_lines, focus_color, normal_color,
+                               get_mail_viewer_handlers())
     return slist.draw()
 
 def view(text, mail_idx_key_map):
