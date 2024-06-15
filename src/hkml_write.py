@@ -85,11 +85,6 @@ def format_mbox(subject, in_reply_to, to, cc, body, from_, draft_mail,
     return '\n'.join(lines)
 
 def main(args):
-    if not args:
-        parser = argparse.ArgumentParser()
-        set_argparser(parser)
-        args = parser.parse_args()
-
     draft_mail = None
     if args.draft is not None:
         draft_mail = hkml_list.get_mail(args.draft)
