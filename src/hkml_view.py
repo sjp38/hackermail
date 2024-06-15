@@ -56,6 +56,7 @@ class ScrollableList:
     focus_color = None
     normal_color = None
     input_handlers = None
+    mail_idx_key_map = None
 
     def __init__(self, screen, lines, focus_color, normal_color,
                  input_handlers):
@@ -111,6 +112,10 @@ class ScrollableList:
                     break
             if break_loop:
                 break
+            if self.mail_idx_key_map:
+                hkml_list.cache_list_str(
+                        'thread_output', '\n'.join(self.lines),
+                        self.mail_idx_key_map)
         return last_drawn
 
     def toast(self, message):
