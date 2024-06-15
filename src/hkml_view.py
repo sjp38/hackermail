@@ -259,20 +259,22 @@ def find_actionable_items(slist):
 def get_action_item_handlers():
     return scrollable_list_default_handlers() + [
             InputHandler(['\n'], action_item_handler,
-                         'execute and show the ouptut')]
+                         'execute focused item')]
 
 def show_available_action_items_handler(c, slist):
     items = find_actionable_items(slist)
     if len(items) == 0:
         slist.toast('no action item found')
         return
+    items = ['selected line: %s' % slist.lines[slist.focus_row], '',
+             'focus an item below and press Enter', ''] + items
     ScrollableList(slist.screen, items, slist.focus_color, slist.normal_color,
                    get_action_item_handlers()).draw()
 
 def get_mail_viewer_handlers():
     return scrollable_list_default_handlers() + [
-            InputHandler(['\n'], show_available_action_items_handler,
-                         'show available action items')
+            InputHandler(['m', '\n'], show_available_action_items_handler,
+                         'open menu')
                 ]
 
 def open_mail_handler(c, slist):
