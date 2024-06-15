@@ -8,6 +8,7 @@ import time
 
 import _hkml
 import hkml_cache
+import hkml_forward
 import hkml_list
 import hkml_open
 import hkml_reply
@@ -310,6 +311,14 @@ def menu_selection_handler(c, slist):
         reply_mail_handler(c, slist.parent_list)
     elif focused_line == '- list complete thread':
         list_thread_handler(c, slist.parent_list)
+    elif focused_line == '- forward':
+        mail = get_focused_mail(slist.parent_list)
+        if mail is None:
+            return
+        curses.reset_shell_mode()
+        hkml_forward.forward(mail)
+        curses.reset_prog_mode()
+        slist.screen.clear()
 
 def get_menu_input_handlers():
     return scrollable_list_default_handlers() + [
@@ -328,7 +337,8 @@ def thread_menu_handler(c, slist):
                 '',
                 'focus an item below and press Enter',
                 '',
-                '- open', '- reply', '- list complete thread'],
+                '- open', '- reply', '- list complete thread',
+                '- forward'],
             slist.focus_color, slist.normal_color, get_menu_input_handlers())
     menu_list.parent_list = slist
     menu_list.draw()
