@@ -303,7 +303,7 @@ def reply_mail_handler(c, slist):
     curses.reset_prog_mode()
     slist.screen.clear()
 
-def menu_selection_handler(c, slist):
+def mails_list_menu_selection_handler(c, slist):
     focused_line = slist.lines[slist.focus_row]
     if focused_line == '- open':
         open_mail_handler(c, slist.parent_list)
@@ -322,7 +322,7 @@ def menu_selection_handler(c, slist):
 
 def get_menu_input_handlers():
     return scrollable_list_default_handlers() + [
-            InputHandler(['\n'], menu_selection_handler,
+            InputHandler(['\n'], mails_list_menu_selection_handler,
                          'execute focused item'),
             ]
 
