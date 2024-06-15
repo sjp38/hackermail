@@ -71,6 +71,17 @@ def last_open_mail_idx():
     with open(os.path.join(_hkml.get_hkml_dir(), 'last_open_idx'), 'r') as f:
         return int(f.read())
 
+def show_text(text, to_stdout, use_less, string_after_less):
+    if to_stdout:
+        print(text)
+        return
+    if use_less:
+        pr_with_pager_if_needed(text)
+        if string_after_less is not None:
+            print(string_after_less)
+    else:
+        hkml_view.view(text, None)
+
 def main(args):
     noti_current_index = True
     if args.target == 'prev':
@@ -99,15 +110,10 @@ def main(args):
         head_columns = None
     mail_str = mail_display_str(mail, head_columns)
 
-    if args.stdout:
-        print(mail_str)
-        return
-    if args.use_less:
-        pr_with_pager_if_needed(mail_str)
-        if noti_current_index is True:
-            print('# you were reading %d-th index' % args.target)
-    else:
-        hkml_view.view(mail_str, None)
+    string_after_less = None
+    if args.use_less and noti_current_index:
+        string_after_less = '# you were reading %d-th index' % args.target
+    show_text(mail_str, args.stdout, args.use_less, string_after_less)
 
 def set_argparser(parser):
     parser.description = 'open a mail'
