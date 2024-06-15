@@ -204,7 +204,7 @@ def action_item_handler(c, slist):
         if words[1] == 'thread':
             thread_list = ScrollableList(
                     slist.screen, thread_txt.split('\n'), slist.focus_color,
-                    slist.normal_color, get_thread_input_handlers())
+                    slist.normal_color, get_mails_list_input_handlers())
             thread_list.mail_idx_key_map = mail_idx_key_map
             thread_list.draw()
         elif words[1] == 'open':
@@ -333,7 +333,7 @@ def thread_menu_handler(c, slist):
     menu_list.parent_list = slist
     menu_list.draw()
 
-def get_thread_input_handlers():
+def get_mails_list_input_handlers():
     return scrollable_list_default_handlers() + [
             InputHandler(['o', '\n'], open_mail_handler, 'open focused mail'),
             InputHandler(['r'], reply_mail_handler, 'reply focused mail'),
@@ -348,13 +348,14 @@ def list_thread_handler(c, slist):
     hkml_cache.writeback_mails()
     hkml_list.cache_list_str('thread_output', thread_txt, mail_idx_key_map)
 
-    thread_list = ScrollableList(slist.screen, thread_txt.split('\n'),
-            slist.focus_color, slist.normal_color, get_thread_input_handlers())
+    thread_list = ScrollableList(
+            slist.screen, thread_txt.split('\n'), slist.focus_color,
+            slist.normal_color, get_mails_list_input_handlers())
     thread_list.mail_idx_key_map = mail_idx_key_map
     thread_list.draw()
 
 def get_mail_list_input_handlers():
-    return get_thread_input_handlers()
+    return get_mails_list_input_handlers()
 
 def __view(stdscr, text_to_show, mail_idx_key_map):
     text_lines = text_to_show.split('\n')
