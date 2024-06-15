@@ -1,5 +1,13 @@
 This file contains major changes in each version since v1.0.0
 
+v1.1.0
+- 'hkml open' improvements
+  - Use interactive viewer
+  - Support opening text file and git commit
+- interactive viewer improvements
+  - Implement general menu ('m' key) for mails list and text viewer
+  - Support forwarding and continuing draft writing
+
 v1.0.9
 - Support thread listing on interactive mails list ('t' key press)
 - Reduce tag syncing failure possibility (let sync before and after change)
