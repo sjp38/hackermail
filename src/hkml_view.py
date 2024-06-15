@@ -408,24 +408,21 @@ def mails_list_remove_tags(c, slist):
         curses.reset_prog_mode()
         slist.screen.clear()
 
+mails_list_menu = [
+        ['- open', mails_list_open_mail],
+        ['- reply', mails_list_reply],
+        ['- list complete thread', mails_list_list_thread],
+        ['- continue draft writing', mails_list_continue_draft],
+        ['- show tags', mails_list_show_tags],
+        ['- add tags', mails_list_add_tags],
+        ['- remove tags', mails_list_remove_tags],
+        ]
+
 def mails_list_menu_selection_handler(c, slist):
     focused_line = slist.lines[slist.focus_row]
-    if focused_line == '- open':
-        mails_list_open_mail(c, slist)
-    elif focused_line == '- reply':
-        mails_list_reply(c, slist)
-    elif focused_line == '- list complete thread':
-        mails_list_list_thread(c, slist)
-    elif focused_line == '- forward':
-        mails_list_forward(c, slist)
-    elif focused_line == '- continue draft writing':
-        mails_list_continue_draft(c, slist)
-    elif focused_line == '- show tags':
-        mails_list_show_tags(c, slist)
-    elif focused_line == '- add tags':
-        mails_list_add_tags(c, slist)
-    elif focused_line == '- remove tags':
-        mails_list_remove_tags(c, slist)
+    for txt, fn in mails_list_menu:
+        if txt == focused_line:
+            fn(c, slist)
 
 def get_menu_input_handlers():
     return scrollable_list_default_handlers() + [
@@ -437,16 +434,16 @@ def thread_menu_handler(c, slist):
     mail = get_focused_mail(slist)
     if mail is None:
         return
+    menu_lines = [
+            'selected mail: %s' % mail.subject,
+            '',
+            'focus an item below and press Enter',
+            '']
+    for txt, _ in mails_list_menu:
+        menu_lines.append(txt)
+
     menu_list = ScrollableList(
-            slist.screen,
-            [
-                'selected mail: %s' % mail.subject,
-                '',
-                'focus an item below and press Enter',
-                '',
-                '- open', '- reply', '- list complete thread',
-                '- forward', '- continue draft writing',
-                '- show tags', '- add tags', '- remove tags'],
+            slist.screen, menu_lines,
             slist.focus_color, slist.normal_color, get_menu_input_handlers())
     menu_list.parent_list = slist
     menu_list.draw()
