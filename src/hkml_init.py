@@ -30,8 +30,9 @@ def config_sendemail():
 def main(args):
     if args.manifest is None:
         print('--manifest is not specified')
-        lore_js = os.path.join(
-                os.path.dirname(__file__), 'manifests', 'lore.js')
+        lore_js = os.path.abspath(
+                os.path.join(os.path.dirname(__file__), '..', 'manifests',
+                             'lore.js'))
         question = '  '.join([
             '%s is the manifest for lore.kernel.org.' % lore_js,
             'Use it as the manifest? [Y/n] '])
