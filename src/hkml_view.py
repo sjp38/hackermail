@@ -345,6 +345,41 @@ def mails_list_menu_selection_handler(c, slist):
             hkml_tag.do_add_tags(mail, tags)
         curses.reset_prog_mode()
         slist.screen.clear()
+    elif focused_line == '- remove tags':
+        mail = get_focused_mail(slist.parent_list)
+        if mail is None:
+            return
+        msgid = mail.get_field('message-id')
+        tags_map = hkml_tag.read_tags_file()
+        if not msgid in tags_map:
+            slist.toast('the mail has no tag')
+            return
+        tags = tags_map[msgid]['tags']
+
+        slist.screen.clear()
+        slist.screen.refresh()
+        curses.reset_shell_mode()
+
+        print('the mail has below tags:')
+        for tag in tags:
+            print('- %s' % tag)
+        print()
+        while True:
+            prompt = ' '.join(
+                    ['Enter tags to remove separted by white space',
+                     '(enter \'cancel_tag\' to cancel): '])
+            tags_to_remove = input(prompt).split()
+            if 'cancel_tag' in tags_to_remove:
+                break
+            for tag in tags_to_remove:
+                if not tag in tags:
+                    print('the mail is not tagged as %s' % tag)
+                    continue
+            break
+        if not 'cancel_tag' in tags_to_remove:
+            hkml_tag.do_remove_tags(mail, tags_to_remove)
+        curses.reset_prog_mode()
+        slist.screen.clear()
 
 def get_menu_input_handlers():
     return scrollable_list_default_handlers() + [
@@ -365,7 +400,7 @@ def thread_menu_handler(c, slist):
                 '',
                 '- open', '- reply', '- list complete thread',
                 '- forward', '- continue draft writing',
-                '- add tags'],
+                '- add tags', '- remove tags'],
             slist.focus_color, slist.normal_color, get_menu_input_handlers())
     menu_list.parent_list = slist
     menu_list.draw()
