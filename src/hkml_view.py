@@ -295,10 +295,35 @@ def reply_mail_handler(c, slist):
     curses.reset_prog_mode()
     slist.screen.clear()
 
+def menu_selection_handler(c, slist):
+    focused_line = slist.lines[slist.focus_row]
+    if focused_line == 'open':
+        open_mail_handler(c, slist.parent_list)
+    elif focused_line == 'reply':
+        reply_mail_handler(c, slist.parent_list)
+
+def get_menu_input_handlers():
+    return scrollable_list_default_handlers() + [
+            InputHandler(['\n'], menu_selection_handler,
+                         'execute focused item'),
+            ]
+
+def thread_menu_handler(c, slist):
+    mail = get_focused_mail(slist)
+    if mail is None:
+        return
+    menu_list = ScrollableList(
+            slist.screen,
+            ['open', 'reply'],
+            slist.focus_color, slist.normal_color, get_menu_input_handlers())
+    menu_list.parent_list = slist
+    menu_list.draw()
+
 def get_thread_input_handlers():
     return scrollable_list_default_handlers() + [
             InputHandler(['o', '\n'], open_mail_handler, 'open focused mail'),
             InputHandler(['r'], reply_mail_handler, 'reply focused mail'),
+            InputHandler(['m'], thread_menu_handler, 'open menu'),
             ]
 
 def list_thread_handler(c, slist):
