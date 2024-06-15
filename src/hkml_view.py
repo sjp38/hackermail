@@ -13,6 +13,7 @@ import hkml_list
 import hkml_open
 import hkml_reply
 import hkml_send
+import hkml_tag
 import hkml_thread
 import hkml_write
 
@@ -330,6 +331,20 @@ def mails_list_menu_selection_handler(c, slist):
                 cc=None, body=None, attach=None, format_only=None)
         curses.reset_prog_mode()
         slist.screen.clear()
+    elif focused_line == '- add tags':
+        mail = get_focused_mail(slist.parent_list)
+        if mail is None:
+            return
+        slist.screen.clear()
+        slist.screen.refresh()
+        curses.reset_shell_mode()
+        prompt = ' '.join(['Enter tags separated by white spaces',
+                           '(enter \'cancel_tag\' to cancel): '])
+        tags = input(prompt).split()
+        if not 'cancel_tag' in tags:
+            hkml_tag.do_add_tags(mail, tags)
+        curses.reset_prog_mode()
+        slist.screen.clear()
 
 def get_menu_input_handlers():
     return scrollable_list_default_handlers() + [
@@ -349,7 +364,8 @@ def thread_menu_handler(c, slist):
                 'focus an item below and press Enter',
                 '',
                 '- open', '- reply', '- list complete thread',
-                '- forward', '- continue draft writing'],
+                '- forward', '- continue draft writing',
+                '- add tags'],
             slist.focus_color, slist.normal_color, get_menu_input_handlers())
     menu_list.parent_list = slist
     menu_list.draw()
