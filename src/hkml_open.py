@@ -83,6 +83,10 @@ def show_text(text, to_stdout, use_less, string_after_less):
         hkml_view.view(text, None)
 
 def main(args):
+    if os.path.isfile(args.target):
+        with open(args.target, 'r') as f:
+            return show_text(f.read(), args.stdout, args.use_less, None)
+
     noti_current_index = True
     if args.target == 'prev':
         args.target = last_open_mail_idx() - 1
@@ -125,6 +129,7 @@ def set_argparser(parser):
                     '1. Index of a mail from the last open mails list/thread.',
                     '2. \'next\': last open mail index plus one.',
                     '3. \'prev\': last open mail index minus one.',
+                    '4. text file',
                     ]))
     parser.add_argument(
             '--stdout', action='store_true', help='print without a pager')
