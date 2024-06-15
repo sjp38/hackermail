@@ -84,18 +84,12 @@ def format_mbox(subject, in_reply_to, to, cc, body, from_, draft_mail,
                 lines.append('\n%s\n%s' % (marker_line, f.read()))
     return '\n'.join(lines)
 
-def main(args):
-    draft_mail = None
-    if args.draft is not None:
-        draft_mail = hkml_list.get_mail(args.draft)
-        if draft_mail is None:
-            print('failed getting draft mail of the index.')
-            exit(1)
+def write_send_mail(draft_mail, subject, in_reply_to, to, cc, body, attach,
+                    format_only):
+    mbox = format_mbox(subject, in_reply_to, to, cc, body, None, draft_mail,
+                       attach)
 
-    mbox = format_mbox(args.subject, args.in_reply_to, args.to, args.cc,
-        args.body, None, draft_mail, args.attach)
-
-    if args.format_only:
+    if format_only:
         print(mbox)
         return
 
@@ -106,6 +100,17 @@ def main(args):
         print('writing mail with editor failed')
         exit(1)
     hkml_send.send_mail(tmp_path, get_confirm=True)
+
+def main(args):
+    draft_mail = None
+    if args.draft is not None:
+        draft_mail = hkml_list.get_mail(args.draft)
+        if draft_mail is None:
+            print('failed getting draft mail of the index.')
+            exit(1)
+
+    write_send_mail(draft_mail, args.subject, args.in_reply_to, args.to,
+                    args.cc, args.body, args.attach, args.format_only)
 
 def add_common_arguments(parser):
     parser.add_argument('--attach', metavar='<file>', nargs='+',
