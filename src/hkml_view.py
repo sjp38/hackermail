@@ -304,9 +304,9 @@ def reply_mail_handler(c, slist):
 
 def menu_selection_handler(c, slist):
     focused_line = slist.lines[slist.focus_row]
-    if focused_line == 'open':
+    if focused_line == '- open':
         open_mail_handler(c, slist.parent_list)
-    elif focused_line == 'reply':
+    elif focused_line == '- reply':
         reply_mail_handler(c, slist.parent_list)
 
 def get_menu_input_handlers():
@@ -324,7 +324,9 @@ def thread_menu_handler(c, slist):
             [
                 'selected mail: %s' % mail.subject,
                 '',
-                'open', 'reply'],
+                'focus an item below and press Enter',
+                '',
+                '- open', '- reply'],
             slist.focus_color, slist.normal_color, get_menu_input_handlers())
     menu_list.parent_list = slist
     menu_list.draw()
