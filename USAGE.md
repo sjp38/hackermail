@@ -473,26 +473,64 @@ Interactive Viewer
 Outputs of `list`, `thread`, and `open` are shown by `hkml`'s interactive
 viewer by default.  The viewer maintains focus on a line of the content.  Users
 can move the focus and make the focused-line's context-based actions using
-short cut keys.  Pressing '?' key shows available key bindings of current
-screen.  The actions include moving focus, open/forwarding a mail, replying to
-a mail, managing tags of a mail, opening selection-based menu, etc.
+short cut keys.  The actions include moving focus, open/forwarding a mail,
+replying to a mail, managing tags of a mail, opening selection-based menu, etc.
 
-The available key bindings and menu selections depend on the content of the
-screen and focused line.  In case of mails list (`hkml list` or `hkml thread`
-output), actions for focused mail are available.
+Default Key Bindings
+---------------------
 
-In case of general text (`hkml open` output or mail content opened from `hkml
-list` output), if focused line includes git commit ids or public-inbox mail
-links, some useful actions are available.  If the line contains git commit ids,
-the context-based menu ('`m`' key) shows selection for doing `git show` or `git
-log` of the commits and showing the output.  The command output is shown as
-general text.
+Pressing '?' key shows available key bindings of current screen.  The available
+key bindings and context-based menu items depend on the content of the screen
+and focused line.
+
+Regardless of the type, `j` and `k` key move focus down and up.  Pressing `m`
+key opens context-based menu that shows items that can be selected.  `/` key
+allows keyword highlighting.
+
+Mails List Screen
+-----------------
+
+If the content of the screen is mails list (`hkml list` or `hkml thread`
+output), actions for mail of the focused line becomes available.
+
+Pressing `o` or `<Enter>` key opens the focused mail's content.  The content is
+shown with a text screen viewer [type](#text-screen).
+
+Pressing `t` lists the complete thread of the focused mail.  The list is shown
+with mails list screen [type](#mails-list-screen).
+
+Pressing `r` starts writing a reply to the focused mail.
+
+Pressing `f` starts forwarding the focused mail.
+
+Pressing `m` opens a selection-based menu.  From the menu, users can do abovely
+explained actions.  In addition to that, the menu allows writing a mail using
+the focused one as a draft, and managing tags of the mail.
+
+Text Screen
+-----------
+
+If the screen is showing a general text (`hkml open` output or mail content
+opened from `hkml list` output), the screen is call text screen type.
+
+From this type, no additional key binding is supported.  However, the menu (`m`
+key) on this screen shows some items that mails list screen doesn't show.
+
+It shows no menu if the focused line is not having any git commit id or
+public-inbox mail link.
+
+If the line contains git commit ids, the men shows items for doing `git show`
+or `git log` of the commit ids and showing the output.  The command output is
+shown as general text.
 
 If the line contains public-inbox mail links, the context-based menu ('`m`'
 key) shows selections for opening the mail or listing the thread of the mail.
+The text screen and mails list screen are used for opening the mail and listing
+the thread options, respectively.
 
-Regardless of the type of the content, the viewer supports highlighting given
-keyword ('`/`' key).
+Note that `hkml open` allows opening normal text files.  Hence the comit ids
+and public-inbox links based feature can help browsing of commit history and
+related discussions.
 
 Exporting Mails
 ===============
