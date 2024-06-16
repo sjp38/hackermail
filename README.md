@@ -19,6 +19,9 @@ Demo
 [![asciicast](https://asciinema.org/a/632442.svg)](https://asciinema.org/a/632442)
 ![interactive list](images/hkml_interactive_list_demo.gif)
 
+(Note that the above demos are recorded on an old version of `hkml`.  Latest
+version may have different features/interface.)
+
 
 Getting Started
 ===============
