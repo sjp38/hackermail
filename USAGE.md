@@ -489,9 +489,16 @@ Pressing '?' key shows available key bindings of current screen.  The available
 key bindings and context-based menu items depend on the content of the screen
 and focused line.
 
-Regardless of the type, `j` and `k` key move focus down and up.  Pressing `m`
-key opens context-based menu that shows items that can be selected.  `/` key
-allows keyword highlighting.
+Regardless of the type, below keys are supported.
+
+`j` and `k` key move focus down and up.
+
+Pressing `m` key opens context-based menu that shows items that can be
+selected.
+
+`/` key starts keyword highlighting.
+
+`q` key quits current screen.
 
 Mails List Screen
 -----------------
