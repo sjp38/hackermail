@@ -37,6 +37,10 @@ W: write new
 ?: help
 '''
 
+focus_color = None
+normal_color = None
+highlight_color = None
+
 class InputHandler:
     to_handle = None
     handler_fn = None   # receives input_chr and an argument (ScrollableList)
@@ -88,9 +92,9 @@ class ScrollableList:
             if line_idx >= len(self.lines):
                 break
             if line_idx == self.focus_row:
-                color = self.focus_color
+                color = focus_color
             else:
-                color = self.normal_color
+                color = normal_color
 
             line = self.lines[line_idx]
             self.screen.addstr(row, 0, line, color)
@@ -103,7 +107,7 @@ class ScrollableList:
                     if idx == -1:
                         break
                     self.screen.addstr(row, search_from + idx, keyword,
-                                       curses.color_pair(3))
+                                       highlight_color)
                     search_from += len(keyword)
 
             drawn.append(self.lines[line_idx])
@@ -507,6 +511,10 @@ def list_thread_handler(c, slist):
     thread_list.draw()
 
 def __view(stdscr, text_to_show, mail_idx_key_map):
+    global focus_color
+    global normal_color
+    global highlight_color
+
     text_lines = text_to_show.split('\n')
 
     curses.init_pair(1, curses.COLOR_GREEN, curses.COLOR_BLACK)
