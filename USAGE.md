@@ -265,6 +265,12 @@ Signed-off-by: SeongJae Park <sj@kernel.org>
 The output is shown by `hkml`'s interactive viewer by default.  Refer to the
 [section](#interactive-viewer) for details.
 
+`open` command supports not only mails from `list` or `thread` output, but also
+normal text files.  Since the command shows the content with `hkml`'s
+interactive viewer, which allows easy browsing of commits and public-inbox mail
+links, this can be useful for reading some files such as patches or `git`
+outputs.
+
 Tagging
 =======
 
