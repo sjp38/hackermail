@@ -9,6 +9,7 @@ import time
 
 import _hkml
 import hkml_cache
+import hkml_export
 import hkml_forward
 import hkml_list
 import hkml_open
@@ -457,6 +458,51 @@ def mails_list_apply_patch(c, slist):
     _ = input('Press <Enter> to return to hkml')
     shell_mode_end(slist)
 
+def mails_list_export(c, slist):
+    idx = focused_mail_idx(slist.parent_list.lines,
+                           slist.parent_list.focus_row)
+    shell_mode_start(slist)
+    print('Focused mail: %d' % idx)
+    print()
+    print('1. Export only focused mail')
+    print('2. Export a range of mails of the list')
+    print('3. Export all mails of the list')
+    print()
+    answer = input('Select: ')
+    try:
+        answer = int(answer)
+    except:
+        print('wrong input.  Return to hkml')
+        time.sleep(1)
+        shell_mode_end(slist)
+
+    if answer == 1:
+        export_range = [idx, idx + 1]
+    elif answer == 2:
+        answer = input(
+                'Enter starting/ending index (inclusive) of mails to export: ')
+        try:
+            export_range = [int(x) for x in answer.split()]
+            if len(export_range) != 2:
+                print('wrong input.  Return to hkml')
+                time.sleep(1)
+                shell_mode_end(slist)
+            export_range[1] += 1    # export receives half-open range
+        except:
+            print('wrong input.  Return to hkml')
+            time.sleep(1)
+            shell_mode_end(slist)
+    else:
+        export_range = None
+
+    file_name = input('Enter file name to export mails to: ')
+    hkml_export.main(argparse.Namespace(
+        hkml_dir=None, command='export', export_file=file_name,
+        range=export_range))
+    print()
+    _ = input('Completed.  Press <Enter> to return to hkml')
+    shell_mode_end(slist)
+
 mails_list_menu = [
         ['- open', mails_list_open_mail],
         ['- reply', mails_list_reply],
@@ -467,6 +513,7 @@ mails_list_menu = [
         ['- remove tags', mails_list_remove_tags],
         ['- check patch', mails_list_check_patch],
         ['- apply patch', mails_list_apply_patch],
+        ['- export as an mbox file', mails_list_export],
         ]
 
 def mails_list_menu_selection_handler(c, slist):
