@@ -225,7 +225,8 @@ def action_item_handler(c, slist):
             output = subprocess.check_output(
                     words, stderr=subprocess.DEVNULL).decode().split('\n')
         except Exception as e:
-            output = ['failed: %s' % e]
+            output = ['failed: %s' % e, '',
+                      'wrong commit id, or you are not on the git repo?']
         ScrollableList(slist.screen, output, get_text_viewer_handlers()).draw()
     elif words[:1] == ['hkml']:
         msgid = '<%s>' % words[-1]
