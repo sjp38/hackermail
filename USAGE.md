@@ -517,8 +517,17 @@ Pressing `r` starts writing a reply to the focused mail.
 Pressing `f` starts forwarding the focused mail.
 
 Pressing `m` opens a selection-based menu.  From the menu, users can do abovely
-explained actions.  In addition to that, the menu allows writing a mail using
-the focused one as a draft, and managing tags of the mail.
+explained actions.  In addition to that, the menu provides below options.
+
+- Writing a mail using the focused mail as its draft (same to `hkml write
+  --draft <focused mail>`.  Refer to 'Writing New Mails'
+  [section](#writing-new-mails) for details.).
+- Listing/adding/removing tags (Refer to 'Tagging' [section](#tagging) for
+  details) of the mail.
+- Checking patches (same to `hkml patch check <focused mail>`.  Refer to
+  'Patches Management' [section](#patches-management) for details.)
+- Applying patches (same to `hkml patch apply <focused mail>`.  Refer to
+  'Patches Management' [section](#patches-management) for details.)
 
 Text Screen
 -----------
