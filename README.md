@@ -32,8 +32,18 @@ List recent mails in Linux kernel DAMON subsystem mailing list
 The first command is required to be executed only once for initialization.
 
 The second command opens an interactive list of the mails.  From it, users can
-do actions for mails including opening, replying, and forwarding.  Press '?'
-for help.
+do actions for mails including below.
+
+- Opening a mail
+- Listing complete thread of a mail
+- Replying to a mail
+- Forwarding a mail
+- Continue writing a draft mail
+- Managing tags of a mail
+- Checking/applying patch mails
+- Exporting mails
+
+Press '?' for help.
 
 For more detail,
 
