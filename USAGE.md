@@ -146,6 +146,9 @@ The output maybe intuitive to understand.  The first column of the each mail is
 called index or identifier of the mail, and be used by other sub-commands that
 will be described below.
 
+The output is shown by `hkml`'s interactive viewer by default.  Refer to the
+[section](#interactive-viewer) for details.
+
 Supporting Mail Source Types
 ----------------------------
 
@@ -228,6 +231,9 @@ the mails of the thread in the previously generated list is listed.  Note that
 the mail indices are newly generated when mails are downloaded from the
 internet.
 
+The output is shown by `hkml`'s interactive viewer by default.  Refer to the
+[section](#interactive-viewer) for details.
+
 Reading Mails
 =============
 
@@ -255,6 +261,9 @@ design document.
 Signed-off-by: SeongJae Park <sj@kernel.org>
 [...]
 ```
+
+The output is shown by `hkml`'s interactive viewer by default.  Refer to the
+[section](#interactive-viewer) for details.
 
 Tagging
 =======
