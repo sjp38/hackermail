@@ -11,7 +11,3 @@
 - Support more inputs from 'hkml open'
   - message id
   - stdin
-- Interactive viewer imporovements
-  - Support other features
-    - writing
-  - Support refreshing list
