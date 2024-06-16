@@ -46,7 +46,8 @@ do actions for mails including below.
 - Checking/applying patch mails
 - Exporting mails
 
-Press '?' for help.
+Press '?' for help, or read "Interactive Viewer"
+[section](USAGE.md#interactive-viewer) of [USAGE.md](USAGE.md).
 
 For more detail,
 
