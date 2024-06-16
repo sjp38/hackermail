@@ -12,8 +12,6 @@
   - message id
   - stdin
 - Interactive viewer imporovements
-  - Further check if git id is correct git id (e.g., do git log and check
-    exception)
   - Support other features
     - writing
   - Support refreshing list
