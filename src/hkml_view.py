@@ -89,12 +89,23 @@ class ScrollableList:
                 break
             if line_idx == self.focus_row:
                 color = self.focus_color
-            elif (self.highlight_keyword is not None and
-                  self.highlight_keyword in self.lines[line_idx]):
-                    color = curses.color_pair(3)
             else:
                 color = self.normal_color
-            self.screen.addstr(row, 0, self.lines[line_idx], color)
+
+            line = self.lines[line_idx]
+            self.screen.addstr(row, 0, line, color)
+
+            keyword = self.highlight_keyword
+            if keyword is not None and keyword in line:
+                search_from = 0
+                while True:
+                    idx = line[search_from:].find(keyword)
+                    if idx == -1:
+                        break
+                    self.screen.addstr(row, search_from + idx, keyword,
+                                       curses.color_pair(3))
+                    search_from += len(keyword)
+
             drawn.append(self.lines[line_idx])
         if len(self.lines) < scr_rows - 1:
             drawn += [''] * (scr_rows - 1  - len(self.lines))
