@@ -7,7 +7,6 @@
   - mail fetched from public-inbox via curl is handled well, while that from
     git is not
   - e.g., 20240603161530.80789-1-yskelg@gmail.com
-- Document interactive list/viewer
 - Support more inputs from 'hkml open'
   - message id
   - stdin
