@@ -222,7 +222,8 @@ def action_item_handler(c, slist):
     words = words[1:]
     if words[:1] == ['git']:
         try:
-            output = _hkml.cmd_lines_output(words)
+            output = subprocess.check_output(
+                    words, stderr=subprocess.DEVNULL).decode().split('\n')
         except Exception as e:
             output = ['failed: %s' % e]
         ScrollableList(slist.screen, output, get_text_viewer_handlers()).draw()
