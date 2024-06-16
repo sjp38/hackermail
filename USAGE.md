@@ -9,6 +9,9 @@ Demo
 ![interactive list](images/hkml_interactive_list_demo.gif)
 [![asciicast](https://asciinema.org/a/632442.svg)](https://asciinema.org/a/632442)
 
+Note that the above demos are recorded on an old version of `hkml`.  Latest
+version may have different features/interface.
+
 Pre-requisites
 ==============
 
@@ -469,6 +472,9 @@ Interactive Viewer
 ==================
 
 ![interactive list](images/hkml_interactive_list_demo.gif)
+
+(Note that the above gif is recorded on an old version of `hkml`.  Latest
+version may have different features/interface.)
 
 Outputs of `list`, `thread`, and `open` are shown by `hkml`'s interactive
 viewer by default.  The viewer maintains focus on a line of the content.  Users
