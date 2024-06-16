@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: GPL-2.0
 
+import argparse
 import curses
 import subprocess
 import tempfile
@@ -11,6 +12,7 @@ import hkml_cache
 import hkml_forward
 import hkml_list
 import hkml_open
+import hkml_patch
 import hkml_reply
 import hkml_send
 import hkml_tag
@@ -433,6 +435,17 @@ def mails_list_remove_tags(c, slist):
             hkml_tag.do_remove_tags(mail, tags_to_remove)
         shell_mode_end(slist)
 
+def mails_list_check_patch(c, slist):
+    shell_mode_start(slist)
+    hkml_patch.main(argparse.Namespace(
+        hkml_dir=None, command='patch', dont_add_cv=False, action='check',
+        mail='%d' % focused_mail_idx(
+            slist.parent_list.lines, slist.parent_list.focus_row),
+        checker=None))
+    print()
+    _ = input('Press <Enter> to return to hkml')
+    shell_mode_end(slist)
+
 mails_list_menu = [
         ['- open', mails_list_open_mail],
         ['- reply', mails_list_reply],
@@ -441,6 +454,7 @@ mails_list_menu = [
         ['- show tags', mails_list_show_tags],
         ['- add tags', mails_list_add_tags],
         ['- remove tags', mails_list_remove_tags],
+        ['- check patch', mails_list_check_patch],
         ]
 
 def mails_list_menu_selection_handler(c, slist):
