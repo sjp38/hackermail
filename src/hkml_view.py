@@ -446,6 +446,17 @@ def mails_list_check_patch(c, slist):
     _ = input('Press <Enter> to return to hkml')
     shell_mode_end(slist)
 
+def mails_list_apply_patch(c, slist):
+    shell_mode_start(slist)
+    hkml_patch.main(argparse.Namespace(
+        hkml_dir=None, command='patch', dont_add_cv=False, action='apply',
+        mail='%d' % focused_mail_idx(
+            slist.parent_list.lines, slist.parent_list.focus_row),
+        repo='./'))
+    print()
+    _ = input('Press <Enter> to return to hkml')
+    shell_mode_end(slist)
+
 mails_list_menu = [
         ['- open', mails_list_open_mail],
         ['- reply', mails_list_reply],
@@ -455,6 +466,7 @@ mails_list_menu = [
         ['- add tags', mails_list_add_tags],
         ['- remove tags', mails_list_remove_tags],
         ['- check patch', mails_list_check_patch],
+        ['- apply patch', mails_list_apply_patch],
         ]
 
 def mails_list_menu_selection_handler(c, slist):
