@@ -60,23 +60,17 @@ class ScrollableList:
     screen = None
     lines = None
     focus_row = None
-    focus_color = None
-    normal_color = None
     input_handlers = None
     mail_idx_key_map = None
     highlight_keyword = None
 
-    def __init__(self, screen, lines, focus_color, normal_color,
-                 input_handlers):
+    def __init__(self, screen, lines, input_handlers):
         self.screen = screen
         self.lines = lines
 
         # set focus on middle of the screen or the content
         scr_rows, _ = screen.getmaxyx()
         self.focus_row = int(min(scr_rows / 2, len(lines) / 2))
-
-        self.focus_color = focus_color
-        self.normal_color = normal_color
         self.input_handlers = input_handlers
 
     def __draw(self):
@@ -177,8 +171,7 @@ def quit_list(c, slist):
     return 'quit list'
 
 def show_help_msg_list(c, slist):
-    ScrollableList(slist.screen, slist.help_msg_lines(), slist.focus_color,
-                   slist.normal_color,
+    ScrollableList(slist.screen, slist.help_msg_lines(),
                    scrollable_list_default_handlers()).draw()
 
 def scrollable_list_default_handlers():
@@ -226,9 +219,7 @@ def action_item_handler(c, slist):
             output = _hkml.cmd_lines_output(words)
         except Exception as e:
             output = ['failed: %s' % e]
-        ScrollableList(slist.screen, output, slist.focus_color,
-                       slist.normal_color,
-                       get_text_viewer_handlers()).draw()
+        ScrollableList(slist.screen, output, get_text_viewer_handlers()).draw()
     elif words[:1] == ['hkml']:
         msgid = '<%s>' % words[-1]
         thread_txt, mail_idx_key_map = hkml_thread.thread_str(msgid,
@@ -237,8 +228,8 @@ def action_item_handler(c, slist):
         hkml_list.cache_list_str('thread_output', thread_txt, mail_idx_key_map)
         if words[1] == 'thread':
             thread_list = ScrollableList(
-                    slist.screen, thread_txt.split('\n'), slist.focus_color,
-                    slist.normal_color, get_mails_list_input_handlers())
+                    slist.screen, thread_txt.split('\n'),
+                    get_mails_list_input_handlers())
             thread_list.mail_idx_key_map = mail_idx_key_map
             thread_list.draw()
         elif words[1] == 'open':
@@ -249,8 +240,7 @@ def action_item_handler(c, slist):
                 if mail.get_field('message-id') == msgid:
                     _, cols = slist.screen.getmaxyx()
                     lines = hkml_open.mail_display_str(mail, cols).split('\n')
-                    ScrollableList(slist.screen, lines, slist.focus_color,
-                                   slist.normal_color,
+                    ScrollableList(slist.screen, lines,
                                    get_text_viewer_handlers()).draw()
                     break
         else:
@@ -307,8 +297,7 @@ def show_available_action_items_handler(c, slist):
         return
     items = ['selected line: %s' % slist.lines[slist.focus_row], '',
              'focus an item below and press Enter', ''] + items
-    ScrollableList(slist.screen, items, slist.focus_color, slist.normal_color,
-                   get_action_item_handlers()).draw()
+    ScrollableList(slist.screen, items, get_action_item_handlers()).draw()
 
 def get_text_viewer_handlers():
     return scrollable_list_default_handlers() + [
@@ -323,8 +312,7 @@ def open_mail_handler(c, slist):
 
     _, cols = slist.screen.getmaxyx()
     lines = hkml_open.mail_display_str(mail, cols).split('\n')
-    ScrollableList(slist.screen, lines, slist.focus_color,
-                   slist.normal_color, get_text_viewer_handlers()).draw()
+    ScrollableList(slist.screen, lines, get_text_viewer_handlers()).draw()
 
 def reply_mail_handler(c, slist):
     mail = get_focused_mail(slist)
@@ -484,8 +472,7 @@ def thread_menu_handler(c, slist):
         menu_lines.append(txt)
 
     menu_list = ScrollableList(
-            slist.screen, menu_lines,
-            slist.focus_color, slist.normal_color, get_menu_input_handlers())
+            slist.screen, menu_lines, get_menu_input_handlers())
     menu_list.parent_list = slist
     menu_list.draw()
 
@@ -504,9 +491,8 @@ def list_thread_handler(c, slist):
     hkml_cache.writeback_mails()
     hkml_list.cache_list_str('thread_output', thread_txt, mail_idx_key_map)
 
-    thread_list = ScrollableList(
-            slist.screen, thread_txt.split('\n'), slist.focus_color,
-            slist.normal_color, get_mails_list_input_handlers())
+    thread_list = ScrollableList(slist.screen, thread_txt.split('\n'),
+                                 get_mails_list_input_handlers())
     thread_list.mail_idx_key_map = mail_idx_key_map
     thread_list.draw()
 
@@ -525,12 +511,11 @@ def __view(stdscr, text_to_show, mail_idx_key_map):
     highlight_color = curses.color_pair(3)
 
     if mail_idx_key_map is not None:
-        slist = ScrollableList(stdscr, text_lines, focus_color, normal_color,
+        slist = ScrollableList(stdscr, text_lines,
                                get_mails_list_input_handlers())
         slist.mail_idx_key_map = mail_idx_key_map
     else:
-        slist = ScrollableList(stdscr, text_lines, focus_color, normal_color,
-                               get_text_viewer_handlers())
+        slist = ScrollableList(stdscr, text_lines, get_text_viewer_handlers())
     return slist.draw()
 
 def view(text, mail_idx_key_map):
