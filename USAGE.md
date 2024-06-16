@@ -528,6 +528,9 @@ explained actions.  In addition to that, the menu provides below options.
   'Patches Management' [section](#patches-management) for details.)
 - Applying patches (same to `hkml patch apply <focused mail>`.  Refer to
   'Patches Management' [section](#patches-management) for details.)
+- Exporting focused mail, specific range of mails of the list, or entire mails
+  of the list to an mbox file (same to `hkml export`.  Refer to 'Exporting
+  Mails' [section](#exporting-mails) for details.).
 
 Text Screen
 -----------
