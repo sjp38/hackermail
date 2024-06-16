@@ -60,6 +60,7 @@ class ScrollableList:
     normal_color = None
     input_handlers = None
     mail_idx_key_map = None
+    highlight_keyword = None
 
     def __init__(self, screen, lines, focus_color, normal_color,
                  input_handlers):
@@ -88,6 +89,9 @@ class ScrollableList:
                 break
             if line_idx == self.focus_row:
                 color = self.focus_color
+            elif (self.highlight_keyword is not None and
+                  self.highlight_keyword in self.lines[line_idx]):
+                    color = curses.color_pair(3)
             else:
                 color = self.normal_color
             self.screen.addstr(row, 0, self.lines[line_idx], color)
@@ -143,6 +147,17 @@ def focus_down(c, slist):
 def focus_up(c, slist):
     slist.focus_row = max(slist.focus_row - 1, 0)
 
+def highlight_keyword(c, slist):
+    slist.screen.clear()
+    slist.screen.refresh()
+    curses.reset_shell_mode()
+
+    keyword = input('Enter keyword to highlight: ')
+    slist.highlight_keyword = keyword
+
+    curses.reset_prog_mode()
+    slist.screen.clear()
+
 def quit_list(c, slist):
     return 'quit list'
 
@@ -155,6 +170,7 @@ def scrollable_list_default_handlers():
     return [
             InputHandler(['j'], focus_down, 'focus down'),
             InputHandler(['k'], focus_up, 'focus up'),
+            InputHandler(['/'], highlight_keyword, 'highlight keyword'),
             InputHandler(['q'], quit_list, 'quit'),
             InputHandler(['?'], show_help_msg_list, 'show help message'),
             ]
@@ -486,6 +502,8 @@ def __view(stdscr, text_to_show, mail_idx_key_map):
     focus_color = curses.color_pair(1)
     curses.init_pair(2, curses.COLOR_WHITE, curses.COLOR_BLACK)
     normal_color = curses.color_pair(2)
+    curses.init_pair(3, curses.COLOR_BLACK, curses.COLOR_YELLOW)
+    highlight_color = curses.color_pair(3)
 
     if mail_idx_key_map is not None:
         slist = ScrollableList(stdscr, text_lines, focus_color, normal_color,
