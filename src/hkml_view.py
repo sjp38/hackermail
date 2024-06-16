@@ -403,37 +403,37 @@ def mails_list_add_tags(c, slist):
     shell_mode_end(slist)
 
 def mails_list_remove_tags(c, slist):
-        mail = get_focused_mail(slist.parent_list)
-        if mail is None:
-            return
-        msgid = mail.get_field('message-id')
-        tags_map = hkml_tag.read_tags_file()
-        if not msgid in tags_map:
-            slist.toast('the mail has no tag')
-            return
-        tags = tags_map[msgid]['tags']
+    mail = get_focused_mail(slist.parent_list)
+    if mail is None:
+        return
+    msgid = mail.get_field('message-id')
+    tags_map = hkml_tag.read_tags_file()
+    if not msgid in tags_map:
+        slist.toast('the mail has no tag')
+        return
+    tags = tags_map[msgid]['tags']
 
-        shell_mode_start(slist)
+    shell_mode_start(slist)
 
-        print('the mail has below tags:')
-        for tag in tags:
-            print('- %s' % tag)
-        print()
-        while True:
-            prompt = ' '.join(
-                    ['Enter tags to remove separted by white space',
-                     '(enter \'cancel_tag\' to cancel): '])
-            tags_to_remove = input(prompt).split()
-            if 'cancel_tag' in tags_to_remove:
-                break
-            for tag in tags_to_remove:
-                if not tag in tags:
-                    print('the mail is not tagged as %s' % tag)
-                    continue
+    print('the mail has below tags:')
+    for tag in tags:
+        print('- %s' % tag)
+    print()
+    while True:
+        prompt = ' '.join(
+                ['Enter tags to remove separted by white space',
+                 '(enter \'cancel_tag\' to cancel): '])
+        tags_to_remove = input(prompt).split()
+        if 'cancel_tag' in tags_to_remove:
             break
-        if not 'cancel_tag' in tags_to_remove:
-            hkml_tag.do_remove_tags(mail, tags_to_remove)
-        shell_mode_end(slist)
+        for tag in tags_to_remove:
+            if not tag in tags:
+                print('the mail is not tagged as %s' % tag)
+                continue
+        break
+    if not 'cancel_tag' in tags_to_remove:
+        hkml_tag.do_remove_tags(mail, tags_to_remove)
+    shell_mode_end(slist)
 
 def mails_list_check_patch(c, slist):
     shell_mode_start(slist)
