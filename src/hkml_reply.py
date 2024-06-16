@@ -27,7 +27,7 @@ def format_reply(mail, attach_file):
         body_lines.append('> %s' % line)
     body = '\n'.join(body_lines)
     return hkml_write.format_mbox(subject, in_reply_to, to, cc, body,
-                                  from_=None, draft=None,
+                                  from_=None, draft_mail=None,
                                   attach_files=attach_file)
 
 def reply(mail, attach_files, format_only):

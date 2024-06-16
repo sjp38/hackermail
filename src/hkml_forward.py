@@ -18,8 +18,8 @@ def forward(mail, subject=None, in_reply_to=None, to=None, cc=None,
         subject = 'Fwd: %s' % mail.subject
 
     mbox = hkml_write.format_mbox(
-            subject, in_reply_to, to, cc, mail_str, from_=None, draft=None,
-            attach_files=attach_files)
+            subject, in_reply_to, to, cc, mail_str, from_=None,
+            draft_mail=None, attach_files=attach_files)
 
     if format_only:
         print(mbox)
