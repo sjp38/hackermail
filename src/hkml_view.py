@@ -150,6 +150,15 @@ class ScrollableList:
             lines.append('%s: %s' % (input_chrs, handler.help_msg))
         return lines
 
+def shell_mode_start():
+    slist.screen.clear()
+    slist.screen.refresh()
+    curses.reset_shell_mode()
+
+def shell_mode_end(slist):
+    curses.reset_prog_mode()
+    slist.screen.clear()
+
 def focus_down(c, slist):
     slist.focus_row = min(slist.focus_row + 1, len(slist.lines) - 1)
 
