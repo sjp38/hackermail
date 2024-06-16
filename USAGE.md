@@ -6,6 +6,7 @@ this document via GitHub issues.
 Demo
 ====
 
+![interactive list](images/hkml_interactive_list_demo.gif)
 [![asciicast](https://asciinema.org/a/632442.svg)](https://asciinema.org/a/632442)
 
 Pre-requisites
@@ -448,6 +449,35 @@ to_read_later: 3 mails
 to_review_later: 3 mails
 to_test_later: 4 mails
 ```
+
+Interactive Viewer
+==================
+
+![interactive list](images/hkml_interactive_list_demo.gif)
+
+Outputs of `list`, `thread`, and `open` are shown by `hkml`'s interactive
+viewer by default.  The viewer maintains focus on a line of the content.  Users
+can move the focus and make the focused-line's context-based actions using
+short cut keys.  Pressing '?' key shows available key bindings of current
+screen.  The actions include moving focus, open/forwarding a mail, replying to
+a mail, managing tags of a mail, opening selection-based menu, etc.
+
+The available key bindings and menu selections depend on the content of the
+screen and focused line.  In case of mails list (`hkml list` or `hkml thread`
+output), actions for focused mail are available.
+
+In case of general text (`hkml open` output or mail content opened from `hkml
+list` output), if focused line includes git commit ids or public-inbox mail
+links, some useful actions are available.  If the line contains git commit ids,
+the context-based menu ('`m`' key) shows selection for doing `git show` or `git
+log` of the commits and showing the output.  The command output is shown as
+general text.
+
+If the line contains public-inbox mail links, the context-based menu ('`m`'
+key) shows selections for opening the mail or listing the thread of the mail.
+
+Regardless of the type of the content, the viewer supports highlighting given
+keyword ('`/`' key).
 
 Exporting Mails
 ===============
