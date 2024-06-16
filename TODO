@@ -12,12 +12,8 @@
   - message id
   - stdin
 - Interactive viewer imporovements
-  - Implement keyword search/highlight
-  - Handle 'git' failure-causing screen corruption
   - Further check if git id is correct git id (e.g., do git log and check
     exception)
   - Support other features
-    - exporting
     - writing
-    - patch check/apply
   - Support refreshing list
