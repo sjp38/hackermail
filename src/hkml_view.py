@@ -150,7 +150,7 @@ class ScrollableList:
             lines.append('%s: %s' % (input_chrs, handler.help_msg))
         return lines
 
-def shell_mode_start():
+def shell_mode_start(slist):
     slist.screen.clear()
     slist.screen.refresh()
     curses.reset_shell_mode()
@@ -166,15 +166,12 @@ def focus_up(c, slist):
     slist.focus_row = max(slist.focus_row - 1, 0)
 
 def highlight_keyword(c, slist):
-    slist.screen.clear()
-    slist.screen.refresh()
-    curses.reset_shell_mode()
+    shell_mode_start(slist)
 
     keyword = input('Enter keyword to highlight: ')
     slist.highlight_keyword = keyword
 
-    curses.reset_prog_mode()
-    slist.screen.clear()
+    shell_mode_end(slist)
 
 def quit_list(c, slist):
     return 'quit list'
@@ -328,10 +325,9 @@ def reply_mail_handler(c, slist):
     if mail is None:
         return
 
-    curses.reset_shell_mode()
+    shell_mode_start(slist)
     hkml_reply.reply(mail, attach_files=None, format_only=None)
-    curses.reset_prog_mode()
-    slist.screen.clear()
+    shell_mode_end(slist)
 
 def mails_list_open_mail(c, slist):
     open_mail_handler(c, slist.parent_list)
@@ -346,21 +342,19 @@ def mails_list_forward(c, slist):
     mail = get_focused_mail(slist.parent_list)
     if mail is None:
         return
-    curses.reset_shell_mode()
+    shell_mode_start(slist)
     hkml_forward.forward(mail)
-    curses.reset_prog_mode()
-    slist.screen.clear()
+    shell_mode_end(slist)
 
 def mails_list_continue_draft(c, slist):
     mail = get_focused_mail(slist.parent_list)
     if mail is None:
         return
-    curses.reset_shell_mode()
+    shell_mode_start(slist)
     hkml_write.write_send_mail(
             draft_mail=mail, subject=None, in_reply_to=None, to=None,
             cc=None, body=None, attach=None, format_only=None)
-    curses.reset_prog_mode()
-    slist.screen.clear()
+    shell_mode_end(slist)
 
 def mails_list_show_tags(c, slist):
     mail = get_focused_mail(slist.parent_list)
@@ -373,25 +367,20 @@ def mails_list_show_tags(c, slist):
         return
     tags = tags_map[msgid]['tags']
 
-    slist.screen.clear()
-    slist.screen.refresh()
-    curses.reset_shell_mode()
+    shell_mode_start(slist)
 
     print('the mail has below tags:')
     for tag in tags:
         print('- %s' % tag)
     print()
     _ = input('Press <Enter> to return')
-    curses.reset_prog_mode()
-    slist.screen.clear()
+    shell_mode_end(slist)
 
 def mails_list_add_tags(c, slist):
     mail = get_focused_mail(slist.parent_list)
     if mail is None:
         return
-    slist.screen.clear()
-    slist.screen.refresh()
-    curses.reset_shell_mode()
+    shell_mode_start(slist)
 
     msgid = mail.get_field('message-id')
     tags_map = hkml_tag.read_tags_file()
@@ -407,8 +396,7 @@ def mails_list_add_tags(c, slist):
     tags = input(prompt).split()
     if not 'cancel_tag' in tags:
         hkml_tag.do_add_tags(mail, tags)
-    curses.reset_prog_mode()
-    slist.screen.clear()
+    shell_mode_end(slist)
 
 def mails_list_remove_tags(c, slist):
         mail = get_focused_mail(slist.parent_list)
@@ -421,9 +409,7 @@ def mails_list_remove_tags(c, slist):
             return
         tags = tags_map[msgid]['tags']
 
-        slist.screen.clear()
-        slist.screen.refresh()
-        curses.reset_shell_mode()
+        shell_mode_start(slist)
 
         print('the mail has below tags:')
         for tag in tags:
@@ -443,8 +429,7 @@ def mails_list_remove_tags(c, slist):
             break
         if not 'cancel_tag' in tags_to_remove:
             hkml_tag.do_remove_tags(mail, tags_to_remove)
-        curses.reset_prog_mode()
-        slist.screen.clear()
+        shell_mode_end(slist)
 
 mails_list_menu = [
         ['- open', mails_list_open_mail],
