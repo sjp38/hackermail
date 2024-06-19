@@ -266,8 +266,15 @@ def is_git_hash(word):
     return True
 
 def get_msgid_from_public_inbox_link(word):
-    site_url = _hkml.get_manifest()['site']
-    if not word.startswith(site_url) or len(word) < len(site_url) + 1:
+    site_urls = [_hkml.get_manifest()['site']]
+    site_urls += ['https://lkml.kernel.org', 'https://patch.msgid.link',
+                  'https://msgid.link']
+    not_public_inbox_link = True
+    for site_url in site_urls:
+        if word.startswith(site_url) and len(word) >= len(site_url) + 1:
+            not_public_inbox_link = False
+            break
+    if not_public_inbox_link:
         return None
     tokens = word.split('/')
     if tokens[-1] == '':
