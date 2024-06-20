@@ -165,8 +165,17 @@ def shell_mode_end(slist):
 def focus_down(c, slist):
     slist.focus_row = min(slist.focus_row + 1, len(slist.lines) - 1)
 
+def focus_down_half_page(c, slist):
+    rows, _ = slist.screen.getmaxyx()
+    slist.focus_row = min(
+            slist.focus_row + int(rows / 2), len(slist.lines) - 1)
+
 def focus_up(c, slist):
     slist.focus_row = max(slist.focus_row - 1, 0)
+
+def focus_up_half_page(c, slist):
+    rows, _ = slist.screen.getmaxyx()
+    slist.focus_row = max(slist.focus_row - int(rows / 2), 0)
 
 def focus_set(c, slist):
     shell_mode_start(slist)
@@ -205,7 +214,9 @@ def show_help_msg_list(c, slist):
 def scrollable_list_default_handlers():
     return [
             InputHandler(['j'], focus_down, 'focus down'),
+            InputHandler(['J'], focus_down_half_page, 'focus down half page'),
             InputHandler(['k'], focus_up, 'focus up'),
+            InputHandler(['K'], focus_up_half_page, 'focus up half page'),
             InputHandler([':'], focus_set, 'focus specific line'),
             InputHandler(['/'], highlight_keyword, 'highlight keyword'),
             InputHandler(['q'], quit_list, 'quit'),
