@@ -168,6 +168,25 @@ def focus_down(c, slist):
 def focus_up(c, slist):
     slist.focus_row = max(slist.focus_row - 1, 0)
 
+def focus_set(c, slist):
+    shell_mode_start(slist)
+
+    answer = input('Enter line to move: ')
+    if answer == 'start':
+        answer = 0
+    elif answer == 'end':
+        answer = len(slist.lines) - 1
+    else:
+        try:
+            answer = min(int(answer), len(slist.lines) - 1)
+        except Exception as e:
+            print('wrong answer')
+            time.sleep(1)
+            shell_mode_end(slist)
+            return
+    slist.focus_row = answer
+    shell_mode_end(slist)
+
 def highlight_keyword(c, slist):
     shell_mode_start(slist)
 
@@ -187,6 +206,7 @@ def scrollable_list_default_handlers():
     return [
             InputHandler(['j'], focus_down, 'focus down'),
             InputHandler(['k'], focus_up, 'focus up'),
+            InputHandler([':'], focus_set, 'focus specific line'),
             InputHandler(['/'], highlight_keyword, 'highlight keyword'),
             InputHandler(['q'], quit_list, 'quit'),
             InputHandler(['?'], show_help_msg_list, 'show help message'),
