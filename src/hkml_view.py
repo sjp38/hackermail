@@ -132,7 +132,7 @@ class ScrollableList:
             if break_loop:
                 break
             if self.mail_idx_key_map:
-                _, last_mail_idx_key_map = hkml_list.get_last_list()
+                _, last_mail_idx_key_map = hkml_list.get_last_mails_list()
                 if self.mail_idx_key_map != last_mail_idx_key_map:
                     hkml_list.cache_list_str(
                             'thread_output', '\n'.join(self.lines),
