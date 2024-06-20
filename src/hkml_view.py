@@ -396,12 +396,13 @@ def mails_list_add_tags(c, slist):
 
     msgid = mail.get_field('message-id')
     tags_map = hkml_tag.read_tags_file()
-    current_tags = tags_map[msgid]['tags']
-    if len(current_tags) > 0:
-        print('the mail has below tags:')
-        for tag in current_tags:
-            print('- %s' % tag)
-        print()
+    if msgid in tags_map:
+        current_tags = tags_map[msgid]['tags']
+        if len(current_tags) > 0:
+            print('the mail has below tags:')
+            for tag in current_tags:
+                print('- %s' % tag)
+            print()
 
     prompt = ' '.join(['Enter tags separated by white spaces',
                        '(enter \'cancel_tag\' to cancel): '])
