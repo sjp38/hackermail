@@ -10,7 +10,9 @@ For now, hackermail supports
 [public-inbox](https://public-inbox.org/design_notes.html) managed mailing list
 archives and manually exported mbox file contents.  Linux Kernel Mailing Lists
 [(LKML)](https://kernel.org/lore.html) are good examples of the public-inbox
-managed mailing list archives.
+managed mailing list archives.  Specifically, it is being used for, and aimed
+to support development of [DAMON](https://damonitor.github.io) and general
+parts of Linux kernel.
 
 
 Demo
