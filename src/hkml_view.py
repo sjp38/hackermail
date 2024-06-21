@@ -211,6 +211,13 @@ def focus_next_keyword(c, slist):
             return
     slist.toast('no more keyword found')
 
+def focus_prev_keyword(c, slist):
+    for idx in range(slist.focus_row - 1, 0, -1):
+        if slist.highlight_keyword in slist.lines[idx]:
+            slist.focus_row = idx
+            return
+    slist.toast('no prev keyword found')
+
 def quit_list(c, slist):
     return 'quit list'
 
@@ -231,6 +238,8 @@ def scrollable_list_default_handlers():
             InputHandler(['/'], highlight_keyword, 'highlight keyword'),
             InputHandler(['n'], focus_next_keyword,
                          'focus the row of next highlighted keyword'),
+            InputHandler(['N'], focus_prev_keyword,
+                         'focus the row of prev highlighted keyword'),
             InputHandler(['q'], quit_list, 'quit current screen'),
             InputHandler(['Q'], quit_hkml, 'quit hkml'),
             InputHandler(['?'], show_help_msg_list, 'show help message'),
