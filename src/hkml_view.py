@@ -66,6 +66,7 @@ class ScrollableList:
     input_handlers = None
     mail_idx_key_map = None
     highlight_keyword = None
+    last_drawn = None
 
     def __init__(self, screen, lines, input_handlers):
         self.screen = screen
@@ -119,7 +120,7 @@ class ScrollableList:
 
     def draw(self):
         while True:
-            last_drawn = self.__draw()
+            self.last_drawn = self.__draw()
 
             x = self.screen.getch()
             c = chr(x)
@@ -137,7 +138,6 @@ class ScrollableList:
                     hkml_list.cache_list_str(
                             'thread_output', '\n'.join(self.lines),
                             self.mail_idx_key_map)
-        return last_drawn
 
     def toast(self, message):
         scr_rows, scr_cols = self.screen.getmaxyx()
@@ -207,6 +207,9 @@ def highlight_keyword(c, slist):
 def quit_list(c, slist):
     return 'quit list'
 
+def quit_hkml(c, slist):
+    raise Exception('terminate hkml', slist)
+
 def show_help_msg_list(c, slist):
     ScrollableList(slist.screen, slist.help_msg_lines(),
                    scrollable_list_default_handlers()).draw()
@@ -219,7 +222,8 @@ def scrollable_list_default_handlers():
             InputHandler(['K'], focus_up_half_page, 'focus up half page'),
             InputHandler([':'], focus_set, 'focus specific line'),
             InputHandler(['/'], highlight_keyword, 'highlight keyword'),
-            InputHandler(['q'], quit_list, 'quit'),
+            InputHandler(['q'], quit_list, 'quit current screen'),
+            InputHandler(['Q'], quit_hkml, 'quit hkml'),
             InputHandler(['?'], show_help_msg_list, 'show help message'),
             ]
 
@@ -624,8 +628,15 @@ def __view(stdscr, text_to_show, mail_idx_key_map):
         slist.mail_idx_key_map = mail_idx_key_map
     else:
         slist = ScrollableList(stdscr, text_lines, get_text_viewer_handlers())
-    return slist.draw()
+    slist.draw()
+    return slist
 
 def view(text, mail_idx_key_map):
-    last_drawn = curses.wrapper(__view, text, mail_idx_key_map)
-    print('\n'.join(last_drawn))
+    try:
+        slist = curses.wrapper(__view, text, mail_idx_key_map)
+    except Exception as e:
+        if len(e.args) == 2 and e.args[0] == 'terminate hkml':
+            slist = e.args[1]
+        else:
+            raise e
+    print('\n'.join(slist.last_drawn))
