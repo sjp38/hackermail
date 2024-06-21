@@ -1,5 +1,14 @@
 This file contains major changes in each version since v1.0.0
 
+v1.1.1
+- Mention DAMON and general Linux kernel workflow as supported
+- More key bindings for interactive screen
+  - 'J', 'K': focus donw/up 1/2 screen
+  - ':': focus arbitrary line or 'start'/'end'
+  - 'Q': terminate hkml at once
+  - 'n', 'N': focus next/prev row having highlighted keyword
+- Fixup slow scroll speed of threads
+
 v1.1.0
 - 'hkml open' improvements
   - Use interactive viewer
