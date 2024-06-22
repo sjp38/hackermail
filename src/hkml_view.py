@@ -622,8 +622,11 @@ def mails_list_save(c, slist):
         shell_mode_end(slist)
         return
     if answer == 1:
-        answer = input('Enter name of the file: ')
-        with open(answer, 'w') as f:
+        file_path = receive_file_path(for_read=False)
+        if file_path is None:
+            shell_mode_end(slist)
+            return
+        with open(file_path, 'w') as f:
             f.write('\n'.join(slist.parent_list.lines))
     elif answer == 2:
         _, tmp_path = tempfile.mkstemp(prefix='hkml_view_save_')
