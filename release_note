@@ -7,6 +7,7 @@ v1.1.1
   - ':': focus arbitrary line or 'start'/'end'
   - 'Q': terminate hkml at once
   - 'n', 'N': focus next/prev row having highlighted keyword
+- Support attaching files to reply/forward from interactive viewer
 - Fixup slow scroll speed of threads
 
 v1.1.0
