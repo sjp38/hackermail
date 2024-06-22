@@ -31,13 +31,12 @@ Getting Started
 List recent mails in Linux kernel DAMON subsystem mailing list
 (https://lore.kernel.org/damon):
 
-    $ ./hkml init --manifest ./manifests/lore.js
     $ ./hkml list damon --fetch
 
-The first command is required to be executed only once for initialization.
-
-The second command opens an interactive list of the mails.  From it, users can
-do actions for mails including below.
+For the first time, the command will ask you if you want to do initialize the
+setup, with some questions.  Select default options for questions.  Then, it
+will open an interactive list of the mails.  From it, users can do actions for
+mails including below.
 
 - Opening a mail
 - Listing complete thread of a mail
