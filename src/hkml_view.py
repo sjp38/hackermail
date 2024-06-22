@@ -309,6 +309,10 @@ def action_item_handler(c, slist):
                     break
         else:
             slist.toast('not supported yet')
+    elif words[:1] == ['save']:
+        shell_mode_start(slist)
+        save_as('\n'.join(slist.parent_list.lines))
+        shell_mode_end(slist)
 
 def is_git_hash(word):
     if len(word) < 10:
@@ -354,6 +358,7 @@ def find_actionable_items(slist):
         if msgid is not None:
             action_items.append('- hkml thread %s' % msgid)
             action_items.append('- hkml open %s' % msgid)
+    action_items.append('- save entire content as ...')
     return action_items
 
 def get_action_item_handlers():
@@ -368,7 +373,9 @@ def show_available_action_items_handler(c, slist):
         return
     items = ['selected line: %s' % slist.lines[slist.focus_row], '',
              'focus an item below and press Enter', ''] + items
-    ScrollableList(slist.screen, items, get_action_item_handlers()).draw()
+    menu_list = ScrollableList(slist.screen, items, get_action_item_handlers())
+    menu_list.parent_list = slist
+    menu_list.draw()
 
 def get_text_viewer_handlers():
     return scrollable_list_default_handlers() + [
