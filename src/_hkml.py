@@ -12,6 +12,7 @@ import time
 import sys
 
 import hkml_cache
+import hkml_init
 import hkml_list
 
 def cmd_str_output(cmd):
@@ -359,7 +360,11 @@ def set_hkml_dir(path=None):
         sys.stderr.write('    \'hkml\' binary directory (%s), and\n' % cwd_dir)
         sys.stderr.write('    your home directory (%s)\n' % cwd_dir)
         sys.stderr.write('have you forgot running \'hkml init\'?\n')
-        exit(1)
+        answer = input('Do you want do that now? [Y/n] ')
+        if answer.lower() == 'n':
+            exit(1)
+        hkml_init.main(argparse.Namespace(manifest=None))
+        set_hkml_dir(path)
 
 def get_hkml_dir():
     if not __hkml_dir:
