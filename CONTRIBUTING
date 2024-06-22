@@ -1,0 +1,10 @@
+General Process
+===============
+
+For contributions, please refer to the linux kernel development process[1] and
+send patches via GitHub PullRequests or mails to sj@kernel.org.  The
+contributions should have proper 'Signed-off-by:' tags[2].  The tag will be
+considered the same as that of the linux kernel development process.
+
+[1] https://docs.kernel.org/process/index.html
+[2] https://docs.kernel.org/process/submitting-patches.html#sign-your-work-the-developer-s-certificate-of-origin
