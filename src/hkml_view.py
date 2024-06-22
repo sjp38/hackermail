@@ -79,7 +79,7 @@ class ScrollableList:
         self.input_handlers = input_handlers
 
     def __draw(self):
-        drawn = []
+        self.last_drawn = []
         self.screen.erase()
         scr_rows, scr_cols = self.screen.getmaxyx()
         start_row = max(int(self.focus_row - scr_rows / 2), 0)
@@ -109,19 +109,18 @@ class ScrollableList:
                                        highlight_color)
                     search_from += len(keyword)
 
-            drawn.append(self.lines[line_idx])
+            self.last_drawn.append(self.lines[line_idx])
         if len(self.lines) < scr_rows - 1:
-            drawn += [''] * (scr_rows - 1  - len(self.lines))
+            self.last_drawn += [''] * (scr_rows - 1  - len(self.lines))
         self.screen.addstr(scr_rows - 1, 0,
                '# focus: %d/%d row' % (self.focus_row, len(self.lines)))
         help_msg = 'Press ? for help'
         self.screen.addstr(scr_rows - 1, scr_cols - len(help_msg) - 1,
                            help_msg)
-        return drawn
 
     def draw(self):
         while True:
-            self.last_drawn = self.__draw()
+            self.__draw()
 
             x = self.screen.getch()
             c = chr(x)
