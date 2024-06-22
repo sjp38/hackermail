@@ -17,6 +17,7 @@ import hkml_cache
 import hkml_fetch
 import hkml_open
 import hkml_tag
+import hkml_thread
 import hkml_view
 
 class MailsList:
@@ -653,6 +654,8 @@ def infer_source_type(source, is_pisearch):
         candidates.append('mailing_list')
     elif source == 'all' and is_pisearch is True:
         candidates.append('mailing_list')
+    if '@' in source:
+        candidates.append('msgid')
 
     if len(candidates) == 0:
         return None, 'no candidate'
@@ -721,6 +724,13 @@ def get_mails(source, fetch, since, until,
 
     if pisearch:
         return get_mails_from_pisearch(source, pisearch)
+
+    if source_type == 'msgid':
+        mails, err = hkml_thread.get_thread_mails_from_web(source)
+        if err is not None:
+            print('getting mails for msgid %s failed' % source)
+            exit(1)
+        return mails
 
     if fetch:
         hkml_fetch.fetch_mail([source], True, 1)
@@ -886,15 +896,16 @@ def set_argparser(parser=None):
             help='  '.join([
             'Source of mails to list.  Could be one of following types.',
             '1) Name of a mailing list in the manifest file.',
-            '2) Path to mbox file in the local filesyste.',
-            '3) Special keyword, \'clipboard\'.',
+            '2) Message-Id of a mail in the thread to list.',
+            '3) Path to mbox file in the local filesyste.',
+            '4) Special keyword, \'clipboard\'.',
             '\'clipboard\' means mbox string in the clipboard.',
-            '4) \'hkml tag\'-added tag.',
-            '5) If nothing is given, show last list output.',
+            '5) \'hkml tag\'-added tag.',
+            '6) If nothing is given, show last list output.',
             ]))
     parser.add_argument(
             '--source_type', nargs='+',
-            choices=['mailing_list', 'mbox', 'clipboard', 'tag'],
+            choices=['mailing_list', 'msgid', 'mbox', 'clipboard', 'tag'],
             help='type of sources')
     parser.add_argument('--since', metavar='<date>', type=str,
             default=DEFAULT_SINCE,
