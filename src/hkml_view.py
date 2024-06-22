@@ -610,9 +610,8 @@ def mails_list_export(c, slist):
     _ = input('Completed.  Press <Enter> to return to hkml')
     shell_mode_end(slist)
 
-def mails_list_save(c, slist):
-    shell_mode_start(slist)
-    print('Save the mails list text to')
+def save_as(content):
+    print('Save the content to')
     print('1. text file')
     print('2. clipboard')
     print()
@@ -622,24 +621,26 @@ def mails_list_save(c, slist):
     except:
         print('wrong input')
         time.sleep(1)
-        shell_mode_end(slist)
         return
     if answer == 1:
         file_path = receive_file_path(for_read=False)
         if file_path is None:
-            shell_mode_end(slist)
             return
         with open(file_path, 'w') as f:
-            f.write('\n'.join(slist.parent_list.lines))
+            f.write(content)
     elif answer == 2:
         _, tmp_path = tempfile.mkstemp(prefix='hkml_view_save_')
         with open(tmp_path, 'w') as f:
-            f.write('\n'.join(slist.parent_list.lines))
+            f.write(content)
         rc = subprocess.call(['xclip', '-i', tmp_path, '-sel', 'clipboard'])
         os.remove(tmp_path)
         if rc != 0:
             print('saving in clipboard failed')
             time.sleep(1)
+
+def mails_list_save(c, slist):
+    shell_mode_start(slist)
+    save_as('\n'.join(slist.parent_list.lines))
     shell_mode_end(slist)
 
 mails_list_menu = [
