@@ -8,6 +8,7 @@ v1.1.1
   - 'Q': terminate hkml at once
   - 'n', 'N': focus next/prev row having highlighted keyword
 - Support attaching files to reply/forward from interactive viewer
+- Support saving content of screen to a file or the clipboard
 - Fixup slow scroll speed of threads
 
 v1.1.0
