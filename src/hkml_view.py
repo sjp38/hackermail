@@ -599,7 +599,10 @@ def mails_list_export(c, slist):
     else:
         export_range = None
 
-    file_name = input('Enter file name to export mails to: ')
+    file_name = receive_file_path(for_read=False)
+    if file_name is None:
+        shell_mode_end(slist)
+        return
     hkml_export.main(argparse.Namespace(
         hkml_dir=None, command='export', export_file=file_name,
         range=export_range))
