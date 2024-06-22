@@ -587,6 +587,25 @@ def mails_list_export(c, slist):
     _ = input('Completed.  Press <Enter> to return to hkml')
     shell_mode_end(slist)
 
+def mails_list_save(c, slist):
+    shell_mode_start(slist)
+    print('Save the mails list text to')
+    print('1. text file')
+    print()
+    answer = input('Enter selection: ')
+    try:
+        answer = int(answer)
+    except:
+        print('wrong input')
+        time.sleep(1)
+        shell_mode_end(slist)
+        return
+    if answer == 1:
+        answer = input('Enter name of the file: ')
+        with open(answer, 'w') as f:
+            f.write('\n'.join(slist.parent_list.lines))
+    shell_mode_end(slist)
+
 mails_list_menu = [
         ['- open', mails_list_open_mail],
         ['- reply', mails_list_reply],
@@ -599,6 +618,7 @@ mails_list_menu = [
         ['- check patch', mails_list_check_patch],
         ['- apply patch', mails_list_apply_patch],
         ['- export as an mbox file', mails_list_export],
+        ['- save list text as ...', mails_list_save],
         ]
 
 def mails_list_menu_selection_handler(c, slist):
