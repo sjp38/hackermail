@@ -591,6 +591,7 @@ def mails_list_save(c, slist):
     shell_mode_start(slist)
     print('Save the mails list text to')
     print('1. text file')
+    print('2. clipboard')
     print()
     answer = input('Enter selection: ')
     try:
@@ -604,6 +605,15 @@ def mails_list_save(c, slist):
         answer = input('Enter name of the file: ')
         with open(answer, 'w') as f:
             f.write('\n'.join(slist.parent_list.lines))
+    elif answer == 2:
+        _, tmp_path = tempfile.mkstemp(prefix='hkml_view_save_')
+        with open(tmp_path, 'w') as f:
+            f.write('\n'.join(slist.parent_list.lines))
+        rc = subprocess.call(['xclip', '-i', tmp_path, '-sel', 'clipboard'])
+        os.remove(tmp_path)
+        if rc != 0:
+            print('saving in clipboard failed')
+            time.sleep(1)
     shell_mode_end(slist)
 
 mails_list_menu = [
