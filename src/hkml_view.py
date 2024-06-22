@@ -385,22 +385,42 @@ def open_mail_handler(c, slist):
     lines = hkml_open.mail_display_str(mail, cols).split('\n')
     ScrollableList(slist.screen, lines, get_text_viewer_handlers()).draw()
 
+def receive_file_path(for_read):
+    while True:
+        print('Enter the path to the file.')
+        print()
+        print('You can also enter')
+        print('1. A directory (e.g., \'./\') to list files under it')
+        print('2. \'cancel_input\' to cancelling this')
+        print()
+        answer = input('Enter: ')
+        print()
+
+        if answer == 'cancel_input':
+            return None
+        if os.path.isdir(answer):
+                subprocess.call(['ls', '-al', answer])
+                print()
+                continue
+        if for_read and not os.path.isfile(answer):
+            print('\'%s\' is neither dir nor file.' % answer)
+            print()
+            continue
+        return answer
+
 def get_attach_files():
     answer = input('Do you want to attach files to the mail? [y/N] ')
     if answer.lower() != 'y':
         return []
     files = []
     while True:
-        answer = input(
-                'Enter file to attach, or dir to list files under the dir: ')
-        if os.path.isdir(answer):
-            subprocess.call(['ls', '-al', answer])
-            print()
-            continue
-        if not os.path.isfile(answer):
-            print('Neither dir nor file.  Wrong input?')
-            continue
-        files.append(answer)
+        file_path = receive_file_path(for_read=True)
+        if file_path is None:
+            return []
+
+        files.append(file_path)
+
+        print()
         answer = input('Do you have more files to attach? [y/N] ')
         if answer.lower() != 'y':
             break
