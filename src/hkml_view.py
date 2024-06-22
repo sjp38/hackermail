@@ -3,6 +3,7 @@
 
 import argparse
 import curses
+import os
 import subprocess
 import tempfile
 import time
@@ -385,13 +386,35 @@ def open_mail_handler(c, slist):
     lines = hkml_open.mail_display_str(mail, cols).split('\n')
     ScrollableList(slist.screen, lines, get_text_viewer_handlers()).draw()
 
+def get_attach_files():
+    answer = input('Do you want to attach files to the mail? [y/N] ')
+    if answer.lower() != 'y':
+        return []
+    files = []
+    while True:
+        answer = input(
+                'Enter file to attach, or dir to list files under the dir: ')
+        if os.path.isdir(answer):
+            subprocess.call(['ls', '-al', answer])
+            print()
+            continue
+        if not os.path.isfile(answer):
+            print('Neither dir nor file.  Wrong input?')
+            continue
+        files.append(answer)
+        answer = input('Do you have more files to attach? [y/N] ')
+        if answer.lower() != 'y':
+            break
+    return files
+
 def reply_mail_handler(c, slist):
     mail = get_focused_mail(slist)
     if mail is None:
         return
 
     shell_mode_start(slist)
-    hkml_reply.reply(mail, attach_files=None, format_only=None)
+    files = get_attach_files()
+    hkml_reply.reply(mail, attach_files=files, format_only=None)
     shell_mode_end(slist)
 
 def mails_list_open_mail(c, slist):
@@ -408,7 +431,8 @@ def mails_list_forward(c, slist):
     if mail is None:
         return
     shell_mode_start(slist)
-    hkml_forward.forward(mail)
+    files = get_attach_files()
+    hkml_forward.forward(mail, attach_files=files)
     shell_mode_end(slist)
 
 def mails_list_continue_draft(c, slist):
