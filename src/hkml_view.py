@@ -568,6 +568,7 @@ mails_list_menu = [
         ['- open', mails_list_open_mail],
         ['- reply', mails_list_reply],
         ['- list complete thread', mails_list_list_thread],
+        ['- forward', mails_list_forward],
         ['- continue draft writing', mails_list_continue_draft],
         ['- show tags', mails_list_show_tags],
         ['- add tags', mails_list_add_tags],
