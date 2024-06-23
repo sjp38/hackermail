@@ -427,6 +427,15 @@ def reply_mail_handler(c, slist):
     hkml_reply.reply(mail, attach_files=files, format_only=None)
     shell_mode_end(slist)
 
+def forward_mail_handler(c, slist):
+    mail = get_focused_mail(slist)
+    if mail is None:
+        return
+    shell_mode_start(slist)
+    files = get_attach_files()
+    hkml_forward.forward(mail, attach_files=files)
+    shell_mode_end(slist)
+
 def mails_list_open_mail(c, slist):
     open_mail_handler(c, slist.parent_list)
 
@@ -437,13 +446,7 @@ def mails_list_list_thread(c, slist):
     list_thread_handler(c, slist.parent_list)
 
 def mails_list_forward(c, slist):
-    mail = get_focused_mail(slist.parent_list)
-    if mail is None:
-        return
-    shell_mode_start(slist)
-    files = get_attach_files()
-    hkml_forward.forward(mail, attach_files=files)
-    shell_mode_end(slist)
+    forward_mail_handler(c, slist.parent_list)
 
 def mails_list_continue_draft(c, slist):
     mail = get_focused_mail(slist.parent_list)
@@ -682,6 +685,7 @@ def get_mails_list_input_handlers():
     return scrollable_list_default_handlers() + [
             InputHandler(['o', '\n'], open_mail_handler, 'open focused mail'),
             InputHandler(['r'], reply_mail_handler, 'reply focused mail'),
+            InputHandler(['f'], forward_mail_handler, 'forward focused mail'),
             InputHandler(['t'], list_thread_handler, 'list complete thread'),
             InputHandler(['m'], thread_menu_handler, 'open menu'),
             ]
