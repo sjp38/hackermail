@@ -10,6 +10,7 @@ v1.1.1
 - Support attaching files to reply/forward from interactive viewer
 - Support saving content of screen to a file or the clipboard
 - Fixup slow scroll speed of threads
+- Support Message-Id mails source type from 'hkml list'
 
 v1.1.0
 - 'hkml open' improvements
