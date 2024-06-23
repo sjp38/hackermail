@@ -323,20 +323,20 @@ def is_git_hash(word):
     return True
 
 def get_msgid_from_public_inbox_link(word):
-    site_urls = [_hkml.get_manifest()['site']]
-    site_urls += ['https://lkml.kernel.org', 'https://patch.msgid.link',
-                  'https://msgid.link']
-    not_public_inbox_link = True
-    for site_url in site_urls:
-        if word.startswith(site_url) and len(word) >= len(site_url) + 1:
-            not_public_inbox_link = False
-            break
-    if not_public_inbox_link:
+    '''
+    If it is http url and has @ in last field, assume it is msgid link
+    '''
+    if not word.startswith('http'):
         return None
     tokens = word.split('/')
+    if len(tokens) < 4:
+        return None
     if tokens[-1] == '':
-        return tokens[-2]
-    return tokens[-1]
+        msgid = tokens[-2]
+    msgid = tokens[-1]
+    if not '@' in msgid:
+        return None
+    return msgid
 
 def find_actionable_items(slist):
     line = slist.lines[slist.focus_row]
