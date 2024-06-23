@@ -5,9 +5,6 @@
   - mail fetched from public-inbox via curl is handled well, while that from
     git is not
   - e.g., 20240603161530.80789-1-yskelg@gmail.com
-- Support more inputs from 'hkml open'
-  - message id
-  - stdin
 - Support patch.msgid.link from 'patch' subcommand
   - https://patch.msgid.link/20240618-docs-patch-msgid-link-v1-0-30555f3f5ad4@linuxfoundation.org
 - Support msgid target from 'hkml list'
