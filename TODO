@@ -7,5 +7,7 @@
   - e.g., 20240603161530.80789-1-yskelg@gmail.com
 - Support patch.msgid.link from 'patch' subcommand
   - https://patch.msgid.link/20240618-docs-patch-msgid-link-v1-0-30555f3f5ad4@linuxfoundation.org
+- Open file from text viewer
+  - If the focused line has a path to a source file, let open it.
 - Implement complete TUI
   - Support every feature with TUI
