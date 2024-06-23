@@ -159,6 +159,7 @@ The sub-command support not only mailing lists on the manifest file, but more
 sources.  All types of the supported sources of mails are as below.
 
 - mailing lists.  Name of the mailing lists on the manifest can be passed.
+- Message-Id of a mail of a thread that the user wants to list.
 - mbox files.  Paths to the mbox files of the mails can be passed.
 - Special keyword, 'clipboard'.  If this keyword is passed as source of mails,
   the command assumes users have copied mbox-format string of the mails to list
