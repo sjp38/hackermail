@@ -269,6 +269,9 @@ Signed-off-by: SeongJae Park <sj@kernel.org>
 The output is shown by `hkml`'s interactive viewer by default.  Refer to the
 [section](#interactive-viewer) for details.
 
+Reading More
+------------
+
 `open` subcommand supports not only mails from `list` or `thread` output, but
 also normal text files and git commit.  For example, below commands work.
 
@@ -565,9 +568,9 @@ key) on this screen shows below options.
   mails list screen are used for opening the mail and listing the thread
   options, respectively.
 
-Note that `hkml open` allows opening normal text files.  Hence the comit ids
-and public-inbox links based feature can help browsing of commit history and
-related discussions.
+Note that `hkml open` [allows](#reading-more) opening normal text files and git
+commits.  Hence the comit ids and public-inbox links based feature can help
+browsing of commit history and related discussions.
 
 Exporting Mails
 ===============
