@@ -498,14 +498,20 @@ and focused line.
 
 Regardless of the type, below keys are supported.
 
-`j` and `k` key move focus down and up.
+`j` and `k` key move focus down and up one row.  `J` and `K` keys move focus up
+and down 1/2 screen, respectively.
 
 Pressing `m` key opens context-based menu that shows items that can be
 selected.
 
-`/` key starts keyword highlighting.
+`:` key opens input window to enter the line number to move focus to.  `start`
+and `end` keyword could also be used, to specify the start and end line of the
+content.
 
-`q` key quits current screen.
+`/` key starts keyword highlighting.  `n` and `N` keys move the focus to
+next/previous line containing the keyword.
+
+`q` key quits current screen.  `Q` key quits `hkml` at once.
 
 Mails List Screen
 -----------------
@@ -538,6 +544,7 @@ explained actions.  In addition to that, the menu provides below options.
 - Exporting focused mail, specific range of mails of the list, or entire mails
   of the list to an mbox file (same to `hkml export`.  Refer to 'Exporting
   Mails' [section](#exporting-mails) for details.).
+- Save the content of the list as a text to a file, or the clipboard.
 
 Text Screen
 -----------
@@ -546,19 +553,17 @@ If the screen is showing a general text (`hkml open` output or mail content
 opened from `hkml list` output), the screen is call text screen type.
 
 From this type, no additional key binding is supported.  However, the menu (`m`
-key) on this screen shows some items that mails list screen doesn't show.
+key) on this screen shows below options.
 
-It shows no menu if the focused line is not having any git commit id or
-public-inbox mail link.
-
-If the line contains git commit ids, the men shows items for doing `git show`
-or `git log` of the commit ids and showing the output.  The command output is
-shown as general text.
-
-If the line contains public-inbox mail links, the context-based menu ('`m`'
-key) shows selections for opening the mail or listing the thread of the mail.
-The text screen and mails list screen are used for opening the mail and listing
-the thread options, respectively.
+- Saving the text to a file, or the clipboard.
+- If the focused line contains git commit ids, the menu shows items for showing
+  outputs from `git show` or `git log` of the commit ids.  The outputs are
+  shown as general text.
+- If the focused line contains public-inbox mail links (e.g.,
+  https://lore.kernel.org/example-messgae-id@org), the menu shows itesm for
+  opening the mail or listing the thread of the mail.  The text screen and
+  mails list screen are used for opening the mail and listing the thread
+  options, respectively.
 
 Note that `hkml open` allows opening normal text files.  Hence the comit ids
 and public-inbox links based feature can help browsing of commit history and
