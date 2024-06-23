@@ -23,22 +23,6 @@ import hkml_write
 
 '''
 Curses-based TUI viewer for hkml list output.
-Menus:
-  - recent mails
-    - mailing lists
-  - tags
-  - custom queries
-
-Shortcut from list
-T: thread
-  R: return to list
-O: open
-  T: tag
-  R: return to thread or list
-R: reply
-F: forward
-W: write new
-?: help
 '''
 
 focus_color = None
