@@ -50,7 +50,7 @@ mails including below.
 Press '?' for help, or read "Interactive Viewer"
 [section](USAGE.md#interactive-viewer) of [USAGE.md](USAGE.md).
 
-For more detail,
+For more detail and complete list of features,
 
     $ ./hkml -h
     $ ./hkml list -h
