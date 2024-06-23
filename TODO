@@ -11,6 +11,4 @@
 - Support patch.msgid.link
   - https://patch.msgid.link/20240618-docs-patch-msgid-link-v1-0-30555f3f5ad4@linuxfoundation.org
   - At least 'patch apply' and interactive viewer should be updated
-- More interactive list menu
-  - Save content to file
 - Support msgid target from 'hkml list'
