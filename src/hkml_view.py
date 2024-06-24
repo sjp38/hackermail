@@ -317,7 +317,8 @@ def get_msgid_from_public_inbox_link(word):
         return None
     if tokens[-1] == '':
         msgid = tokens[-2]
-    msgid = tokens[-1]
+    else:
+        msgid = tokens[-1]
     if not '@' in msgid:
         return None
     return msgid
