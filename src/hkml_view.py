@@ -308,20 +308,17 @@ def is_git_hash(word):
 
 def get_msgid_from_public_inbox_link(word):
     '''
-    If it is http url and has @ in last field, assume it is msgid link
+    If it is http url and has @ in a field, assume it is msgid link
     '''
     if not word.startswith('http'):
         return None
     tokens = word.split('/')
     if len(tokens) < 4:
         return None
-    if tokens[-1] == '':
-        msgid = tokens[-2]
-    else:
-        msgid = tokens[-1]
-    if not '@' in msgid:
-        return None
-    return msgid
+    for token in tokens[3:]:
+        if '@' in token:
+            return token
+    return None
 
 def find_actionable_items(slist):
     line = slist.lines[slist.focus_row]
