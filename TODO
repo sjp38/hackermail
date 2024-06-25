@@ -11,3 +11,7 @@
   - If the focused line has a path to a source file, let open it.
 - Implement complete TUI
   - Support every feature with TUI
+- Be more aggressive at msgid guessing
+  - example cases below:
+  - https://lore.kernel.org/lkml/CAPNVh5eNEBu+gcex9pAej-_YN3zMKkG+rruXhopqS6EaG-izVQ@mail.gmail.com/T/
+  - https://lore.kernel.org/lkml/20221130082313.3241517-1-tj@kernel.org/
