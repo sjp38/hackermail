@@ -11,3 +11,4 @@
   - If the focused line has a path to a source file, let open it.
 - Implement complete TUI
   - Support every feature with TUI
+- Intereactive view: Handle lines longer than max column size better
