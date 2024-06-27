@@ -353,29 +353,6 @@ def get_msgid_from_public_inbox_link(word):
             return token
     return None
 
-def find_actionable_items(slist):
-    line = slist.lines[slist.focus_row]
-
-    action_items = []
-    for separator in [',', '(', ')', '/', '[', ']', '"']:
-        line = line.replace(separator, ' ')
-    for word in line.split():
-        if is_git_hash(word):
-            action_items.append('- git show %s' % word)
-            action_items.append('- git log -n 5 %s' % word)
-            action_items.append('- git log --oneline -n 64 %s' % word)
-
-    line = slist.lines[slist.focus_row]
-    for separator in [',', '(', ')', '[', ']', '"']:
-        line = line.replace(separator, ' ')
-    for word in line.split():
-        msgid = get_msgid_from_public_inbox_link(word)
-        if msgid is not None:
-            action_items.append('- hkml thread %s' % msgid)
-            action_items.append('- hkml open %s' % msgid)
-    action_items.append('- save entire content as ...')
-    return action_items
-
 def build_text_view_menu_item_handlers(slist):
     line = slist.lines[slist.focus_row]
 
