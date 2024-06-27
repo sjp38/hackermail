@@ -412,14 +412,15 @@ def get_action_item_handlers():
                          'execute focused item')]
 
 def show_available_action_items_handler(c, slist):
-    items = find_actionable_items(slist)
-    if len(items) == 0:
+    item_handlers = build_text_view_menu_item_handlers(slist)
+    if len(item_handlers) == 0:
         slist.toast('no action item found')
         return
-    items = ['selected line: %s' % slist.lines[slist.focus_row], '',
-             'focus an item below and press Enter', ''] + items
-    menu_list = ScrollableList(slist.screen, items, get_action_item_handlers())
+    lines = ['selected line: %s' % slist.lines[slist.focus_row], '',
+             'focus an item below and press Enter', '']
+    menu_list = ScrollableList(slist.screen, lines, get_menu_input_handlers())
     menu_list.parent_list = slist
+    menu_list.set_menu_item_handlers(item_handlers)
     menu_list.draw()
 
 def get_text_viewer_handlers():
