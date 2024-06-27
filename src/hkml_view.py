@@ -271,13 +271,7 @@ def action_item_handler(c, slist):
         return
     words = words[1:]
     if words[:1] == ['git']:
-        try:
-            output = subprocess.check_output(
-                    words, stderr=subprocess.DEVNULL).decode().split('\n')
-        except Exception as e:
-            output = ['failed: %s' % e, '',
-                      'wrong commit id, or you are not on the git repo?']
-        ScrollableList(slist.screen, output, get_text_viewer_handlers()).draw()
+        text_viewer_menu_exec_git(c, slist)
     elif words[:1] == ['hkml']:
         msgid = '<%s>' % words[-1]
         thread_txt, mail_idx_key_map = hkml_thread.thread_str(msgid,
