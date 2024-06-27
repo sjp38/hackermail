@@ -383,11 +383,6 @@ def build_text_view_menu_item_handlers(slist):
             ['- save entire content as ...', text_viewer_menu_save_content])
     return item_handlers
 
-def get_action_item_handlers():
-    return scrollable_list_default_handlers() + [
-            InputHandler(['\n'], action_item_handler,
-                         'execute focused item')]
-
 def show_available_action_items_handler(c, slist):
     item_handlers = build_text_view_menu_item_handlers(slist)
     if len(item_handlers) == 0:
