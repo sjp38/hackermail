@@ -303,28 +303,10 @@ def action_item_handler(c, slist):
     if words[:1] == ['git']:
         text_viewer_menu_exec_git(c, slist)
     elif words[:1] == ['hkml']:
-        msgid = '<%s>' % words[-1]
-        thread_txt, mail_idx_key_map = hkml_thread.thread_str(msgid,
-                False, False)
-        hkml_cache.writeback_mails()
-        hkml_list.cache_list_str('thread_output', thread_txt, mail_idx_key_map)
         if words[1] == 'thread':
-            thread_list = ScrollableList(
-                    slist.screen, thread_txt.split('\n'),
-                    get_mails_list_input_handlers())
-            thread_list.mail_idx_key_map = mail_idx_key_map
-            thread_list.draw()
+            text_viewer_menu_hkml_thread(c, slist)
         elif words[1] == 'open':
-            for idx, cache_key in mail_idx_key_map.items():
-                mail = hkml_cache.get_mail(key=cache_key)
-                if mail is None:
-                    continue
-                if mail.get_field('message-id') == msgid:
-                    _, cols = slist.screen.getmaxyx()
-                    lines = hkml_open.mail_display_str(mail, cols).split('\n')
-                    ScrollableList(slist.screen, lines,
-                                   get_text_viewer_handlers()).draw()
-                    break
+            text_viewer_menu_hkml_open(c, slist)
         else:
             slist.toast('not supported yet')
     elif words[:1] == ['save']:
