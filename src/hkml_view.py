@@ -376,6 +376,36 @@ def find_actionable_items(slist):
     action_items.append('- save entire content as ...')
     return action_items
 
+def build_text_view_menu_item_handlers(slist):
+    line = slist.lines[slist.focus_row]
+
+    item_handlers = []
+    for separator in [',', '(', ')', '/', '[', ']', '"']:
+        line = line.replace(separator, ' ')
+    for word in line.split():
+        if is_git_hash(word):
+            item_handlers.append(
+                    ['- git show %s' % word, text_viewer_menu_exec_git])
+            item_handlers.append(
+                    ['- git log -n 5 %s' % word, text_viewer_menu_exec_git])
+            item_handlers.append(
+                    ['- git log --oneline -n 64 %s' % word,
+                     text_viewer_menu_exec_git])
+
+    line = slist.lines[slist.focus_row]
+    for separator in [',', '(', ')', '[', ']', '"']:
+        line = line.replace(separator, ' ')
+    for word in line.split():
+        msgid = get_msgid_from_public_inbox_link(word)
+        if msgid is not None:
+            item_handlers.append(
+                    ['- hkml thread %s' % msgid, text_viewer_menu_hkml_thread])
+            item_handlers.append(
+                    ['- hkml open %s' % msgid, text_viewer_menu_hkml_open])
+    item_handlers.append(
+            ['- save entire content as ...', text_viewer_menu_save_content])
+    return item_handlers
+
 def get_action_item_handlers():
     return scrollable_list_default_handlers() + [
             InputHandler(['\n'], action_item_handler,
