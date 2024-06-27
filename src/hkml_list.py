@@ -481,10 +481,8 @@ def format_stat(mails_to_show, stat_authors):
             lines.append('# - %s: %d' % (author, nr_mails))
     return lines
 
-def mails_to_str(mails_to_show, mails_filter, list_decorator, show_thread_of,
-                 runtime_profile, stat_only, stat_authors):
-    if len(mails_to_show) == 0:
-        return 'no mail', {}
+def sort_filter_mails(mails_to_show, mails_filter, list_decorator,
+                      show_thread_of, runtime_profile):
 
     timestamp = time.time()
     threads = threads_of(mails_to_show)
@@ -527,6 +525,19 @@ def mails_to_str(mails_to_show, mails_filter, list_decorator, show_thread_of,
             continue
         mail.filtered_out = False
         filtered_mails.append(mail)
+    runtime_profile.append(['filtering', time.time() - timestamp])
+    return filtered_mails, mail_idx_key_map
+
+def mails_to_str(mails_to_show, mails_filter, list_decorator, show_thread_of,
+                 runtime_profile, stat_only, stat_authors):
+    if len(mails_to_show) == 0:
+        return 'no mail', {}
+
+    filtered_mails, mail_idx_key_map = sort_filter_mails(
+            mails_to_show, mails_filter, list_decorator, show_thread_of,
+            runtime_profile)
+
+    timestamp = time.time()
 
     lines = []
 
