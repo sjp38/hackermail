@@ -367,7 +367,7 @@ def build_text_view_menu_item_handlers(slist):
     item_handlers.append(save_parent_content_menu_item_handler)
     return item_handlers
 
-def show_available_action_items_handler(c, slist):
+def text_viewer_menu_handler(c, slist):
     item_handlers = build_text_view_menu_item_handlers(slist)
     lines = ['selected line: %s' % slist.lines[slist.focus_row], '',
              'focus an item below and press Enter', '']
@@ -378,7 +378,7 @@ def show_available_action_items_handler(c, slist):
 
 def get_text_viewer_handlers():
     return scrollable_list_default_handlers() + [
-            InputHandler(['m', '\n'], show_available_action_items_handler,
+            InputHandler(['m', '\n'], text_viewer_menu_handler,
                          'open menu')
                 ]
 
