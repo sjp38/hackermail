@@ -369,8 +369,7 @@ def build_text_view_menu_item_handlers(slist):
                     ['- hkml thread %s' % msgid, text_viewer_menu_hkml_thread])
             item_handlers.append(
                     ['- hkml open %s' % msgid, text_viewer_menu_hkml_open])
-    item_handlers.append(
-            ['- save entire content as ...', text_viewer_menu_save_content])
+    item_handlers.append(save_parent_content_menu_item_handler)
     return item_handlers
 
 def show_available_action_items_handler(c, slist):
@@ -673,7 +672,7 @@ mails_list_menu = [
         ['- check patch', mails_list_check_patch],
         ['- apply patch', mails_list_apply_patch],
         ['- export as an mbox file', mails_list_export],
-        ['- save list text as ...', mails_list_save],
+        save_parent_content_menu_item_handler,
         ]
 
 def get_menu_input_handlers():
