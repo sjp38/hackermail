@@ -517,11 +517,6 @@ def mails_to_str(mails_to_show, mails_filter, list_decorator, show_thread_of,
         end_idx = root.pridx + nr_replies_of(root) + 1
     ls_range = range(start_idx, end_idx)
 
-    max_index = ls_range[-1]
-    if max_index == 0:
-        max_index = 1
-    max_digits_for_idx = math.ceil(math.log(max_index, 10))
-
     filtered_mails = []
     for mail in by_pr_idx:
         if ls_range is not None and not mail.pridx in ls_range:
@@ -538,6 +533,12 @@ def mails_to_str(mails_to_show, mails_filter, list_decorator, show_thread_of,
     collapse_threads = list_decorator.collapse
     show_url = list_decorator.show_url
     nr_cols = list_decorator.cols
+
+    max_index = filtered_mails[-1].pridx
+    if max_index == 0:
+        max_index = 1
+    max_digits_for_idx = math.ceil(math.log(max_index, 10))
+
     for mail in filtered_mails:
         show_nr_replies = False
         if collapse_threads == True:
