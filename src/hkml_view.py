@@ -316,11 +316,6 @@ def text_viewer_menu_hkml_open(c, slist):
                            get_text_viewer_handlers()).draw()
             break
 
-def text_viewer_menu_save_content(c, slist):
-    shell_mode_start(slist)
-    save_as('\n'.join(slist.parent_list.lines))
-    shell_mode_end(slist)
-
 def is_git_hash(word):
     if len(word) < 10:
         return False
@@ -654,11 +649,6 @@ def save_as(content):
         if rc != 0:
             print('saving in clipboard failed')
             time.sleep(1)
-
-def mails_list_save(c, slist):
-    shell_mode_start(slist)
-    save_as('\n'.join(slist.parent_list.lines))
-    shell_mode_end(slist)
 
 mails_list_menu = [
         ['- open', mails_list_open_mail],
