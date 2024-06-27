@@ -138,6 +138,11 @@ class ScrollableList:
             lines.append('%s: %s' % (input_chrs, handler.help_msg))
         return lines
 
+    def set_menu_item_handlers(self, item_handlers):
+        self.menu_item_handlers = item_handlers
+        for txt, _ in item_handlers:
+            self.lines.append(txt)
+
 def shell_mode_start(slist):
     slist.screen.clear()
     slist.screen.refresh()
@@ -690,13 +695,10 @@ def thread_menu_handler(c, slist):
             '',
             'focus an item below and press Enter',
             '']
-    for txt, _ in mails_list_menu:
-        menu_lines.append(txt)
-
     menu_list = ScrollableList(
             slist.screen, menu_lines, get_menu_input_handlers())
     menu_list.parent_list = slist
-    menu_list.menu_item_handlers = mails_list_menu
+    menu_list.set_menu_item_handlers(mails_list_menu)
     menu_list.draw()
 
 def get_mails_list_input_handlers():
