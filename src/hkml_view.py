@@ -675,15 +675,9 @@ mails_list_menu = [
         ['- save list text as ...', mails_list_save],
         ]
 
-def mails_list_menu_selection_handler(c, slist):
-    focused_line = slist.lines[slist.focus_row]
-    for txt, fn in mails_list_menu:
-        if txt == focused_line:
-            fn(c, slist)
-
 def get_menu_input_handlers():
     return scrollable_list_default_handlers() + [
-            InputHandler(['\n'], mails_list_menu_selection_handler,
+            InputHandler(['\n'], menu_selection_handler,
                          'execute focused item'),
             ]
 
@@ -702,6 +696,7 @@ def thread_menu_handler(c, slist):
     menu_list = ScrollableList(
             slist.screen, menu_lines, get_menu_input_handlers())
     menu_list.parent_list = slist
+    menu_list.menu_item_handlers = mails_list_menu
     menu_list.draw()
 
 def get_mails_list_input_handlers():
