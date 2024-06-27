@@ -369,9 +369,6 @@ def build_text_view_menu_item_handlers(slist):
 
 def show_available_action_items_handler(c, slist):
     item_handlers = build_text_view_menu_item_handlers(slist)
-    if len(item_handlers) == 0:
-        slist.toast('no action item found')
-        return
     lines = ['selected line: %s' % slist.lines[slist.focus_row], '',
              'focus an item below and press Enter', '']
     menu_list = ScrollableList(slist.screen, lines, get_menu_input_handlers())
