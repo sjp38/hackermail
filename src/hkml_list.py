@@ -486,20 +486,12 @@ def mails_to_str(mails_to_show, mails_filter, list_decorator, show_thread_of,
     if len(mails_to_show) == 0:
         return 'no mail', {}
 
-    show_stat = not list_decorator.hide_stat
-    descend = not list_decorator.ascend
-    sort_threads_by = list_decorator.sort_threads_by
-    collapse_threads = list_decorator.collapse
-    show_url = list_decorator.show_url
-    nr_cols = list_decorator.cols
-    show_runtime_profile = list_decorator.runtime_profile
-
-    lines = []
-
     timestamp = time.time()
     threads = threads_of(mails_to_show)
+    sort_threads_by = list_decorator.sort_threads_by
     for sort_category in sort_threads_by:
         sort_threads(threads, sort_category)
+    descend = not list_decorator.ascend
     if descend:
         threads.reverse()
     runtime_profile.append(['threads_extract', time.time() - timestamp])
@@ -541,6 +533,11 @@ def mails_to_str(mails_to_show, mails_filter, list_decorator, show_thread_of,
         mail.filtered_out = False
         filtered_mails.append(mail)
 
+    lines = []
+
+    collapse_threads = list_decorator.collapse
+    show_url = list_decorator.show_url
+    nr_cols = list_decorator.cols
     for mail in filtered_mails:
         show_nr_replies = False
         if collapse_threads == True:
@@ -551,6 +548,7 @@ def mails_to_str(mails_to_show, mails_filter, list_decorator, show_thread_of,
                               show_url, nr_cols)
 
     stat_lines = []
+    show_stat = not list_decorator.hide_stat
     if show_stat:
         total_stat_lines = format_stat(mails_to_show, stat_authors)
         filtered_stat_lines = format_stat(filtered_mails, stat_authors)
@@ -565,6 +563,7 @@ def mails_to_str(mails_to_show, mails_filter, list_decorator, show_thread_of,
 
     runtime_profile_lines = []
     total_profiled_time = sum([profile[1] for profile in runtime_profile])
+    show_runtime_profile = list_decorator.runtime_profile
     if show_runtime_profile is True or total_profiled_time > 3:
         runtime_profile.append(['etc', time.time() - timestamp])
         runtime_profile_lines = ['# runtime profile']
