@@ -243,6 +243,15 @@ def menu_selection_handler(c, slist):
         if txt == focused_line:
             fn(c, slist)
 
+def save_parent_content_menu_selection_handler(c, slist):
+    shell_mode_start(slist)
+    save_as('\n'.join(slist.parent_list.lines))
+    shell_mode_end(slist)
+
+save_parent_content_menu_item_handler = [
+        '- save parent screen content as ...',
+        save_parent_content_menu_selection_handler]
+
 def focused_mail_idx(lines, focus_row):
     for idx in range(focus_row, 0, -1):
         line = lines[idx]
