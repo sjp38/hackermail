@@ -253,6 +253,16 @@ def get_focused_mail(slist):
         return None
     return mail
 
+def text_viewer_menu_exec_git(c, slist):
+    words = slist.lines[slist.focus_row].split()[1:]
+    try:
+        output = subprocess.check_output(
+                words, stderr=subprocess.DEVNULL).decode().split('\n')
+    except Exception as e:
+        output = ['failed: %s' % e, '',
+                  'wrong commit id, or you are not on the git repo?']
+    ScrollableList(slist.screen, output, get_text_viewer_handlers()).draw()
+
 def action_item_handler(c, slist):
     words = slist.lines[slist.focus_row].split()
     if len(words) < 2:
