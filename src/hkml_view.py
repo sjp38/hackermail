@@ -52,6 +52,7 @@ class ScrollableList:
     mail_idx_key_map = None
     highlight_keyword = None
     last_drawn = None
+    menu_item_handlers = None
 
     def __init__(self, screen, lines, input_handlers):
         self.screen = screen
@@ -228,6 +229,14 @@ def scrollable_list_default_handlers():
             InputHandler(['Q'], quit_hkml, 'quit hkml'),
             InputHandler(['?'], show_help_msg_list, 'show help message'),
             ]
+
+def menu_selection_handler(c, slist):
+    if slist.menu_item_handlers is None:
+        return
+    focused_line = slist.lines[slist.focus_row]
+    for txt, fn in slist.menu_item_handlers:
+        if txt == focused_line:
+            fn(c, slist)
 
 def focused_mail_idx(lines, focus_row):
     for idx in range(focus_row, 0, -1):
