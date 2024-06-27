@@ -486,17 +486,13 @@ def mails_to_str(mails_to_show, mails_filter, list_decorator, show_thread_of,
     if len(mails_to_show) == 0:
         return 'no mail', {}
 
-    if list_decorator is not None:
-        show_stat = not list_decorator.hide_stat
-        descend = not list_decorator.ascend
-        sort_threads_by = list_decorator.sort_threads_by
-        collapse_threads = list_decorator.collapse
-        show_url = list_decorator.show_url
-        nr_cols = list_decorator.cols
-        show_runtime_profile = list_decorator.runtime_profile
-
-    if nr_cols is None:
-        nr_cols = 80
+    show_stat = not list_decorator.hide_stat
+    descend = not list_decorator.ascend
+    sort_threads_by = list_decorator.sort_threads_by
+    collapse_threads = list_decorator.collapse
+    show_url = list_decorator.show_url
+    nr_cols = list_decorator.cols
+    show_runtime_profile = list_decorator.runtime_profile
 
     lines = []
 
