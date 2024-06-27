@@ -279,6 +279,20 @@ def text_viewer_menu_hkml_thread(c, slist):
     thread_list.mail_idx_key_map = mail_idx_key_map
     thread_list.draw()
 
+def text_viewer_menu_hkml_open(c, slist):
+    msgid = '<%s>' % slist.lines[slist.focus_row].split()[1:][-1]
+    thread_txt, mail_idx_key_map = get_thread_txt_mail_idx_key_map(msgid)
+    for idx, cache_key in mail_idx_key_map.items():
+        mail = hkml_cache.get_mail(key=cache_key)
+        if mail is None:
+            continue
+        if mail.get_field('message-id') == msgid:
+            _, cols = slist.screen.getmaxyx()
+            lines = hkml_open.mail_display_str(mail, cols).split('\n')
+            ScrollableList(slist.screen, lines,
+                           get_text_viewer_handlers()).draw()
+            break
+
 def action_item_handler(c, slist):
     words = slist.lines[slist.focus_row].split()
     if len(words) < 2:
