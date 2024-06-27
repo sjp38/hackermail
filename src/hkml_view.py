@@ -312,25 +312,6 @@ def text_viewer_menu_save_content(c, slist):
     save_as('\n'.join(slist.parent_list.lines))
     shell_mode_end(slist)
 
-def action_item_handler(c, slist):
-    words = slist.lines[slist.focus_row].split()
-    if len(words) < 2:
-        return
-    if words[0] != '-':
-        return
-    words = words[1:]
-    if words[:1] == ['git']:
-        text_viewer_menu_exec_git(c, slist)
-    elif words[:1] == ['hkml']:
-        if words[1] == 'thread':
-            text_viewer_menu_hkml_thread(c, slist)
-        elif words[1] == 'open':
-            text_viewer_menu_hkml_open(c, slist)
-        else:
-            slist.toast('not supported yet')
-    elif words[:1] == ['save']:
-        text_viewer_menu_save_content(c, slist)
-
 def is_git_hash(word):
     if len(word) < 10:
         return False
