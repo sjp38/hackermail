@@ -387,6 +387,19 @@ def is_git_hash(word):
             return False
     return True
 
+def add_menus_for_commit(item_handlers, line):
+    for separator in [',', '(', ')', '/', '[', ']', '"']:
+        line = line.replace(separator, ' ')
+    for word in line.split():
+        if is_git_hash(word):
+            item_handlers.append(
+                    ['- git show %s' % word, text_viewer_menu_exec_git])
+            item_handlers.append(
+                    ['- git log -n 5 %s' % word, text_viewer_menu_exec_git])
+            item_handlers.append(
+                    ['- git log --oneline -n 64 %s' % word,
+                     text_viewer_menu_exec_git])
+
 def get_msgid_from_public_inbox_link(word):
     '''
     If it is http url and has @ in a field, assume it is msgid link
@@ -405,19 +418,8 @@ def build_text_view_menu_item_handlers(slist):
     line = slist.lines[slist.focus_row]
 
     item_handlers = []
-    for separator in [',', '(', ')', '/', '[', ']', '"']:
-        line = line.replace(separator, ' ')
-    for word in line.split():
-        if is_git_hash(word):
-            item_handlers.append(
-                    ['- git show %s' % word, text_viewer_menu_exec_git])
-            item_handlers.append(
-                    ['- git log -n 5 %s' % word, text_viewer_menu_exec_git])
-            item_handlers.append(
-                    ['- git log --oneline -n 64 %s' % word,
-                     text_viewer_menu_exec_git])
+    add_menus_for_commit(item_handlers, line)
 
-    line = slist.lines[slist.focus_row]
     for separator in [',', '(', ')', '[', ']', '"']:
         line = line.replace(separator, ' ')
     for word in line.split():
