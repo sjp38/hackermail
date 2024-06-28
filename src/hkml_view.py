@@ -442,6 +442,11 @@ def get_text_viewer_handlers():
             InputHandler(['m', '\n'], show_text_viewer_menu, 'open menu')
                 ]
 
+def show_text_viewer(screen, text_lines):
+    slist = ScrollableList(screen, text_lines, get_text_viewer_handlers())
+    slist.draw()
+    return slist
+
 # mails list
 
 def focused_mail_idx(lines, focus_row):
