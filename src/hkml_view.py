@@ -271,6 +271,57 @@ def execute_focused_item(c, slist):
         if txt == focused_line:
             fn(c, slist)
 
+def receive_file_path(for_read):
+    while True:
+        print('Enter the path to the file.')
+        print()
+        print('You can also enter')
+        print('1. A directory (e.g., \'./\') to list files under it')
+        print('2. \'cancel_input\' to cancelling this')
+        print()
+        answer = input('Enter: ')
+        print()
+
+        if answer == 'cancel_input':
+            return None
+        if os.path.isdir(answer):
+                subprocess.call(['ls', '-al', answer])
+                print()
+                continue
+        if for_read and not os.path.isfile(answer):
+            print('\'%s\' is neither dir nor file.' % answer)
+            print()
+            continue
+        return answer
+
+def save_as(content):
+    print('Save the content to')
+    print('1. text file')
+    print('2. clipboard')
+    print()
+    answer = input('Enter selection: ')
+    try:
+        answer = int(answer)
+    except:
+        print('wrong input')
+        time.sleep(1)
+        return
+    if answer == 1:
+        file_path = receive_file_path(for_read=False)
+        if file_path is None:
+            return
+        with open(file_path, 'w') as f:
+            f.write(content)
+    elif answer == 2:
+        _, tmp_path = tempfile.mkstemp(prefix='hkml_view_save_')
+        with open(tmp_path, 'w') as f:
+            f.write(content)
+        rc = subprocess.call(['xclip', '-i', tmp_path, '-sel', 'clipboard'])
+        os.remove(tmp_path)
+        if rc != 0:
+            print('saving in clipboard failed')
+            time.sleep(1)
+
 def handle_save_content_menu_selection(c, slist):
     shell_mode_start(slist)
     save_as('\n'.join(slist.parent_list.lines))
@@ -418,29 +469,6 @@ def open_focused_mail(c, slist):
     _, cols = slist.screen.getmaxyx()
     lines = hkml_open.mail_display_str(mail, cols).split('\n')
     ScrollableList(slist.screen, lines, get_text_viewer_handlers()).draw()
-
-def receive_file_path(for_read):
-    while True:
-        print('Enter the path to the file.')
-        print()
-        print('You can also enter')
-        print('1. A directory (e.g., \'./\') to list files under it')
-        print('2. \'cancel_input\' to cancelling this')
-        print()
-        answer = input('Enter: ')
-        print()
-
-        if answer == 'cancel_input':
-            return None
-        if os.path.isdir(answer):
-                subprocess.call(['ls', '-al', answer])
-                print()
-                continue
-        if for_read and not os.path.isfile(answer):
-            print('\'%s\' is neither dir nor file.' % answer)
-            print()
-            continue
-        return answer
 
 def get_attach_files():
     answer = input('Do you want to attach files to the mail? [y/N] ')
@@ -658,34 +686,6 @@ def export_mails_of_parent(c, slist):
     print()
     _ = input('Completed.  Press <Enter> to return to hkml')
     shell_mode_end(slist)
-
-def save_as(content):
-    print('Save the content to')
-    print('1. text file')
-    print('2. clipboard')
-    print()
-    answer = input('Enter selection: ')
-    try:
-        answer = int(answer)
-    except:
-        print('wrong input')
-        time.sleep(1)
-        return
-    if answer == 1:
-        file_path = receive_file_path(for_read=False)
-        if file_path is None:
-            return
-        with open(file_path, 'w') as f:
-            f.write(content)
-    elif answer == 2:
-        _, tmp_path = tempfile.mkstemp(prefix='hkml_view_save_')
-        with open(tmp_path, 'w') as f:
-            f.write(content)
-        rc = subprocess.call(['xclip', '-i', tmp_path, '-sel', 'clipboard'])
-        os.remove(tmp_path)
-        if rc != 0:
-            print('saving in clipboard failed')
-            time.sleep(1)
 
 mails_list_menu = [
         ['- open', open_parent_focused_mail],
