@@ -75,6 +75,13 @@ class ScrollableList:
         start_row = min(start_row, len(self.lines) - scr_rows + 1)
         start_row = max(start_row, 0)
 
+        if 10 < scr_cols and scr_cols < 30:
+            self.screen.addstr(0, 0, 'too narrow')
+            return
+        if scr_cols < 10:
+            self.screen.addstr(0, 0, 'X')
+            return
+
         for row in range(scr_rows - 1):
             line_idx = start_row + row
             if line_idx >= len(self.lines):
