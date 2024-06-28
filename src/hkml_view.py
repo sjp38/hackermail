@@ -481,6 +481,18 @@ def forward_focused_mail(c, slist):
     hkml_forward.forward(mail, attach_files=files)
     shell_mode_end(slist)
 
+def list_thread_of_focused_mail(c, slist):
+    thread_txt, mail_idx_key_map = hkml_thread.thread_str(
+            '%d' % focused_mail_idx(slist.lines, slist.focus_row),
+            False, False)
+    hkml_cache.writeback_mails()
+    hkml_list.cache_list_str('thread_output', thread_txt, mail_idx_key_map)
+
+    thread_list = ScrollableList(slist.screen, thread_txt.split('\n'),
+                                 get_mails_list_input_handlers())
+    thread_list.mail_idx_key_map = mail_idx_key_map
+    thread_list.draw()
+
 def open_parent_focused_mail(c, slist):
     open_focused_mail(c, slist.parent_list)
 
@@ -719,18 +731,6 @@ def get_mails_list_input_handlers():
                          'list complete thread'),
             InputHandler(['m'], show_mails_list_menu, 'open menu'),
             ]
-
-def list_thread_of_focused_mail(c, slist):
-    thread_txt, mail_idx_key_map = hkml_thread.thread_str(
-            '%d' % focused_mail_idx(slist.lines, slist.focus_row),
-            False, False)
-    hkml_cache.writeback_mails()
-    hkml_list.cache_list_str('thread_output', thread_txt, mail_idx_key_map)
-
-    thread_list = ScrollableList(slist.screen, thread_txt.split('\n'),
-                                 get_mails_list_input_handlers())
-    thread_list.mail_idx_key_map = mail_idx_key_map
-    thread_list.draw()
 
 def __view(stdscr, text_to_show, mail_idx_key_map):
     global focus_color
