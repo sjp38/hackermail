@@ -373,6 +373,12 @@ def text_viewer_menu_hkml_open(c, slist):
             show_text_viewer(slist.screen, lines)
             break
 
+def text_viewer_menu_open_file(c, slist):
+    file_path = slist.lines[slist.focus_row].split()[1:][-1]
+    with open(file_path, 'r') as f:
+        lines = f.read().split('\n')
+    show_text_viewer(slist.screen, lines)
+
 def is_git_hash(word):
     if len(word) < 10:
         return False
@@ -421,6 +427,18 @@ def build_text_view_menu_item_handlers(slist):
                     ['- hkml thread %s' % msgid, text_viewer_menu_hkml_thread])
             item_handlers.append(
                     ['- hkml open %s' % msgid, text_viewer_menu_hkml_open])
+
+    for word in line.split():
+        # file paths on diff starts with a/ and b/, e.g.,
+        #
+        # --- a/tools/testing/selftests/damon/damon_nr_regions.py
+        # +++ b/tools/testing/selftests/damon/damon_nr_regions.py
+        if word.startswith('a/') or word.startswith('b/'):
+            word = word[2:]
+        if os.path.isfile(word):
+            item_handlers.append(
+                    ['- open file %s' % word, text_viewer_menu_open_file])
+
     item_handlers.append(save_parent_content_menu_item_handler)
     return item_handlers
 
