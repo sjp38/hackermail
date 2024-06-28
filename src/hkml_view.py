@@ -414,12 +414,7 @@ def get_msgid_from_public_inbox_link(word):
             return token
     return None
 
-def build_text_view_menu_item_handlers(slist):
-    line = slist.lines[slist.focus_row]
-
-    item_handlers = []
-    add_menus_for_commit(item_handlers, line)
-
+def add_menus_for_msgid(item_handlers, line):
     for separator in [',', '(', ')', '[', ']', '"']:
         line = line.replace(separator, ' ')
     for word in line.split():
@@ -429,6 +424,16 @@ def build_text_view_menu_item_handlers(slist):
                     ['- hkml thread %s' % msgid, text_viewer_menu_hkml_thread])
             item_handlers.append(
                     ['- hkml open %s' % msgid, text_viewer_menu_hkml_open])
+
+def build_text_view_menu_item_handlers(slist):
+    line = slist.lines[slist.focus_row]
+
+    item_handlers = []
+    add_menus_for_commit(item_handlers, line)
+    add_menus_for_msgid(item_handlers, line)
+
+    for separator in [',', '(', ')', '[', ']', '"']:
+        line = line.replace(separator, ' ')
 
     found_files = {}
     for word in line.split():
