@@ -8,7 +8,6 @@ import subprocess
 import tempfile
 import time
 
-import _hkml
 import hkml_cache
 import hkml_export
 import hkml_forward
@@ -16,7 +15,6 @@ import hkml_list
 import hkml_open
 import hkml_patch
 import hkml_reply
-import hkml_send
 import hkml_tag
 import hkml_thread
 import hkml_write
