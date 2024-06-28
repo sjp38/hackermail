@@ -265,7 +265,7 @@ def scrollable_list_default_handlers():
             InputHandler(['?'], show_help_msg_list, 'show help message'),
             ]
 
-def menu_selection_handler(c, slist):
+def execute_focused_item(c, slist):
     if slist.menu_item_handlers is None:
         return
     focused_line = slist.lines[slist.focus_row]
@@ -462,7 +462,7 @@ def get_attach_files():
             break
     return files
 
-def reply_mail_handler(c, slist):
+def reply_focused_mail(c, slist):
     mail = get_focused_mail(slist)
     if mail is None:
         return
@@ -472,7 +472,7 @@ def reply_mail_handler(c, slist):
     hkml_reply.reply(mail, attach_files=files, format_only=None)
     shell_mode_end(slist)
 
-def forward_mail_handler(c, slist):
+def forward_focused_mail(c, slist):
     mail = get_focused_mail(slist)
     if mail is None:
         return
@@ -481,19 +481,19 @@ def forward_mail_handler(c, slist):
     hkml_forward.forward(mail, attach_files=files)
     shell_mode_end(slist)
 
-def mails_list_open_mail(c, slist):
+def open_parent_focused_mail(c, slist):
     open_focused_mail(c, slist.parent_list)
 
-def mails_list_reply(c, slist):
-    reply_mail_handler(c, slist.parent_list)
+def reply_parent_focused_mail(c, slist):
+    reply_focused_mail(c, slist.parent_list)
 
-def mails_list_list_thread(c, slist):
-    list_thread_handler(c, slist.parent_list)
+def list_parent_focused_thread(c, slist):
+    list_thread_of_focused_mail(c, slist.parent_list)
 
-def mails_list_forward(c, slist):
-    forward_mail_handler(c, slist.parent_list)
+def forward_parent_focused_mail(c, slist):
+    forward_focused_mail(c, slist.parent_list)
 
-def mails_list_continue_draft(c, slist):
+def write_parent_focused_draft(c, slist):
     mail = get_focused_mail(slist.parent_list)
     if mail is None:
         return
@@ -503,7 +503,7 @@ def mails_list_continue_draft(c, slist):
             cc=None, body=None, attach=None, format_only=None)
     shell_mode_end(slist)
 
-def mails_list_show_tags(c, slist):
+def show_tags_of_parent_focused_mail(c, slist):
     mail = get_focused_mail(slist.parent_list)
     if mail is None:
         return
@@ -523,7 +523,7 @@ def mails_list_show_tags(c, slist):
     _ = input('Press <Enter> to return')
     shell_mode_end(slist)
 
-def mails_list_add_tags(c, slist):
+def add_tags_to_parent_focused_mail(c, slist):
     mail = get_focused_mail(slist.parent_list)
     if mail is None:
         return
@@ -546,7 +546,7 @@ def mails_list_add_tags(c, slist):
         hkml_tag.do_add_tags(mail, tags)
     shell_mode_end(slist)
 
-def mails_list_remove_tags(c, slist):
+def remove_tags_from_parent_focused_mail(c, slist):
     mail = get_focused_mail(slist.parent_list)
     if mail is None:
         return
@@ -579,7 +579,7 @@ def mails_list_remove_tags(c, slist):
         hkml_tag.do_remove_tags(mail, tags_to_remove)
     shell_mode_end(slist)
 
-def mails_list_check_patch(c, slist):
+def check_patches_of_parent_focused_mail(c, slist):
     shell_mode_start(slist)
     hkml_patch.main(argparse.Namespace(
         hkml_dir=None, command='patch', dont_add_cv=False, action='check',
@@ -590,7 +590,7 @@ def mails_list_check_patch(c, slist):
     _ = input('Press <Enter> to return to hkml')
     shell_mode_end(slist)
 
-def mails_list_apply_patch(c, slist):
+def apply_patches_of_parent_focused_mail(c, slist):
     shell_mode_start(slist)
     hkml_patch.main(argparse.Namespace(
         hkml_dir=None, command='patch', dont_add_cv=False, action='apply',
@@ -601,7 +601,7 @@ def mails_list_apply_patch(c, slist):
     _ = input('Press <Enter> to return to hkml')
     shell_mode_end(slist)
 
-def mails_list_export(c, slist):
+def export_mails_of_parent(c, slist):
     idx = focused_mail_idx(slist.parent_list.lines,
                            slist.parent_list.focus_row)
     shell_mode_start(slist)
@@ -678,27 +678,26 @@ def save_as(content):
             time.sleep(1)
 
 mails_list_menu = [
-        ['- open', mails_list_open_mail],
-        ['- reply', mails_list_reply],
-        ['- list complete thread', mails_list_list_thread],
-        ['- forward', mails_list_forward],
-        ['- continue draft writing', mails_list_continue_draft],
-        ['- show tags', mails_list_show_tags],
-        ['- add tags', mails_list_add_tags],
-        ['- remove tags', mails_list_remove_tags],
-        ['- check patch', mails_list_check_patch],
-        ['- apply patch', mails_list_apply_patch],
-        ['- export as an mbox file', mails_list_export],
+        ['- open', open_parent_focused_mail],
+        ['- reply', reply_parent_focused_mail],
+        ['- list complete thread', list_parent_focused_thread],
+        ['- forward', forward_parent_focused_mail],
+        ['- continue draft writing', write_parent_focused_draft],
+        ['- show tags', show_tags_of_parent_focused_mail],
+        ['- add tags', add_tags_to_parent_focused_mail],
+        ['- remove tags', remove_tags_from_parent_focused_mail],
+        ['- check patch', check_patches_of_parent_focused_mail],
+        ['- apply patch', apply_patches_of_parent_focused_mail],
+        ['- export as an mbox file', export_mails_of_parent],
         save_parent_content_menu_item_handler,
         ]
 
 def get_menu_input_handlers():
     return scrollable_list_default_handlers() + [
-            InputHandler(['\n'], menu_selection_handler,
-                         'execute focused item'),
+            InputHandler(['\n'], execute_focused_item, 'execute focused item'),
             ]
 
-def thread_menu_handler(c, slist):
+def show_mails_list_menu(c, slist):
     mail = get_focused_mail(slist)
     if mail is None:
         return
@@ -714,13 +713,14 @@ def thread_menu_handler(c, slist):
 def get_mails_list_input_handlers():
     return scrollable_list_default_handlers() + [
             InputHandler(['o', '\n'], open_focused_mail, 'open focused mail'),
-            InputHandler(['r'], reply_mail_handler, 'reply focused mail'),
-            InputHandler(['f'], forward_mail_handler, 'forward focused mail'),
-            InputHandler(['t'], list_thread_handler, 'list complete thread'),
-            InputHandler(['m'], thread_menu_handler, 'open menu'),
+            InputHandler(['r'], reply_focused_mail, 'reply focused mail'),
+            InputHandler(['f'], forward_focused_mail, 'forward focused mail'),
+            InputHandler(['t'], list_thread_of_focused_mail,
+                         'list complete thread'),
+            InputHandler(['m'], show_mails_list_menu, 'open menu'),
             ]
 
-def list_thread_handler(c, slist):
+def list_thread_of_focused_mail(c, slist):
     thread_txt, mail_idx_key_map = hkml_thread.thread_str(
             '%d' % focused_mail_idx(slist.lines, slist.focus_row),
             False, False)
