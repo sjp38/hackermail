@@ -271,6 +271,11 @@ def execute_focused_item(c, slist):
         if txt == focused_line:
             fn(c, slist)
 
+def get_menu_input_handlers():
+    return scrollable_list_default_handlers() + [
+            InputHandler(['\n'], execute_focused_item, 'execute focused item'),
+            ]
+
 def receive_file_path(for_read):
     while True:
         print('Enter the path to the file.')
@@ -330,6 +335,8 @@ def handle_save_content_menu_selection(c, slist):
 save_parent_content_menu_item_handler = [
         '- save parent screen content as ...',
         handle_save_content_menu_selection]
+
+# text viewer
 
 def text_viewer_menu_exec_git(c, slist):
     words = slist.lines[slist.focus_row].split()[1:]
@@ -701,11 +708,6 @@ mails_list_menu = [
         ['- export as an mbox file', export_mails_of_parent],
         save_parent_content_menu_item_handler,
         ]
-
-def get_menu_input_handlers():
-    return scrollable_list_default_handlers() + [
-            InputHandler(['\n'], execute_focused_item, 'execute focused item'),
-            ]
 
 def show_mails_list_menu(c, slist):
     mail = get_focused_mail(slist)
