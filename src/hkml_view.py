@@ -81,7 +81,7 @@ class ScrollableList:
                 color = normal_color
 
             line = self.lines[line_idx]
-            self.screen.addstr(row, 0, line, color)
+            self.screen.addstr(row, 0, line[:scr_cols], color)
 
             keyword = self.highlight_keyword
             if keyword is not None and keyword in line:
