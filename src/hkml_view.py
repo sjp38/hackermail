@@ -280,30 +280,6 @@ save_parent_content_menu_item_handler = [
         '- save parent screen content as ...',
         save_parent_content_menu_selection_handler]
 
-def focused_mail_idx(lines, focus_row):
-    for idx in range(focus_row, 0, -1):
-        line = lines[idx]
-        if not line.startswith('['):
-            continue
-        return int(line.split()[0][1:-1])
-    return None
-
-def get_focused_mail(slist):
-    mail_idx = focused_mail_idx(slist.lines, slist.focus_row)
-    if mail_idx is None:
-        slist.toast('no mail focused?')
-        return None
-    mail_idx = '%d' % mail_idx
-    if not mail_idx in slist.mail_idx_key_map:
-        slist.toast('wrong index?')
-        return None
-    mail_key = slist.mail_idx_key_map[mail_idx]
-    mail = hkml_cache.get_mail(key=mail_key)
-    if mail is None:
-        slist.toast('mail not cached?')
-        return None
-    return mail
-
 def text_viewer_menu_exec_git(c, slist):
     words = slist.lines[slist.focus_row].split()[1:]
     try:
@@ -408,6 +384,32 @@ def get_text_viewer_handlers():
             InputHandler(['m', '\n'], text_viewer_menu_handler,
                          'open menu')
                 ]
+
+# mails list
+
+def focused_mail_idx(lines, focus_row):
+    for idx in range(focus_row, 0, -1):
+        line = lines[idx]
+        if not line.startswith('['):
+            continue
+        return int(line.split()[0][1:-1])
+    return None
+
+def get_focused_mail(slist):
+    mail_idx = focused_mail_idx(slist.lines, slist.focus_row)
+    if mail_idx is None:
+        slist.toast('no mail focused?')
+        return None
+    mail_idx = '%d' % mail_idx
+    if not mail_idx in slist.mail_idx_key_map:
+        slist.toast('wrong index?')
+        return None
+    mail_key = slist.mail_idx_key_map[mail_idx]
+    mail = hkml_cache.get_mail(key=mail_key)
+    if mail is None:
+        slist.toast('mail not cached?')
+        return None
+    return mail
 
 def open_mail_handler(c, slist):
     mail = get_focused_mail(slist)
