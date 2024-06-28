@@ -273,11 +273,14 @@ Reading More
 ------------
 
 `open` subcommand supports not only mails from `list` or `thread` output, but
-also normal text files and git commit.  For example, below commands work.
+also normal text files, git commit, and commands.  If the given target is a
+command, `open` executes the command and shows the output.  For example, below
+commands work.
 
 ```
 $ hkml open ./foo-bar.patch
 $ hkml open HEAD~2
+$ hkml open "git log -10"
 ```
 
 Since the command shows the content with `hkml`'s interactive viewer, which
@@ -555,7 +558,7 @@ Text Screen
 -----------
 
 If the screen is showing a general text (`hkml open` output or mail content
-opened from `hkml list` output), the screen is call text screen type.
+opened from `hkml list` output), the screen is called text screen type.
 
 From this type, no additional key binding is supported.  However, the menu (`m`
 key) on this screen shows below options.
@@ -572,9 +575,10 @@ key) on this screen shows below options.
 - If the focused line contains paths to files, the menu shows items for opening
   the files by `hkml` or `vim`.
 
-Note that `hkml open` [allows](#reading-more) opening normal text files and git
-commits.  Hence the comit ids and public-inbox links based feature can help
-browsing of commit history and related discussions.
+Note that `hkml open` [allows](#reading-more) opening normal text files, git
+commits, and given command's outputs.  Hence the commit ids, public-inbox
+links, and file paths based features can help browsing of commit history,
+related discussions, and source files.
 
 Exporting Mails
 ===============
