@@ -569,6 +569,8 @@ key) on this screen shows below options.
   opening the mail or listing the thread of the mail.  The text screen and
   mails list screen are used for opening the mail and listing the thread
   options, respectively.
+- If the focused line contains paths to files, the menu shows items for opening
+  the files by `hkml` or `vim`.
 
 Note that `hkml open` [allows](#reading-more) opening normal text files and git
 commits.  Hence the comit ids and public-inbox links based feature can help
