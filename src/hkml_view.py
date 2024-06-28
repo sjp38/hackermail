@@ -736,6 +736,13 @@ def get_mails_list_input_handlers():
             InputHandler(['m'], show_mails_list_menu, 'open menu'),
             ]
 
+def show_mails_list(screen, text_lines, mail_idx_key_map):
+    slist = ScrollableList(screen, text_lines,
+                           get_mails_list_input_handlers())
+    slist.mail_idx_key_map = mail_idx_key_map
+    slist.draw()
+    return slist
+
 def __view(stdscr, text_to_show, mail_idx_key_map):
     global focus_color
     global normal_color
