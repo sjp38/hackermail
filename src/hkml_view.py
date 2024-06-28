@@ -358,11 +358,7 @@ def get_thread_txt_mail_idx_key_map(msgid):
 def text_viewer_menu_hkml_thread(c, slist):
     msgid = '<%s>' % slist.lines[slist.focus_row].split()[1:][-1]
     thread_txt, mail_idx_key_map = get_thread_txt_mail_idx_key_map(msgid)
-    thread_list = ScrollableList(
-            slist.screen, thread_txt.split('\n'),
-            get_mails_list_input_handlers())
-    thread_list.mail_idx_key_map = mail_idx_key_map
-    thread_list.draw()
+    show_mails_list(slist.screen, thread_txt.split('\n'), mail_idx_key_map)
 
 def text_viewer_menu_hkml_open(c, slist):
     msgid = '<%s>' % slist.lines[slist.focus_row].split()[1:][-1]
@@ -525,10 +521,7 @@ def list_thread_of_focused_mail(c, slist):
     hkml_cache.writeback_mails()
     hkml_list.cache_list_str('thread_output', thread_txt, mail_idx_key_map)
 
-    thread_list = ScrollableList(slist.screen, thread_txt.split('\n'),
-                                 get_mails_list_input_handlers())
-    thread_list.mail_idx_key_map = mail_idx_key_map
-    thread_list.draw()
+    show_mails_list(slist.screen, thread_txt.split('\n'), mail_idx_key_map)
 
 def open_parent_focused_mail(c, slist):
     open_focused_mail(c, slist.parent_list)
@@ -758,13 +751,8 @@ def __view(stdscr, text_to_show, mail_idx_key_map):
     highlight_color = curses.color_pair(3)
 
     if mail_idx_key_map is not None:
-        slist = ScrollableList(stdscr, text_lines,
-                               get_mails_list_input_handlers())
-        slist.mail_idx_key_map = mail_idx_key_map
-    else:
-        return show_text_viewer(stdscr, text_lines)
-    slist.draw()
-    return slist
+        return show_mails_list(stdscr, text_lines, mail_idx_key_map)
+    return show_text_viewer(stdscr, text_lines)
 
 def view(text, mail_idx_key_map):
     try:
