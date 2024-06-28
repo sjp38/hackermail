@@ -514,6 +514,8 @@ content.
 `/` key starts keyword highlighting.  `n` and `N` keys move the focus to
 next/previous line containing the keyword.
 
+`h` and `l` keys scroll the screen left and right one column, respectively.
+
 `q` key quits current screen.  `Q` key quits `hkml` at once.
 
 Mails List Screen
