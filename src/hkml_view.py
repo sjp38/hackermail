@@ -346,7 +346,7 @@ def text_viewer_menu_exec_git(c, slist):
     except Exception as e:
         output = ['failed: %s' % e, '',
                   'wrong commit id, or you are not on the git repo?']
-    ScrollableList(slist.screen, output, get_text_viewer_handlers()).draw()
+    show_text_viewer(slist.screen, output)
 
 def get_thread_txt_mail_idx_key_map(msgid):
     thread_txt, mail_idx_key_map = hkml_thread.thread_str(msgid,
@@ -374,8 +374,7 @@ def text_viewer_menu_hkml_open(c, slist):
         if mail.get_field('message-id') == msgid:
             _, cols = slist.screen.getmaxyx()
             lines = hkml_open.mail_display_str(mail, cols).split('\n')
-            ScrollableList(slist.screen, lines,
-                           get_text_viewer_handlers()).draw()
+            show_text_viewer(slist.screen, lines)
             break
 
 def is_git_hash(word):
@@ -480,7 +479,7 @@ def open_focused_mail(c, slist):
 
     _, cols = slist.screen.getmaxyx()
     lines = hkml_open.mail_display_str(mail, cols).split('\n')
-    ScrollableList(slist.screen, lines, get_text_viewer_handlers()).draw()
+    show_text_viewer(slist.screen, lines)
 
 def get_attach_files():
     answer = input('Do you want to attach files to the mail? [y/N] ')
@@ -756,7 +755,7 @@ def __view(stdscr, text_to_show, mail_idx_key_map):
                                get_mails_list_input_handlers())
         slist.mail_idx_key_map = mail_idx_key_map
     else:
-        slist = ScrollableList(stdscr, text_lines, get_text_viewer_handlers())
+        return show_text_viewer(stdscr, text_lines)
     slist.draw()
     return slist
 
