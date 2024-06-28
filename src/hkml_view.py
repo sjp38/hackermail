@@ -425,13 +425,7 @@ def add_menus_for_msgid(item_handlers, line):
             item_handlers.append(
                     ['- hkml open %s' % msgid, text_viewer_menu_hkml_open])
 
-def build_text_view_menu_item_handlers(slist):
-    line = slist.lines[slist.focus_row]
-
-    item_handlers = []
-    add_menus_for_commit(item_handlers, line)
-    add_menus_for_msgid(item_handlers, line)
-
+def add_menus_for_files(item_handlers, line):
     for separator in [',', '(', ')', '[', ']', '"']:
         line = line.replace(separator, ' ')
 
@@ -447,6 +441,14 @@ def build_text_view_menu_item_handlers(slist):
             found_files[word] = True
             item_handlers.append(
                     ['- open file %s' % word, text_viewer_menu_open_file])
+
+def build_text_view_menu_item_handlers(slist):
+    line = slist.lines[slist.focus_row]
+
+    item_handlers = []
+    add_menus_for_commit(item_handlers, line)
+    add_menus_for_msgid(item_handlers, line)
+    add_menus_for_files(item_handlers, line)
 
     item_handlers.append(save_parent_content_menu_item_handler)
     return item_handlers
