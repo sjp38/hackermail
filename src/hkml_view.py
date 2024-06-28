@@ -54,6 +54,7 @@ class ScrollableList:
     last_drawn = None
     menu_item_handlers = None
     scroll_cols = None
+    scroll_cols_max = None
 
     def __init__(self, screen, lines, input_handlers):
         self.screen = screen
@@ -64,6 +65,7 @@ class ScrollableList:
         self.focus_row = int(min(scr_rows / 2, len(lines) / 2))
         self.input_handlers = input_handlers
         self.scroll_cols = 0
+        self.scroll_cols_max = sorted([len(line) for line in lines])[-1]
 
     def __draw(self):
         self.last_drawn = []
@@ -221,8 +223,7 @@ def scroll_left(c, slist):
     slist.scroll_cols = max(slist.scroll_cols - 1, 0)
 
 def scroll_right(c, slist):
-    longest = sorted([len(line) for line in slist.lines])[-1]
-    slist.scroll_cols = min(slist.scroll_cols + 1, longest)
+    slist.scroll_cols = min(slist.scroll_cols + 1, slist.scroll_cols_max)
 
 def quit_list(c, slist):
     return 'quit list'
