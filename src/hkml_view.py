@@ -53,6 +53,7 @@ class ScrollableList:
     highlight_keyword = None
     last_drawn = None
     menu_item_handlers = None
+    scroll_cols = None
 
     def __init__(self, screen, lines, input_handlers):
         self.screen = screen
@@ -62,6 +63,7 @@ class ScrollableList:
         scr_rows, _ = screen.getmaxyx()
         self.focus_row = int(min(scr_rows / 2, len(lines) / 2))
         self.input_handlers = input_handlers
+        self.scroll_cols = 0
 
     def __draw(self):
         self.last_drawn = []
@@ -80,8 +82,9 @@ class ScrollableList:
             else:
                 color = normal_color
 
-            line = self.lines[line_idx]
-            self.screen.addstr(row, 0, line[:scr_cols], color)
+            line = self.lines[line_idx][
+                    self.scroll_cols:self.scroll_cols + scr_cols]
+            self.screen.addstr(row, 0, line, color)
 
             keyword = self.highlight_keyword
             if keyword is not None and keyword in line:
@@ -97,8 +100,12 @@ class ScrollableList:
             self.last_drawn.append(self.lines[line_idx])
         if len(self.lines) < scr_rows - 1:
             self.last_drawn += [''] * (scr_rows - 1  - len(self.lines))
+
+        orig_line = self.lines[self.focus_row]
         self.screen.addstr(scr_rows - 1, 0,
-               '# focus: %d/%d row' % (self.focus_row, len(self.lines)))
+               '# focus: %d/%d row, %d/%d cols' % (
+                   self.focus_row, len(self.lines), self.scroll_cols,
+                   len(orig_line)))
         help_msg = 'Press ? for help'
         self.screen.addstr(scr_rows - 1, scr_cols - len(help_msg) - 1,
                            help_msg)
@@ -210,6 +217,13 @@ def focus_prev_keyword(c, slist):
             return
     slist.toast('no prev keyword found')
 
+def scroll_left(c, slist):
+    slist.scroll_cols = max(slist.scroll_cols - 1, 0)
+
+def scroll_right(c, slist):
+    longest = sorted([len(line) for line in slist.lines])[-1]
+    slist.scroll_cols = min(slist.scroll_cols + 1, longest)
+
 def quit_list(c, slist):
     return 'quit list'
 
@@ -232,6 +246,8 @@ def scrollable_list_default_handlers():
                          'focus the row of next highlighted keyword'),
             InputHandler(['N'], focus_prev_keyword,
                          'focus the row of prev highlighted keyword'),
+            InputHandler(['h'], scroll_left, 'scroll left'),
+            InputHandler(['l'], scroll_right, 'scroll right'),
             InputHandler(['q'], quit_list, 'quit current screen'),
             InputHandler(['Q'], quit_hkml, 'quit hkml'),
             InputHandler(['?'], show_help_msg_list, 'show help message'),
