@@ -25,6 +25,8 @@ import hkml_write
 Curses-based TUI viewer for hkml list output.
 '''
 
+# ScrollableList
+
 focus_color = None
 normal_color = None
 highlight_color = None
@@ -271,14 +273,14 @@ def menu_selection_handler(c, slist):
         if txt == focused_line:
             fn(c, slist)
 
-def save_parent_content_menu_selection_handler(c, slist):
+def handle_save_content_menu_selection(c, slist):
     shell_mode_start(slist)
     save_as('\n'.join(slist.parent_list.lines))
     shell_mode_end(slist)
 
 save_parent_content_menu_item_handler = [
         '- save parent screen content as ...',
-        save_parent_content_menu_selection_handler]
+        handle_save_content_menu_selection]
 
 def text_viewer_menu_exec_git(c, slist):
     words = slist.lines[slist.focus_row].split()[1:]
@@ -371,7 +373,7 @@ def build_text_view_menu_item_handlers(slist):
     item_handlers.append(save_parent_content_menu_item_handler)
     return item_handlers
 
-def text_viewer_menu_handler(c, slist):
+def show_text_viewer_menu(c, slist):
     item_handlers = build_text_view_menu_item_handlers(slist)
     lines = ['selected line: %s' % slist.lines[slist.focus_row], '',
              'focus an item below and press Enter', '']
@@ -381,8 +383,7 @@ def text_viewer_menu_handler(c, slist):
 
 def get_text_viewer_handlers():
     return scrollable_list_default_handlers() + [
-            InputHandler(['m', '\n'], text_viewer_menu_handler,
-                         'open menu')
+            InputHandler(['m', '\n'], show_text_viewer_menu, 'open menu')
                 ]
 
 # mails list
@@ -411,7 +412,7 @@ def get_focused_mail(slist):
         return None
     return mail
 
-def open_mail_handler(c, slist):
+def open_focused_mail(c, slist):
     mail = get_focused_mail(slist)
     if mail is None:
         return
@@ -481,7 +482,7 @@ def forward_mail_handler(c, slist):
     shell_mode_end(slist)
 
 def mails_list_open_mail(c, slist):
-    open_mail_handler(c, slist.parent_list)
+    open_focused_mail(c, slist.parent_list)
 
 def mails_list_reply(c, slist):
     reply_mail_handler(c, slist.parent_list)
@@ -712,7 +713,7 @@ def thread_menu_handler(c, slist):
 
 def get_mails_list_input_handlers():
     return scrollable_list_default_handlers() + [
-            InputHandler(['o', '\n'], open_mail_handler, 'open focused mail'),
+            InputHandler(['o', '\n'], open_focused_mail, 'open focused mail'),
             InputHandler(['r'], reply_mail_handler, 'reply focused mail'),
             InputHandler(['f'], forward_mail_handler, 'forward focused mail'),
             InputHandler(['t'], list_thread_handler, 'list complete thread'),
