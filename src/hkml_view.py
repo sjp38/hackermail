@@ -379,6 +379,12 @@ def text_viewer_menu_open_file(c, slist):
         lines = f.read().split('\n')
     show_text_viewer(slist.screen, lines)
 
+def text_viewer_menu_vim_file(c, slist):
+    file_path = slist.lines[slist.focus_row].split()[1:][-1]
+    shell_mode_start(slist)
+    subprocess.call(['vim', file_path])
+    shell_mode_end(slist)
+
 def is_git_hash(word):
     if len(word) < 10:
         return False
@@ -440,7 +446,9 @@ def add_menus_for_files(item_handlers, line):
         if not word in found_files and os.path.isfile(word):
             found_files[word] = True
             item_handlers.append(
-                    ['- open file %s' % word, text_viewer_menu_open_file])
+                    ['- hkml open file %s' % word, text_viewer_menu_open_file])
+            item_handlers.append(
+                    ['- vim %s' % word, text_viewer_menu_vim_file])
 
 def build_text_view_menu_item_handlers(slist):
     line = slist.lines[slist.focus_row]
