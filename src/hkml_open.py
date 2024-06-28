@@ -90,7 +90,28 @@ def show_git_commit(commit, to_stdout, use_less, string_after_less):
     except:
         return 'git show failed'
 
+def handle_command_target(args):
+    print('...')
+    cmd = args.target.split()[0]
+    try:
+        subprocess.check_output(['which', cmd])
+        is_cmd = True
+    except:
+        is_cmd = False
+    if not is_cmd:
+        return False
+
+    try:
+        output = subprocess.check_output(args.target, shell=True).decode()
+    except:
+        print('failed running the target command')
+        return False
+    show_text(output, args.stdout, args.use_less, None)
+    return True
+
 def main(args):
+    if handle_command_target(args):
+        return
     if os.path.isfile(args.target):
         with open(args.target, 'r') as f:
             return show_text(f.read(), args.stdout, args.use_less, None)
@@ -145,6 +166,7 @@ def set_argparser(parser):
                     '3. \'prev\': last open mail index minus one.',
                     '4. text file',
                     '5. Git commit',
+                    '6. command.',
                     ]))
     parser.add_argument(
             '--stdout', action='store_true', help='print without a pager')
