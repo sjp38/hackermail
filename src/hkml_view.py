@@ -428,6 +428,7 @@ def build_text_view_menu_item_handlers(slist):
             item_handlers.append(
                     ['- hkml open %s' % msgid, text_viewer_menu_hkml_open])
 
+    found_files = {}
     for word in line.split():
         # file paths on diff starts with a/ and b/, e.g.,
         #
@@ -435,7 +436,8 @@ def build_text_view_menu_item_handlers(slist):
         # +++ b/tools/testing/selftests/damon/damon_nr_regions.py
         if word.startswith('a/') or word.startswith('b/'):
             word = word[2:]
-        if os.path.isfile(word):
+        if not word in found_files and os.path.isfile(word):
+            found_files[word] = True
             item_handlers.append(
                     ['- open file %s' % word, text_viewer_menu_open_file])
 
