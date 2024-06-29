@@ -47,6 +47,7 @@ class ScrollableList:
     menu_item_handlers = None
     scroll_cols = None
     longest_line_len = None
+    after_input_handle_callback = None
 
     def __init__(self, screen, lines, input_handlers):
         self.screen = screen
@@ -125,6 +126,9 @@ class ScrollableList:
                     break
             if break_loop:
                 break
+            if self.after_input_handle_callback is not None:
+                self.after_input_handle_callback(self)
+
             if self.mail_idx_key_map:
                 _, last_mail_idx_key_map = hkml_list.get_last_mails_list()
                 if self.mail_idx_key_map != last_mail_idx_key_map:
