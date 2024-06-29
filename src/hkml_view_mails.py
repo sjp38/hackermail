@@ -31,10 +31,11 @@ def get_focused_mail(slist):
         slist.toast('no mail focused?')
         return None
     mail_idx = '%d' % mail_idx
-    if not mail_idx in slist.mail_idx_key_map:
+    mail_idx_key_map = slist.data
+    if not mail_idx in mail_idx_key_map:
         slist.toast('wrong index?')
         return None
-    mail_key = slist.mail_idx_key_map[mail_idx]
+    mail_key = mail_idx_key_map[mail_idx]
     mail = hkml_cache.get_mail(key=mail_key)
     if mail is None:
         slist.toast('mail not cached?')
@@ -306,9 +307,19 @@ def get_mails_list_input_handlers():
             hkml_view.InputHandler(['m'], show_mails_list_menu, 'open menu'),
             ]
 
+def after_input_handle_callback(slist):
+    mail_idx_key_map = slist.data
+    if mail_idx_key_map is None:
+        return
+    _, last_mail_idx_key_map = hkml_list.get_last_mails_list()
+    if mail_idx_key_map != last_mail_idx_key_map:
+        hkml_list.cache_list_str(
+                'thread_output', '\n'.join(slist.lines), mail_idx_key_map)
+
 def show_mails_list(screen, text_lines, mail_idx_key_map):
     slist = hkml_view.ScrollableList(screen, text_lines,
                            get_mails_list_input_handlers())
-    slist.mail_idx_key_map = mail_idx_key_map
+    slist.data = mail_idx_key_map
+    slist.after_input_handle_callback = after_input_handle_callback
     slist.draw()
     return slist
