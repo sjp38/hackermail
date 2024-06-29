@@ -144,7 +144,7 @@ def show_text_viewer_menu(c, slist):
     menu_list.draw()
 
 def get_text_viewer_handlers():
-    return hkml_view.scrollable_list_default_handlers() + [
+    return [
             hkml_view.InputHandler(
                 ['m', '\n'], show_text_viewer_menu, 'open menu')
                 ]

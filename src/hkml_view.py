@@ -56,7 +56,9 @@ class ScrollableList:
         # set focus on middle of the screen or the content
         scr_rows, _ = screen.getmaxyx()
         self.focus_row = int(min(scr_rows / 2, len(lines) / 2))
-        self.input_handlers = input_handlers
+        self.input_handlers = scrollable_list_default_handlers()
+        if input_handlers:
+            self.input_handlers += input_handlers
         self.scroll_cols = 0
         self.longest_line_len = sorted([len(line) for line in lines])[-1]
 
@@ -230,8 +232,7 @@ def quit_hkml(c, slist):
     raise Exception('terminate hkml', slist)
 
 def show_help_msg_list(c, slist):
-    ScrollableList(slist.screen, slist.help_msg_lines(),
-                   scrollable_list_default_handlers()).draw()
+    ScrollableList(slist.screen, slist.help_msg_lines(), None).draw()
 
 def scrollable_list_default_handlers():
     return [

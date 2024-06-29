@@ -295,7 +295,7 @@ def show_mails_list_menu(c, slist):
     menu_list.draw()
 
 def get_mails_list_input_handlers():
-    return hkml_view.scrollable_list_default_handlers() + [
+    return [
             hkml_view.InputHandler(
                 ['o', '\n'], open_focused_mail, 'open focused mail'),
             hkml_view.InputHandler(
