@@ -36,6 +36,8 @@ class SubCmdHelpFormatter(argparse.RawDescriptionHelpFormatter):
 
 parser = argparse.ArgumentParser(formatter_class=SubCmdHelpFormatter)
 parser.add_argument('--hkml_dir', metavar='hkml dir', type=str)
+parser.add_argument('-C', '--directory', metavar='<dir>',
+                    help='change to <dir> before doing anything')
 
 subparsers = parser.add_subparsers(title='command', dest='command',
         metavar='<command>')
@@ -91,6 +93,9 @@ parser_cache = subparsers.add_parser('cache', help = 'manage cache')
 hkml_cache.set_argparser(parser_cache)
 
 args = parser.parse_args()
+
+if args.directory is not None:
+    os.chdir(args.directory)
 
 if not args.command == 'init':
     manifest = None
