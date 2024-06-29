@@ -1,28 +1,18 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: GPL-2.0
 
-import argparse
 import curses
 import os
 import subprocess
 import tempfile
 import time
 
-import hkml_cache
-import hkml_export
-import hkml_forward
 import hkml_list
-import hkml_open
-import hkml_patch
-import hkml_reply
-import hkml_tag
-import hkml_thread
 import hkml_view_mails
 import hkml_view_text
-import hkml_write
 
 '''
-Curses-based TUI viewer for hkml list output.
+Curses-based TUI viewer for hkml list/open outputs.
 '''
 
 # ScrollableList
