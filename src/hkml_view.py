@@ -41,7 +41,6 @@ class ScrollableList:
     lines = None
     focus_row = None
     input_handlers = None
-    mail_idx_key_map = None
     highlight_keyword = None
     last_drawn = None
     menu_item_handlers = None
@@ -129,13 +128,6 @@ class ScrollableList:
                 break
             if self.after_input_handle_callback is not None:
                 self.after_input_handle_callback(self)
-
-            if self.mail_idx_key_map:
-                _, last_mail_idx_key_map = hkml_list.get_last_mails_list()
-                if self.mail_idx_key_map != last_mail_idx_key_map:
-                    hkml_list.cache_list_str(
-                            'thread_output', '\n'.join(self.lines),
-                            self.mail_idx_key_map)
 
     def toast(self, message):
         scr_rows, scr_cols = self.screen.getmaxyx()
