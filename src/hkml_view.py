@@ -48,6 +48,7 @@ class ScrollableList:
     scroll_cols = None
     longest_line_len = None
     after_input_handle_callback = None
+    data = None
 
     def __init__(self, screen, lines, input_handlers):
         self.screen = screen
