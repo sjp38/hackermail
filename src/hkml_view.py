@@ -146,7 +146,11 @@ class ScrollableList:
         return lines
 
     def set_menu_item_handlers(self, parent_list, item_handlers):
-        self.input_handlers = get_menu_input_handlers()
+        self.input_handlers += [
+                InputHandler(
+                    ['\n'], execute_focused_item, 'execute focused item'),
+                ]
+
         self.parent_list = parent_list
         self.menu_item_handlers = item_handlers
         for txt, _ in item_handlers:
@@ -260,11 +264,6 @@ def execute_focused_item(c, slist):
     for txt, fn in slist.menu_item_handlers:
         if txt == focused_line:
             fn(c, slist)
-
-def get_menu_input_handlers():
-    return scrollable_list_default_handlers() + [
-            InputHandler(['\n'], execute_focused_item, 'execute focused item'),
-            ]
 
 def receive_file_path(for_read):
     while True:
