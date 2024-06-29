@@ -4,6 +4,7 @@ v1.1.2
 - Support horizontal scroll ('h', 'l' key for scroll left/right)
 - Support opening files via hkml or vim from hkml text viewer's context menu
 - Support commands as 'hkml open' target types
+- Support '-C', '--directory' option similar to 'make' and 'git'
 
 v1.1.1
 - Mention DAMON and general Linux kernel workflow as supported
