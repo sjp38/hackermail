@@ -31,7 +31,7 @@ def get_thread_txt_mail_idx_key_map(msgid):
 def text_viewer_menu_hkml_thread(c, slist):
     msgid = '<%s>' % slist.lines[slist.focus_row].split()[1:][-1]
     thread_txt, mail_idx_key_map = get_thread_txt_mail_idx_key_map(msgid)
-    hkml_view.show_mails_list(slist.screen, thread_txt.split('\n'),
+    hkml_view_mails.show_mails_list(slist.screen, thread_txt.split('\n'),
                               mail_idx_key_map)
 
 def text_viewer_menu_hkml_open(c, slist):
