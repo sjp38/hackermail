@@ -10,6 +10,7 @@ import hkml_list
 import hkml_open
 import hkml_thread
 import hkml_view
+import hkml_view_mails
 
 def text_viewer_menu_exec_git(c, slist):
     words = slist.lines[slist.focus_row].split()[1:]
