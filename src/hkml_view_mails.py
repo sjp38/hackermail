@@ -115,15 +115,18 @@ def list_parent_focused_thread(c, slist):
 def forward_parent_focused_mail(c, slist):
     forward_focused_mail(c, slist.parent_list)
 
-def write_parent_focused_draft(c, slist):
-    mail = get_focused_mail(slist.parent_list)
-    if mail is None:
-        return
+def write_mail_draft(slist, mail):
     hkml_view.shell_mode_start(slist)
     hkml_write.write_send_mail(
             draft_mail=mail, subject=None, in_reply_to=None, to=None,
             cc=None, body=None, attach=None, format_only=None)
     hkml_view.shell_mode_end(slist)
+
+def write_parent_focused_draft(c, slist):
+    mail = get_focused_mail(slist.parent_list)
+    if mail is None:
+        return
+    write_mail_draft(slist, mail)
 
 def show_tags_of_parent_focused_mail(c, slist):
     mail = get_focused_mail(slist.parent_list)
