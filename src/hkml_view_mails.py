@@ -128,6 +128,16 @@ def write_parent_focused_draft(c, slist):
         return
     write_mail_draft(slist, mail)
 
+def do_add_tags(data, selection):
+    mail = data
+    prompt = ' '.join(['Enter tags to add, separated by white spaces',
+                       '(enter \'cancel_tag\' to cancel): '])
+    tags = input(prompt).split()
+    if 'cancel_tag' in tags:
+        _ = input('Canceled.  Press enter to return')
+        return 'canceled'
+    hkml_tag.do_add_tags(mail, tags)
+
 def manage_tags_of_mail(slist, mail):
     msgid = mail.get_field('message-id')
     tags_map = hkml_tag.read_tags_file()
@@ -156,14 +166,10 @@ def manage_tags_of_mail(slist, mail):
         return
 
     if answer == '1':
-        prompt = ' '.join(['Enter tags to add, separated by white spaces',
-                           '(enter \'cancel_tag\' to cancel): '])
-        tags = input(prompt).split()
-        if 'cancel_tag' in tags:
-            _ = input('Canceled.  Press enter to return')
+        err = do_add_tags(mail, None)
+        if err:
             hkml_view.shell_mode_end(slist)
             return
-        hkml_tag.do_add_tags(mail, tags)
     elif answer == '2':
         prompt = ' '.join(
                 ['Enter tags to remove, separted by white spaces',
