@@ -69,15 +69,18 @@ def get_attach_files():
             break
     return files
 
+def reply_mail(slist, mail):
+    hkml_view.shell_mode_start(slist)
+    files = get_attach_files()
+    hkml_reply.reply(mail, attach_files=files, format_only=None)
+    hkml_view.shell_mode_end(slist)
+
 def reply_focused_mail(c, slist):
     mail = get_focused_mail(slist)
     if mail is None:
         return
 
-    hkml_view.shell_mode_start(slist)
-    files = get_attach_files()
-    hkml_reply.reply(mail, attach_files=files, format_only=None)
-    hkml_view.shell_mode_end(slist)
+    reply_mail(slist, mail)
 
 def forward_focused_mail(c, slist):
     mail = get_focused_mail(slist)
