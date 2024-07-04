@@ -128,6 +128,65 @@ def write_parent_focused_draft(c, slist):
         return
     write_mail_draft(slist, mail)
 
+def manage_tags_of_parent_focused_mail(c, slist):
+    mail = get_focused_mail(slist.parent_list)
+    if mail is None:
+        return
+    msgid = mail.get_field('message-id')
+    tags_map = hkml_tag.read_tags_file()
+    hkml_view.shell_mode_start(slist)
+
+    if msgid in tags_map:
+        tags = tags_map[msgid]['tags']
+    else:
+        tags = []
+    if len(tags) > 0:
+        print('the mail (\"%s\") has below tags:' % mail.subject)
+        for tag in tags:
+            print('- %s' % tag)
+        print()
+    print('What do you want to do?')
+    print('1. Add tags')
+    print('2. Remove tags')
+    answer = input('Enter your selection (enter \'cancel_tag\' to cancel): ')
+    if answer == 'cancel_tag':
+        _ = input('Canceled.  Press enter to return')
+        hkml_view.shell_mode_end(slist)
+        return
+    if not answer in ['1', '2']:
+        _ = input('Wrong input.  It should be 1 or 2.  Enter to return.')
+        hkml_view.shell_mode_end(slist)
+        return
+
+    if answer == '1':
+        prompt = ' '.join(['Enter tags to add, separated by white spaces',
+                           '(enter \'cancel_tag\' to cancel): '])
+        tags = input(prompt).split()
+        if 'cancel_tag' in tags:
+            _ = input('Canceled.  Press enter to return')
+            hkml_view.shell_mode_end(slist)
+            return
+        hkml_tag.do_add_tags(mail, tags)
+    elif answer == '2':
+        prompt = ' '.join(
+                ['Enter tags to remove, separted by white spaces',
+                 '(enter \'cancel_tag\' to cancel): '])
+        tags_to_remove = input(prompt).split()
+        if 'cancel_tag' in tags_to_remove:
+            _ = input('Canceled.  Press enter to return')
+            hkml_view.shell_mode_end(slist)
+            return
+        for tag in tags_to_remove:
+            if not tag in tags:
+                print('the mail is not tagged as %s' % tag)
+                _ = input('Canceled.  Press enter to return')
+                hkml_view.shell_mode_end(slist)
+        hkml_tag.do_remove_tags(mail, tags_to_remove)
+    else:
+        raise Exception('this cannot happen')
+    _ = input('Done.  Press enter to return')
+    hkml_view.shell_mode_end(slist)
+
 def show_tags_of_parent_focused_mail(c, slist):
     mail = get_focused_mail(slist.parent_list)
     if mail is None:
@@ -281,6 +340,7 @@ def get_mails_list_menu():
         ['- list complete thread', list_parent_focused_thread],
         ['- forward', forward_parent_focused_mail],
         ['- continue draft writing', write_parent_focused_draft],
+        ['- manage tags', manage_tags_of_parent_focused_mail],
         ['- show tags', show_tags_of_parent_focused_mail],
         ['- add tags', add_tags_to_parent_focused_mail],
         ['- remove tags', remove_tags_from_parent_focused_mail],
