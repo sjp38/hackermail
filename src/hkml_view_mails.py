@@ -190,38 +190,34 @@ def manage_tags_of_parent_focused_mail(c, slist):
         return
     manage_tags_of_mail(slist, mail)
 
+def do_check_patch(data, selection):
+    mail_idx = data
+    hkml_patch.main(argparse.Namespace(
+        hkml_dir=None, command='patch', dont_add_cv=False, action='check',
+        mail=mail_idx, checker=None))
+
+def do_apply_patch(data, selection):
+    mail_idx = data
+    hkml_patch.main(argparse.Namespace(
+        hkml_dir=None, command='patch', dont_add_cv=False, action='apply',
+        mail=mail_idx, repo='./'))
+
 def handle_patches_of_parent_focused_mail(c, slist):
     hkml_view.shell_mode_start(slist)
     mail = get_focused_mail(slist.parent_list)
     if mail is None:
         return
-    print('Handle the mail (\'%s\') as patch[es].' % mail.subject)
-    print()
-    print('1. check patch[es]')
-    print('2. apply patch[es]')
-    print()
-    answer = input('Select (enter \'cancel_patch\' to cancel): ')
-    if answer == 'cancel_patch':
-        _ = input('Canceled.  Press enter to return')
-        hkml_view.shell_mode_end(slist)
-        return
 
-    if answer == '1':
-        hkml_patch.main(argparse.Namespace(
-            hkml_dir=None, command='patch', dont_add_cv=False, action='check',
-            mail='%d' % focused_mail_idx(
-                slist.parent_list.lines, slist.parent_list.focus_row),
-            checker=None))
-    elif answer == '2':
-        hkml_patch.main(argparse.Namespace(
-            hkml_dir=None, command='patch', dont_add_cv=False, action='apply',
-            mail='%d' % focused_mail_idx(
-                slist.parent_list.lines, slist.parent_list.focus_row),
-            repo='./'))
-    else:
-        raise Exception('this cannot happen')
-    print()
-    _ = input('Done.  Press <Enter> to return to hkml')
+    mail_idx = '%d' % focused_mail_idx(
+            slist.parent_list.lines, slist.parent_list.focus_row)
+
+    hkml_view.cli_select(
+            msg='Handle the mail (\'%s\') as patch[es].' % mail.subject,
+            selections=[
+                hkml_view.CliSelection('check patch[es]', do_check_patch),
+                hkml_view.CliSelection('apply patch[es]', do_apply_patch)],
+             cancel_keyword='cancel_patch',
+             data=mail_idx)
     hkml_view.shell_mode_end(slist)
 
 def export_mails_of_parent(c, slist):

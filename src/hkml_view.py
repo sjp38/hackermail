@@ -33,7 +33,7 @@ def cli_select(msg, selections, cancel_keyword, data):
     for idx, selection in enumerate(selections):
         print('%d: %s' % (idx + 1, selection.text))
     print()
-    print('Select (enter \'%s\' to cancel): ' % cancel_keyword)
+    answer = input('Select (enter \'%s\' to cancel): ' % cancel_keyword)
     if answer == cancel_keyword:
         _ = input('Canceled.  Press <Enter> to return')
         return 'canceled'
