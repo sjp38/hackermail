@@ -73,12 +73,19 @@ def get_patch_mails(mail, dont_add_cv):
     else:
         patch_mails += [r for r in mail.replies
                        if 'patch' in r.subject_tags]
+    use_patch_msgid_link = None
     for patch_mail in patch_mails:
         msgid = patch_mail.get_field('message-id')
         if msgid.startswith('<') and msgid.endswith('>'):
             msgid = msgid[1:-1]
         site = _hkml.get_manifest()['site']
         url = '%s/%s' % (site, msgid)
+        if use_patch_msgid_link is None and site == 'https://lore.kernel.org':
+            answer = input(
+                    'use patch.msgid.link domain for patch origin? [Y/n] ')
+            use_patch_msgid_link = answer.lower() != 'n'
+        if use_patch_msgid_link is True:
+            url = 'https://patch.msgid.link/%s' % msgid
         patch_mail.add_tag('Link: %s' % url)
         if patch_mail.replies is None:
             continue
