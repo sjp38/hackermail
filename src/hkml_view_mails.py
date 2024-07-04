@@ -187,6 +187,40 @@ def manage_tags_of_parent_focused_mail(c, slist):
     _ = input('Done.  Press enter to return')
     hkml_view.shell_mode_end(slist)
 
+def handle_patches_of_parent_focused_mail(c, slist):
+    hkml_view.shell_mode_start(slist)
+    mail = get_focused_mail(slist.parent_list)
+    if mail is None:
+        return
+    print('Handle the mail (\'%s\') as patch[es].' % mail.subject)
+    print()
+    print('1. check patch[es]')
+    print('2. apply patch[es]')
+    print()
+    answer = input('Select (enter \'cancel_patch\' to cancel): ')
+    if answer == 'cancel_patch':
+        _ = input('Canceled.  Press enter to return')
+        hkml_view.shell_mode_end(slist)
+        return
+
+    if answer == '1':
+        hkml_patch.main(argparse.Namespace(
+            hkml_dir=None, command='patch', dont_add_cv=False, action='check',
+            mail='%d' % focused_mail_idx(
+                slist.parent_list.lines, slist.parent_list.focus_row),
+            checker=None))
+    elif answer == '2':
+        hkml_patch.main(argparse.Namespace(
+            hkml_dir=None, command='patch', dont_add_cv=False, action='apply',
+            mail='%d' % focused_mail_idx(
+                slist.parent_list.lines, slist.parent_list.focus_row),
+            repo='./'))
+    else:
+        raise Exception('this cannot happen')
+    print()
+    _ = input('Done.  Press <Enter> to return to hkml')
+    hkml_view.shell_mode_end(slist)
+
 def check_patches_of_parent_focused_mail(c, slist):
     hkml_view.shell_mode_start(slist)
     hkml_patch.main(argparse.Namespace(
@@ -265,6 +299,7 @@ def get_mails_list_menu():
         ['- forward', forward_parent_focused_mail],
         ['- continue draft writing', write_parent_focused_draft],
         ['- manage tags', manage_tags_of_parent_focused_mail],
+        ['- handle as patches', handle_patches_of_parent_focused_mail],
         ['- check patch', check_patches_of_parent_focused_mail],
         ['- apply patch', apply_patches_of_parent_focused_mail],
         ['- export as an mbox file', export_mails_of_parent],
