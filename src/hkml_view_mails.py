@@ -128,10 +128,7 @@ def write_parent_focused_draft(c, slist):
         return
     write_mail_draft(slist, mail)
 
-def manage_tags_of_parent_focused_mail(c, slist):
-    mail = get_focused_mail(slist.parent_list)
-    if mail is None:
-        return
+def manage_tags_of_mail(slist, mail):
     msgid = mail.get_field('message-id')
     tags_map = hkml_tag.read_tags_file()
     hkml_view.shell_mode_start(slist)
@@ -186,6 +183,12 @@ def manage_tags_of_parent_focused_mail(c, slist):
         raise Exception('this cannot happen')
     _ = input('Done.  Press enter to return')
     hkml_view.shell_mode_end(slist)
+
+def manage_tags_of_parent_focused_mail(c, slist):
+    mail = get_focused_mail(slist.parent_list)
+    if mail is None:
+        return
+    manage_tags_of_mail(slist, mail)
 
 def handle_patches_of_parent_focused_mail(c, slist):
     hkml_view.shell_mode_start(slist)
