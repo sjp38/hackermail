@@ -129,7 +129,7 @@ def write_parent_focused_draft(c, slist):
     write_mail_draft(slist, mail)
 
 def do_add_tags(data, selection):
-    mail = data
+    mail, tags = data
     prompt = ' '.join(['Enter tags to add, separated by white spaces',
                        '(enter \'cancel_tag\' to cancel): '])
     tags = input(prompt).split()
@@ -137,6 +137,22 @@ def do_add_tags(data, selection):
         _ = input('Canceled.  Press enter to return')
         return 'canceled'
     hkml_tag.do_add_tags(mail, tags)
+
+def do_remove_tags(data, selection):
+    mail, tags = data
+    prompt = ' '.join(
+            ['Enter tags to remove, separted by white spaces',
+             '(enter \'cancel_tag\' to cancel): '])
+    tags_to_remove = input(prompt).split()
+    if 'cancel_tag' in tags_to_remove:
+        _ = input('Canceled.  Press enter to return')
+        return 'canceled'
+    for tag in tags_to_remove:
+        if not tag in tags:
+            print('the mail is not tagged as %s' % tag)
+            _ = input('Canceled.  Press enter to return')
+            return 'the mail is not tagged as %s' % tag
+    hkml_tag.do_remove_tags(mail, tags_to_remove)
 
 def manage_tags_of_mail(slist, mail):
     msgid = mail.get_field('message-id')
@@ -166,25 +182,15 @@ def manage_tags_of_mail(slist, mail):
         return
 
     if answer == '1':
-        err = do_add_tags(mail, None)
+        err = do_add_tags([mail, tags], None)
         if err:
             hkml_view.shell_mode_end(slist)
             return
     elif answer == '2':
-        prompt = ' '.join(
-                ['Enter tags to remove, separted by white spaces',
-                 '(enter \'cancel_tag\' to cancel): '])
-        tags_to_remove = input(prompt).split()
-        if 'cancel_tag' in tags_to_remove:
-            _ = input('Canceled.  Press enter to return')
+        err = do_remove_tags([mail, tags], None)
+        if err:
             hkml_view.shell_mode_end(slist)
             return
-        for tag in tags_to_remove:
-            if not tag in tags:
-                print('the mail is not tagged as %s' % tag)
-                _ = input('Canceled.  Press enter to return')
-                hkml_view.shell_mode_end(slist)
-        hkml_tag.do_remove_tags(mail, tags_to_remove)
     else:
         raise Exception('this cannot happen')
     _ = input('Done.  Press enter to return')
