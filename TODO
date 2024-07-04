@@ -9,3 +9,6 @@
   - https://patch.msgid.link/20240618-docs-patch-msgid-link-v1-0-30555f3f5ad4@linuxfoundation.org
 - Implement complete TUI
   - Support every feature with TUI
+- Add all mail menu items on mail text viewer's menu
+- Collapse show/add/remove tags menu items into one: manage tags
+- Collapse check/apply patch menu items into one: manage as patches
