@@ -9,7 +9,6 @@ import _hkml
 import hkml_cache
 import hkml_list
 import hkml_open
-import hkml_reply
 import hkml_thread
 import hkml_view
 import hkml_view_mails
@@ -133,10 +132,7 @@ def reply_parent_mail(c, slist):
         slist.toast('parent is not a mail?')
         return
 
-    hkml_view.shell_mode_start(slist)
-    files = hkml_view_mails.get_attach_files()
-    hkml_reply.reply(mail, attach_files=files, format_only=None)
-    hkml_view.shell_mode_end(slist)
+    hkml_view_mails.reply_mail(slist, mail)
 
 def add_menus_for_mail(item_handlers, mail):
     item_handlers.append(
