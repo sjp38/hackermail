@@ -5,9 +5,11 @@
 import os
 import subprocess
 
+import _hkml
 import hkml_cache
 import hkml_list
 import hkml_open
+import hkml_reply
 import hkml_thread
 import hkml_view
 import hkml_view_mails
@@ -125,6 +127,21 @@ def add_menus_for_files(item_handlers, line):
             item_handlers.append(
                     ['- vim %s' % word, text_viewer_menu_vim_file])
 
+def reply_parent_mail(c, slist):
+    mail = _hkml.Mail(mbox='\n'.join(slist.parent_list.lines))
+    if mail.broken():
+        slist.toast('parent is not a mail?')
+        return
+
+    hkml_view.shell_mode_start(slist)
+    files = hkml_view_mails.get_attach_files()
+    hkml_reply.reply(mail, attach_files=files, format_only=None)
+    hkml_view.shell_mode_end(slist)
+
+def add_menus_for_mail(item_handlers, mail):
+    item_handlers.append(
+            ['- reply', reply_parent_mail])
+
 def build_text_view_menu_item_handlers(slist):
     line = slist.lines[slist.focus_row]
 
@@ -132,6 +149,10 @@ def build_text_view_menu_item_handlers(slist):
     add_menus_for_commit(item_handlers, line)
     add_menus_for_msgid(item_handlers, line)
     add_menus_for_files(item_handlers, line)
+
+    mail = _hkml.Mail(mbox='\n'.join(slist.lines))
+    if not mail.broken():
+        add_menus_for_mail(item_handlers, mail)
 
     item_handlers.append(hkml_view.save_parent_content_menu_item_handler)
     return item_handlers
