@@ -82,14 +82,17 @@ def reply_focused_mail(c, slist):
 
     reply_mail(slist, mail)
 
-def forward_focused_mail(c, slist):
-    mail = get_focused_mail(slist)
-    if mail is None:
-        return
+def forward_mail(slist, mail):
     hkml_view.shell_mode_start(slist)
     files = get_attach_files()
     hkml_forward.forward(mail, attach_files=files)
     hkml_view.shell_mode_end(slist)
+
+def forward_focused_mail(c, slist):
+    mail = get_focused_mail(slist)
+    if mail is None:
+        return
+    forward_mail(mail, slist)
 
 def list_thread_of_focused_mail(c, slist):
     thread_txt, mail_idx_key_map = hkml_thread.thread_str(
