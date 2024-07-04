@@ -163,37 +163,19 @@ def manage_tags_of_mail(slist, mail):
         tags = tags_map[msgid]['tags']
     else:
         tags = []
-    if len(tags) > 0:
-        print('the mail (\"%s\") has below tags:' % mail.subject)
-        for tag in tags:
-            print('- %s' % tag)
-        print()
-    print('What do you want to do?')
-    print('1. Add tags')
-    print('2. Remove tags')
-    answer = input('Enter your selection (enter \'cancel_tag\' to cancel): ')
-    if answer == 'cancel_tag':
-        _ = input('Canceled.  Press enter to return')
-        hkml_view.shell_mode_end(slist)
-        return
-    if not answer in ['1', '2']:
-        _ = input('Wrong input.  It should be 1 or 2.  Enter to return.')
-        hkml_view.shell_mode_end(slist)
-        return
 
-    if answer == '1':
-        err = do_add_tags([mail, tags], None)
-        if err:
-            hkml_view.shell_mode_end(slist)
-            return
-    elif answer == '2':
-        err = do_remove_tags([mail, tags], None)
-        if err:
-            hkml_view.shell_mode_end(slist)
-            return
-    else:
-        raise Exception('this cannot happen')
-    _ = input('Done.  Press enter to return')
+    msg_lines = ['Handle tags of the mail ("%s")' % mail.subject]
+    if len(tags) > 0:
+        msg_lines.append('')
+        msg_lines.append('the mail has below tags:')
+        for tag in tags:
+            msg_lines.append('- %s' % tag)
+    hkml_view.cli_select(
+            msg = '\n'.join(msg_lines),
+            selections=[
+                hkml_view.CliSelection('Add tags', do_add_tags),
+                hkml_view.CliSelection('Remove tags', do_remove_tags)],
+            cancel_keyword='cancel_tag', data=[mail, tags])
     hkml_view.shell_mode_end(slist)
 
 def manage_tags_of_parent_focused_mail(c, slist):
