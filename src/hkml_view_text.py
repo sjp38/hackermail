@@ -134,9 +134,19 @@ def reply_parent_mail(c, slist):
 
     hkml_view_mails.reply_mail(slist, mail)
 
+def forward_parent_mail(c, slist):
+    mail = _hkml.Mail(mbox='\n'.join(slist.parent_list.lines))
+    if mail.broken():
+        slist.toast('parent is not a mail?')
+        return
+
+    hkml_view_mails.forward_mail(slist, mail)
+
 def add_menus_for_mail(item_handlers, mail):
     item_handlers.append(
             ['- reply', reply_parent_mail])
+    item_handlers.append(
+            ['- forward', forward_parent_mail])
 
 def build_text_view_menu_item_handlers(slist):
     line = slist.lines[slist.focus_row]
