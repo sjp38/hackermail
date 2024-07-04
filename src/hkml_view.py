@@ -15,6 +15,56 @@ import hkml_view_text
 Curses-based TUI viewer for hkml list/open outputs.
 '''
 
+# CLI menu
+
+class CliSelection:
+    text = None
+    handle_fn = None    # function receiving data and the answer
+
+    def __init__(self, text, handle_fn):
+        self.text = text
+        self.handle_fn = handle_fn
+
+def cli_select(msg, selections, cancel_keyword, data):
+    '''Return error'''
+    if msg is not None:
+        print(msg)
+        print()
+    for idx, selection in enumerate(selections):
+        print('%d: %s' % (idx + 1, selection.text))
+    print()
+    print('Select (enter \'%s\' to cancel): ' % cancel_keyword)
+    if answer == cancel_keyword:
+        _ = input('Canceled.  Press <Enter> to return')
+        return 'canceled'
+    try:
+        handle_fn = selections[int(answer) - 1].handle_fn
+    except:
+        _ = input('Wrong input.  Press <Enter> to return')
+        return 'wrong input'
+    err = handle_fn(data, answer)
+    if err:
+        msg = 'Failed (%s)' % err
+    else:
+        msg = 'Done'
+    _ = input('%s.  Press <Enter> to return' % msg)
+
+def cli_input(msg, cancel_keyword, data, handle_fn):
+    '''Return error'''
+    if msg is not None:
+        print(msg)
+        print()
+    answer = input('Enter (enter \'%s\' to cancel): ' % cancel_keyword)
+    if answer == cancel_keyword:
+        _ = input('Canceled.  Press <Enter> to return')
+        return 'canceled'
+    err = handle_fn(data, answer)
+    if err:
+        msg = 'Failed (%s)' % err
+    else:
+        msg = 'Done'
+    _ = input('%s.  Press <Enter> to return' % msg)
+
 # ScrollableList
 
 focus_color = None
