@@ -206,13 +206,15 @@ def handle_patches_of_parent_focused_mail(c, slist):
     mail_idx = '%d' % focused_mail_idx(
             slist.parent_list.lines, slist.parent_list.focus_row)
 
-    hkml_view.cli_select(
-            msg='Handle the mail (\'%s\') as patch[es].' % mail.subject,
+    q = hkml_view.CliQuestion(
+            description='Handle the mail (\'%s\') as patch[es].' % \
+                    mail.subject, prompt='Enter the item number')
+    q.ask_selection(
+            data=mail_idx,
             selections=[
                 hkml_view.CliSelection('check patch[es]', do_check_patch),
                 hkml_view.CliSelection('apply patch[es]', do_apply_patch)],
-             cancel_keyword='cancel_patch',
-             data=mail_idx)
+            notify_completion=True)
     hkml_view.shell_mode_end(slist)
 
 def export_mails_of_parent(c, slist):
