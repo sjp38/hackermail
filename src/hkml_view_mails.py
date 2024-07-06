@@ -216,18 +216,8 @@ def handle_patches_of_parent_focused_mail(c, slist):
             notify_completion=True)
     hkml_view.shell_mode_end(slist)
 
-def export_mails_of_parent(c, slist):
-    idx = focused_mail_idx(slist.parent_list.lines,
-                           slist.parent_list.focus_row)
-    hkml_view.shell_mode_start(slist)
-
-    print('Focused mail: %d' % idx)
-    print()
-    print('1. Export only focused mail')
-    print('2. Export a range of mails of the list')
-    print('3. Export all mails of the list')
-    print()
-    answer = input('Select: ')
+def do_export(data, answer):
+    slist, idx = data
     try:
         answer = int(answer)
     except:
@@ -243,26 +233,40 @@ def export_mails_of_parent(c, slist):
         try:
             export_range = [int(x) for x in answer.split()]
             if len(export_range) != 2:
-                print('wrong input.  Return to hkml')
-                time.sleep(1)
-                hkml_view.shell_mode_end(slist)
+                err = 'wrong number of inputs.'
+                hkml_view.cli_any_input(err)
+                return err
             export_range[1] += 1    # export receives half-open range
         except:
-            print('wrong input.  Return to hkml')
-            time.sleep(1)
-            hkml_view.shell_mode_end(slist)
+            err = 'wrong input.'
+            hkml_view.cli_any_input(err)
+            return err
     else:
         export_range = None
 
     file_name = hkml_view.receive_file_path(for_read=False)
     if file_name is None:
-        hkml_view.shell_mode_end(slist)
-        return
+        return 'file unselected'
     hkml_export.main(argparse.Namespace(
         hkml_dir=None, command='export', export_file=file_name,
         range=export_range))
     print()
-    _ = input('Completed.  Press <Enter> to return to hkml')
+
+def export_mails_of_parent(c, slist):
+    idx = focused_mail_idx(slist.parent_list.lines,
+                           slist.parent_list.focus_row)
+    hkml_view.shell_mode_start(slist)
+
+    q = hkml_view.CliQuestion(desc='Focused mail: %d' % idx)
+    q.ask_selection(
+            data=[slist, idx],
+            selections=[
+                hkml_view.CliSelection('Export only focused mail', do_export),
+                hkml_view.CliSelection(
+                    'Export a range of mails of the list', do_export),
+                hkml_view.CliSelection(
+                    'Export all mails of the list', do_export)],
+                notify_completion=True)
     hkml_view.shell_mode_end(slist)
 
 def get_mails_list_menu():
