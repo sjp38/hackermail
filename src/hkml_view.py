@@ -49,12 +49,12 @@ def cli_select(msg, selections, cancel_keyword, data):
     msg = 'Done'
     _ = input('%s.  Press <Enter> to return' % msg)
 
-def cli_input(msg, cancel_keyword, data, handle_fn):
+def cli_input(msg, prompt, cancel_keyword, data, handle_fn):
     '''Return error'''
     if msg is not None:
         print(msg)
         print()
-    answer = input('Enter (enter \'%s\' to cancel): ' % cancel_keyword)
+    answer = input('%s (enter \'%s\' to cancel): ' % (prompt, cancel_keyword))
     if answer == cancel_keyword:
         _ = input('Canceled.  Press <Enter> to return')
         return 'canceled'
