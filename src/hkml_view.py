@@ -52,7 +52,8 @@ class CliQuestion:
             for idx, selection in enumerate(selections):
                 lines.append('%d: %s' % (idx + 1, selection.text))
             lines.append('')
-        print('\n'.join(lines))
+        if len(lines) > 0:
+            print('\n'.join(lines))
 
         answer = input('%s (enter \'hkml_cancel\' to cancel): ' % self.prompt)
         if answer == 'hkml_cancel':
