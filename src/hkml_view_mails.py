@@ -306,6 +306,8 @@ def show_cli_mails_list_menu(c, slist):
     item_handlers = get_mails_list_menu()
     selections = []
     for text, _ in item_handlers:
+        if text.startswith('- '):
+            text = text[2:]
         selections.append(hkml_view.CliSelection(text, cli_handle_fn))
 
     hkml_view.shell_mode_start(slist)

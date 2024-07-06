@@ -201,6 +201,8 @@ def show_cli_text_viewer_menu(c, slist):
     item_handlers = build_text_view_menu_item_handlers(slist)
     selections = []
     for text, _ in item_handlers:
+        if text.startswith('- '):
+            text = text[2:]
         selections.append(hkml_view.CliSelection(text, cli_handle_fn))
 
     hkml_view.shell_mode_start(slist)
