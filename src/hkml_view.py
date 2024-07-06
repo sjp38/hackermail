@@ -35,7 +35,7 @@ class CliQuestion:
     description = None
     prompt = None
 
-    def __init__(self, title, description, prompt):
+    def __init__(self, prompt=None, description=None, title=None):
         self.title = title
         self.description = description
         self.prompt = prompt
