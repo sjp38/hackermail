@@ -34,8 +34,8 @@ class CliQuestion:
     description = None
     prompt = None
 
-    def __init__(self, prompt=None, description=None):
-        self.description = description
+    def __init__(self, prompt=None, desc=None):
+        self.description = desc
         self.prompt = prompt
 
     def ask(self, data, selections, handle_fn, notify_completion):
@@ -287,7 +287,7 @@ def focus_set(c, slist):
     shell_mode_start(slist)
 
     question = CliQuestion(
-            description='\n'.join([
+            desc='\n'.join([
                 'Move focus to arbitrary line', '',
                 'point line by \'start\', \'end\', or the line number']),
             prompt='Enter line to focus')
@@ -395,7 +395,7 @@ def receive_file_path(for_read):
 
     while True:
         q = CliQuestion(
-                description='\n'.join([
+                desc='\n'.join([
                     'Enter ',
                     '1. the path to the file, or',
                     '2. a directory (e.g., "./") to list files under it.',
@@ -409,8 +409,7 @@ def receive_file_path(for_read):
         return answers[0]
 
 def save_as(content):
-    q = CliQuestion(
-            description='Save the content to', prompt='Enter selection')
+    q = CliQuestion(desc='Save the content to', prompt='Enter selection')
     def txt_handle_fn(data, answer):
         content = data
         file_path = receive_file_path(for_read=False)

@@ -207,7 +207,7 @@ def show_cli_text_viewer_menu(c, slist):
 
     hkml_view.shell_mode_start(slist)
     q = hkml_view.CliQuestion(
-            description='selected line: %s' % slist.lines[slist.focus_row],
+            desc='selected line: %s' % slist.lines[slist.focus_row],
             prompt='Enter menu item number')
     slist.parent_list = slist
     q.ask_selection(

@@ -170,8 +170,7 @@ def manage_tags_of_mail(slist, mail):
         msg_lines.append('the mail has below tags:')
         for tag in tags:
             msg_lines.append('- %s' % tag)
-    q = hkml_view.CliQuestion(
-            description='\n'.join(msg_lines), prompt='Select')
+    q = hkml_view.CliQuestion(desc='\n'.join(msg_lines), prompt='Select')
     q.ask_selection(
             data=[mail, tags],
             selections=[
@@ -207,8 +206,8 @@ def handle_patches_of_parent_focused_mail(c, slist):
             slist.parent_list.lines, slist.parent_list.focus_row)
 
     q = hkml_view.CliQuestion(
-            description='Handle the mail (\'%s\') as patch[es].' % \
-                    mail.subject, prompt='Enter the item number')
+            desc='Handle the mail (\'%s\') as patch[es].' % mail.subject,
+            prompt='Enter the item number')
     q.ask_selection(
             data=mail_idx,
             selections=[
@@ -221,6 +220,7 @@ def export_mails_of_parent(c, slist):
     idx = focused_mail_idx(slist.parent_list.lines,
                            slist.parent_list.focus_row)
     hkml_view.shell_mode_start(slist)
+
     print('Focused mail: %d' % idx)
     print()
     print('1. Export only focused mail')
@@ -315,7 +315,7 @@ def show_cli_mails_list_menu(c, slist):
 
     hkml_view.shell_mode_start(slist)
     q = hkml_view.CliQuestion(
-            description='selected mail: %s' % mail.subject,
+            desc='selected mail: %s' % mail.subject,
             prompt='Enter menu item number')
     slist.parent_list = slist
     q.ask_selection(
