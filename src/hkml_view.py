@@ -31,20 +31,15 @@ def cli_any_input(prompt):
     sys.stdin.read(1)
 
 class CliQuestion:
-    title = None
     description = None
     prompt = None
 
-    def __init__(self, prompt=None, description=None, title=None):
-        self.title = title
+    def __init__(self, prompt=None, description=None):
         self.description = description
         self.prompt = prompt
 
     def ask(self, data, selections, handle_fn, notify_completion):
         lines = []
-        if self.title is not None:
-            lines.append(self.title)
-            lines.append('')
         if self.description is not None:
             lines.append(self.description)
             lines.append('')
@@ -290,8 +285,9 @@ def focus_set(c, slist):
     shell_mode_start(slist)
 
     question = CliQuestion(
-            title='Move focus to arbitrary line',
-            description='point line by \'start\', \'end\', or the line number',
+            description='\n'.join([
+                'Move focus to arbitrary line', '',
+                'point line by \'start\', \'end\', or the line number']),
             prompt='Enter line to focus')
 
     def handle_fn(data, answer):
@@ -315,8 +311,7 @@ def focus_set(c, slist):
 def highlight_keyword(c, slist):
     shell_mode_start(slist)
 
-    question = CliQuestion(
-            title=None, description=None, prompt='Enter keyword to highlight')
+    question = CliQuestion('Enter keyword to highlight')
 
     def handle_fn(slist, answer):
         slist.highlight_keyword = answer
