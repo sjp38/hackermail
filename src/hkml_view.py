@@ -378,27 +378,33 @@ def execute_focused_item(c, slist):
             fn(c, slist)
 
 def receive_file_path(for_read):
-    while True:
-        print('Enter the path to the file.')
-        print()
-        print('You can also enter')
-        print('1. A directory (e.g., \'./\') to list files under it')
-        print('2. \'cancel_input\' to cancelling this')
-        print()
-        answer = input('Enter: ')
-        print()
-
-        if answer == 'cancel_input':
-            return None
+    answers = []
+    def handle_fn(data, answer):
+        answers, for_read = data
         if os.path.isdir(answer):
                 subprocess.call(['ls', '-al', answer])
                 print()
-                continue
+                return
         if for_read and not os.path.isfile(answer):
             print('\'%s\' is neither dir nor file.' % answer)
             print()
+            return 'wrong input'
+        answers.append(answer)
+
+    while True:
+        q = CliQuestion(
+                description='\n'.join([
+                    'Enter ',
+                    '1. the path to the file, or',
+                    '2. a directory (e.g., "./") to list files under it.',
+                    ]),
+                prompt='')
+        err = q.ask_input([answers, for_read], handle_fn)
+        if err == 'canceled':
+            return None
+        if len(answers) != 1:
             continue
-        return answer
+        return answers[0]
 
 def save_as(content):
     print('Save the content to')
