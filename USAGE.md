@@ -507,8 +507,8 @@ Regardless of the type, below keys are supported.
 `j` and `k` key move focus down and up one row.  `J` and `K` keys move focus up
 and down 1/2 screen, respectively.
 
-Pressing `m` key opens context-based menu that shows items that can be
-selected.
+Pressing `M` or `m` key opens context-based CLI or TUI menu that shows items
+that can be selected, respectively.
 
 `:` key opens input window to enter the line number to move focus to.  `start`
 and `end` keyword could also be used, to specify the start and end line of the
@@ -537,18 +537,17 @@ Pressing `r` starts writing a reply to the focused mail.
 
 Pressing `f` starts forwarding the focused mail.
 
-Pressing `m` opens a selection-based menu.  From the menu, users can do abovely
-explained actions.  In addition to that, the menu provides below options.
+Pressing `M` or `m` opens a selection-based menu using CLI or TUI,
+respectively.  From the menu, users can do abovely explained actions.  In
+addition to that, the menu provides below options.
 
 - Writing a mail using the focused mail as its draft (same to `hkml write
   --draft <focused mail>`.  Refer to 'Writing New Mails'
   [section](#writing-new-mails) for details.).
 - Listing/adding/removing tags (Refer to 'Tagging' [section](#tagging) for
   details) of the mail.
-- Checking patches (same to `hkml patch check <focused mail>`.  Refer to
-  'Patches Management' [section](#patches-management) for details.)
-- Applying patches (same to `hkml patch apply <focused mail>`.  Refer to
-  'Patches Management' [section](#patches-management) for details.)
+- Checking/Applying patches (same to `hkml patch check <focused mail>`.  Refer
+  to 'Patches Management' [section](#patches-management) for details.)
 - Exporting focused mail, specific range of mails of the list, or entire mails
   of the list to an mbox file (same to `hkml export`.  Refer to 'Exporting
   Mails' [section](#exporting-mails) for details.).
@@ -560,8 +559,8 @@ Text Screen
 If the screen is showing a general text (`hkml open` output or mail content
 opened from `hkml list` output), the screen is called text screen type.
 
-From this type, no additional key binding is supported.  However, the menu (`m`
-key) on this screen shows below options.
+From this type, no additional key binding is supported.  However, the menu (`M`
+or `m` key) on this screen shows below options.
 
 - Saving the text to a file, or the clipboard.
 - If the focused line contains git commit ids, the menu shows items for showing
@@ -574,6 +573,9 @@ key) on this screen shows below options.
   options, respectively.
 - If the focused line contains paths to files, the menu shows items for opening
   the files by `hkml` or `vim`.
+- If currently showing content is a mail, the menu shows items for replying to
+  the mail, forwarding the mail, writing a mail using the mail as the draft of
+  the new mail, and managing tags of the mail.
 
 Note that `hkml open` [allows](#reading-more) opening normal text files, git
 commits, and given command's outputs.  Hence the commit ids, public-inbox
