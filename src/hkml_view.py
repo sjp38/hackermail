@@ -74,6 +74,8 @@ class CliQuestion:
         return self.ask(data, None, handle_fn, notify_completion)
 
     def ask_selection(self, data, selections, notify_completion=False):
+        if self.prompt is None:
+            self.prompt = 'Enter the item number'
         return self.ask(data, selections, None, notify_completion)
 
 def cli_select(msg, selections, cancel_keyword, data):
