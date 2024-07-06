@@ -44,9 +44,9 @@ def cli_select(msg, selections, cancel_keyword, data):
         return 'wrong input'
     err = handle_fn(data, answer)
     if err:
-        msg = 'Failed (%s)' % err
-    else:
-        msg = 'Done'
+        # handle_fn() must notified the error.
+        return
+    msg = 'Done'
     _ = input('%s.  Press <Enter> to return' % msg)
 
 def cli_input(msg, cancel_keyword, data, handle_fn):
@@ -60,9 +60,9 @@ def cli_input(msg, cancel_keyword, data, handle_fn):
         return 'canceled'
     err = handle_fn(data, answer)
     if err:
-        msg = 'Failed (%s)' % err
-    else:
-        msg = 'Done'
+        # handle_fn() must notified the error.
+        return
+    msg = 'Done'
     _ = input('%s.  Press <Enter> to return' % msg)
 
 # ScrollableList
