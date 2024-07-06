@@ -4,6 +4,7 @@
 import curses
 import os
 import subprocess
+import sys
 import tempfile
 import time
 
@@ -24,6 +25,54 @@ class CliSelection:
     def __init__(self, text, handle_fn):
         self.text = text
         self.handle_fn = handle_fn
+
+def cli_any_input(prompt):
+    print('%s  Press any key to return' % prompt)
+    sys.stdin.read(1)
+
+class CliQuestion:
+    title = None
+    description = None
+    prompt = None
+
+    def __init__(self, title, description, prompt):
+        self.title = title
+        self.description = description
+        self.prompt = prompt
+
+    def ask(self, data, selections, handle_fn, notify_completion):
+        lines = []
+        if self.title is not None:
+            lines.append(self.title)
+            lines.append('')
+        if self.description is not None:
+            lines.append(self.description)
+            lines.append('')
+        if selections is not None:
+            for idx, selection in enumerate(selections):
+                lines.append('%d: %s' % (idx + 1, selection.text))
+            lines.append('')
+        print('\n'.join(lines))
+
+        answer = input('%s (enter \'hkml_cancel\' to cancel): ' % self.prompt)
+        if answer == 'hkml_cancel':
+            cli_any_input('Canceled.')
+            return 'canceled'
+
+        if selections is not None:
+            try:
+                handle_fn = selections[int(answer) - 1].handle_fn
+            except:
+                cli_any_input('Wrong input.')
+                return 'wrong input'
+
+        err = handle_fn(data, answer)
+        if err:
+            # handle_fn() must notified the error.
+            return
+
+        if notify_completion:
+            cli_any_input('Done.')
 
 def cli_select(msg, selections, cancel_keyword, data):
     '''Return error'''
