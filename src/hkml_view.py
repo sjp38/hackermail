@@ -282,20 +282,26 @@ def focus_up_half_page(c, slist):
 def focus_set(c, slist):
     shell_mode_start(slist)
 
-    answer = input('Enter line to move: ')
-    if answer == 'start':
-        answer = 0
-    elif answer == 'end':
-        answer = len(slist.lines) - 1
-    else:
-        try:
-            answer = min(int(answer), len(slist.lines) - 1)
-        except Exception as e:
-            print('wrong answer')
-            time.sleep(1)
-            shell_mode_end(slist)
-            return
-    slist.focus_row = answer
+    question = CliQuestion(title=None, description=None,
+                           prompt='Enter line to focus')
+
+    def handle_fn(data, answer):
+        slist = data
+        if answer == 'start':
+            answer = 0
+        elif answer == 'end':
+            answer = len(slist.lines) - 1
+        else:
+            try:
+                answer = min(int(answer), len(slist.lines) - 1)
+            except Exception as e:
+                cli_any_input('wrong answer')
+                return 'wrong answer'
+        slist.focus_row = answer
+        return None
+
+    question.ask(data=slist, selections=None, handle_fn=handle_fn,
+                 notify_completion=False)
     shell_mode_end(slist)
 
 def highlight_keyword(c, slist):
