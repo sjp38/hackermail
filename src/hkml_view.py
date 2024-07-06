@@ -289,8 +289,10 @@ def focus_up_half_page(c, slist):
 def focus_set(c, slist):
     shell_mode_start(slist)
 
-    question = CliQuestion(title=None, description=None,
-                           prompt='Enter line to focus')
+    question = CliQuestion(
+            title='Move focus to arbitrary line',
+            description='point line by \'start\', \'end\', or the line number',
+            prompt='Enter line to focus')
 
     def handle_fn(data, answer):
         slist = data
