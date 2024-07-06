@@ -188,12 +188,28 @@ def show_text_viewer_menu(c, slist):
     menu_list.draw()
 
 def show_cli_text_viewer_menu(c, slist):
+    def cli_handle_fn(data, answer):
+        slist, item_handlers = data
+        for idx, item_handler in enumerate(item_handlers):
+            _, slist_handle_fn = item_handler
+            if answer == '%d' % (idx + 1):
+                hkml_view.shell_mode_end(slist)
+                slist_handle_fn('\n', slist)
+                hkml_view.shell_mode_start(slist)
+                return
+
+    item_handlers = build_text_view_menu_item_handlers(slist)
+    selections = []
+    for text, _ in item_handlers:
+        selections.append(hkml_view.CliSelection(text, cli_handle_fn))
+
     hkml_view.shell_mode_start(slist)
     q = hkml_view.CliQuestion(
-            description='selcted line: %s' % slist.lines[slist.focus_row])
+            description='selected line: %s' % slist.lines[slist.focus_row],
+            prompt='Enter menu item number')
+    slist.parent_list = slist
     q.ask_selection(
-            slist,
-            [hkml_view.CliSelection('noop', lambda data, answer: None)])
+            [slist, item_handlers], selections)
     hkml_view.shell_mode_end(slist)
 
 def get_text_viewer_handlers():
