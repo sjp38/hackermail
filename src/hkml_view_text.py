@@ -187,10 +187,21 @@ def show_text_viewer_menu(c, slist):
     menu_list.set_menu_item_handlers(slist, item_handlers)
     menu_list.draw()
 
+def show_cli_text_viewer_menu(c, slist):
+    hkml_view.shell_mode_start(slist)
+    q = hkml_view.CliQuestion(
+            description='selcted line: %s' % slist.lines[slist.focus_row])
+    q.ask_selection(
+            slist,
+            [hkml_view.CliSelection('noop', lambda data, answer: None)])
+    hkml_view.shell_mode_end(slist)
+
 def get_text_viewer_handlers():
     return [
             hkml_view.InputHandler(
-                ['m', '\n'], show_text_viewer_menu, 'open menu')
+                ['m', '\n'], show_text_viewer_menu, 'open menu'),
+            hkml_view.InputHandler(
+                ['M'], show_cli_text_viewer_menu, 'open cli menu'),
                 ]
 
 def show_text_viewer(screen, text_lines):
