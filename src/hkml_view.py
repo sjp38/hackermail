@@ -78,46 +78,6 @@ class CliQuestion:
             self.prompt = 'Enter the item number'
         return self.ask(data, selections, None, notify_completion)
 
-def cli_select(msg, selections, cancel_keyword, data):
-    '''Return error'''
-    if msg is not None:
-        print(msg)
-        print()
-    for idx, selection in enumerate(selections):
-        print('%d: %s' % (idx + 1, selection.text))
-    print()
-    answer = input('Select (enter \'%s\' to cancel): ' % cancel_keyword)
-    if answer == cancel_keyword:
-        _ = input('Canceled.  Press <Enter> to return')
-        return 'canceled'
-    try:
-        handle_fn = selections[int(answer) - 1].handle_fn
-    except:
-        _ = input('Wrong input.  Press <Enter> to return')
-        return 'wrong input'
-    err = handle_fn(data, answer)
-    if err:
-        # handle_fn() must notified the error.
-        return
-    msg = 'Done'
-    _ = input('%s.  Press <Enter> to return' % msg)
-
-def cli_input(msg, prompt, cancel_keyword, data, handle_fn, show_completion):
-    '''Return error'''
-    if msg is not None:
-        print(msg)
-        print()
-    answer = input('%s (enter \'%s\' to cancel): ' % (prompt, cancel_keyword))
-    if answer == cancel_keyword:
-        _ = input('Canceled.  Press <Enter> to return')
-        return 'canceled'
-    err = handle_fn(data, answer)
-    if err:
-        # handle_fn() must notified the error.
-        return
-    if show_completion:
-        _ = input('Done.  Press <Enter> to return' % msg)
-
 # ScrollableList
 
 focus_color = None
