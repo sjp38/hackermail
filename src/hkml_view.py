@@ -77,6 +77,9 @@ class CliQuestion:
     def ask_input(self, data, handle_fn, notify_completion=False):
         return self.ask(data, None, handle_fn, notify_completion)
 
+    def ask_selection(self, data, selections, notify_completion=False):
+        return self.ask(data, selections, None, notify_completion)
+
 def cli_select(msg, selections, cancel_keyword, data):
     '''Return error'''
     if msg is not None:
