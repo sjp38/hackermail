@@ -49,7 +49,7 @@ def cli_select(msg, selections, cancel_keyword, data):
     msg = 'Done'
     _ = input('%s.  Press <Enter> to return' % msg)
 
-def cli_input(msg, prompt, cancel_keyword, data, handle_fn):
+def cli_input(msg, prompt, cancel_keyword, data, handle_fn, show_completion):
     '''Return error'''
     if msg is not None:
         print(msg)
@@ -62,8 +62,8 @@ def cli_input(msg, prompt, cancel_keyword, data, handle_fn):
     if err:
         # handle_fn() must notified the error.
         return
-    msg = 'Done'
-    _ = input('%s.  Press <Enter> to return' % msg)
+    if show_completion:
+        _ = input('Done.  Press <Enter> to return' % msg)
 
 # ScrollableList
 
