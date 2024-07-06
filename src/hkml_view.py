@@ -74,6 +74,9 @@ class CliQuestion:
         if notify_completion:
             cli_any_input('Done.')
 
+    def ask_input(self, data, handle_fn, notify_completion=False):
+        return self.ask(data, None, handle_fn, notify_completion)
+
 def cli_select(msg, selections, cancel_keyword, data):
     '''Return error'''
     if msg is not None:
@@ -300,8 +303,7 @@ def focus_set(c, slist):
         slist.focus_row = answer
         return None
 
-    question.ask(data=slist, selections=None, handle_fn=handle_fn,
-                 notify_completion=False)
+    question.ask_input(slist, handle_fn=handle_fn)
     shell_mode_end(slist)
 
 def highlight_keyword(c, slist):
