@@ -407,32 +407,30 @@ def receive_file_path(for_read):
         return answers[0]
 
 def save_as(content):
-    print('Save the content to')
-    print('1. text file')
-    print('2. clipboard')
-    print()
-    answer = input('Enter selection: ')
-    try:
-        answer = int(answer)
-    except:
-        print('wrong input')
-        time.sleep(1)
-        return
-    if answer == 1:
+    q = CliQuestion(
+            description='Save the content to', prompt='Enter selection')
+    def txt_handle_fn(data, answer):
+        content = data
         file_path = receive_file_path(for_read=False)
         if file_path is None:
             return
         with open(file_path, 'w') as f:
             f.write(content)
-    elif answer == 2:
+
+    def clipboard_handle_fn(data, answer):
+        content = data
         _, tmp_path = tempfile.mkstemp(prefix='hkml_view_save_')
         with open(tmp_path, 'w') as f:
             f.write(content)
         rc = subprocess.call(['xclip', '-i', tmp_path, '-sel', 'clipboard'])
         os.remove(tmp_path)
         if rc != 0:
-            print('saving in clipboard failed')
-            time.sleep(1)
+            return 'saving in clipboard failed'
+
+    q.ask_selection(
+            data=content, selections=[
+                CliSelection('text file', txt_handle_fn),
+                CliSelection('clipboard', clipboard_handle_fn)])
 
 def handle_save_content_menu_selection(c, slist):
     shell_mode_start(slist)
