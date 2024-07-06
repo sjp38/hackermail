@@ -170,12 +170,13 @@ def manage_tags_of_mail(slist, mail):
         msg_lines.append('the mail has below tags:')
         for tag in tags:
             msg_lines.append('- %s' % tag)
-    hkml_view.cli_select(
-            msg = '\n'.join(msg_lines),
+    q = hkml_view.CliQuestion(
+            description='\n'.join(msg_lines), prompt='Select')
+    q.ask_selection(
+            data=[mail, tags],
             selections=[
                 hkml_view.CliSelection('Add tags', do_add_tags),
-                hkml_view.CliSelection('Remove tags', do_remove_tags)],
-            cancel_keyword='cancel_tag', data=[mail, tags])
+                hkml_view.CliSelection('Remove tags', do_remove_tags)])
     hkml_view.shell_mode_end(slist)
 
 def manage_tags_of_parent_focused_mail(c, slist):
