@@ -315,9 +315,13 @@ def focus_set(c, slist):
 def highlight_keyword(c, slist):
     shell_mode_start(slist)
 
-    keyword = input('Enter keyword to highlight: ')
-    slist.highlight_keyword = keyword
+    question = CliQuestion(
+            title=None, description=None, prompt='Enter keyword to highlight')
 
+    def handle_fn(slist, answer):
+        slist.highlight_keyword = answer
+
+    question.ask_input(slist, handle_fn=handle_fn)
     shell_mode_end(slist)
 
 def focus_next_keyword(c, slist):
