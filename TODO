@@ -16,3 +16,5 @@
 - Give selection to tag removing menu
 - Update lore manifest automatically
 - Export/import list decorator correctly
+- Sort patch series in patch order
+  e.g., hkml list 20230612093537.614161713@infradead.org
