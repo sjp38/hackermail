@@ -56,7 +56,8 @@ def pr_with_pager_if_needed(text):
 
 def mail_display_str(mail, head_columns=None):
     lines = []
-    for head in ['From', 'To', 'CC', 'Subject', 'Message-Id', 'Date']:
+    for head in ['From', 'To', 'CC', 'Subject', 'Message-Id', 'In-Reply-To',
+                 'Date']:
         value = mail.get_field(head)
         if value:
             if head_columns is not None:
