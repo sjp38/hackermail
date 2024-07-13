@@ -126,16 +126,22 @@ def add_menus_for_files(item_handlers, line):
             item_handlers.append(
                     ['- vim %s' % word, text_viewer_menu_vim_file])
 
-def reply_parent_mail(c, slist):
-    mail = slist.parent_list.data
+def reply_mail(c, slist):
+    # maybe called from tui/cli menu
+    if slist.parent_list is not None:
+        slist = slist.parent_list
+    mail = slist.data
     if mail is None or type(mail) is not _hkml.Mail:
         slist.toast('parent is not a mail?')
         return
 
     hkml_view_mails.reply_mail(slist, mail)
 
-def forward_parent_mail(c, slist):
-    mail = slist.parent_list.data
+def forward_mail(c, slist):
+    # maybe called from tui/cli menu
+    if slist.parent_list is not None:
+        slist = slist.parent_list
+    mail = slist.data
     if mail is None or type(mail) is not _hkml.Mail:
         slist.toast('parent is not a mail?')
         return
@@ -143,14 +149,20 @@ def forward_parent_mail(c, slist):
     hkml_view_mails.forward_mail(slist, mail)
 
 def write_draft_mail(c, slist):
-    mail = slist.parent_list.data
+    # maybe called from tui/cli menu
+    if slist.parent_list is not None:
+        slist = slist.parent_list
+    mail = slist.data
     if mail is None or type(mail) is not _hkml.Mail:
         slist.toast('parent is not a mail?')
         return
     hkml_view_mails.write_mail_draft(slist, mail)
 
 def manage_tags(c, slist):
-    mail = slist.parent_list.data
+    # maybe called from tui/cli menu
+    if slist.parent_list is not None:
+        slist = slist.parent_list
+    mail = slist.data
     if mail is None or type(mail) is not _hkml.Mail:
         slist.toast('parent is not a mail?')
         return
@@ -158,9 +170,9 @@ def manage_tags(c, slist):
 
 def add_menus_for_mail(item_handlers, mail):
     item_handlers.append(
-            ['- reply', reply_parent_mail])
+            ['- reply', reply_mail])
     item_handlers.append(
-            ['- forward', forward_parent_mail])
+            ['- forward', forward_mail])
     item_handlers.append(['- continue draft writing', write_draft_mail])
     item_handlers.append(['- manage tags', manage_tags])
 
