@@ -222,8 +222,9 @@ def get_text_viewer_handlers():
                 ['M', '\n'], show_text_viewer_menu, 'open tui menu'),
                 ]
 
-def show_text_viewer(screen, text_lines):
+def show_text_viewer(screen, text_lines, data=None):
     slist = hkml_view.ScrollableList(
             screen, text_lines, get_text_viewer_handlers())
+    slist.data = data
     slist.draw()
     return slist
