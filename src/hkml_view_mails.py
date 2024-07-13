@@ -336,9 +336,10 @@ def get_mails_list_input_handlers():
                 ['f'], forward_focused_mail, 'forward focused mail'),
             hkml_view.InputHandler(['t'], list_thread_of_focused_mail,
                          'list complete thread'),
-            hkml_view.InputHandler(['m'], show_mails_list_menu, 'open menu'),
             hkml_view.InputHandler(
-                ['M'], show_cli_mails_list_menu, 'open cli menu'),
+                ['m'], show_cli_mails_list_menu, 'open menu'),
+            hkml_view.InputHandler(
+                ['M'], show_mails_list_menu, 'open tui menu'),
             ]
 
 def after_input_handle_callback(slist):

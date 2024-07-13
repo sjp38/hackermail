@@ -217,9 +217,9 @@ def show_cli_text_viewer_menu(c, slist):
 def get_text_viewer_handlers():
     return [
             hkml_view.InputHandler(
-                ['m', '\n'], show_text_viewer_menu, 'open menu'),
+                ['m'], show_cli_text_viewer_menu, 'open menu'),
             hkml_view.InputHandler(
-                ['M'], show_cli_text_viewer_menu, 'open cli menu'),
+                ['M', '\n'], show_text_viewer_menu, 'open tui menu'),
                 ]
 
 def show_text_viewer(screen, text_lines):
