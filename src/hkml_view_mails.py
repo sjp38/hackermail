@@ -49,7 +49,7 @@ def open_focused_mail(c, slist):
 
     _, cols = slist.screen.getmaxyx()
     lines = hkml_open.mail_display_str(mail, cols).split('\n')
-    hkml_view_text.show_text_viewer(slist.screen, lines)
+    hkml_view_text.show_text_viewer(slist.screen, lines, data=mail)
 
 def get_attach_files():
     answer = input('Do you want to attach files to the mail? [y/N] ')

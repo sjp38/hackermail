@@ -8,6 +8,7 @@ import sys
 import tempfile
 import time
 
+import _hkml
 import hkml_list
 import hkml_view_mails
 import hkml_view_text
@@ -402,7 +403,7 @@ save_parent_content_menu_item_handler = [
         '- save parent screen content as ...',
         handle_save_content_menu_selection]
 
-def __view(stdscr, text_to_show, mail_idx_key_map):
+def __view(stdscr, text_to_show, data):
     global focus_color
     global normal_color
     global highlight_color
@@ -416,14 +417,14 @@ def __view(stdscr, text_to_show, mail_idx_key_map):
     curses.init_pair(3, curses.COLOR_BLACK, curses.COLOR_YELLOW)
     highlight_color = curses.color_pair(3)
 
-    if mail_idx_key_map is not None:
-        return hkml_view_mails.show_mails_list(
-                stdscr, text_lines, mail_idx_key_map)
-    return hkml_view_text.show_text_viewer(stdscr, text_lines)
+    if data is None or type(data) == _hkml.Mail:
+        return hkml_view_text.show_text_viewer(stdscr, text_lines)
+    # data would be mail_idx_key_map
+    return hkml_view_mails.show_mails_list(stdscr, text_lines, data)
 
-def view(text, mail_idx_key_map):
+def view(text, data):
     try:
-        slist = curses.wrapper(__view, text, mail_idx_key_map)
+        slist = curses.wrapper(__view, text, data)
     except Exception as e:
         if len(e.args) == 2 and e.args[0] == 'terminate hkml':
             slist = e.args[1]
