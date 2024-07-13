@@ -122,7 +122,10 @@ def get_mail_with_replies(msgid):
             return mail_with_replies
 
 def main(args):
-    if args.mail.isdigit():
+    # For call from hkml_view_mail
+    if type(args.mail) is _hkml.Mail:
+        mail = args.mail
+    elif args.mail.isdigit():
         mail = hkml_list.get_mail(int(args.mail))
     elif args.mail == 'clipboard':
         mails, err = _hkml.read_mails_from_clipboard()
