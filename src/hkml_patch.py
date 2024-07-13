@@ -19,20 +19,18 @@ def apply_action(args, mail):
             if os.path.isfile(checkpatch):
                 args.checker = checkpatch
             else:
-                print('<cheker> is not given; checkpatch.pl is also not found')
-                exit(1)
+                return '<cheker> is not given; checkpatch.pl is also not found'
         print(mail.subject)
         rc = subprocess.call([args.checker, patch_file])
         if rc != 0:
-            print('checker complains something')
-        return rc
+            return 'checker complains something'
 
     if args.action == 'apply':
         rc = subprocess.call(['git', '-C', args.repo, 'am', patch_file])
         if rc == 0:
             os.remove(patch_file)
         else:
-            print('applying patch (%s) failed' % patch_file)
+            return 'applying patch (%s) failed' % patch_file
 
 def get_patch_index(mail):
     tag_end_idx = mail.subject.find(']')
@@ -149,7 +147,11 @@ def main(args):
         exit(1)
 
     for patch_mail in get_patch_mails(mail, args.dont_add_cv):
-        apply_action(args, patch_mail)
+        err = apply_action(args, patch_mail)
+    if err is not None:
+        print(err)
+        if type(args.mail) is not _hkml.Mail:
+            exit(1)
 
 def set_argparser(parser):
     parser.description = 'handle patch series mail thread'
