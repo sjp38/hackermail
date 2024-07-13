@@ -185,16 +185,14 @@ def manage_tags_of_parent_focused_mail(c, slist):
     manage_tags_of_mail(slist, mail)
 
 def do_check_patch(data, selection):
-    mail_idx = data
     hkml_patch.main(argparse.Namespace(
         hkml_dir=None, command='patch', dont_add_cv=False, action='check',
-        mail=mail_idx, checker=None))
+        mail=data, checker=None))
 
 def do_apply_patch(data, selection):
-    mail_idx = data
     hkml_patch.main(argparse.Namespace(
         hkml_dir=None, command='patch', dont_add_cv=False, action='apply',
-        mail=mail_idx, repo='./'))
+        mail=data, repo='./'))
 
 def handle_patches_of_parent_focused_mail(c, slist):
     hkml_view.shell_mode_start(slist)
@@ -202,14 +200,11 @@ def handle_patches_of_parent_focused_mail(c, slist):
     if mail is None:
         return
 
-    mail_idx = '%d' % focused_mail_idx(
-            slist.parent_list.lines, slist.parent_list.focus_row)
-
     q = hkml_view.CliQuestion(
             desc='Handle the mail (\'%s\') as patch[es].' % mail.subject,
             prompt='Enter the item number')
     q.ask_selection(
-            data=mail_idx,
+            data=mail,
             selections=[
                 hkml_view.CliSelection('check patch[es]', do_check_patch),
                 hkml_view.CliSelection('apply patch[es]', do_apply_patch)],
