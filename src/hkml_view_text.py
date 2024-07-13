@@ -127,31 +127,31 @@ def add_menus_for_files(item_handlers, line):
                     ['- vim %s' % word, text_viewer_menu_vim_file])
 
 def reply_parent_mail(c, slist):
-    mail = _hkml.Mail(mbox='\n'.join(slist.parent_list.lines))
-    if mail.broken():
+    mail = slist.parent_list.data
+    if mail is None or type(mail) is not _hkml.Mail:
         slist.toast('parent is not a mail?')
         return
 
     hkml_view_mails.reply_mail(slist, mail)
 
 def forward_parent_mail(c, slist):
-    mail = _hkml.Mail(mbox='\n'.join(slist.parent_list.lines))
-    if mail.broken():
+    mail = slist.parent_list.data
+    if mail is None or type(mail) is not _hkml.Mail:
         slist.toast('parent is not a mail?')
         return
 
     hkml_view_mails.forward_mail(slist, mail)
 
 def write_draft_mail(c, slist):
-    mail = _hkml.Mail(mbox='\n'.join(slist.parent_list.lines))
-    if mail.broken():
+    mail = slist.parent_list.data
+    if mail is None or type(mail) is not _hkml.Mail:
         slist.toast('parent is not a mail?')
         return
     hkml_view_mails.write_mail_draft(slist, mail)
 
 def manage_tags(c, slist):
-    mail = _hkml.Mail(mbox='\n'.join(slist.parent_list.lines))
-    if mail.broken():
+    mail = slist.parent_list.data
+    if mail is None or type(mail) is not _hkml.Mail:
         slist.toast('parent is not a mail?')
         return
     hkml_view_mails.manage_tags_of_mail(slist, mail)
@@ -172,9 +172,8 @@ def build_text_view_menu_item_handlers(slist):
     add_menus_for_msgid(item_handlers, line)
     add_menus_for_files(item_handlers, line)
 
-    mail = _hkml.Mail(mbox='\n'.join(slist.lines))
-    if not mail.broken():
-        add_menus_for_mail(item_handlers, mail)
+    if type(slist.data) is _hkml.Mail:
+        add_menus_for_mail(item_handlers, slist.data)
 
     item_handlers.append(hkml_view.save_parent_content_menu_item_handler)
     return item_handlers
