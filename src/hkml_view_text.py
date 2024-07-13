@@ -225,8 +225,15 @@ def show_cli_text_viewer_menu(c, slist):
             [slist, item_handlers], selections)
     hkml_view.shell_mode_end(slist)
 
-def get_text_viewer_handlers():
-    return [
+def get_text_viewer_handlers(data):
+    if type(data) is _hkml.Mail:
+        handlers = [
+                hkml_view.InputHandler(['r'], reply_mail, 'reply'),
+                hkml_view.InputHandler(['f'], forward_mail, 'forward'),
+                ]
+    else:
+        handlers = []
+    return handlers + [
             hkml_view.InputHandler(
                 ['m'], show_cli_text_viewer_menu, 'open menu'),
             hkml_view.InputHandler(
@@ -235,7 +242,7 @@ def get_text_viewer_handlers():
 
 def show_text_viewer(screen, text_lines, data=None):
     slist = hkml_view.ScrollableList(
-            screen, text_lines, get_text_viewer_handlers())
+            screen, text_lines, get_text_viewer_handlers(data))
     slist.data = data
     slist.draw()
     return slist
