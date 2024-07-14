@@ -619,14 +619,15 @@ Patches Management
 ==================
 
 For mails of patches, `hkml patch` command is supported.  Using the comamnd,
-users can check the patches and/or apply the patches on top of their local
-source tree.  For the two purpose, it provides sub-command, `check` and
-`apply`.
+users can check the patches, apply the patches on top of their local source
+tree, and export the patches as normal files.  For the three purpose, it
+provides sub-commands, `check`, `apply`, and `export`.
 
-The two subcommands receives the identifier of the patch mail.  If it is given
-with an index of a mail on last-generated list or thread, and if the index is
-not for the real patch mail but a cover letter mail of the patch series, the
-command fetches all patches of the thread and applies the action to those.
+The three subcommands receives the identifier of the patch mail.  If it is
+given with an index of a mail on last-generated list or thread, and if the
+index is not for the real patch mail but a cover letter mail of the patch
+series, the command fetches all patches of the thread and applies the action to
+those.
 
 In the cover letter mail provided use case, the command will add the message in
 cover letter into the first patch, like Andrew Morton usually
@@ -703,6 +704,28 @@ af5c978e1153 (HEAD) mm/damon/paddr: support DAMOS filter type YOUNG
 d8e76d9430ed mm/damon: add DAMOS filter type YOUNG
 f76e7c473942 mm/damon/paddr: implement damon_folio_mkold()
 29829d099dd9 mm/damon/paddr: implement damon_folio_young()
+```
+
+Exporting Patches
+-----------------
+
+`hkml patch export` receives the identifier of the patch mail, and export the
+patches as files.  The output explains what mail is exported to what file.  For
+example:
+
+```
+$ hkml list damon
+[...]
+[11] [PATCH 0/9] Docs/damon: minor fixups and improvements (SeongJae Park, 2024/07/01 12:26)
+[12]   [PATCH 1/9] Docs/mm/damon/design: fix two typos (SeongJae Park, 2024/07/01 12:26)
+[...]
+$ hkml patch export 11
+use patch.msgid.link domain for patch origin? [Y/n]
+Given mail seems the cover letter of the patchset.
+Adding the cover letter on the first patch.
+patch file for mail '[PATCH 1/9] Docs/mm/damon/design: fix two typos' is saved at '/tmp/hkml_patch_-patch-1-9--docs-mm-damon-design--fix-two-typosudjxu63b'
+patch file for mail '[PATCH 2/9] Docs/mm/damon/design: clarify regions merging operation' is saved at '/tmp/hkml_patch_-patch-2-9--docs-mm-damon-design--clarify-regions-merging-om5v8v5tv'
+[...]
 ```
 
 Monitoring Mails
