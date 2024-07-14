@@ -194,12 +194,7 @@ def do_apply_patch(data, selection):
         hkml_dir=None, command='patch', dont_add_cv=False, action='apply',
         mail=data, repo='./'))
 
-def handle_patches_of_parent_focused_mail(c, slist):
-    hkml_view.shell_mode_start(slist)
-    mail = get_focused_mail(slist.parent_list)
-    if mail is None:
-        return
-
+def handle_patches_of_mail(mail):
     q = hkml_view.CliQuestion(
             desc='Handle the mail (\'%s\') as patch[es].' % mail.subject,
             prompt='Enter the item number')
@@ -209,6 +204,13 @@ def handle_patches_of_parent_focused_mail(c, slist):
                 hkml_view.CliSelection('check patch[es]', do_check_patch),
                 hkml_view.CliSelection('apply patch[es]', do_apply_patch)],
             notify_completion=True)
+
+def handle_patches_of_parent_focused_mail(c, slist):
+    mail = get_focused_mail(slist.parent_list)
+    if mail is None:
+        return
+    hkml_view.shell_mode_start(slist)
+    handle_patches_of_mail(mail)
     hkml_view.shell_mode_end(slist)
 
 def do_export(data, answer):
