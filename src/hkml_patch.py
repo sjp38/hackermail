@@ -32,6 +32,10 @@ def apply_action(args, mail):
         else:
             return 'applying patch (%s) failed' % patch_file
 
+    if args.action == 'export':
+        print('patch file for mail \'%s\' is saved at \'%s\'' %
+              (mail.subject, patch_file))
+
 def get_patch_index(mail):
     tag_end_idx = mail.subject.find(']')
     for field in mail.subject[:tag_end_idx].split():
@@ -179,3 +183,10 @@ def set_argparser(parser):
                 'Could be index on the list, or \'clipboard\'']))
     parser_check.add_argument('checker', metavar='<program>', nargs='?',
                               help='patch checker program')
+
+    parser_export = subparsers.add_parser('export', help='save as patch files')
+    parser_export.add_argument(
+            'mail', metavar='<mail>',
+            help=' '.join(
+                ['The mail to apply as a patch.',
+                'Could be index on the list, or \'clipboard\'']))
