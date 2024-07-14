@@ -168,6 +168,14 @@ def manage_tags(c, slist):
         return
     hkml_view_mails.manage_tags_of_mail(slist, mail)
 
+def handle_patches(c, slist):
+    if slist.parent_list is not None:
+        slist = slist.parent_list
+    mail = slist.data
+    hkml_view.shell_mode_start(slist)
+    hkml_view_mails.handle_patches_of_mail(mail)
+    hkml_view.shell_mode_end(slist)
+
 def add_menus_for_mail(item_handlers, mail):
     item_handlers.append(
             ['- reply', reply_mail])
@@ -175,6 +183,7 @@ def add_menus_for_mail(item_handlers, mail):
             ['- forward', forward_mail])
     item_handlers.append(['- continue draft writing', write_draft_mail])
     item_handlers.append(['- manage tags', manage_tags])
+    item_handlers.append(['- handle as patches', handle_patches])
 
 def build_text_view_menu_item_handlers(slist):
     line = slist.lines[slist.focus_row]
