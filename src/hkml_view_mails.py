@@ -194,6 +194,11 @@ def do_apply_patch(data, selection):
         hkml_dir=None, command='patch', dont_add_cv=False, action='apply',
         mail=data, repo='./'))
 
+def do_export_patch(data, selection):
+    hkml_patch.main(argparse.Namespace(
+        hkml_dir=None, command='patch', dont_add_cv=False, action='export',
+        mail=data, repo='./'))
+
 def handle_patches_of_mail(mail):
     q = hkml_view.CliQuestion(
             desc='Handle the mail (\'%s\') as patch[es].' % mail.subject,
@@ -202,7 +207,8 @@ def handle_patches_of_mail(mail):
             data=mail,
             selections=[
                 hkml_view.CliSelection('check patch[es]', do_check_patch),
-                hkml_view.CliSelection('apply patch[es]', do_apply_patch)],
+                hkml_view.CliSelection('apply patch[es]', do_apply_patch),
+                hkml_view.CliSelection('export patch[es]', do_export_patch)],
             notify_completion=True)
 
 def handle_patches_of_parent_focused_mail(c, slist):
