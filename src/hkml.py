@@ -42,7 +42,7 @@ parser.add_argument('-C', '--directory', metavar='<dir>',
 
 subparsers = parser.add_subparsers(title='command', dest='command',
         metavar='<command>')
-subparsers.default = 'interactive'
+# subparsers.default = 'interactive'
 
 parser_init = subparsers.add_parser('init', help = 'initialize working dir')
 hkml_init.set_argparser(parser_init)
@@ -141,8 +141,8 @@ elif args.command == 'manifest':
     hkml_manifest.main(args)
 elif args.command == 'cache':
     hkml_cache.main(args)
-elif args.command == 'interactive':
-    hkml_interactive.main(args)
+# elif args.command == 'interactive':
+#     hkml_interactive.main(args)
 else:
     print('wrong command (%s)' % args.command)
     exit(1)
