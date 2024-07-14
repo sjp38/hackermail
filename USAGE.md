@@ -196,6 +196,108 @@ $ hkml list damon --pisearch "foo AND range damos filter"
     2023/07/28 13:34)
 ```
 
+Interactive Viewer
+==================
+
+![interactive list](images/hkml_interactive_list_demo.gif)
+
+(Note that the above gif is recorded on an old version of `hkml`.  Latest
+version may have different features/interface.)
+
+Outputs of `list`, `thread`, and `open` are shown by `hkml`'s interactive
+viewer by default.  The viewer maintains focus on a line of the content.  Users
+can move the focus and make the focused-line's context-based actions using
+short cut keys.  The actions include moving focus, open/forwarding a mail,
+replying to a mail, managing tags of a mail, opening selection-based menu, etc.
+
+Default Key Bindings
+---------------------
+
+Pressing '?' key shows available key bindings of current screen.  The available
+key bindings and context-based menu items depend on the content of the screen
+and focused line.
+
+Regardless of the type, below keys are supported.
+
+`j` and `k` key move focus down and up one row.  `J` and `K` keys move focus up
+and down 1/2 screen, respectively.
+
+Pressing `m` or `M` key opens context-based CLI or TUI menu that shows items
+that can be selected, respectively.
+
+`:` key opens input window to enter the line number to move focus to.  `start`
+and `end` keyword could also be used, to specify the start and end line of the
+content.
+
+`/` key starts keyword highlighting.  `n` and `N` keys move the focus to
+next/previous line containing the keyword.
+
+`h` and `l` keys scroll the screen left and right one column, respectively.
+
+`q` key quits current screen.  `Q` key quits `hkml` at once.
+
+Mails List Screen
+-----------------
+
+If the content of the screen is mails list (`hkml list` or `hkml thread`
+output), actions for mail of the focused line becomes available.
+
+Pressing `o` or `<Enter>` key opens the focused mail's content.  The content is
+shown with a text screen viewer [type](#text-screen).
+
+Pressing `t` lists the complete thread of the focused mail.  The list is shown
+with mails list screen [type](#mails-list-screen).
+
+Pressing `r` starts writing a reply to the focused mail.
+
+Pressing `f` starts forwarding the focused mail.
+
+Pressing `m` or `M` opens a selection-based menu using CLI or TUI,
+respectively.  From the menu, users can do abovely explained actions.  In
+addition to that, the menu provides below options.
+
+- Writing a mail using the focused mail as its draft (same to `hkml write
+  --draft <focused mail>`.  Refer to 'Writing New Mails'
+  [section](#writing-new-mails) for details.).
+- Listing/adding/removing tags (Refer to 'Tagging' [section](#tagging) for
+  details) of the mail.
+- Checking/Applying patches (same to `hkml patch check <focused mail>`.  Refer
+  to 'Patches Management' [section](#patches-management) for details.)
+- Exporting focused mail, specific range of mails of the list, or entire mails
+  of the list to an mbox file (same to `hkml export`.  Refer to 'Exporting
+  Mails' [section](#exporting-mails) for details.).
+- Save the content of the list as a text to a file, or the clipboard.
+
+Text Screen
+-----------
+
+If the screen is showing a general text (`hkml open` output or mail content
+opened from `hkml list` output), the screen is called text screen type.
+
+From this type, the `r` and `f` key bindings for replying and forwarding mail
+are supported, if the screen is displaying a mail.  Also, the menu (`m` or `M`
+key) on this screen shows below options.
+
+- Saving the text to a file, or the clipboard.
+- If the focused line contains git commit ids, the menu shows items for showing
+  outputs from `git show` or `git log` of the commit ids.  The outputs are
+  shown as general text.
+- If the focused line contains public-inbox mail links (e.g.,
+  https://lore.kernel.org/example-messgae-id@org), the menu shows itesm for
+  opening the mail or listing the thread of the mail.  The text screen and
+  mails list screen are used for opening the mail and listing the thread
+  options, respectively.
+- If the focused line contains paths to files, the menu shows items for opening
+  the files by `hkml` or `vim`.
+- If currently showing content is a mail, the menu shows items for replying to
+  the mail, forwarding the mail, writing a mail using the mail as the draft of
+  the new mail, and managing tags of the mail.
+
+Note that `hkml open` [allows](#reading-more) opening normal text files, git
+commits, and given command's outputs.  Hence the commit ids, public-inbox
+links, and file paths based features can help browsing of commit history,
+related discussions, and source files.
+
 Listing Entire Thread of a Given Mail
 =====================================
 
@@ -480,108 +582,6 @@ to_read_later: 3 mails
 to_review_later: 3 mails
 to_test_later: 4 mails
 ```
-
-Interactive Viewer
-==================
-
-![interactive list](images/hkml_interactive_list_demo.gif)
-
-(Note that the above gif is recorded on an old version of `hkml`.  Latest
-version may have different features/interface.)
-
-Outputs of `list`, `thread`, and `open` are shown by `hkml`'s interactive
-viewer by default.  The viewer maintains focus on a line of the content.  Users
-can move the focus and make the focused-line's context-based actions using
-short cut keys.  The actions include moving focus, open/forwarding a mail,
-replying to a mail, managing tags of a mail, opening selection-based menu, etc.
-
-Default Key Bindings
----------------------
-
-Pressing '?' key shows available key bindings of current screen.  The available
-key bindings and context-based menu items depend on the content of the screen
-and focused line.
-
-Regardless of the type, below keys are supported.
-
-`j` and `k` key move focus down and up one row.  `J` and `K` keys move focus up
-and down 1/2 screen, respectively.
-
-Pressing `m` or `M` key opens context-based CLI or TUI menu that shows items
-that can be selected, respectively.
-
-`:` key opens input window to enter the line number to move focus to.  `start`
-and `end` keyword could also be used, to specify the start and end line of the
-content.
-
-`/` key starts keyword highlighting.  `n` and `N` keys move the focus to
-next/previous line containing the keyword.
-
-`h` and `l` keys scroll the screen left and right one column, respectively.
-
-`q` key quits current screen.  `Q` key quits `hkml` at once.
-
-Mails List Screen
------------------
-
-If the content of the screen is mails list (`hkml list` or `hkml thread`
-output), actions for mail of the focused line becomes available.
-
-Pressing `o` or `<Enter>` key opens the focused mail's content.  The content is
-shown with a text screen viewer [type](#text-screen).
-
-Pressing `t` lists the complete thread of the focused mail.  The list is shown
-with mails list screen [type](#mails-list-screen).
-
-Pressing `r` starts writing a reply to the focused mail.
-
-Pressing `f` starts forwarding the focused mail.
-
-Pressing `m` or `M` opens a selection-based menu using CLI or TUI,
-respectively.  From the menu, users can do abovely explained actions.  In
-addition to that, the menu provides below options.
-
-- Writing a mail using the focused mail as its draft (same to `hkml write
-  --draft <focused mail>`.  Refer to 'Writing New Mails'
-  [section](#writing-new-mails) for details.).
-- Listing/adding/removing tags (Refer to 'Tagging' [section](#tagging) for
-  details) of the mail.
-- Checking/Applying patches (same to `hkml patch check <focused mail>`.  Refer
-  to 'Patches Management' [section](#patches-management) for details.)
-- Exporting focused mail, specific range of mails of the list, or entire mails
-  of the list to an mbox file (same to `hkml export`.  Refer to 'Exporting
-  Mails' [section](#exporting-mails) for details.).
-- Save the content of the list as a text to a file, or the clipboard.
-
-Text Screen
------------
-
-If the screen is showing a general text (`hkml open` output or mail content
-opened from `hkml list` output), the screen is called text screen type.
-
-From this type, the `r` and `f` key bindings for replying and forwarding mail
-are supported, if the screen is displaying a mail.  Also, the menu (`m` or `M`
-key) on this screen shows below options.
-
-- Saving the text to a file, or the clipboard.
-- If the focused line contains git commit ids, the menu shows items for showing
-  outputs from `git show` or `git log` of the commit ids.  The outputs are
-  shown as general text.
-- If the focused line contains public-inbox mail links (e.g.,
-  https://lore.kernel.org/example-messgae-id@org), the menu shows itesm for
-  opening the mail or listing the thread of the mail.  The text screen and
-  mails list screen are used for opening the mail and listing the thread
-  options, respectively.
-- If the focused line contains paths to files, the menu shows items for opening
-  the files by `hkml` or `vim`.
-- If currently showing content is a mail, the menu shows items for replying to
-  the mail, forwarding the mail, writing a mail using the mail as the draft of
-  the new mail, and managing tags of the mail.
-
-Note that `hkml open` [allows](#reading-more) opening normal text files, git
-commits, and given command's outputs.  Hence the commit ids, public-inbox
-links, and file paths based features can help browsing of commit history,
-related discussions, and source files.
 
 Exporting Mails
 ===============
