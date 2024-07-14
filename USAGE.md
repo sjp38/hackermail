@@ -289,9 +289,13 @@ key) on this screen shows below options.
   options, respectively.
 - If the focused line contains paths to files, the menu shows items for opening
   the files by `hkml` or `vim`.
-- If currently showing content is a mail, the menu shows items for replying to
-  the mail, forwarding the mail, writing a mail using the mail as the draft of
-  the new mail, and managing tags of the mail.
+- If currently showing content is a mail, the menu shows below additional items
+  that similar to those of mails list screen's menu.
+  - replying
+  - forwarding
+  - continue draft writing
+  - managing tags
+  - handle as patches
 
 Note that `hkml open` [allows](#reading-more) opening normal text files, git
 commits, and given command's outputs.  Hence the commit ids, public-inbox
