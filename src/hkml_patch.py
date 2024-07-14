@@ -8,8 +8,17 @@ import _hkml
 import hkml_list
 import hkml_open
 
+def patch_file_prefix(mail):
+    prefix_letters = []
+    for c in mail.subject.lower():
+        if not c.isalpha() and not c.isdigit():
+            c = '-'
+        prefix_letters.append(c)
+    prefix = 'hkml_patch_%s' % ''.join(prefix_letters)
+    return prefix[:70]
+
 def apply_action(args, mail):
-    fd, patch_file = tempfile.mkstemp(prefix='hkml_patch_')
+    fd, patch_file = tempfile.mkstemp(prefix=patch_file_prefix(mail))
     with open(patch_file, 'w') as f:
         f.write(hkml_open.mail_display_str(mail))
 
