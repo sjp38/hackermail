@@ -8,3 +8,4 @@
 - Implement complete TUI
   - Support every feature with TUI
 - Deprecate TUI menu and related code
+- Implement highlighting mails of specific time range
