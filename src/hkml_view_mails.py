@@ -92,7 +92,7 @@ def forward_focused_mail(c, slist):
     mail = get_focused_mail(slist)
     if mail is None:
         return
-    forward_mail(mail, slist)
+    forward_mail(slist, mail)
 
 def list_thread_of_focused_mail(c, slist):
     thread_txt, mail_idx_key_map = hkml_thread.thread_str(
