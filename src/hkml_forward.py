@@ -12,7 +12,8 @@ import hkml_write
 
 def forward(mail, subject=None, in_reply_to=None, to=None, cc=None,
             attach_files=None, format_only=None):
-    mail_str = hkml_open.mail_display_str(mail)
+    mail_str = '\n'.join(['=== >8 ===',
+                          hkml_open.mail_display_str(mail)])
 
     if subject is None:
         subject = 'Fwd: %s' % mail.subject
