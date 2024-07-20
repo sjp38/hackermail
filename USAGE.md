@@ -302,6 +302,144 @@ commits, and given command's outputs.  Hence the commit ids, public-inbox
 links, and file paths based features can help browsing of commit history,
 related discussions, and source files.
 
+Writing New Mails
+=================
+
+Users can write new mail in a way similar to `reply` sub-command, using `write`
+sub-command.  Users can specify subject, recipients, Cc list, etc via command
+line.  Then `write` sub-command formats the basic mail, and let the user
+additionally make more edits interactively and finally send it, in a way pretty
+similar to that of `reply`.  Again, `git send-email` setup is required.
+
+Users can write a mail using another mail as the original draft, using
+`--draft` option.  The option receives a mail identifier from the previously
+generated `list` or `thread` output.  Then, it format the content of the mail
+as same to the specified mail, and allow user continue writing and sending it.
+
+For example,
+
+```
+$ hkml reply 3
+[...] # hkml reply open VIM.  Below is an example output after closing VIM.
+
+Will send above mail.  Okay? [y/N] n
+Tag as drafts? [Y/n] y
+$ hkml tag list
+[...]
+drafts: 5 mails
+$ hkml list drafts
+[...]
+$ hkml write --draft 0
+[...] # hkml write open VIM.  Below is an example output after closing VIM.
+Will send above mail.  Okay? [y/N] n
+Tag as drafts? [Y/n] y
+```
+
+Synchronizing
+=============
+
+Users may use `hkml` on multiple devices or need to change their devices.  In
+such cases, users can backup and restore some `hkml` settings and outputs via
+remote storage using `sync` command.  Currently supported data includes
+
+- manifest (created via `hkml init`),
+- monitoring request (created via `hkml monitor`), and
+- mails tagging information (created via `hkml tag`).
+
+The command backs up and synchronizes the data using remote `git` repository.
+Users therefore need to first create a `git` repository that accespts pushing
+commits from the `hkml`-running machine.  The backup repo could be on the local
+storage, a private server, or public git hosting services like `Gitlab` or
+`GitHub`.  Then, the user could do the synchronization by running `hkml sync`.
+For the first time of synchronization, user should provide the valid `git` url
+for the backup repo to `hkml sync` via `--remote` option.
+
+Below example shows how the mails tagging information can be synchronized
+between two different machines using a GitHub repo.
+
+```
+$ # from the first machine
+$ ssh machine_1
+machine_1:~$ hkml tag list
+to_read_later: 3 mails
+to_review_later: 3 mails
+to_test_later: 4 mails
+machine_1:~$ hkml sync --remote git@github.com:$USER/hkml_backup_repo.git
+$
+$ # move to the second machine
+$ ssh machine_2
+machine_2:~$ hkml tag list
+machine_2:~$
+machine_2:~$ hkml sync --remote git@github.com:$USER/hkml_backup_repo.git
+[...]
+machine_2:~$ hkml tag list
+to_read_later: 3 mails
+to_review_later: 3 mails
+to_test_later: 4 mails
+```
+
+Monitoring Mails
+================
+
+Users can monitor new mails to specific mailing lists using `hkml monitor`
+command.  Using this, users can get periodic notification of summary or updates
+on specific mail threads that the user is not already in the loop, without
+subscribing to the mailing list.  It works with sub-sub commands, `add`,
+`status`, `remove`, and `start`.
+
+`hkml monitor add`
+------------------
+
+`add` command adds monitoring request.  Users can specify
+- the mailing lists to monitor,
+- How often the monitoring should be done,
+- what mails should be filtered in/out from the new mails,
+- how the monitored mails should be displayed, and
+- how the monitoring result should be delivered to users via command line
+  options.
+
+The command line options for specifying what mails to filtered and how those
+should be displayed are very similar to that of `list` command.
+
+It provides the monitoring results via the termina with some execution logs by
+default, but users can asks it to send the new findings via sending emails to
+specific addresses, or writing to specific files.
+
+For example, users ask `hkml` to monitor updates to the `DAMON Beer/Coffee/Tea
+chat series`
+[thread](https://lore.kernel.org/r/20220810225102.124459-1-sj@kernel.org) for
+every hour, format notification text with lore links for found new mails, and
+send the notification text to their personal email address, like below:
+
+```
+$ hkml monitor add damon \
+    --subject_keywords "DAMON Beer/Coffee/Tea chat series" \
+    --monitor_interval 3600 --lore --noti_mails $YOUR_EMAIL_ADDRESS \
+    --name "DAMON chat series monitoring"
+```
+
+`hkml monitor remove`
+---------------------
+
+Remove added monitoring requests.  User can specify the request to remove using
+the index of the request on the requests list that can be shown via `hkml
+monitor status`, or the name of the request which the user can set with `hkml
+monitor add` command.
+
+`hkml monitor status`
+---------------------
+
+Show status of the monitoring, including list of currently added monitoring
+requests.
+
+`hkml monitor start`
+--------------------
+
+Start the requested monitoring.  Monitoring requests that added after
+monitoring is started is not automatically added to the running instance.  You
+should start a new instance for new requests.  To stop running instance, you
+can simply Ctrl-C.
+
 Listing Entire Thread of a Given Mail
 =====================================
 
@@ -511,82 +649,6 @@ sub-command formats the basic mail, and let the user additionally make more
 edits interactively and finally send it, in a way pretty similar to that of
 `reply`.  Again, `git send-email` setup is required.
 
-Writing New Mails
-=================
-
-Users can write new mail in a way similar to `reply` sub-command, using `write`
-sub-command.  Users can specify subject, recipients, Cc list, etc via command
-line.  Then `write` sub-command formats the basic mail, and let the user
-additionally make more edits interactively and finally send it, in a way pretty
-similar to that of `reply`.  Again, `git send-email` setup is required.
-
-Users can write a mail using another mail as the original draft, using
-`--draft` option.  The option receives a mail identifier from the previously
-generated `list` or `thread` output.  Then, it format the content of the mail
-as same to the specified mail, and allow user continue writing and sending it.
-
-For example,
-
-```
-$ hkml reply 3
-[...] # hkml reply open VIM.  Below is an example output after closing VIM.
-
-Will send above mail.  Okay? [y/N] n
-Tag as drafts? [Y/n] y
-$ hkml tag list
-[...]
-drafts: 5 mails
-$ hkml list drafts
-[...]
-$ hkml write --draft 0
-[...] # hkml write open VIM.  Below is an example output after closing VIM.
-Will send above mail.  Okay? [y/N] n
-Tag as drafts? [Y/n] y
-```
-
-Synchronizing
-=============
-
-Users may use `hkml` on multiple devices or need to change their devices.  In
-such cases, users can backup and restore some `hkml` settings and outputs via
-remote storage using `sync` command.  Currently supported data includes
-
-- manifest (created via `hkml init`),
-- monitoring request (created via `hkml monitor`), and
-- mails tagging information (created via `hkml tag`).
-
-The command backs up and synchronizes the data using remote `git` repository.
-Users therefore need to first create a `git` repository that accespts pushing
-commits from the `hkml`-running machine.  The backup repo could be on the local
-storage, a private server, or public git hosting services like `Gitlab` or
-`GitHub`.  Then, the user could do the synchronization by running `hkml sync`.
-For the first time of synchronization, user should provide the valid `git` url
-for the backup repo to `hkml sync` via `--remote` option.
-
-Below example shows how the mails tagging information can be synchronized
-between two different machines using a GitHub repo.
-
-```
-$ # from the first machine
-$ ssh machine_1
-machine_1:~$ hkml tag list
-to_read_later: 3 mails
-to_review_later: 3 mails
-to_test_later: 4 mails
-machine_1:~$ hkml sync --remote git@github.com:$USER/hkml_backup_repo.git
-$
-$ # move to the second machine
-$ ssh machine_2
-machine_2:~$ hkml tag list
-machine_2:~$
-machine_2:~$ hkml sync --remote git@github.com:$USER/hkml_backup_repo.git
-[...]
-machine_2:~$ hkml tag list
-to_read_later: 3 mails
-to_review_later: 3 mails
-to_test_later: 4 mails
-```
-
 Exporting Mails
 ===============
 
@@ -727,65 +789,3 @@ patch file for mail '[PATCH 1/9] Docs/mm/damon/design: fix two typos' is saved a
 patch file for mail '[PATCH 2/9] Docs/mm/damon/design: clarify regions merging operation' is saved at '/tmp/hkml_patch_-patch-2-9--docs-mm-damon-design--clarify-regions-merging-om5v8v5tv'
 [...]
 ```
-
-Monitoring Mails
-================
-
-Users can monitor new mails to specific mailing lists using `hkml monitor`
-command.  Using this, users can get periodic notification of summary or updates
-on specific mail threads that the user is not already in the loop, without
-subscribing to the mailing list.  It works with sub-sub commands, `add`,
-`status`, `remove`, and `start`.
-
-`hkml monitor add`
-------------------
-
-`add` command adds monitoring request.  Users can specify
-- the mailing lists to monitor,
-- How often the monitoring should be done,
-- what mails should be filtered in/out from the new mails,
-- how the monitored mails should be displayed, and
-- how the monitoring result should be delivered to users via command line
-  options.
-
-The command line options for specifying what mails to filtered and how those
-should be displayed are very similar to that of `list` command.
-
-It provides the monitoring results via the termina with some execution logs by
-default, but users can asks it to send the new findings via sending emails to
-specific addresses, or writing to specific files.
-
-For example, users ask `hkml` to monitor updates to the `DAMON Beer/Coffee/Tea
-chat series`
-[thread](https://lore.kernel.org/r/20220810225102.124459-1-sj@kernel.org) for
-every hour, format notification text with lore links for found new mails, and
-send the notification text to their personal email address, like below:
-
-```
-$ hkml monitor add damon \
-    --subject_keywords "DAMON Beer/Coffee/Tea chat series" \
-    --monitor_interval 3600 --lore --noti_mails $YOUR_EMAIL_ADDRESS \
-    --name "DAMON chat series monitoring"
-```
-
-`hkml monitor remove`
----------------------
-
-Remove added monitoring requests.  User can specify the request to remove using
-the index of the request on the requests list that can be shown via `hkml
-monitor status`, or the name of the request which the user can set with `hkml
-monitor add` command.
-
-`hkml monitor status`
----------------------
-
-Show status of the monitoring, including list of currently added monitoring
-requests.
-
-`hkml monitor start`
---------------------
-
-Start the requested monitoring.  Monitoring requests that added after
-monitoring is started is not automatically added to the running instance.  You
-should start a new instance for new requests.  To stop running instance, you
-can simply Ctrl-C.
