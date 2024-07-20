@@ -51,8 +51,8 @@ class CliQuestion:
         if len(lines) > 0:
             print('\n'.join(lines))
 
-        answer = input('%s (enter \'hkml_cancel\' to cancel): ' % self.prompt)
-        if answer == 'hkml_cancel':
+        answer = input('%s (enter \'\' to cancel): ' % self.prompt)
+        if answer == '':
             cli_any_input('Canceled.')
             return 'canceled'
 
