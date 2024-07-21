@@ -259,19 +259,6 @@ def export_mails(c, slist):
                 notify_completion=True)
     hkml_view.shell_mode_end(slist)
 
-def get_mails_list_menu():
-    return [
-        ['- open', open_focused_mail],
-        ['- list complete thread', list_thread_of_focused_mail],
-        ['- reply', reply_focused_mail],
-        ['- forward', forward_focused_mail],
-        ['- continue draft writing', write_parent_focused_draft],
-        ['- manage tags', manage_tags_of_parent_focused_mail],
-        ['- handle as patches', handle_patches_of_parent_focused_mail],
-        ['- export as an mbox file', export_mails],
-        hkml_view.save_parent_content_menu_item_handler,
-        ]
-
 def menu_open_mail(mail_slist, selection):
     mail, slist = mail_slist
     hkml_view.shell_mode_end(slist)
