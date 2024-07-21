@@ -313,9 +313,7 @@ def get_text_viewer_handlers(data):
     return handlers + [
             hkml_view.InputHandler(
                 ['m'], show_cli_text_viewer_menu, 'open menu'),
-            hkml_view.InputHandler(
-                ['M', '\n'], show_text_viewer_menu, 'open tui menu'),
-                ]
+            ]
 
 def show_text_viewer(screen, text_lines, data=None):
     slist = hkml_view.ScrollableList(
