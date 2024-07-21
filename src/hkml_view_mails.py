@@ -243,9 +243,8 @@ def do_export(data, answer):
         range=export_range))
     print()
 
-def export_mails_of_parent(c, slist):
-    idx = focused_mail_idx(slist.parent_list.lines,
-                           slist.parent_list.focus_row)
+def export_mails(c, slist):
+    idx = focused_mail_idx(slist.lines, slist.focus_row)
     hkml_view.shell_mode_start(slist)
 
     q = hkml_view.CliQuestion(desc='Focused mail: %d' % idx)
@@ -269,7 +268,7 @@ def get_mails_list_menu():
         ['- continue draft writing', write_parent_focused_draft],
         ['- manage tags', manage_tags_of_parent_focused_mail],
         ['- handle as patches', handle_patches_of_parent_focused_mail],
-        ['- export as an mbox file', export_mails_of_parent],
+        ['- export as an mbox file', export_mails],
         hkml_view.save_parent_content_menu_item_handler,
         ]
 
