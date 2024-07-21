@@ -103,18 +103,6 @@ def list_thread_of_focused_mail(c, slist):
 
     show_mails_list(slist.screen, thread_txt.split('\n'), mail_idx_key_map)
 
-def open_parent_focused_mail(c, slist):
-    open_focused_mail(c, slist.parent_list)
-
-def reply_parent_focused_mail(c, slist):
-    reply_focused_mail(c, slist.parent_list)
-
-def list_parent_focused_thread(c, slist):
-    list_thread_of_focused_mail(c, slist.parent_list)
-
-def forward_parent_focused_mail(c, slist):
-    forward_focused_mail(c, slist.parent_list)
-
 def write_mail_draft(slist, mail):
     hkml_view.shell_mode_start(slist)
     hkml_write.write_send_mail(
@@ -274,10 +262,10 @@ def export_mails_of_parent(c, slist):
 
 def get_mails_list_menu():
     return [
-        ['- open', open_parent_focused_mail],
-        ['- list complete thread', list_parent_focused_thread],
-        ['- reply', reply_parent_focused_mail],
-        ['- forward', forward_parent_focused_mail],
+        ['- open', open_focused_mail],
+        ['- list complete thread', list_thread_of_focused_mail],
+        ['- reply', reply_focused_mail],
+        ['- forward', forward_focused_mail],
         ['- continue draft writing', write_parent_focused_draft],
         ['- manage tags', manage_tags_of_parent_focused_mail],
         ['- handle as patches', handle_patches_of_parent_focused_mail],
