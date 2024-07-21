@@ -222,8 +222,8 @@ Regardless of the type, below keys are supported.
 `j` and `k` key move focus down and up one row.  `J` and `K` keys move focus up
 and down 1/2 screen, respectively.
 
-Pressing `m` or `M` key opens context-based CLI or TUI menu that shows items
-that can be selected, respectively.
+Pressing `m` key opens context-based menu that shows items that can be
+selected, respectively.
 
 `:` key opens input window to enter the line number to move focus to.  `start`
 and `end` keyword could also be used, to specify the start and end line of the
@@ -252,9 +252,9 @@ Pressing `r` starts writing a reply to the focused mail.
 
 Pressing `f` starts forwarding the focused mail.
 
-Pressing `m` or `M` opens a selection-based menu using CLI or TUI,
-respectively.  From the menu, users can do abovely explained actions.  In
-addition to that, the menu provides below options.
+Pressing `m` or opens a selection-based menu.  From the menu, users can do
+abovely explained actions.  In addition to that, the menu provides below
+options.
 
 - Writing a mail using the focused mail as its draft (same to `hkml write
   --draft <focused mail>`.  Refer to 'Writing New Mails'
@@ -275,8 +275,8 @@ If the screen is showing a general text (`hkml open` output or mail content
 opened from `hkml list` output), the screen is called text screen type.
 
 From this type, the `r` and `f` key bindings for replying and forwarding mail
-are supported, if the screen is displaying a mail.  Also, the menu (`m` or `M`
-key) on this screen shows below options.
+are supported, if the screen is displaying a mail.  Also, the menu (`m` key) on
+this screen shows below options.
 
 - Saving the text to a file, or the clipboard.
 - If the focused line contains git commit ids, the menu shows items for showing
