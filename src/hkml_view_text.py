@@ -137,6 +137,40 @@ def add_menus_for_msgid(item_handlers, line):
             item_handlers.append(
                     ['- hkml open %s' % msgid, text_viewer_menu_hkml_open])
 
+def text_viewer_menu_exec_web(c, slist):
+    # line is "- {lynx,w3m} url"
+    if slist.data is None:
+        # tui menu
+        line = slist.lines[slist.focus_row]
+    else:
+        # cli menu
+        line = slist.data
+    cmd, url = line.split()[1:]
+    hkml_view.shell_mode_start(slist)
+    subprocess.call([cmd, url])
+    hkml_view.shell_mode_end(slist)
+
+def add_menus_for_url(item_handlers, line):
+    for separator in [',', '(', ')', '[', ']', '"']:
+        line = line.replace(separator, ' ')
+    for word in line.split():
+        if not word.startswith('http://') and not word.startswith('https://'):
+            continue
+        try:
+            subprocess.check_output(['which', 'lynx'])
+            item_handlers.append(
+                    ['- lynx %s' % word, text_viewer_menu_exec_web])
+        except:
+            # lynx not installed.
+            pass
+        try:
+            subprocess.check_output(['which', 'w3m'])
+            item_handlers.append(
+                    ['- w3m %s' % word, text_viewer_menu_exec_web])
+        except:
+            # w3m not installed.
+            pass
+
 def add_menus_for_files(item_handlers, line):
     for separator in [',', '(', ')', '[', ']', '"']:
         line = line.replace(separator, ' ')
@@ -221,6 +255,7 @@ def build_text_view_menu_item_handlers(slist):
     item_handlers = []
     add_menus_for_commit(item_handlers, line)
     add_menus_for_msgid(item_handlers, line)
+    add_menus_for_url(item_handlers, line)
     add_menus_for_files(item_handlers, line)
 
     if type(slist.data) is _hkml.Mail:
