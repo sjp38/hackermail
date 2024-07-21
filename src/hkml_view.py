@@ -210,17 +210,6 @@ class ScrollableList:
             lines.append('%s: %s' % (input_chrs, handler.help_msg))
         return lines
 
-    def set_menu_item_handlers(self, parent_list, item_handlers):
-        self.input_handlers += [
-                InputHandler(
-                    ['\n'], execute_focused_item, 'execute focused item'),
-                ]
-
-        self.parent_list = parent_list
-        self.menu_item_handlers = item_handlers
-        for txt, _ in item_handlers:
-            self.lines.append(txt)
-
 def shell_mode_start(slist):
     slist.screen.clear()
     slist.screen.refresh()
