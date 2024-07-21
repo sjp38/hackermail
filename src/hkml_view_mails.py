@@ -303,6 +303,85 @@ def show_cli_mails_list_menu(c, slist):
             [slist, item_handlers], selections)
     hkml_view.shell_mode_end(slist)
 
+def menu_open_mail(mail_slist, selection):
+    mail, slist = mail_slist
+    hkml_view.shell_mode_end(slist)
+    open_focused_mail(None, slist)
+    hkml_view.shell_mode_start(slist)
+
+def menu_list_thread(mail_slist, selection):
+    mail, slist = mail_slist
+    hkml_view.shell_mode_end(slist)
+    list_thread_of_focused_mail(None, slist)
+    hkml_view.shell_mode_start(slist)
+
+def menu_reply_mail(mail_slist, selection):
+    mail, slist = mail_slist
+    hkml_view.shell_mode_end(slist)
+    reply_focused_mail(None, slist)
+    hkml_view.shell_mode_start(slist)
+
+def menu_forward_mail(mail_slist, selection):
+    mail, slist = mail_slist
+    hkml_view.shell_mode_end(slist)
+    forward_focused_mail(None, slist)
+    hkml_view.shell_mode_start(slist)
+
+def menu_write_draft(mail_slist, selection):
+    mail, slist = mail_slist
+    hkml_view.shell_mode_end(slist)
+    write_mail_draft(slist, mail)
+    hkml_view.shell_mode_start(slist)
+
+def menu_manage_tags(mail_slist, selection):
+    mail, slist = mail_slist
+    hkml_view.shell_mode_end(slist)
+    manage_tags_of_mail(slist, mail)
+    hkml_view.shell_mode_start(slist)
+
+def menu_handle_patches(mail_slist, selection):
+    mail, slist = mail_slist
+    handle_patches_of_mail(mail)
+
+def menu_export_mails(mail_slist, selection):
+    mail, slist = mail_slist
+    hkml_view.shell_mode_end(slist)
+    export_mails(None, slist)
+    hkml_view.shell_mode_start(slist)
+
+def menu_save_as(mail_slist, selection):
+    mail, slist = mail_slist
+    hkml_view.save_as('\n'.join(slist.lines))
+
+def show_mails_list_menu(c, slist):
+    mail = get_focused_mail(slist)
+    if mail is None:
+        return
+
+    q = hkml_view.CliQuestion(
+            desc='selected mail: %s' % mail.subject,
+            prompt='Enter menu item number')
+    hkml_view.shell_mode_start(slist)
+    q.ask_selection(
+            data=[mail, slist],
+            selections=[
+                hkml_view.CliSelection('open', menu_open_mail),
+                hkml_view.CliSelection(
+                    'list complete thread', menu_list_thread),
+                hkml_view.CliSelection('reply', menu_reply_mail),
+                hkml_view.CliSelection('forward', menu_forward_mail),
+                hkml_view.CliSelection(
+                    'continue draft writing', menu_write_draft),
+                hkml_view.CliSelection('manage tags', menu_manage_tags),
+                hkml_view.CliSelection(
+                    'handle as patches', menu_handle_patches),
+                hkml_view.CliSelection(
+                    'export as an mbox file', menu_export_mails),
+                hkml_view.CliSelection(
+                    'save screen content as ...', menu_save_as),
+                ])
+    hkml_view.shell_mode_end(slist)
+
 def get_mails_list_input_handlers():
     return [
             hkml_view.InputHandler(
@@ -314,7 +393,7 @@ def get_mails_list_input_handlers():
             hkml_view.InputHandler(['t'], list_thread_of_focused_mail,
                          'list complete thread'),
             hkml_view.InputHandler(
-                ['m'], show_cli_mails_list_menu, 'open menu'),
+                ['m'], show_mails_list_menu, 'open menu'),
             ]
 
 def after_input_handle_callback(slist):
