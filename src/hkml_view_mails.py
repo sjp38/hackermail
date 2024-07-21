@@ -285,19 +285,6 @@ def get_mails_list_menu():
         hkml_view.save_parent_content_menu_item_handler,
         ]
 
-def show_mails_list_menu(c, slist):
-    mail = get_focused_mail(slist)
-    if mail is None:
-        return
-    menu_lines = [
-            'selected mail: %s' % mail.subject,
-            '',
-            'focus an item below and press Enter',
-            '']
-    menu_list = hkml_view.ScrollableList(slist.screen, menu_lines, None)
-    menu_list.set_menu_item_handlers(slist, get_mails_list_menu())
-    menu_list.draw()
-
 def show_cli_mails_list_menu(c, slist):
     def cli_handle_fn(data, answer):
         slist, item_handlers = data
@@ -341,8 +328,6 @@ def get_mails_list_input_handlers():
                          'list complete thread'),
             hkml_view.InputHandler(
                 ['m'], show_cli_mails_list_menu, 'open menu'),
-            hkml_view.InputHandler(
-                ['M'], show_mails_list_menu, 'open tui menu'),
             ]
 
 def after_input_handle_callback(slist):
