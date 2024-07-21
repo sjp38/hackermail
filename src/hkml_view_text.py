@@ -264,14 +264,6 @@ def build_text_view_menu_item_handlers(slist):
     item_handlers.append(hkml_view.save_parent_content_menu_item_handler)
     return item_handlers
 
-def show_text_viewer_menu(c, slist):
-    item_handlers = build_text_view_menu_item_handlers(slist)
-    lines = ['selected line: %s' % slist.lines[slist.focus_row], '',
-             'focus an item below and press Enter', '']
-    menu_list = hkml_view.ScrollableList(slist.screen, lines, None)
-    menu_list.set_menu_item_handlers(slist, item_handlers)
-    menu_list.draw()
-
 def show_cli_text_viewer_menu(c, slist):
     def cli_handle_fn(data, answer):
         slist, item_handlers = data
