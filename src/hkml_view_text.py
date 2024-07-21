@@ -13,22 +13,6 @@ import hkml_thread
 import hkml_view
 import hkml_view_mails
 
-def text_viewer_menu_exec_git(c, slist):
-    if slist.data is None:
-        # tui menu
-        line = slist.lines[slist.focus_row]
-    else:
-        # cli menu
-        line = slist.data
-    words = line.split()[1:]
-    try:
-        output = subprocess.check_output(
-                words, stderr=subprocess.DEVNULL).decode().split('\n')
-    except Exception as e:
-        output = ['failed: %s' % e, '',
-                  'wrong commit id, or you are not on the git repo?']
-    show_text_viewer(slist.screen, output)
-
 def parse_menu_data(data, answer):
     slist, selections = data
     text = selections[int(answer) - 1].text
@@ -54,18 +38,6 @@ def get_thread_txt_mail_idx_key_map(msgid):
     hkml_list.cache_list_str('thread_output', thread_txt, mail_idx_key_map)
     return thread_txt, mail_idx_key_map
 
-def text_viewer_menu_hkml_thread(c, slist):
-    if slist.data is None:
-        # tui menu
-        line = slist.lines[slist.focus_row]
-    else:
-        # cli menu
-        line = slist.data
-    msgid = '<%s>' % line.split()[1:][-1]
-    thread_txt, mail_idx_key_map = get_thread_txt_mail_idx_key_map(msgid)
-    hkml_view_mails.show_mails_list(slist.screen, thread_txt.split('\n'),
-                              mail_idx_key_map)
-
 def menu_hkml_thread(data, answer):
     slist, selections, text = parse_menu_data(data, answer)
     hkml_view.shell_mode_end(slist)
@@ -74,25 +46,6 @@ def menu_hkml_thread(data, answer):
     hkml_view_mails.show_mails_list(slist.screen, thread_txt.split('\n'),
                               mail_idx_key_map)
     hkml_view.shell_mode_start(slist)
-
-def text_viewer_menu_hkml_open(c, slist):
-    if slist.data is None:
-        # tui menu
-        line = slist.lines[slist.focus_row]
-    else:
-        # cli menu
-        line = slist.data
-    msgid = '<%s>' % line.split()[1:][-1]
-    thread_txt, mail_idx_key_map = get_thread_txt_mail_idx_key_map(msgid)
-    for idx, cache_key in mail_idx_key_map.items():
-        mail = hkml_cache.get_mail(key=cache_key)
-        if mail is None:
-            continue
-        if mail.get_field('message-id') == msgid:
-            _, cols = slist.screen.getmaxyx()
-            lines = hkml_open.mail_display_str(mail, cols).split('\n')
-            show_text_viewer(slist.screen, lines)
-            break
 
 def menu_hkml_open(data, answer):
     slist, selections, text = parse_menu_data(data, answer)
@@ -109,18 +62,6 @@ def menu_hkml_open(data, answer):
             show_text_viewer(slist.screen, lines)
             break
     hkml_view.shell_mode_start(slist)
-
-def text_viewer_menu_open_file(c, slist):
-    if slist.data is None:
-        # tui menu
-        line = slist.lines[slist.focus_row]
-    else:
-        # cli menu
-        line = slist.data
-    file_path = line.split()[1:][-1]
-    with open(file_path, 'r') as f:
-        lines = f.read().split('\n')
-    show_text_viewer(slist.screen, lines)
 
 def menu_open_file(data, answer):
     slist, selections, text = parse_menu_data(data, answer)
@@ -156,19 +97,6 @@ def is_git_hash(word):
             return False
     return True
 
-def add_menus_for_commit(item_handlers, line):
-    for separator in [',', '(', ')', '/', '[', ']', '"']:
-        line = line.replace(separator, ' ')
-    for word in line.split():
-        if is_git_hash(word):
-            item_handlers.append(
-                    ['- git show %s' % word, text_viewer_menu_exec_git])
-            item_handlers.append(
-                    ['- git log -n 5 %s' % word, text_viewer_menu_exec_git])
-            item_handlers.append(
-                    ['- git log --oneline -n 64 %s' % word,
-                     text_viewer_menu_exec_git])
-
 def menu_selections_for_commit(line):
     for separator in [',', '(', ')', '/', '[', ']', '"']:
         line = line.replace(separator, ' ')
@@ -200,17 +128,6 @@ def get_msgid_from_public_inbox_link(word):
             return token
     return None
 
-def add_menus_for_msgid(item_handlers, line):
-    for separator in [',', '(', ')', '[', ']', '"']:
-        line = line.replace(separator, ' ')
-    for word in line.split():
-        msgid = get_msgid_from_public_inbox_link(word)
-        if msgid is not None:
-            item_handlers.append(
-                    ['- hkml thread %s' % msgid, text_viewer_menu_hkml_thread])
-            item_handlers.append(
-                    ['- hkml open %s' % msgid, text_viewer_menu_hkml_open])
-
 def menu_selections_for_msgid(line):
     for separator in [',', '(', ')', '[', ']', '"']:
         line = line.replace(separator, ' ')
@@ -225,43 +142,9 @@ def menu_selections_for_msgid(line):
             'hkml open %s' % msgid, menu_hkml_open))
     return selections
 
-def text_viewer_menu_exec_web(c, slist):
-    # line is "- {lynx,w3m} url"
-    if slist.data is None:
-        # tui menu
-        line = slist.lines[slist.focus_row]
-    else:
-        # cli menu
-        line = slist.data
-    cmd, url = line.split()[1:]
-    hkml_view.shell_mode_start(slist)
-    subprocess.call([cmd, url])
-    hkml_view.shell_mode_end(slist)
-
 def menu_exec_web(data, answer):
     slist, selections, text = parse_menu_data(data, answer)
     subprocess.call(text.split())
-
-def add_menus_for_url(item_handlers, line):
-    for separator in [',', '(', ')', '[', ']', '"']:
-        line = line.replace(separator, ' ')
-    for word in line.split():
-        if not word.startswith('http://') and not word.startswith('https://'):
-            continue
-        try:
-            subprocess.check_output(['which', 'lynx'])
-            item_handlers.append(
-                    ['- lynx %s' % word, text_viewer_menu_exec_web])
-        except:
-            # lynx not installed.
-            pass
-        try:
-            subprocess.check_output(['which', 'w3m'])
-            item_handlers.append(
-                    ['- w3m %s' % word, text_viewer_menu_exec_web])
-        except:
-            # w3m not installed.
-            pass
 
 def menu_selections_for_url(line):
     for separator in [',', '(', ')', '[', ']', '"']:
@@ -285,25 +168,6 @@ def menu_selections_for_url(line):
             # w3m not installed.
             pass
     return selections
-
-def add_menus_for_files(item_handlers, line):
-    for separator in [',', '(', ')', '[', ']', '"']:
-        line = line.replace(separator, ' ')
-
-    found_files = {}
-    for word in line.split():
-        # file paths on diff starts with a/ and b/, e.g.,
-        #
-        # --- a/tools/testing/selftests/damon/damon_nr_regions.py
-        # +++ b/tools/testing/selftests/damon/damon_nr_regions.py
-        if word.startswith('a/') or word.startswith('b/'):
-            word = word[2:]
-        if not word in found_files and os.path.isfile(word):
-            found_files[word] = True
-            item_handlers.append(
-                    ['- hkml open file %s' % word, text_viewer_menu_open_file])
-            item_handlers.append(
-                    ['- vim %s' % word, text_viewer_menu_vim_file])
 
 def menu_selections_for_files(line):
     for separator in [',', '(', ')', '[', ']', '"', ':']:
@@ -407,15 +271,6 @@ def menu_handle_patches(data, answer):
     mail = slist.data
     hkml_view_mails.handle_patches_of_mail(mail)
 
-def add_menus_for_mail(item_handlers, mail):
-    item_handlers.append(
-            ['- reply', reply_mail])
-    item_handlers.append(
-            ['- forward', forward_mail])
-    item_handlers.append(['- continue draft writing', write_draft_mail])
-    item_handlers.append(['- manage tags', manage_tags])
-    item_handlers.append(['- handle as patches', handle_patches])
-
 def menu_selections_for_mail():
     return [
             hkml_view.CliSelection('reply', menu_reply_mail),
@@ -426,51 +281,6 @@ def menu_selections_for_mail():
             hkml_view.CliSelection(
                 'hanlde as patches', menu_handle_patches),
             ]
-
-def build_text_view_menu_item_handlers(slist):
-    line = slist.lines[slist.focus_row]
-
-    item_handlers = []
-    add_menus_for_commit(item_handlers, line)
-    add_menus_for_msgid(item_handlers, line)
-    add_menus_for_url(item_handlers, line)
-    add_menus_for_files(item_handlers, line)
-
-    if type(slist.data) is _hkml.Mail:
-        add_menus_for_mail(item_handlers, slist.data)
-
-    item_handlers.append(hkml_view.save_parent_content_menu_item_handler)
-    return item_handlers
-
-def show_cli_text_viewer_menu(c, slist):
-    def cli_handle_fn(data, answer):
-        slist, item_handlers = data
-        for idx, item_handler in enumerate(item_handlers):
-            _, slist_handle_fn = item_handler
-            if answer == '%d' % (idx + 1):
-                hkml_view.shell_mode_end(slist)
-                data_bak = slist.data
-                slist.data = item_handler[0]
-                slist_handle_fn('\n', slist)
-                slist.data = data_bak
-                hkml_view.shell_mode_start(slist)
-                return
-
-    item_handlers = build_text_view_menu_item_handlers(slist)
-    selections = []
-    for text, _ in item_handlers:
-        if text.startswith('- '):
-            text = text[2:]
-        selections.append(hkml_view.CliSelection(text, cli_handle_fn))
-
-    hkml_view.shell_mode_start(slist)
-    q = hkml_view.CliQuestion(
-            desc='selected line: %s' % slist.lines[slist.focus_row],
-            prompt='Enter menu item number')
-    slist.parent_list = slist
-    q.ask_selection(
-            [slist, item_handlers], selections)
-    hkml_view.shell_mode_end(slist)
 
 def menu_selections(slist):
     line = slist.lines[slist.focus_row]
