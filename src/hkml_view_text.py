@@ -14,7 +14,13 @@ import hkml_view
 import hkml_view_mails
 
 def text_viewer_menu_exec_git(c, slist):
-    words = slist.lines[slist.focus_row].split()[1:]
+    if slist.data is None:
+        # tui menu
+        line = slist.lines[slist.focus_row]
+    else:
+        # cli menu
+        line = slist.data
+    words = line.split()[1:]
     try:
         output = subprocess.check_output(
                 words, stderr=subprocess.DEVNULL).decode().split('\n')
@@ -31,13 +37,25 @@ def get_thread_txt_mail_idx_key_map(msgid):
     return thread_txt, mail_idx_key_map
 
 def text_viewer_menu_hkml_thread(c, slist):
-    msgid = '<%s>' % slist.lines[slist.focus_row].split()[1:][-1]
+    if slist.data is None:
+        # tui menu
+        line = slist.lines[slist.focus_row]
+    else:
+        # cli menu
+        line = slist.data
+    msgid = '<%s>' % line.split()[1:][-1]
     thread_txt, mail_idx_key_map = get_thread_txt_mail_idx_key_map(msgid)
     hkml_view_mails.show_mails_list(slist.screen, thread_txt.split('\n'),
                               mail_idx_key_map)
 
 def text_viewer_menu_hkml_open(c, slist):
-    msgid = '<%s>' % slist.lines[slist.focus_row].split()[1:][-1]
+    if slist.data is None:
+        # tui menu
+        line = slist.lines[slist.focus_row]
+    else:
+        # cli menu
+        line = slist.data
+    msgid = '<%s>' % line.split()[1:][-1]
     thread_txt, mail_idx_key_map = get_thread_txt_mail_idx_key_map(msgid)
     for idx, cache_key in mail_idx_key_map.items():
         mail = hkml_cache.get_mail(key=cache_key)
@@ -50,13 +68,25 @@ def text_viewer_menu_hkml_open(c, slist):
             break
 
 def text_viewer_menu_open_file(c, slist):
-    file_path = slist.lines[slist.focus_row].split()[1:][-1]
+    if slist.data is None:
+        # tui menu
+        line = slist.lines[slist.focus_row]
+    else:
+        # cli menu
+        line = slist.data
+    file_path = line.split()[1:][-1]
     with open(file_path, 'r') as f:
         lines = f.read().split('\n')
     show_text_viewer(slist.screen, lines)
 
 def text_viewer_menu_vim_file(c, slist):
-    file_path = slist.lines[slist.focus_row].split()[1:][-1]
+    if slist.data is None:
+        # tui menu
+        line = slist.lines[slist.focus_row]
+    else:
+        # cli menu
+        line = slist.data
+    file_path = line.split()[1:][-1]
     hkml_view.shell_mode_start(slist)
     subprocess.call(['vim', file_path])
     hkml_view.shell_mode_end(slist)
@@ -214,7 +244,10 @@ def show_cli_text_viewer_menu(c, slist):
             _, slist_handle_fn = item_handler
             if answer == '%d' % (idx + 1):
                 hkml_view.shell_mode_end(slist)
+                data_bak = slist.data
+                slist.data = item_handler[0]
                 slist_handle_fn('\n', slist)
+                slist.data = data_bak
                 hkml_view.shell_mode_start(slist)
                 return
 
