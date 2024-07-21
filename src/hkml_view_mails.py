@@ -272,37 +272,6 @@ def get_mails_list_menu():
         hkml_view.save_parent_content_menu_item_handler,
         ]
 
-def show_cli_mails_list_menu(c, slist):
-    def cli_handle_fn(data, answer):
-        slist, item_handlers = data
-        for idx, item_handler in enumerate(item_handlers):
-            _, slist_handle_fn = item_handler
-            if answer == '%d' % (idx + 1):
-                hkml_view.shell_mode_end(slist)
-                slist_handle_fn('\n', slist)
-                hkml_view.shell_mode_start(slist)
-                return
-
-    mail = get_focused_mail(slist)
-    if mail is None:
-        return
-
-    item_handlers = get_mails_list_menu()
-    selections = []
-    for text, _ in item_handlers:
-        if text.startswith('- '):
-            text = text[2:]
-        selections.append(hkml_view.CliSelection(text, cli_handle_fn))
-
-    hkml_view.shell_mode_start(slist)
-    q = hkml_view.CliQuestion(
-            desc='selected mail: %s' % mail.subject,
-            prompt='Enter menu item number')
-    slist.parent_list = slist
-    q.ask_selection(
-            [slist, item_handlers], selections)
-    hkml_view.shell_mode_end(slist)
-
 def menu_open_mail(mail_slist, selection):
     mail, slist = mail_slist
     hkml_view.shell_mode_end(slist)
