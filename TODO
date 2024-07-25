@@ -15,3 +15,5 @@
   - interactive refresh
   - interactive filters update
   - interactive highlights filter
+- Check if same subject draft exists, ask if the user want to overwrite
+- Give selection to tag removing menu
