@@ -238,7 +238,7 @@ def wrap_line(prefix, line, nr_cols):
     for w in words:
         words_to_print.append(w)
         line_len = len(' '.join(words_to_print))
-        if line_len > nr_cols:
+        if nr_cols is not None and line_len > nr_cols:
             if len(words_to_print) == 1:
                 lines.append(words_to_print[0])
             else:
