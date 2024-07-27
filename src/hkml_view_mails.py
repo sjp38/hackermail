@@ -337,6 +337,19 @@ def menu_list_thread(mail_slist, selection):
     list_thread_of_focused_mail(None, slist)
     hkml_view.shell_mode_start(slist)
 
+def menu_collapse_expand(mail_slist, selection):
+    mail, slist = mail_slist
+    if ('collapsed_mails' in slist.data and
+        focused_mail_idx( slist.lines, slist.focus_row) in
+        slist.data['collapsed_mails']):
+        hkml_view.shell_mode_end(slist)
+        expand_focused_thread(None, slist)
+        hkml_view.shell_mode_start(slist)
+        return
+    hkml_view.shell_mode_end(slist)
+    collapse_focused_thread(None, slist)
+    hkml_view.shell_mode_start(slist)
+
 def menu_reply_mail(mail_slist, selection):
     mail, slist = mail_slist
     hkml_view.shell_mode_end(slist)
@@ -390,6 +403,8 @@ def show_mails_list_menu(c, slist):
                 hkml_view.CliSelection('open', menu_open_mail),
                 hkml_view.CliSelection(
                     'list complete thread', menu_list_thread),
+                hkml_view.CliSelection(
+                    'collapse/expand focused thread', menu_collapse_expand),
                 hkml_view.CliSelection('reply', menu_reply_mail),
                 hkml_view.CliSelection('forward', menu_forward_mail),
                 hkml_view.CliSelection(
