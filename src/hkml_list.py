@@ -528,7 +528,14 @@ def sort_filter_mails(mails_to_show, mails_filter, list_decorator,
     runtime_profile.append(['filtering', time.time() - timestamp])
     return filtered_mails, mail_idx_key_map
 
-def fmt_mails_text(mails, list_decorator):
+def child_of_collapsed(mail, mails_to_collapse):
+    if mail.parent_mail is None:
+        return False
+    if mail.parent_mail.pridx in mails_to_collapse:
+        return True
+    return child_of_collapsed(mail.parent_mail, mails_to_collapse)
+
+def fmt_mails_text(mails, list_decorator, mails_to_collapse):
     lines = []
     collapse_threads = list_decorator.collapse
     show_url = list_decorator.show_url
@@ -539,12 +546,20 @@ def fmt_mails_text(mails, list_decorator):
         max_index = 1
     max_digits_for_idx = math.ceil(math.log(max_index, 10))
 
+    if mails_to_collapse:
+        # set parent_mail
+        threads_of(mails)
+
     for mail in mails:
         show_nr_replies = False
         if collapse_threads == True:
             if mail.prdepth > 0:
                 continue
             show_nr_replies = True
+        if mail.pridx in mails_to_collapse:
+            show_nr_replies = True
+        if child_of_collapsed(mail, mails_to_collapse):
+            continue
         lines += format_entry(mail, max_digits_for_idx, show_nr_replies,
                               show_url, nr_cols)
     return lines
@@ -560,7 +575,8 @@ def mails_to_str(mails_to_show, mails_filter, list_decorator, show_thread_of,
 
     timestamp = time.time()
 
-    lines = fmt_mails_text(filtered_mails, list_decorator)
+    lines = fmt_mails_text(filtered_mails, list_decorator,
+                           mails_to_collapse={})
 
     stat_lines = []
     show_stat = not list_decorator.hide_stat
