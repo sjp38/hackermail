@@ -133,12 +133,12 @@ def get_mail_with_replies(msgid):
             return mail_with_replies
 
 def apply_action_to_mails(mail, args):
+    err_to_return = None
     for patch_mail in get_patch_mails(mail, args.dont_add_cv):
         err = apply_action(args, patch_mail)
-    if err is not None:
-        print(err)
-        if type(args.mail) is not _hkml.Mail:
-            exit(1)
+        if err is not None:
+            err_to_return = err
+    return err_to_return
 
 def main(args):
     # For call from hkml_view_mail
@@ -163,7 +163,10 @@ def main(args):
         print('cannot find the mail')
         exit(1)
 
-    apply_action_to_mails(mail, args)
+    err = apply_action_to_mails(mail, args)
+    if err is not None:
+        print(err)
+        exit(1)
 
 def set_argparser(parser):
     parser.description = 'handle patch series mail thread'
