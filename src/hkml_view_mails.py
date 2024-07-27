@@ -31,7 +31,7 @@ def get_focused_mail(slist):
         slist.toast('no mail focused?')
         return None
     mail_idx = '%d' % mail_idx
-    mail_idx_key_map = slist.data
+    mail_idx_key_map = slist.data['mail_idx_key_map']
     if not mail_idx in mail_idx_key_map:
         slist.toast('wrong index?')
         return None
@@ -217,7 +217,7 @@ def handle_patches_of_mail(mail, list_mails=None):
 
 def get_mails(slist):
     mails = []
-    mail_idx_key_map = slist.data
+    mail_idx_key_map = slist.data['mail_idx_key_map']
     for mail_idx in mail_idx_key_map:
         mail_key = mail_idx_key_map[mail_idx]
         mails.append(hkml_cache.get_mail(key=mail_key))
@@ -369,7 +369,7 @@ def get_mails_list_input_handlers():
             ]
 
 def after_input_handle_callback(slist):
-    mail_idx_key_map = slist.data
+    mail_idx_key_map = slist.data['mail_idx_key_map']
     if mail_idx_key_map is None:
         return
     _, last_mail_idx_key_map = hkml_list.get_last_mails_list()
@@ -380,7 +380,7 @@ def after_input_handle_callback(slist):
 def show_mails_list(screen, text_lines, mail_idx_key_map):
     slist = hkml_view.ScrollableList(screen, text_lines,
                            get_mails_list_input_handlers())
-    slist.data = mail_idx_key_map
+    slist.data = {'mail_idx_key_map': mail_idx_key_map}
     slist.after_input_handle_callback = after_input_handle_callback
     slist.draw()
     return slist
