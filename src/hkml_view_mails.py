@@ -235,14 +235,6 @@ def get_mails(slist):
         mails.append(hkml_cache.get_mail(key=mail_key))
     return mails
 
-def handle_patches_of_parent_focused_mail(c, slist):
-    mail = get_focused_mail(slist.parent_list)
-    if mail is None:
-        return
-    hkml_view.shell_mode_start(slist)
-    handle_patches_of_mail(mail, get_mails(slist.parent_list))
-    hkml_view.shell_mode_end(slist)
-
 def do_export(data, answer):
     slist, idx = data
     try:
