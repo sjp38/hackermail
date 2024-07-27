@@ -227,12 +227,20 @@ def handle_patches_of_mail(mail, list_mails=None):
                 hkml_view.CliSelection('export patch[es]', do_export_patch)],
             notify_completion=True)
 
+def get_mails(slist):
+    mails = []
+    mail_idx_key_map = slist.data
+    for mail_idx in mail_idx_key_map:
+        mail_key = mail_idx_key_map[mail_idx]
+        mails.append(hkml_cache.get_mail(key=mail_key))
+    return mails
+
 def handle_patches_of_parent_focused_mail(c, slist):
     mail = get_focused_mail(slist.parent_list)
     if mail is None:
         return
     hkml_view.shell_mode_start(slist)
-    handle_patches_of_mail(mail)
+    handle_patches_of_mail(mail, get_mails(slist.parent_list))
     hkml_view.shell_mode_end(slist)
 
 def do_export(data, answer):
@@ -325,7 +333,7 @@ def menu_manage_tags(mail_slist, selection):
 
 def menu_handle_patches(mail_slist, selection):
     mail, slist = mail_slist
-    handle_patches_of_mail(mail)
+    handle_patches_of_mail(mail, get_mails(slist))
 
 def menu_export_mails(mail_slist, selection):
     mail, slist = mail_slist
