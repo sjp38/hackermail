@@ -160,12 +160,6 @@ def manage_tags_of_mail(slist, mail):
                 hkml_view.CliSelection('Remove tags', do_remove_tags)])
     hkml_view.shell_mode_end(slist)
 
-def manage_tags_of_parent_focused_mail(c, slist):
-    mail = get_focused_mail(slist.parent_list)
-    if mail is None:
-        return
-    manage_tags_of_mail(slist, mail)
-
 def do_check_patch(data, selection):
     mail = data
     err = hkml_patch.apply_action_to_mails(mail, argparse.Namespace(
