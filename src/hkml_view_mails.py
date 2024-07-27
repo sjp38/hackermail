@@ -173,21 +173,49 @@ def manage_tags_of_parent_focused_mail(c, slist):
     manage_tags_of_mail(slist, mail)
 
 def do_check_patch(data, selection):
-    hkml_patch.main(argparse.Namespace(
+    mail = data
+    err = hkml_patch.apply_action_to_mails(mail, argparse.Namespace(
         hkml_dir=None, command='patch', dont_add_cv=False, action='check',
-        mail=data, checker=None))
+        checker=None))
+    if err is not None:
+        hkml_view.cli_any_input('applying action failed (%s)' % err)
 
 def do_apply_patch(data, selection):
-    hkml_patch.main(argparse.Namespace(
+    mail = data
+    err = hkml_patch.apply_action_to_mails(mail, argparse.Namespace(
         hkml_dir=None, command='patch', dont_add_cv=False, action='apply',
-        mail=data, repo='./'))
+        repo='./'))
+    if err is not None:
+        hkml_view.cli_any_input('applying action failed (%s)' % err)
 
 def do_export_patch(data, selection):
-    hkml_patch.main(argparse.Namespace(
+    mail = data
+    err = hkml_patch.apply_action_to_mails(mail, argparse.Namespace(
         hkml_dir=None, command='patch', dont_add_cv=False, action='export',
-        mail=data, repo='./'))
+        repo='./'))
+    if err is not None:
+        hkml_view.cli_any_input('applying action failed (%s)' % err)
 
-def handle_patches_of_mail(mail):
+def handle_patches_of_mail(mail, list_mails=None):
+    msgid = mail.get_field('message-id')
+    if list_mails is None:
+        list_mails, err = hkml_thread.get_thread_mails_from_web(msgid)
+        if err is not None:
+            hkml_view.cli_any_input('get_thread_mails_from_web() failed (%s)' %
+                                    err)
+            return
+    threads = hkml_list.threads_of(list_mails)
+    mail_with_replies = None
+    for thread_root_mail in threads:
+        mail_with_replies = hkml_patch.find_mail_from_thread(
+                thread_root_mail, msgid)
+        if mail_with_replies is not None:
+            break
+    if mail_with_replies is None:
+        hkml_view.cli_any_input('getting mail with replies failed.')
+        return
+    mail = mail_with_replies
+
     q = hkml_view.CliQuestion(
             desc='Handle the mail (\'%s\') as patch[es].' % mail.subject,
             prompt='Enter the item number')
