@@ -528,6 +528,27 @@ def sort_filter_mails(mails_to_show, mails_filter, list_decorator,
     runtime_profile.append(['filtering', time.time() - timestamp])
     return filtered_mails, mail_idx_key_map
 
+def fmt_mails_text(mails, list_decorator):
+    lines = []
+    collapse_threads = list_decorator.collapse
+    show_url = list_decorator.show_url
+    nr_cols = list_decorator.cols
+
+    max_index = mails[-1].pridx
+    if max_index == 0:
+        max_index = 1
+    max_digits_for_idx = math.ceil(math.log(max_index, 10))
+
+    for mail in mails:
+        show_nr_replies = False
+        if collapse_threads == True:
+            if mail.prdepth > 0:
+                continue
+            show_nr_replies = True
+        lines += format_entry(mail, max_digits_for_idx, show_nr_replies,
+                              show_url, nr_cols)
+    return lines
+
 def mails_to_str(mails_to_show, mails_filter, list_decorator, show_thread_of,
                  runtime_profile, stat_only, stat_authors):
     if len(mails_to_show) == 0:
@@ -539,25 +560,7 @@ def mails_to_str(mails_to_show, mails_filter, list_decorator, show_thread_of,
 
     timestamp = time.time()
 
-    lines = []
-
-    collapse_threads = list_decorator.collapse
-    show_url = list_decorator.show_url
-    nr_cols = list_decorator.cols
-
-    max_index = filtered_mails[-1].pridx
-    if max_index == 0:
-        max_index = 1
-    max_digits_for_idx = math.ceil(math.log(max_index, 10))
-
-    for mail in filtered_mails:
-        show_nr_replies = False
-        if collapse_threads == True:
-            if mail.prdepth > 0:
-                continue
-            show_nr_replies = True
-        lines += format_entry(mail, max_digits_for_idx, show_nr_replies,
-                              show_url, nr_cols)
+    lines = fmt_mails_text(filtered_mails, list_decorator)
 
     stat_lines = []
     show_stat = not list_decorator.hide_stat
