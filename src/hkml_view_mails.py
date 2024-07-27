@@ -110,12 +110,6 @@ def write_mail_draft(slist, mail):
             cc=None, body=None, attach=None, format_only=None)
     hkml_view.shell_mode_end(slist)
 
-def write_parent_focused_draft(c, slist):
-    mail = get_focused_mail(slist.parent_list)
-    if mail is None:
-        return
-    write_mail_draft(slist, mail)
-
 def do_add_tags(data, selection):
     mail, tags = data
     prompt = ' '.join(['Enter tags to add, separated by white spaces',
