@@ -10,8 +10,6 @@
 - Deprecate TUI menu and related code
 - Implement highlighting mails of specific time range
 - mails viewer
-  - interactive threads collapsing
-  - interactive threads expanding
   - interactive refresh
   - interactive filters update
   - interactive highlights filter
