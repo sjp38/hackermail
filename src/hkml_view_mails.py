@@ -103,6 +103,42 @@ def list_thread_of_focused_mail(c, slist):
 
     show_mails_list(slist.screen, thread_txt.split('\n'), mail_idx_key_map)
 
+def refresh_list(slist):
+    comment_lines = []
+    for line in slist.lines:
+        if line.startswith('#'):
+            comment_lines.append(line)
+
+    collapsed_mails = slist.data['collapsed_mails']
+
+    mails = get_mails(slist)
+    decorator = hkml_list.MailListDecorator(None)
+    decorator.collapse = False
+    decorator.show_url = False
+    _, cols = slist.screen.getmaxyx()
+    decorator.cols = int(cols * 0.9)
+
+    text = '\n'.join(hkml_list.fmt_mails_text(
+        mails, decorator, collapsed_mails))
+    slist.lines = comment_lines + text.split('\n')
+    slist.focus_row = min(slist.focus_row, len(slist.lines) - 1)
+    slist.screen.clear()
+
+def collapse_focused_thread(c, slist):
+    if not 'collapsed_mails' in slist.data:
+        slist.data['collapsed_mails'] = {}
+    collapsed_mails = slist.data['collapsed_mails']
+
+    collapsed_mails[focused_mail_idx(slist.lines, slist.focus_row)] = True
+    refresh_list(slist)
+
+def expand_focused_thread(c, slist):
+    if not 'collapsed_mails' in slist.data:
+        return
+    collapsed_mails = slist.data['collapsed_mails']
+    del collapsed_mails[focused_mail_idx(slist.lines, slist.focus_row)]
+    refresh_list(slist)
+
 def write_mail_draft(slist, mail):
     hkml_view.shell_mode_start(slist)
     hkml_write.write_send_mail(
@@ -215,12 +251,26 @@ def handle_patches_of_mail(mail, list_mails=None):
                 hkml_view.CliSelection('export patch[es]', do_export_patch)],
             notify_completion=True)
 
+def __set_prdepth(mail, depth):
+    mail.prdepth = depth
+    for reply in mail.replies:
+        __set_prdepth(reply, depth + 1)
+
+def set_prdepth(mails):
+    threads = hkml_list.threads_of(mails)
+    for mail in threads:
+        __set_prdepth(mail, 0)
+
 def get_mails(slist):
     mails = []
     mail_idx_key_map = slist.data['mail_idx_key_map']
     for mail_idx in mail_idx_key_map:
         mail_key = mail_idx_key_map[mail_idx]
-        mails.append(hkml_cache.get_mail(key=mail_key))
+        mail = hkml_cache.get_mail(key=mail_key)
+        mail.pridx = int(mail_idx)
+        mail.filtered_out = False
+        mails.append(mail)
+    set_prdepth(mails)
     return mails
 
 def do_export(data, answer):
@@ -365,6 +415,10 @@ def get_mails_list_input_handlers():
             hkml_view.InputHandler(['t'], list_thread_of_focused_mail,
                          'list complete thread'),
             hkml_view.InputHandler(
+                ['c'], collapse_focused_thread, 'collapse focused thread'),
+            hkml_view.InputHandler(
+                ['e'], expand_focused_thread, 'expand focused thread'),
+            hkml_view.InputHandler(
                 ['m'], show_mails_list_menu, 'open menu'),
             ]
 
@@ -380,7 +434,9 @@ def after_input_handle_callback(slist):
 def show_mails_list(screen, text_lines, mail_idx_key_map):
     slist = hkml_view.ScrollableList(screen, text_lines,
                            get_mails_list_input_handlers())
-    slist.data = {'mail_idx_key_map': mail_idx_key_map}
+    slist.data = {'mail_idx_key_map': mail_idx_key_map,
+                  'collapsed_mails': {},
+                  }
     slist.after_input_handle_callback = after_input_handle_callback
     slist.draw()
     return slist
