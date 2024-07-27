@@ -48,11 +48,30 @@ def ask_sync_before_change():
             return True
     return False
 
+def handle_before_drafts(mail, tags_map):
+    for msgid in tags_map:
+        tags = tags_map[msgid]['tags']
+        if not 'drafts' in tags:
+            continue
+        before_mail = _hkml.Mail(kvpairs=tags_map[msgid]['mail'])
+        if before_mail.subject != mail.subject:
+            continue
+        print('you have a draft of same subject')
+        print('- %s (%s)' % (before_mail.subject, before_mail.date))
+        answer = input('erase it? [y/N] ' )
+        if answer.lower() != 'y':
+            continue
+        tags.remove('drafts')
+
 def do_add_tags(mail, tags):
     sync_after = ask_sync_before_change()
     msgid = mail.get_field('message-id')
 
     tags_map = read_tags_file()
+
+    if 'drafts' in tags:
+        handle_before_drafts(mail, tags_map)
+
     if not msgid in tags_map:
         tags_map[msgid] = {'mail': mail.to_kvpairs(), 'tags': tags}
     else:
