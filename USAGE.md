@@ -248,6 +248,10 @@ shown with a text screen viewer [type](#text-screen).
 Pressing `t` lists the complete thread of the focused mail.  The list is shown
 with mails list screen [type](#mails-list-screen).
 
+Pressing `c` collapses the thread starting from the focused mail.
+
+Pressing `e` expands the collapsed thread again.
+
 Pressing `r` starts writing a reply to the focused mail.
 
 Pressing `f` starts forwarding the focused mail.
