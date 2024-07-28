@@ -96,8 +96,7 @@ def forward_focused_mail(c, slist):
 
 def list_thread_of_focused_mail(c, slist):
     thread_txt, mail_idx_key_map = hkml_thread.thread_str(
-            '%d' % focused_mail_idx(slist.lines, slist.focus_row),
-            False, False)
+            get_focused_mail(slist).get_field('message-id'), False, False)
     hkml_cache.writeback_mails()
     hkml_list.cache_list_str('thread_output', thread_txt, mail_idx_key_map)
 
