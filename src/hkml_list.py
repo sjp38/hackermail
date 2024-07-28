@@ -786,23 +786,24 @@ def show_list(text, to_stdout, to_less, mail_idx_key_map):
         hkml_open.pr_with_pager_if_needed(text)
     hkml_view.view_mails_list(text, mail_idx_key_map)
 
-def main(args):
+def get_mails_list(args):
+    # return text to show, mail_idx_key_map, and error
     if args.source_type is not None:
         if len(args.source_type) == 1:
             args.source_type = args.source_type * len(args.sources)
         else:
-            print('numbers of --source_type and --sources mismatch')
-            exit(1)
+            err = 'numbers of --source_type and --sources mismatch'
+            return None, None, err
     else:
         args.source_type = []
         for source in args.sources:
             source_type, err = infer_source_type(
                     source, args.pisearch is not None)
             if err is not None:
-                print('source type inference for %s failed: %s' %
-                      (source, err))
-                print('you could use --source_type option to solve this')
-                exit(1)
+                err = '\n'.join([
+                    'source type inference for %s failed: %s' % (source, err),
+                    'you could use --source_type option to solve this'])
+                return None, None, err
             args.source_type.append(source_type)
 
     lists_cache_key = args_to_lists_cache_key(args)
@@ -817,14 +818,12 @@ def main(args):
         if args.sources == []:
             to_show, mail_idx_key_map = get_last_list()
             if to_show is None:
-                print('no valid last list output exists')
-                exit(1)
+                return None, None, 'no valid last list output exists'
         else:
             to_show, mail_idx_key_map = get_list_for(lists_cache_key)
         if to_show is not None:
             writeback_list_output()
-            show_list(to_show, args.stdout, args.use_less, mail_idx_key_map)
-            return
+            return to_show, mail_idx_key_map, None
     else:
         for source in args.sources:
             invalidate_cached_outputs(source)
@@ -864,6 +863,13 @@ def main(args):
     hkml_cache.writeback_mails()
     cache_list_str(lists_cache_key, to_show, mail_idx_key_map)
 
+    return to_show, mail_idx_key_map, None
+
+def main(args):
+    to_show, mail_idx_key_map, err = get_mails_list(args)
+    if err is not None:
+        print(err)
+        exit(1)
     show_list(to_show, args.stdout, args.use_less, mail_idx_key_map)
 
 def add_mails_filter_arguments(parser):
