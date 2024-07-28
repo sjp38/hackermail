@@ -417,3 +417,9 @@ def view(text, data, view_type):
 
 def view_mails_list(text, mail_idx_key_map):
     view(text, mail_idx_key_map, 'mails_list')
+
+def view_mail(text, mail):
+    view(text, mail, 'mail')
+
+def view_text(text):
+    view(text, None, 'text')

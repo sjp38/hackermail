@@ -82,7 +82,10 @@ def show_text(text, to_stdout, use_less, string_after_less, data=None,
         if string_after_less is not None:
             print(string_after_less)
     else:
-        hkml_view.view(text, data, data_type)
+        if type(data) == _hkml.Mail:
+            hkml_view.view_mail(text, data)
+        else:
+            hkml_view.view_text(text)
 
 def show_git_commit(commit, to_stdout, use_less, string_after_less):
     try:
