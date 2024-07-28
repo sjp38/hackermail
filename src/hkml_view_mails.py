@@ -384,9 +384,9 @@ def menu_refresh_mails(mail_slist, selection):
     if data_generator is None:
         hkml_view.cli_any_input('not supported here')
         return
-    text_lines, mail_idx_key_map = data_generator.generate()
+    text, mail_idx_key_map = data_generator.generate()
     hkml_view.shell_mode_end(slist)
-    slist.lines = text_lines
+    slist.lines = text.split('\n')
     slist.screen.clear()
     hkml_view.shell_mode_start(slist)
 
