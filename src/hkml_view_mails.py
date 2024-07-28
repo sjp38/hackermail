@@ -446,11 +446,12 @@ def after_input_handle_callback(slist):
         hkml_list.cache_list_str(
                 'thread_output', '\n'.join(slist.lines), mail_idx_key_map)
 
-def show_mails_list(screen, text_lines, mail_idx_key_map):
+def show_mails_list(screen, text_lines, mail_idx_key_map, data_generator=None):
     slist = hkml_view.ScrollableList(screen, text_lines,
                            get_mails_list_input_handlers())
     slist.data = {'mail_idx_key_map': mail_idx_key_map,
                   'collapsed_mails': {},
+                  'data_generator': data_generator,
                   }
     slist.after_input_handle_callback = after_input_handle_callback
     slist.draw()
@@ -458,7 +459,8 @@ def show_mails_list(screen, text_lines, mail_idx_key_map):
 
 def gen_show_mails_list(screen, data_generator):
     text_lines, mail_idx_key_map = data_generator.generate()
-    return show_mails_list(screen, text_lines, mail_idx_key_map)
+    return show_mails_list(screen, text_lines, mail_idx_key_map,
+                           data_generator)
 
 class MailsListDataGenerator:
     fn = None
