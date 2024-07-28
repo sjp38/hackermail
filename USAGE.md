@@ -257,7 +257,7 @@ Pressing `r` starts writing a reply to the focused mail.
 Pressing `f` starts forwarding the focused mail.
 
 Pressing `m` or opens a selection-based menu.  From the menu, users can do
-abovely explained actions.  In addition to that, the menu provides below
+abovely explained actions.  In addition to those, the menu provides below
 options.
 
 - Writing a mail using the focused mail as its draft (same to `hkml write
