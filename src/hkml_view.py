@@ -384,7 +384,7 @@ save_parent_content_menu_item_handler = [
         '- save parent screen content as ...',
         handle_save_content_menu_selection]
 
-def __view(stdscr, text_to_show, data):
+def __view(stdscr, text_to_show, data, view_type):
     global focus_color
     global normal_color
     global highlight_color
@@ -398,14 +398,21 @@ def __view(stdscr, text_to_show, data):
     curses.init_pair(3, curses.COLOR_BLACK, curses.COLOR_YELLOW)
     highlight_color = curses.color_pair(3)
 
+    if view_type == 'mails_list':
+        return hkml_view_mails.show_mails_list(stdscr, text_lines, data)
+    elif view_type in ['mail', 'text']:
+        return hkml_view_text.show_text_viewer(stdscr, text_lines)
+    elif view_type is not None:
+        raise Exception('unknonw view : %s' % view_type)
+
     if data is None or type(data) == _hkml.Mail:
         return hkml_view_text.show_text_viewer(stdscr, text_lines)
     # data would be mail_idx_key_map
     return hkml_view_mails.show_mails_list(stdscr, text_lines, data)
 
-def view(text, data):
+def view(text, data, view_type=None):
     try:
-        slist = curses.wrapper(__view, text, data)
+        slist = curses.wrapper(__view, text, data, view_type)
     except Exception as e:
         if len(e.args) == 2 and e.args[0] == 'terminate hkml':
             slist = e.args[1]
