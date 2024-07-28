@@ -402,15 +402,10 @@ def __view(stdscr, text_to_show, data, view_type):
         return hkml_view_mails.show_mails_list(stdscr, text_lines, data)
     elif view_type in ['mail', 'text']:
         return hkml_view_text.show_text_viewer(stdscr, text_lines)
-    elif view_type is not None:
+    else:
         raise Exception('unknonw view : %s' % view_type)
 
-    if data is None or type(data) == _hkml.Mail:
-        return hkml_view_text.show_text_viewer(stdscr, text_lines)
-    # data would be mail_idx_key_map
-    return hkml_view_mails.show_mails_list(stdscr, text_lines, data)
-
-def view(text, data, view_type=None):
+def view(text, data, view_type):
     try:
         slist = curses.wrapper(__view, text, data, view_type)
     except Exception as e:
