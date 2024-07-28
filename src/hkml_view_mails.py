@@ -472,8 +472,8 @@ def show_mails_list(screen, text_lines, mail_idx_key_map, data_generator=None):
     return slist
 
 def gen_show_mails_list(screen, data_generator):
-    text_lines, mail_idx_key_map = data_generator.generate()
-    return show_mails_list(screen, text_lines, mail_idx_key_map,
+    text, mail_idx_key_map = data_generator.generate()
+    return show_mails_list(screen, text.split('\n'), mail_idx_key_map,
                            data_generator)
 
 class MailsListDataGenerator:
