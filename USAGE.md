@@ -267,6 +267,7 @@ options.
   details) of the mail.
 - Checking/Applying patches (same to `hkml patch check <focused mail>`.  Refer
   to 'Patches Management' [section](#patches-management) for details.)
+- Refreshing the mails list.
 - Exporting focused mail, specific range of mails of the list, or entire mails
   of the list to an mbox file (same to `hkml export`.  Refer to 'Exporting
   Mails' [section](#exporting-mails) for details.).
