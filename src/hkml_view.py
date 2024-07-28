@@ -414,3 +414,6 @@ def view(text, data, view_type):
         else:
             raise e
     print('\n'.join(slist.last_drawn))
+
+def view_mails_list(text, mail_idx_key_map):
+    view(text, mail_idx_key_map, 'mails_list')
