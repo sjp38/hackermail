@@ -72,7 +72,8 @@ def last_open_mail_idx():
     with open(os.path.join(_hkml.get_hkml_dir(), 'last_open_idx'), 'r') as f:
         return int(f.read())
 
-def show_text(text, to_stdout, use_less, string_after_less, data=None):
+def show_text(text, to_stdout, use_less, string_after_less, data=None,
+              data_type=None):
     if to_stdout:
         print(text)
         return
@@ -81,12 +82,13 @@ def show_text(text, to_stdout, use_less, string_after_less, data=None):
         if string_after_less is not None:
             print(string_after_less)
     else:
-        hkml_view.view(text, data)
+        hkml_view.view(text, data, data_type)
 
 def show_git_commit(commit, to_stdout, use_less, string_after_less):
     try:
         show_text(subprocess.check_output(['git', 'show', commit]).decode(),
-                  to_stdout, use_less, string_after_less, data=None)
+                  to_stdout, use_less, string_after_less, data=None,
+                  data_type='text')
         return None
     except:
         return 'git show failed'
@@ -107,7 +109,8 @@ def handle_command_target(args):
     except:
         print('failed running the target command')
         return False
-    show_text(output, args.stdout, args.use_less, None, data=None)
+    show_text(output, args.stdout, args.use_less, None, data=None,
+              data_type='text')
     return True
 
 def main(args):
@@ -116,7 +119,7 @@ def main(args):
     if os.path.isfile(args.target):
         with open(args.target, 'r') as f:
             return show_text(f.read(), args.stdout, args.use_less, None,
-                             data=None)
+                             data=None, data_type='text')
     if not args.target.isdigit():
         return show_git_commit(args.target, args.stdout, args.use_less, None)
 
@@ -155,7 +158,7 @@ def main(args):
     if args.use_less and noti_current_index:
         string_after_less = '# you were reading %d-th index' % args.target
     show_text(mail_str, args.stdout, args.use_less, string_after_less,
-              data=mail)
+              data=mail, data_type='mail')
 
 def set_argparser(parser):
     parser.description = 'open a mail'
