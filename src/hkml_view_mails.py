@@ -455,3 +455,15 @@ def show_mails_list(screen, text_lines, mail_idx_key_map):
     slist.after_input_handle_callback = after_input_handle_callback
     slist.draw()
     return slist
+
+class MailsListDataGenerator:
+    fn = None
+    args = None
+
+    def __init__(self, fn, args):
+        self.fn = fn
+        self.args = args
+
+    def generate(self):
+        # returns text and mail_idx_key_map
+        return self.fn(self.args)
