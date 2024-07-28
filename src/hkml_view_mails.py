@@ -456,6 +456,10 @@ def show_mails_list(screen, text_lines, mail_idx_key_map):
     slist.draw()
     return slist
 
+def gen_show_mails_list(screen, data_generator):
+    text_lines, mail_idx_key_map = data_generator.generate()
+    return show_mails_list(screen, text_lines, mail_idx_key_map)
+
 class MailsListDataGenerator:
     fn = None
     args = None
