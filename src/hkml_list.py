@@ -537,6 +537,8 @@ def child_of_collapsed(mail, mails_to_collapse):
 
 def fmt_mails_text(mails, list_decorator, mails_to_collapse):
     lines = []
+    if len(mails) == 0:
+        return lines
     collapse_threads = list_decorator.collapse
     show_url = list_decorator.show_url
     nr_cols = list_decorator.cols
