@@ -123,6 +123,12 @@ class ScrollableList:
         self.input_handlers = scrollable_list_default_handlers()
         if input_handlers:
             self.input_handlers += input_handlers
+        handled_inputs = {}
+        for input_handler in self.input_handlers:
+            for c in input_handler.to_handle:
+                if c in handled_inputs:
+                    raise Exception('DUPLICATED INPUT HANDLER for %s' % c)
+                handled_inputs[c] = True
         self.scroll_cols = 0
         self.longest_line_len = sorted([len(line) for line in lines])[-1]
 
