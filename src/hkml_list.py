@@ -19,6 +19,7 @@ import hkml_open
 import hkml_tag
 import hkml_thread
 import hkml_view
+import hkml_view_mails
 
 class MailsList:
     txt = None
@@ -870,6 +871,9 @@ def get_mails_list(args):
     return to_show, mail_idx_key_map, None
 
 def main(args):
+    if not args.stdout and not args.use_less:
+        return hkml_view.gen_view_mails_list(
+                hkml_view_mails.MailsListDataGenerator(get_mails_list, args))
     to_show, mail_idx_key_map, err = get_mails_list(args)
     if err is not None:
         print(err)
