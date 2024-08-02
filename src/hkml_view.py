@@ -395,8 +395,6 @@ def __view(stdscr, text_to_show, data, view_type):
     global normal_color
     global highlight_color
 
-    text_lines = text_to_show.split('\n')
-
     curses.init_pair(1, curses.COLOR_GREEN, curses.COLOR_BLACK)
     focus_color = curses.color_pair(1)
     curses.init_pair(2, curses.COLOR_WHITE, curses.COLOR_BLACK)
@@ -408,6 +406,9 @@ def __view(stdscr, text_to_show, data, view_type):
         return hkml_view_mails.show_mails_list(stdscr, text_lines, data)
     elif view_type in ['mail', 'text']:
         return hkml_view_text.show_text_viewer(stdscr, text_lines)
+    elif view_type == 'gen_mails_list':
+        return hkml_view_mails.gen_show_mails_list(
+                stdscr, data_generator=data)
     else:
         raise Exception('unknonw view : %s' % view_type)
 
@@ -423,6 +424,9 @@ def view(text, data, view_type):
 
 def view_mails_list(text, mail_idx_key_map):
     view(text, mail_idx_key_map, 'mails_list')
+
+def gen_view_mails_list(generator):
+    view('', generator, 'gen_mails_list')
 
 def view_mail(text, mail):
     view(text, mail, 'mail')
