@@ -36,7 +36,7 @@ def get_thread_txt_mail_idx_key_map(msgid):
             False, False)
     hkml_cache.writeback_mails()
     hkml_list.cache_list_str('thread_output', thread_txt, mail_idx_key_map)
-    return thread_txt, mail_idx_key_map
+    return thread_txt, mail_idx_key_map, None
 
 def menu_hkml_thread(data, answer):
     slist, selections, text = parse_menu_data(data, answer)
@@ -52,7 +52,7 @@ def menu_hkml_open(data, answer):
     slist, selections, text = parse_menu_data(data, answer)
     hkml_view.shell_mode_end(slist)
     msgid = '<%s>' % text.split()[-1]
-    thread_txt, mail_idx_key_map = get_thread_txt_mail_idx_key_map(msgid)
+    thread_txt, mail_idx_key_map, err = get_thread_txt_mail_idx_key_map(msgid)
     for idx, cache_key in mail_idx_key_map.items():
         mail = hkml_cache.get_mail(key=cache_key)
         if mail is None:

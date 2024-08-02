@@ -99,7 +99,7 @@ def get_thread_txt_mail_idx_key_map(msgid):
             msgid, False, False)
     hkml_cache.writeback_mails()
     hkml_list.cache_list_str('thread_output', thread_txt, mail_idx_key_map)
-    return thread_txt, mail_idx_key_map
+    return thread_txt, mail_idx_key_map, None
 
 def list_thread_of_focused_mail(c, slist):
     msgid = get_focused_mail(slist).get_field('message-id')
@@ -388,7 +388,7 @@ def menu_refresh_mails(mail_slist, selection):
     if data_generator is None:
         hkml_view.cli_any_input('not supported here')
         return
-    text, mail_idx_key_map = data_generator.generate()
+    text, mail_idx_key_map, err = data_generator.generate()
     hkml_view.shell_mode_end(slist)
     slist.lines = text.split('\n')
     slist.screen.clear()
@@ -476,7 +476,7 @@ def show_mails_list(screen, text_lines, mail_idx_key_map, data_generator=None):
     return slist
 
 def gen_show_mails_list(screen, data_generator):
-    text, mail_idx_key_map = data_generator.generate()
+    text, mail_idx_key_map, err = data_generator.generate()
     return show_mails_list(screen, text.split('\n'), mail_idx_key_map,
                            data_generator)
 
@@ -489,5 +489,5 @@ class MailsListDataGenerator:
         self.args = args
 
     def generate(self):
-        # returns text and mail_idx_key_map
+        # returns text, mail_idx_key_map, and error
         return self.fn(self.args)
