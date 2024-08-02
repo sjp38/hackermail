@@ -477,6 +477,9 @@ def show_mails_list(screen, text_lines, mail_idx_key_map, data_generator=None):
 
 def gen_show_mails_list(screen, data_generator):
     text, mail_idx_key_map, err = data_generator.generate()
+    if err is not None:
+        return hkml_view_text.show_text_viewer(
+                screen, ['Failed getting mails (%s).' % err], data=None)
     return show_mails_list(screen, text.split('\n'), mail_idx_key_map,
                            data_generator)
 
