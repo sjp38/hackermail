@@ -728,6 +728,10 @@ def fetch_get_mails_from_git(fetch, source, since, until, min_nr_mails,
 
     mails = get_mails_from_git(source, since, until, min_nr_mails,
                                max_nr_mails, commits_range)
+    if len(mails) == 0:
+        if manifest == lore_manifest:
+            print('No mail to list.  You might need to update the manifest?')
+
     return mails
 
 def get_mails(source, fetch, since, until,
