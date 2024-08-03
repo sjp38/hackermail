@@ -215,14 +215,22 @@ class ScrollableList:
             lines.append('%s: %s' % (input_chrs, handler.help_msg))
         return lines
 
-def shell_mode_start(slist):
-    slist.screen.clear()
-    slist.screen.refresh()
+def shell_mode_start(slist_or_screen):
+    if type(slist_or_screen) == ScrollableList:
+        screen = slist_or_screen.screen
+    else:
+        screen = slist_or_screen
+    screen.clear()
+    screen.refresh()
     curses.reset_shell_mode()
 
-def shell_mode_end(slist):
+def shell_mode_end(slist_or_screen):
+    if type(slist_or_screen) == ScrollableList:
+        screen = slist_or_screen.screen
+    else:
+        screen = slist_or_screen
     curses.reset_prog_mode()
-    slist.screen.clear()
+    screen.clear()
 
 def focus_down(c, slist):
     slist.focus_row = min(slist.focus_row + 1, len(slist.lines) - 1)
