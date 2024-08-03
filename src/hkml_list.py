@@ -721,6 +721,15 @@ def get_mails_from_pisearch(mailing_list, query_str):
         mails.append(_hkml.Mail(atom_entry=entry, atom_ml=mailing_list))
     return mails
 
+def fetch_get_mails_from_git(fetch, source, since, until, min_nr_mails,
+                             max_nr_mails, commits_range):
+    if fetch:
+        hkml_fetch.fetch_mail([source], True, 1)
+
+    mails = get_mails_from_git(source, since, until, min_nr_mails,
+                               max_nr_mails, commits_range)
+    return mails
+
 def get_mails(source, fetch, since, until,
               min_nr_mails, max_nr_mails, commits_range=None,
               source_type=None, pisearch=None):
@@ -761,11 +770,10 @@ def get_mails(source, fetch, since, until,
             exit(1)
         return mails
 
-    if fetch:
-        hkml_fetch.fetch_mail([source], True, 1)
+    mails = fetch_get_mails_from_git(
+            fetch, source, since, until, min_nr_mails, max_nr_mails,
+            commits_range)
 
-    mails = get_mails_from_git(source, since, until, min_nr_mails,
-                               max_nr_mails, commits_range)
     mails.reverse()
     return mails
 
