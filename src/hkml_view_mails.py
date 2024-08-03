@@ -1,7 +1,6 @@
 # SPDX-License-Identifier: GPL-2.0
 
 import argparse
-import curses
 
 import hkml_cache
 import hkml_export
@@ -477,19 +476,12 @@ def show_mails_list(screen, text_lines, mail_idx_key_map, data_generator=None):
     return slist
 
 def gen_show_mails_list(screen, data_generator):
-    # start shell mode
-    screen.clear()
-    screen.refresh()
-    curses.reset_shell_mode()
-
+    hkml_view.shell_mode_start(screen)
     text, mail_idx_key_map, err = data_generator.generate()
     if err is not None:
         return hkml_view.cli_any_input(
                 'Failed mails list generating (%s).' % err)
-
-    # end shell mode
-    curses.reset_prog_mode()
-    screen.clear()
+    hkml_view.shell_mode_end(screen)
 
     return show_mails_list(screen, text.split('\n'), mail_idx_key_map,
                            data_generator)
