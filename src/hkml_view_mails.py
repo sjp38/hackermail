@@ -483,14 +483,14 @@ def gen_show_mails_list(screen, data_generator):
     curses.reset_shell_mode()
 
     text, mail_idx_key_map, err = data_generator.generate()
+    if err is not None:
+        return hkml_view.cli_any_input(
+                'Failed mails list generating (%s).' % err)
 
     # end shell mode
     curses.reset_prog_mode()
     screen.clear()
 
-    if err is not None:
-        return hkml_view_text.show_text_viewer(
-                screen, ['Failed getting mails (%s).' % err], data=None)
     return show_mails_list(screen, text.split('\n'), mail_idx_key_map,
                            data_generator)
 
