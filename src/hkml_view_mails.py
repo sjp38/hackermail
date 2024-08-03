@@ -385,6 +385,12 @@ def menu_handle_patches(mail_slist, selection):
 def menu_refresh_mails(mail_slist, selection):
     mail, slist = mail_slist
     data_generator = slist.data['data_generator']
+    gen_args = data_generator.args
+    if type(gen_args) is argparse.Namespace and gen_args.fetch is False:
+        answer = input('"--fetch" is unset.  Set it? [Y/n] ')
+        if answer.lower() != 'n':
+            gen_args.fetch = True
+
     text, mail_idx_key_map, err = data_generator.generate()
     hkml_view.shell_mode_end(slist)
     slist.lines = text.split('\n')
