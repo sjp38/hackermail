@@ -410,9 +410,7 @@ def __view(stdscr, text_to_show, data, view_type):
     curses.init_pair(3, curses.COLOR_BLACK, curses.COLOR_YELLOW)
     highlight_color = curses.color_pair(3)
 
-    if view_type == 'mails_list':
-        return hkml_view_mails.show_mails_list(stdscr, text_lines, data)
-    elif view_type in ['mail', 'text']:
+    if view_type in ['mail', 'text']:
         return hkml_view_text.show_text_viewer(stdscr, text_lines)
     elif view_type == 'gen_mails_list':
         return hkml_view_mails.gen_show_mails_list(
@@ -429,9 +427,6 @@ def view(text, data, view_type):
         else:
             raise e
     print('\n'.join(slist.last_drawn))
-
-def view_mails_list(text, mail_idx_key_map):
-    view(text, mail_idx_key_map, 'mails_list')
 
 def gen_view_mails_list(generator):
     view('', generator, 'gen_mails_list')
