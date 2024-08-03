@@ -786,10 +786,7 @@ def show_list(text, to_stdout, to_less, mail_idx_key_map):
     if to_stdout:
         print(text)
         return
-    if to_less:
-        hkml_open.pr_with_pager_if_needed(text)
-        return
-    hkml_view.view_mails_list(text, mail_idx_key_map)
+    hkml_open.pr_with_pager_if_needed(text)
 
 def get_mails_list(args):
     # return text to show, mail_idx_key_map, and error
