@@ -10,7 +10,6 @@
 - Deprecate TUI menu and related code
 - Implement highlighting mails of specific time range
 - mails viewer
-  - interactive refresh
   - interactive filters update
   - interactive highlights filter
 - Give selection to tag removing menu
