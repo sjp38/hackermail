@@ -392,6 +392,9 @@ def menu_refresh_mails(mail_slist, selection):
             gen_args.fetch = True
 
     text, mail_idx_key_map, err = data_generator.generate()
+    if err is not None:
+        return hkml_view.cli_any_input(
+                'Generating mails list again failed (%s).' % err)
     hkml_view.shell_mode_end(slist)
     slist.lines = text.split('\n')
     slist.screen.clear()
