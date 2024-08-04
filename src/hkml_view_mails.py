@@ -396,6 +396,10 @@ def menu_refresh_mails(mail_slist, selection):
         return hkml_view.cli_any_input(
                 'Generating mails list again failed (%s).' % err)
     hkml_view.shell_mode_end(slist)
+    slist.data = {'mail_idx_key_map': mail_idx_key_map,
+                  'collapsed_mails': {},
+                  'data_generator': data_generator,
+                  }
     slist.lines = text.split('\n')
     slist.screen.clear()
     hkml_view.shell_mode_start(slist)
