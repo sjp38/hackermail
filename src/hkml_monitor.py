@@ -229,7 +229,10 @@ def get_monitor_stop_file_path():
 
 def start_monitoring(ignore_mails_before):
     requests = get_requests()
-    monitor_interval_gcd = math.gcd(*[r.monitor_interval for r in requests])
+    if len(requests) > 1:
+        monitor_interval_gcd = math.gcd(*[r.monitor_interval for r in requests])
+    else:
+        monitor_interval_gcd = requests[0].monitor_interval
 
     last_monitor_time = [None] * len(requests)
     last_monitored_mails = []
