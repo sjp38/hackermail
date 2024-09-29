@@ -260,7 +260,8 @@ def threads_of(mails):
             threads.append(mail)
         else:
             orig_mail = by_msgids[in_reply_to]
-            orig_mail.replies.append(mail)
+            if not mail in orig_mail.replies:
+                orig_mail.replies.append(mail)
             mail.parent_mail = orig_mail
     return threads
 
