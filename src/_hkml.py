@@ -43,6 +43,7 @@ class Mail:
     mbox = None
     replies = None
     parent_mail = None
+    tags = None # Reviewed-by: like tags
 
     def set_subject_tags_series(self):
         subject = self.subject
@@ -119,6 +120,7 @@ class Mail:
     def __init__(self, mbox=None, kvpairs=None, atom_entry=None, atom_ml=None):
         self.replies = []
         self.subject_tags = []
+        self.tags = []
 
         if mbox is None and kvpairs is None and atom_entry is None:
             return
@@ -176,6 +178,14 @@ class Mail:
 
         if not tag in self.__fields:
             return None
+        if tag == 'body' and len(self.tags) > 0:
+            lines = self.__fields[tag].split('\n')
+            for idx, line in enumerate(lines):
+                if line == '---':
+                    for t in self.tags:
+                        lines.insert(idx, t)
+                    break
+            return '\n'.join(lines)
         return self.__fields[tag]
 
     def set_mbox(self):
@@ -272,14 +282,17 @@ class Mail:
         body = self.get_field('body')
         if body is None:
             return 'getting body text failed'
+
+        can_add_tag = False
         lines = body.split('\n')
         for idx, line in enumerate(lines):
             if line != '---':
                 continue
-            lines.insert(idx, tag)
-            self.__fields['body'] = '\n'.join(lines)
-            return None
-        return 'cannot find line to add the tag'
+            can_add_tag = True
+            break
+        if not can_add_tag:
+            return 'cannot find line to add the tag'
+        self.tags.append(tag)
 
     def add_cv(self, cvmail, sz_patchset):
         new_body_lines = []
