@@ -55,7 +55,7 @@ def send_mail(mboxfile, get_confirm=False, erase_mbox=True):
                                         # for getting message-id
                                         '--confirm', 'always']):
         fields = line.split()
-        if len(fields) == 2 and fields[0] == 'Message-Id:':
+        if len(fields) == 2 and fields[0].lower() == 'message-id:':
             msgid = fields[1]
         if fields == ['Result:', '250'] or fields == ['Result:' , 'OK']:
             sent = True
