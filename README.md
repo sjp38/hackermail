@@ -56,4 +56,7 @@ For more detail and complete list of features,
     $ ./hkml -h
     $ ./hkml list -h
 
-or refer to [USAGE.md](USAGE.md) file.
+or refer to [USAGE.md](USAGE.md) file.  For daily use of `hkml`, particularly,
+you may want to know how to [manage tags](USAGE.md#tagging) of mails (useful
+for managing 'sent' and 'drafts' mails) and how you can
+[backup/syncronize](USAGE.md#synchronizing) those.
