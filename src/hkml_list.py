@@ -350,13 +350,21 @@ def sort_threads(threads, category):
     elif category == 'nr_comments':
         threads.sort(key=lambda t: nr_comments(t))
 
-def keywords_in(keywords, text):
+def all_keywords_in(keywords, text):
     if keywords is None:
         return True
     for keyword in keywords:
         if keyword is not None and not keyword in text:
             return False
     return True
+
+def keywords_in(keywords, text):
+    if keywords is None:
+        return True
+    for sub_keywords in keywords:
+        if all_keywords_in(sub_keywords, text):
+            return True
+    return False
 
 class MailListFilter:
     new_threads_only = None
@@ -413,6 +421,17 @@ class MailListFilter:
     def from_kvpairs(cls, kvpairs):
         self = cls(None)
         for key, value in kvpairs.items():
+            '''
+            _filter command line options was not having action='append' argument
+            before.  Handle the type compatibility from old version-generated
+            kvpairs.
+            '''
+            if key in ['from_keywords', 'from_to_keywords',
+                       'from_to_cc_keywords', 'subject_keywords',
+                       'body_keywords']:
+                if type(value) is list and len(value) > 0:
+                    if type(value[0]) is not list:
+                        value = [value]
             setattr(self, key, value)
         return self
 
@@ -893,19 +912,21 @@ def main(args):
 def add_mails_filter_arguments(parser):
     parser.add_argument(
             '--from_keywords', '--from', metavar='<keyword>', nargs='+',
+            action='append',
             help='show mails having the keywords in from: field')
     parser.add_argument(
             '--from_to_keywords', '--from_to', metavar='<keyword>', nargs='+',
+            action='append',
             help='same to --from except chekcing to: fields together')
     parser.add_argument(
             '--from_to_cc_keywords', '--from_to_cc', metavar='<keyword>',
-            nargs='+',
+            nargs='+', action='append',
             help='same to --from except chekcing to: and cc: fields together')
     parser.add_argument('--subject_keywords', '--subject', metavar='<words>',
-            type=str, nargs='+',
+            type=str, nargs='+', action='append',
             help='list mails containing the keyword in their subject')
     parser.add_argument('--body_keywords', '--body', metavar='<keyword>',
-            type=str, nargs='+',
+            type=str, nargs='+', action='append',
             help='list mails containing the keyword in their body')
     parser.add_argument('--new', '-n', action='store_true',
             help='list new threads only')
