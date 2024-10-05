@@ -21,3 +21,4 @@
 - Fix broken names
   - e.g., 20240909163223.3693529-1-mkoutny@suse.com
 - Implement monitoring output pushing to git repo
+- keywords filtering with 'or'
