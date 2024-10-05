@@ -1,5 +1,10 @@
 This file contains major changes in each version since v1.0.0
 
+v1.1.5
+- Support multiple keywords lists options for OR-relation
+- Support <3.9 Python
+- Fix a few corner cases
+
 v1.1.4
 - Support collapsing/expanding threads on list ('c' and 'e' key bindings)
 - Support mails list refreshing
