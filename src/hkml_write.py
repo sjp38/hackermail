@@ -31,6 +31,14 @@ def git_sendemail_valid_recipients(recipients):
     lines[-1] = lines[-1][:-1]
     return '\n'.join(lines)
 
+def get_git_config(config_name):
+    try:
+        result = subprocess.check_output(
+                ['git', 'config', config_name]).decode().strip()
+        return result, None
+    except Exception as e:
+        return None, '"git config %s" failed (%s)' % (config_name, e)
+
 def format_mbox(subject, in_reply_to, to, cc, body, from_, draft_mail,
                 attach_files=None):
     if draft_mail is not None:
@@ -51,16 +59,14 @@ def format_mbox(subject, in_reply_to, to, cc, body, from_, draft_mail,
     if not cc:
         cc = ['/* wrtite cc recipients here */']
     if from_ is None:
-        for conf in ['sendemail.from', 'user.email']:
-            try:
-                from_ = subprocess.check_output(
-                        ['git', 'config', conf]).decode().strip()
-                break
-            except:
-                pass
-
-        if from_ is None:
-            from_ = '/* fill up please */'
+        from_, err = get_git_config('sendemail.from')
+        if err is not None:
+            name, err = get_git_config('user.name')
+            email, err = get_git_config('user.email')
+            if email is None:
+                from_ = '/* fill up please */'
+            else:
+                from_ = '%s <%s>' % (name, email)
 
     lines.append('Subject: %s' % subject)
     lines.append('From: %s' % from_)
