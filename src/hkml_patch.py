@@ -156,6 +156,12 @@ def apply_action_to_mails(mail, args):
         err = apply_action(args, patch_mails[idx], patch_files[idx])
         if err is not None:
             err_to_return = err
+
+    if (err_to_return is None and args.action == 'export' and
+            len(patch_files) > 0):
+        print('\npatch files are saved at \'%s\'\n' %
+              os.path.dirname(patch_files[-1]))
+
     return err_to_return
 
 def main(args):
