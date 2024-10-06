@@ -132,6 +132,9 @@ def write_patch_mails(patch_mails):
         subject = subject[tag_closing_idx + 1:]
         for c in subject:
             if not c.isalpha() and not c.isdigit():
+                # avoid multiple '-' in the name
+                if file_name_words[-1][-1] == '-':
+                    continue
                 c = '-'
             file_name_words.append(c)
         file_name = ''.join(file_name_words)
