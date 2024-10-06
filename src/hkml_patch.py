@@ -126,7 +126,11 @@ def write_patch_mails(patch_mails):
     temp_dir = tempfile.mkdtemp(prefix='hkml_patch_')
     for idx, mail in enumerate(patch_mails):
         file_name_words = ['%04d-' % idx]
-        for c in mail.subject.lower():
+        subject = mail.subject.lower()
+        # exclude [PATCH ...] like suffix
+        tag_closing_idx = subject.find(']')
+        subject = subject[tag_closing_idx + 1:]
+        for c in subject:
             if not c.isalpha() and not c.isdigit():
                 c = '-'
             file_name_words.append(c)
