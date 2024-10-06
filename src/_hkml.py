@@ -263,7 +263,14 @@ class Mail:
                     if key == 'message-id':
                         if len(val.split()) >= 1:
                             val = val.split()[0]
-                    parsed[key] = val
+                    # handle UTF-8 encoded headers
+                    decoded_words = []
+                    for word in val.split():
+                        if word.startswith('=?UTF-8?'):
+                            word = email.header.decode_header(
+                                    word)[0][0].decode()
+                        decoded_words.append(word)
+                    parsed[key] = ' '.join(decoded_words)
                 elif line == '':
                     in_header = False
                 continue
