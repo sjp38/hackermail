@@ -162,6 +162,12 @@ def apply_action_to_mails(mail, args):
         print('\npatch files are saved at \'%s\'\n' %
               os.path.dirname(patch_files[-1]))
 
+    if args.action != 'export':
+        dirname = os.path.dirname(patch_files[-1])
+        for patch_file in patch_files:
+            os.remove(patch_file)
+        os.rmdir(dirname)
+
     return err_to_return
 
 def main(args):
