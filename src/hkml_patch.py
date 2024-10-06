@@ -137,6 +137,7 @@ def write_patch_mails(patch_mails):
                     continue
                 c = '-'
             file_name_words.append(c)
+        file_name_words.append('.patch')
         file_name = ''.join(file_name_words)
         file_name = os.path.join(temp_dir, file_name)
         with open(file_name, 'w') as f:
