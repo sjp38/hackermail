@@ -18,6 +18,4 @@
 - Sort patch series in patch order
   e.g., hkml list 20230612093537.614161713@infradead.org
 - Make 'patch export' more like 'git format-patch' in terms of file names
-- Fix broken names
-  - e.g., 20240909163223.3693529-1-mkoutny@suse.com
 - Implement monitoring output pushing to git repo

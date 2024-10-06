@@ -4,6 +4,7 @@ v1.1.5
 - Support multiple keywords lists options for OR-relation
 - Support <3.9 Python
 - Fix a few corner cases
+- Decode UTF-8 decoded mail headers
 
 v1.1.4
 - Support collapsing/expanding threads on list ('c' and 'e' key bindings)
