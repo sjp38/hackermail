@@ -3,8 +3,8 @@ This file contains major changes in each version since v1.0.0
 v1.1.5
 - Support multiple keywords lists options for OR-relation
 - Support <3.9 Python
-- Fix a few corner cases
-- Decode UTF-8 decoded mail headers
+- Fix a few corner cases including UTF-8 encoded mail headers
+- Wordsmith exported patch file names
 
 v1.1.4
 - Support collapsing/expanding threads on list ('c' and 'e' key bindings)
