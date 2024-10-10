@@ -20,6 +20,8 @@ def apply_action(args, mail, patch_file):
         rc = subprocess.call([args.checker, patch_file])
         if rc != 0:
             return 'checker complains something'
+        else:
+            os.remove(patch_file)
 
     if args.action == 'apply':
         rc = subprocess.call(['git', '-C', args.repo, 'am', patch_file])
