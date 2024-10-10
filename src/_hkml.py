@@ -266,7 +266,7 @@ class Mail:
                     # handle UTF-8 encoded headers
                     decoded_words = []
                     for word in val.split():
-                        if word.startswith('=?UTF-8?'):
+                        if word.lower().startswith('=?utf-8?'):
                             word = email.header.decode_header(
                                     word)[0][0].decode()
                         decoded_words.append(word)
