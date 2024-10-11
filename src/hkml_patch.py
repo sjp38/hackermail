@@ -129,8 +129,13 @@ def write_patch_mails(patch_mails):
         return None, '>9999 patches'
     files = []
     temp_dir = tempfile.mkdtemp(prefix='hkml_patch_')
+    # give index 0 to only coverletter
+    if is_cover_letter(patch_mails[0]):
+        idx_offset = 0
+    else:
+        idx_offset = 1
     for idx, mail in enumerate(patch_mails):
-        file_name_words = ['%04d-' % idx]
+        file_name_words = ['%04d-' % (idx + idx_offset)]
         subject = mail.subject.lower()
         # exclude [PATCH ...] like suffix
         tag_closing_idx = subject.find(']')
