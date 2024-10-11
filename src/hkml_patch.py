@@ -62,9 +62,12 @@ def find_add_tags(patch_mail, mail_to_check):
     for reply in mail_to_check.replies:
         find_add_tags(patch_mail, reply)
 
+def is_cover_letter(mail):
+    return mail.series is not None and mail.series[0] == 0
+
 def get_patch_mails(mail, dont_add_cv):
     # Not patchset but single patch
-    is_cv = mail.series is not None and mail.series[0] == 0
+    is_cv = is_cover_letter(mail)
     patch_mails = []
     if get_patch_index(mail) is None:
         patch_mails = [mail]
