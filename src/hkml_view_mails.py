@@ -203,7 +203,7 @@ def manage_tags_of_mail(slist, mail):
 def do_check_patch(data, selection):
     mail = data
     err = hkml_patch.apply_action_to_mails(mail, argparse.Namespace(
-        hkml_dir=None, command='patch', dont_add_cv=False, action='check',
+        hkml_dir=None, command='patch', dont_add_cv='ask', action='check',
         checker=None))
     if err is not None:
         hkml_view.cli_any_input('applying action failed (%s)' % err)
@@ -211,7 +211,7 @@ def do_check_patch(data, selection):
 def do_apply_patch(data, selection):
     mail = data
     err = hkml_patch.apply_action_to_mails(mail, argparse.Namespace(
-        hkml_dir=None, command='patch', dont_add_cv=False, action='apply',
+        hkml_dir=None, command='patch', dont_add_cv='ask', action='apply',
         repo='./'))
     if err is not None:
         hkml_view.cli_any_input('applying action failed (%s)' % err)
@@ -219,7 +219,7 @@ def do_apply_patch(data, selection):
 def do_export_patch(data, selection):
     mail = data
     err = hkml_patch.apply_action_to_mails(mail, argparse.Namespace(
-        hkml_dir=None, command='patch', dont_add_cv=False, action='export',
+        hkml_dir=None, command='patch', dont_add_cv='ask', action='export',
         repo='./'))
     if err is not None:
         hkml_view.cli_any_input('applying action failed (%s)' % err)
