@@ -44,6 +44,7 @@ class Mail:
     replies = None
     parent_mail = None
     tags = None # Reviewed-by: like tags
+    cv_text = None  # integrated cover letter on first patch
 
     def set_subject_tags_series(self):
         subject = self.subject
@@ -178,14 +179,18 @@ class Mail:
 
         if not tag in self.__fields:
             return None
-        if tag == 'body' and len(self.tags) > 0:
-            lines = self.__fields[tag].split('\n')
-            for idx, line in enumerate(lines):
-                if line == '---':
-                    for t in self.tags:
-                        lines.insert(idx, t)
-                    break
-            return '\n'.join(lines)
+        if tag == 'body':
+            lines = []
+            if self.cv_text is not None:
+                lines.append(self.cv_text)
+            if len(self.tags) > 0:
+                lines += self.__fields[tag].split('\n')
+                for idx, line in enumerate(lines):
+                    if line == '---':
+                        for t in self.tags:
+                            lines.insert(idx, t)
+                        break
+                return '\n'.join(lines)
         return self.__fields[tag]
 
     def set_mbox(self):
@@ -302,23 +307,20 @@ class Mail:
         self.tags.append(tag)
 
     def add_cv(self, cvmail, sz_patchset):
-        new_body_lines = []
+        in_patch_cv_lines = []
 
         cv_subject = cvmail.get_field('subject')
         first_paragraph = hkml_list.wrap_line(
                 'Patch series', '\'%s\'' % cv_subject, 72)
         first_paragraph = '\n'.join(first_paragraph)
-        new_body_lines.append(first_paragraph)
-        new_body_lines.append('')
+        in_patch_cv_lines = [first_paragraph, '']
 
         cv_paragraphs = cvmail.get_field('body').strip().split('\n\n')
         cv_msg = '\n\n'.join(cv_paragraphs[:-3])
-        new_body_lines.append(cv_msg)
+        in_patch_cv_lines.append(cv_msg)
 
-        new_body_lines += ['', 'This patch (of %d):' % sz_patchset, '']
-        new_body_lines.append(self.get_field('body'))
-        new_body = '\n'.join(new_body_lines)
-        self.__fields['body'] = new_body
+        in_patch_cv_lines += ['', 'This patch (of %d):' % sz_patchset, '']
+        self.cv_text = '\n'.join(in_patch_cv_lines)
 
     def url(self):
         site = get_manifest()['site']
