@@ -70,14 +70,11 @@ def get_patch_mails(mail, dont_add_cv):
     is_cv = is_cover_letter(mail)
     if is_cv is True:
         if dont_add_cv == 'ask':
-            answer = input('Add cover letter to first patch? [y/n] ')
-            if answer.lower() == 'y':
+            answer = input('Add cover letter to first patch? [Y/n] ')
+            if answer.lower() != 'n':
                 dont_add_cv = False
-            elif answer.lower() == 'n':
-                dont_add_cv = True
             else:
-                print('Please answer with only \'y\' or \'n\'.')
-                return 'wrong answer to cover letter merging question'
+                dont_add_cv = True
 
         patch_mails += [r for r in mail.replies
                        if 'patch' in r.subject_tags]
