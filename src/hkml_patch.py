@@ -69,6 +69,16 @@ def get_patch_mails(mail, dont_add_cv):
     patch_mails = [mail]
     is_cv = is_cover_letter(mail)
     if is_cv is True:
+        if dont_add_cv == 'ask':
+            answer = input('Add cover letter to first patch? [y/n] ')
+            if answer.lower() == 'y':
+                dont_add_cv = False
+            elif answer.lower() == 'n':
+                dont_add_cv = True
+            else:
+                print('Please answer with only \'y\' or \'n\'.')
+                return 'wrong answer to cover letter merging question'
+
         patch_mails += [r for r in mail.replies
                        if 'patch' in r.subject_tags]
     use_patch_msgid_link = None
@@ -154,15 +164,6 @@ def write_patch_mails(patch_mails):
 
 def apply_action_to_mails(mail, args):
     err_to_return = None
-    if args.dont_add_cv == 'ask':
-        answer = input('Add cover letter to first patch? [y/n] ')
-        if answer.lower() == 'y':
-            args.dont_add_cv = False
-        elif answer.lower() == 'n':
-            args.dont_add_cv = True
-        else:
-            print('Please answer with only \'y\' or \'n\'.')
-            return 'wrong answer to cover letter merging question'
     patch_mails = get_patch_mails(mail, args.dont_add_cv)
     patch_files, err = write_patch_mails(patch_mails)
     if err is not None:
