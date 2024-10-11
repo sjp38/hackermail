@@ -291,6 +291,8 @@ class Mail:
         self.__fields = parsed
 
     def add_tag(self, tag):
+        if tag in self.tags:
+            return None
         body = self.get_field('body')
         if body is None:
             return 'getting body text failed'
@@ -300,6 +302,8 @@ class Mail:
         for idx, line in enumerate(lines):
             if line != '---':
                 continue
+            if tag in lines[:idx + 1]:
+                return None
             can_add_tag = True
             break
         if not can_add_tag:
