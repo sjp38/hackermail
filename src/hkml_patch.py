@@ -11,7 +11,6 @@ import hkml_open
 def apply_action(args, mail, patch_file):
     if args.action == 'check':
         if is_cover_letter(mail):
-            os.remove(patch_file)
             return None
         if args.checker is None:
             checkpatch = os.path.join('scripts', 'checkpatch.pl')
@@ -23,17 +22,12 @@ def apply_action(args, mail, patch_file):
         rc = subprocess.call([args.checker, patch_file])
         if rc != 0:
             return 'checker complains something'
-        else:
-            os.remove(patch_file)
 
     if args.action == 'apply':
         if is_cover_letter(mail):
-            os.remove(patch_file)
             return None
         rc = subprocess.call(['git', '-C', args.repo, 'am', patch_file])
-        if rc == 0:
-            os.remove(patch_file)
-        else:
+        if rc != 0:
             return 'applying patch (%s) failed' % patch_file
 
     if args.action == 'export':
@@ -186,6 +180,8 @@ def apply_action_to_mails(mail, args):
 
     if err_to_return is None and args.action != 'export':
         dirname = os.path.dirname(patch_files[-1])
+        for patch_file in patch_files:
+            os.remove(patch_file)
         os.rmdir(dirname)
 
     return err_to_return
