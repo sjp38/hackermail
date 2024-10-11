@@ -10,6 +10,9 @@ import hkml_open
 
 def apply_action(args, mail, patch_file):
     if args.action == 'check':
+        if is_cover_letter(mail):
+            os.remove(patch_file)
+            return None
         if args.checker is None:
             checkpatch = os.path.join('scripts', 'checkpatch.pl')
             if os.path.isfile(checkpatch):
@@ -24,6 +27,9 @@ def apply_action(args, mail, patch_file):
             os.remove(patch_file)
 
     if args.action == 'apply':
+        if is_cover_letter(mail):
+            os.remove(patch_file)
+            return None
         rc = subprocess.call(['git', '-C', args.repo, 'am', patch_file])
         if rc == 0:
             os.remove(patch_file)
@@ -66,14 +72,9 @@ def is_cover_letter(mail):
     return mail.series is not None and mail.series[0] == 0
 
 def get_patch_mails(mail, dont_add_cv):
-    # Not patchset but single patch
+    patch_mails = [mail]
     is_cv = is_cover_letter(mail)
-    patch_mails = []
-    if get_patch_index(mail) is None:
-        patch_mails = [mail]
-    elif is_cv is False:
-        patch_mails = [mail]
-    else:
+    if is_cv is True:
         patch_mails += [r for r in mail.replies
                        if 'patch' in r.subject_tags]
     use_patch_msgid_link = None
@@ -92,6 +93,8 @@ def get_patch_mails(mail, dont_add_cv):
         patch_mail.add_tag('Link: %s' % url)
         if patch_mail.replies is None:
             continue
+        if is_cover_letter(patch_mail):
+            continue
         for reply in patch_mail.replies:
             find_add_tags(patch_mail, reply)
         user_name = subprocess.check_output(
@@ -103,7 +106,7 @@ def get_patch_mails(mail, dont_add_cv):
     if is_cv and dont_add_cv is False:
         print('Given mail seems the cover letter of the patchset.')
         print('Adding the cover letter on the first patch.')
-        patch_mails[0].add_cv(mail, len(patch_mails))
+        patch_mails[1].add_cv(mail, len(patch_mails) - 1)
     return patch_mails
 
 def find_mail_from_thread(thread, msgid):
