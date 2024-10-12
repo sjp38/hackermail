@@ -112,6 +112,7 @@ class ScrollableList:
     after_input_handle_callback = None
     data = None
     parent_list = None
+    color_attrib_callback = None
 
     def __init__(self, screen, lines, input_handlers):
         self.screen = screen
@@ -156,9 +157,14 @@ class ScrollableList:
             else:
                 color = normal_color
 
+            if self.color_attrib_callback:
+                color_attrib = self.color_attrib_callback(self, line_idx)
+            else:
+                color_attrib = curses.A_NORMAL
+
             line = self.lines[line_idx][
                     self.scroll_cols:self.scroll_cols + scr_cols]
-            self.screen.addstr(row, 0, line, color)
+            self.screen.addstr(row, 0, line, color | color_attrib)
 
             keyword = self.highlight_keyword
             if keyword is not None and keyword in line:
@@ -168,7 +174,7 @@ class ScrollableList:
                     if idx == -1:
                         break
                     self.screen.addstr(row, search_from + idx, keyword,
-                                       highlight_color)
+                                       highlight_color | color_attrib)
                     search_from += len(keyword)
 
             self.last_drawn.append(self.lines[line_idx])
