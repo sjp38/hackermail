@@ -27,6 +27,21 @@ def focused_mail_idx(lines, focus_row):
         return int(line.split()[0][1:-1])
     return None
 
+def get_mail_of_row(slist, row):
+    # returns mail and error string
+    mail_idx = focused_mail_idx(slist.lines, row)
+    if mail_idx is None:
+        return None, 'no mail focused?'
+    mail_idx = '%d' % mail_idx
+    mail_idx_key_map = slist.data['mail_idx_key_map']
+    if not mail_idx in mail_idx_key_map:
+        return None, 'wrong index?'
+    mail_key = mail_idx_key_map[mail_idx]
+    mail = hkml_cache.get_mail(key=mail_key)
+    if mail is None:
+        return None, 'mail not cached?'
+    return mail, None
+
 def get_focused_mail(slist):
     mail_idx = focused_mail_idx(slist.lines, slist.focus_row)
     if mail_idx is None:
