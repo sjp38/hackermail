@@ -389,6 +389,44 @@ class MailDisplayEffect:
             'effect: %s' % self.effect_str()
             ])
 
+    def __init__(self, interactive):
+        if interactive is False:
+            return
+        q = hkml_view.CliQuestion(
+                desc='Select the display effect to apply.', prompt=None)
+        _, selection, err = q.ask_selection(
+                data=None,
+                selections=[
+                    hkml_view.CliSelection('Bold', handle_fn=None),
+                    hkml_view.CliSelection('Italic', handle_fn=None),
+                    ])
+        if err is not None:
+            return
+        if selection.text == 'Bold':
+            self.effect = hkml_view.ScrollableList.effect_bold
+        else:
+            self.effect = hkml_view.ScrollableList.effect_italic
+        q = hkml_view.CliQuestion(prompt='From date (inclusive, YYYY MM DD HH MM)')
+        answer, _, err = q.ask_input(data=None, handle_fn=None)
+        if err is not None:
+            return
+        try:
+            self.min_date = datetime.datetime(
+                    *[int(x) for x in answer.split()]).astimezone()
+        except Exception as e:
+            hkml_view.cli_any_input(e)
+            return
+        q = hkml_view.CliQuestion(prompt='Until date (inclusive, YYYY MM DD HH MM)')
+        answer, _, err = q.ask_input(data=None, handle_fn=None)
+        if err is not None:
+            return
+        try:
+            self.max_date = datetime.datetime(
+                    *[int(x) for x in answer.split()]).astimezone()
+        except Exception as e:
+            hkml_view.cli_any_input(e)
+            return
+
 def menu_effect_mails(mail_slist, selection):
     print('Apply a display effect to specific mails.')
     print()
@@ -398,44 +436,7 @@ def menu_effect_mails(mail_slist, selection):
         print('%s' % slist.data['mails_effects'])
         print()
 
-    display_effect = MailDisplayEffect()
-    q = hkml_view.CliQuestion(
-            desc='Select the display effect to apply.', prompt=None)
-    _, selection, err = q.ask_selection(
-            data=None,
-            selections=[
-                hkml_view.CliSelection('Bold', handle_fn=None),
-                hkml_view.CliSelection('Italic', handle_fn=None),
-                ])
-    if err is not None:
-        return
-    if selection.text == 'Bold':
-        display_effect.effect = slist.effect_bold
-    else:
-        display_effect.effect = slist.effect_italic
-    q = hkml_view.CliQuestion(prompt='From date (inclusive, YYYY MM DD HH MM)')
-    answer, _, err = q.ask_input(data=None, handle_fn=None)
-    if err is not None:
-        return
-    try:
-        from_date = datetime.datetime(
-                *[int(x) for x in answer.split()]).astimezone()
-    except Exception as e:
-        hkml_view.cli_any_input(e)
-        return
-    display_effect.min_date = from_date
-    q = hkml_view.CliQuestion(prompt='Until date (inclusive, YYYY MM DD HH MM)')
-    answer, _, err = q.ask_input(data=None, handle_fn=None)
-    if err is not None:
-        return
-    try:
-        until_date = datetime.datetime(
-                *[int(x) for x in answer.split()]).astimezone()
-    except Exception as e:
-        hkml_view.cli_any_input(e)
-        return
-    display_effect.max_date = until_date
-    slist.data['mails_effects'] = display_effect
+    slist.data['mails_effects'] = MailDisplayEffect(interactive=True)
 
 def menu_reply_mail(mail_slist, selection):
     mail, slist = mail_slist
