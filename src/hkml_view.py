@@ -66,10 +66,11 @@ class CliQuestion:
                 cli_any_input('Wrong input.')
                 return None, None, 'wrong input'
 
-        err = handle_fn(data, answer)
-        if err:
-            # handle_fn() must notified the error.  Do not cli_any_input()
-            return None, None, 'handler return err (%s)' % err
+        if handle_fn is not None:
+            err = handle_fn(data, answer)
+            if err:
+                # handle_fn() must notified the error.  Do not cli_any_input()
+                return None, None, 'handler return err (%s)' % err
 
         if notify_completion:
             cli_any_input('Done.')
