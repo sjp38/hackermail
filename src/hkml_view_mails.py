@@ -356,6 +356,11 @@ def menu_collapse_expand(mail_slist, selection):
     collapse_focused_thread(None, slist)
     hkml_view.shell_mode_start(slist)
 
+class MailDisplayEffect:
+    min_date = None
+    max_date = None
+    effect = None
+
 def menu_effect_mails(mail_slist, selection):
     mail, slist = mail_slist
     q = hkml_view.CliQuestion(
