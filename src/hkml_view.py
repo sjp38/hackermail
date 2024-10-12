@@ -114,6 +114,11 @@ class ScrollableList:
     parent_list = None
     display_effect_callback = None
 
+    # constants for display_effect_callback return values
+    effect_normal = curses.A_NORMAL
+    effect_bold = curses.A_BOLD
+    effect_italic = curses.A_ITALIC
+
     def __init__(self, screen, lines, input_handlers):
         self.screen = screen
         self.lines = lines
