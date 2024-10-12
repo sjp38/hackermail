@@ -551,7 +551,7 @@ def show_mails_list_menu(c, slist):
                 hkml_view.CliSelection(
                     'collapse/expand focused thread', menu_collapse_expand),
                 hkml_view.CliSelection(
-                    'manage mails display effects', menu_effect_mails),
+                    'set display effects', menu_effect_mails),
                 hkml_view.CliSelection('reply', menu_reply_mail),
                 hkml_view.CliSelection('forward', menu_forward_mail),
                 hkml_view.CliSelection(
