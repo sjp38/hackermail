@@ -123,6 +123,10 @@ class ScrollableList:
     effect_normal = curses.A_NORMAL
     effect_bold = curses.A_BOLD
     effect_italic = curses.A_ITALIC
+    effect_blink = curses.A_BLINK
+    effect_dim = curses.A_DIM
+    effect_reverse = curses.A_REVERSE
+    effect_underline = curses.A_UNDERLINE
 
     def __init__(self, screen, lines, input_handlers):
         self.screen = screen
