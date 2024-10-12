@@ -1,6 +1,8 @@
 # SPDX-License-Identifier: GPL-2.0
 
 import argparse
+import curses
+import datetime
 
 import hkml_cache
 import hkml_export
@@ -354,6 +356,62 @@ def menu_collapse_expand(mail_slist, selection):
     collapse_focused_thread(None, slist)
     hkml_view.shell_mode_start(slist)
 
+def menu_effect_mails(mail_slist, selection):
+    mail, slist = mail_slist
+    q = hkml_view.CliQuestion(
+            desc='Apply an effect to specific mails',
+            prompt='What effect do you want to apply?')
+    answer_list = []
+    def add_answer(answer_list, answer):
+        answer_list.append(answer)
+    err = q.ask_selection(
+            data=answer_list,
+            selections=[
+                hkml_view.CliSelection('Bold', add_answer),
+                hkml_view.CliSelection('Italic', add_answer),
+                ])
+    if err is not None:
+        print(err)
+        return
+    q = hkml_view.CliQuestion(prompt='What is the criteria of the mails?')
+    err = q.ask_selection(
+            data=answer_list,
+            selections=[
+                hkml_view.CliSelection('date', add_answer),
+                ])
+    if err is not None:
+        print(err)
+        return
+    if answer_list[-1] == '1':
+        q = hkml_view.CliQuestion(prompt='From date (inclusive, YYYY MM DD HH MM)')
+        err = q.ask_input(answer_list, add_answer)
+        if err is not None:
+            print(err)
+            return
+        try:
+            from_date = datetime.datetime(
+                    *[int(x) for x in answer_list[-1].split()]).astimezone()
+        except Exception as e:
+            print(e)
+            sleep(3)
+            return
+        q = hkml_view.CliQuestion(prompt='Until date (inclusive, YYYY MM DD HH MM)')
+        err = q.ask_input(answer_list, add_answer)
+        if err is not None:
+            print(err)
+            return
+        try:
+            until_date = datetime.datetime(
+                    *[int(x) for x in answer_list[-1].split()]).astimezone()
+        except Exception as e:
+            print(e)
+            return
+
+    slist.data['mails_effects'] = {
+            'action': 'bold' if answer_list[0] == '1' else 'italic',
+            'criteria': 'date' if answer_list[1] == '1' else None,
+            'min_max_dates': [from_date, until_date]}
+
 def menu_reply_mail(mail_slist, selection):
     mail, slist = mail_slist
     hkml_view.shell_mode_end(slist)
@@ -431,6 +489,8 @@ def show_mails_list_menu(c, slist):
                     'list complete thread', menu_list_thread),
                 hkml_view.CliSelection(
                     'collapse/expand focused thread', menu_collapse_expand),
+                hkml_view.CliSelection(
+                    'effect_mails', menu_effect_mails),
                 hkml_view.CliSelection('reply', menu_reply_mail),
                 hkml_view.CliSelection('forward', menu_forward_mail),
                 hkml_view.CliSelection(
@@ -474,6 +534,31 @@ def after_input_handle_callback(slist):
         hkml_list.cache_list_str(
                 'thread_output', '\n'.join(slist.lines), mail_idx_key_map)
 
+def mails_color_attrib_callback(slist, line_idx):
+    if not 'mails_effects' in slist.data:
+        return curses.A_NORMAL
+    mail_idx = focused_mail_idx(slist.lines, line_idx)
+    if mail_idx is None:
+        return curses.A_NORMAL
+    mail_idx = '%d' % mail_idx
+    mail_idx_key_map = slist.data['mail_idx_key_map']
+    if not mail_idx in mail_idx_key_map:
+        return curses.A_NORMAL
+    mail_key = mail_idx_key_map[mail_idx]
+    mail = hkml_cache.get_mail(key=mail_key)
+    if mail is None:
+        return curses.A_NORMAL
+    mails_effects_data = slist.data['mails_effects']
+    if mails_effects_data['criteria'] == 'date':
+        min_date, max_date = mails_effects_data['min_max_dates']
+        mail_date = mail.date
+        if min_date <= mail_date and mail_date <= max_date:
+            if mails_effects_data['action'] == 'bold':
+                return curses.A_BOLD
+            if mails_effects_data['action'] == 'italic':
+                return curses.A_ITALIC
+    return curses.A_NORMAL
+
 def show_mails_list(screen, text_lines, mail_idx_key_map, data_generator=None):
     slist = hkml_view.ScrollableList(screen, text_lines,
                            get_mails_list_input_handlers())
@@ -482,6 +567,7 @@ def show_mails_list(screen, text_lines, mail_idx_key_map, data_generator=None):
                   'data_generator': data_generator,
                   }
     slist.after_input_handle_callback = after_input_handle_callback
+    slist.color_attrib_callback = mails_color_attrib_callback
     slist.draw()
     return slist
 
