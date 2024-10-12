@@ -112,7 +112,7 @@ class ScrollableList:
     after_input_handle_callback = None
     data = None
     parent_list = None
-    color_attrib_callback = None
+    display_effect_callback = None
 
     def __init__(self, screen, lines, input_handlers):
         self.screen = screen
@@ -157,8 +157,8 @@ class ScrollableList:
             else:
                 color = normal_color
 
-            if self.color_attrib_callback:
-                color_attrib = self.color_attrib_callback(self, line_idx)
+            if self.display_effect_callback:
+                color_attrib = self.display_effect_callback(self, line_idx)
             else:
                 color_attrib = curses.A_NORMAL
 

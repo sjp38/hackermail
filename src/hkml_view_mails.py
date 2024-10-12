@@ -534,7 +534,7 @@ def after_input_handle_callback(slist):
         hkml_list.cache_list_str(
                 'thread_output', '\n'.join(slist.lines), mail_idx_key_map)
 
-def mails_color_attrib_callback(slist, line_idx):
+def mails_display_effect_callback(slist, line_idx):
     if not 'mails_effects' in slist.data:
         return curses.A_NORMAL
     mail_idx = focused_mail_idx(slist.lines, line_idx)
@@ -567,7 +567,7 @@ def show_mails_list(screen, text_lines, mail_idx_key_map, data_generator=None):
                   'data_generator': data_generator,
                   }
     slist.after_input_handle_callback = after_input_handle_callback
-    slist.color_attrib_callback = mails_color_attrib_callback
+    slist.display_effect_callback = mails_display_effect_callback
     slist.draw()
     return slist
 
