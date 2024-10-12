@@ -389,24 +389,7 @@ class MailDisplayEffect:
             'effect: %s' % self.effect_str()
             ])
 
-    def __init__(self, interactive):
-        if interactive is False:
-            return
-        q = hkml_view.CliQuestion(
-                desc='Select the display effect to apply.', prompt=None)
-        _, selection, err = q.ask_selection(
-                data=None,
-                selections=[
-                    hkml_view.CliSelection('Bold', handle_fn=None),
-                    hkml_view.CliSelection('Italic', handle_fn=None),
-                    ])
-        if err is not None:
-            return
-        if selection.text == 'Bold':
-            self.effect = hkml_view.ScrollableList.effect_bold
-        else:
-            self.effect = hkml_view.ScrollableList.effect_italic
-
+    def interactive_setup_dates(self):
         q = hkml_view.CliQuestion(
                 prompt='Minimum date (inclusive, YYYY MM DD HH MM)')
         answer, _, err = q.ask_input(data=None, handle_fn=None)
@@ -429,6 +412,25 @@ class MailDisplayEffect:
         except Exception as e:
             hkml_view.cli_any_input(e)
             return
+
+    def __init__(self, interactive):
+        if interactive is False:
+            return
+        q = hkml_view.CliQuestion(
+                desc='Select the display effect to apply.', prompt=None)
+        _, selection, err = q.ask_selection(
+                data=None,
+                selections=[
+                    hkml_view.CliSelection('Bold', handle_fn=None),
+                    hkml_view.CliSelection('Italic', handle_fn=None),
+                    ])
+        if err is not None:
+            return
+        if selection.text == 'Bold':
+            self.effect = hkml_view.ScrollableList.effect_bold
+        else:
+            self.effect = hkml_view.ScrollableList.effect_italic
+        self.interactive_setup_dates()
 
 def menu_effect_mails(mail_slist, selection):
     print('Apply a display effect to specific mails.')
