@@ -376,7 +376,7 @@ def menu_effect_mails(mail_slist, selection):
                 hkml_view.CliSelection('Italic', add_answer),
                 ])
     if err is not None:
-        print(err)
+        hkml_view.cli_any_input(err)
         return
     q = hkml_view.CliQuestion(prompt='What is the criteria of the mails?')
     err = q.ask_selection(
@@ -385,31 +385,30 @@ def menu_effect_mails(mail_slist, selection):
                 hkml_view.CliSelection('date', add_answer),
                 ])
     if err is not None:
-        print(err)
+        hkml_view.cli_any_input(err)
         return
     if answer_list[-1] == '1':
         q = hkml_view.CliQuestion(prompt='From date (inclusive, YYYY MM DD HH MM)')
         err = q.ask_input(answer_list, add_answer)
         if err is not None:
-            print(err)
+            hkml_view.cli_any_input(err)
             return
         try:
             from_date = datetime.datetime(
                     *[int(x) for x in answer_list[-1].split()]).astimezone()
         except Exception as e:
-            print(e)
-            sleep(3)
+            hkml_view.cli_any_input(e)
             return
         q = hkml_view.CliQuestion(prompt='Until date (inclusive, YYYY MM DD HH MM)')
         err = q.ask_input(answer_list, add_answer)
         if err is not None:
-            print(err)
+            hkml_view.cli_any_input(err)
             return
         try:
             until_date = datetime.datetime(
                     *[int(x) for x in answer_list[-1].split()]).astimezone()
         except Exception as e:
-            print(e)
+            hkml_view.cli_any_input(e)
             return
 
     slist.data['mails_effects'] = {
