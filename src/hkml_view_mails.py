@@ -410,35 +410,26 @@ def menu_effect_mails(mail_slist, selection):
                 ])
     if err is not None:
         return
-    q = hkml_view.CliQuestion(prompt='What is the criteria of the mails?')
-    err = q.ask_selection(
-            data=answer_list,
-            selections=[
-                hkml_view.CliSelection('date', add_answer),
-                ])
+    q = hkml_view.CliQuestion(prompt='From date (inclusive, YYYY MM DD HH MM)')
+    err = q.ask_input(answer_list, add_answer)
     if err is not None:
         return
-    if answer_list[-1] == '1':
-        q = hkml_view.CliQuestion(prompt='From date (inclusive, YYYY MM DD HH MM)')
-        err = q.ask_input(answer_list, add_answer)
-        if err is not None:
-            return
-        try:
-            from_date = datetime.datetime(
-                    *[int(x) for x in answer_list[-1].split()]).astimezone()
-        except Exception as e:
-            hkml_view.cli_any_input(e)
-            return
-        q = hkml_view.CliQuestion(prompt='Until date (inclusive, YYYY MM DD HH MM)')
-        err = q.ask_input(answer_list, add_answer)
-        if err is not None:
-            return
-        try:
-            until_date = datetime.datetime(
-                    *[int(x) for x in answer_list[-1].split()]).astimezone()
-        except Exception as e:
-            hkml_view.cli_any_input(e)
-            return
+    try:
+        from_date = datetime.datetime(
+                *[int(x) for x in answer_list[-1].split()]).astimezone()
+    except Exception as e:
+        hkml_view.cli_any_input(e)
+        return
+    q = hkml_view.CliQuestion(prompt='Until date (inclusive, YYYY MM DD HH MM)')
+    err = q.ask_input(answer_list, add_answer)
+    if err is not None:
+        return
+    try:
+        until_date = datetime.datetime(
+                *[int(x) for x in answer_list[-1].split()]).astimezone()
+    except Exception as e:
+        hkml_view.cli_any_input(e)
+        return
 
     display_effect = MailDisplayEffect()
     display_effect.min_date = from_date
