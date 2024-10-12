@@ -552,16 +552,8 @@ def after_input_handle_callback(slist):
 def mails_display_effect_callback(slist, line_idx):
     if not 'mails_effects' in slist.data:
         return slist.effect_normal
-    mail_idx = focused_mail_idx(slist.lines, line_idx)
-    if mail_idx is None:
-        return slist.effect_normal
-    mail_idx = '%d' % mail_idx
-    mail_idx_key_map = slist.data['mail_idx_key_map']
-    if not mail_idx in mail_idx_key_map:
-        return slist.effect_normal
-    mail_key = mail_idx_key_map[mail_idx]
-    mail = hkml_cache.get_mail(key=mail_key)
-    if mail is None:
+    mail, err = get_mail_of_row(slist, line_idx)
+    if err is not None:
         return slist.effect_normal
     mail_display_effect = slist.data['mails_effects']
     if mail_display_effect.eligible(mail):
