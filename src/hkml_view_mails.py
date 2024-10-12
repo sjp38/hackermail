@@ -389,7 +389,6 @@ def menu_effect_mails(mail_slist, selection):
                 hkml_view.CliSelection('Italic', add_answer),
                 ])
     if err is not None:
-        hkml_view.cli_any_input(err)
         return
     q = hkml_view.CliQuestion(prompt='What is the criteria of the mails?')
     err = q.ask_selection(
