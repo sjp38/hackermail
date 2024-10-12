@@ -376,13 +376,11 @@ class MailDisplayEffect:
         return True
 
     def effect_str(self):
-        if self.effect == hkml_view.ScrollableList.effect_normal:
-            return 'no effect'
-        if self.effect == hkml_view.ScrollableList.effect_bold:
-            return 'bold'
-        if self.effect == hkml_view.ScrollableList.effect_italic:
-            return 'italic'
-        return 'something wrong'
+        return {
+                hkml_view.ScrollableList.effect_normal: 'no effect',
+                hkml_view.ScrollableList.effect_bold: 'bold',
+                hkml_view.ScrollableList.effect_italic: 'italic',
+                }[self.effect]
 
     def __str__(self):
         return '\n'.join([
