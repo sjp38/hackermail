@@ -1,5 +1,8 @@
 This file contains major changes in each version since v1.0.0
 
+v1.1.6
+- Implement a menu for adding display effects to mails of specific dates range
+
 v1.1.5
 - Support multiple keywords lists options for OR-relation
 - Support <3.9 Python
