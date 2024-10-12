@@ -9,6 +9,7 @@ import json
 import mailbox
 import os
 import subprocess
+import tempfile
 import time
 import sys
 
@@ -330,7 +331,7 @@ class Mail:
         site = get_manifest()['site']
         return '%s/%s' % (site, self.get_field('message-id')[1:-1])
 
-def read_mbox_file(filepath):
+def __read_mbox_file(filepath):
     mails = []
     if filepath[-5:] == '.json':
         with open(filepath, 'r') as f:
@@ -346,6 +347,23 @@ def read_mbox_file(filepath):
         if mail.broken():
             continue
         mails.append(mail)
+    return mails
+
+def read_mbox_file(filepath):
+    mails = __read_mbox_file(filepath)
+    if len(mails) > 0:
+        return mails
+
+    # maybe mbox file but the initial from line is missed.
+    with open(filepath, 'r') as f:
+        orig_content = f.read()
+    updated_content = '\n'.join(
+            ['From hackermail Thu Jan  1 00:00:00 1970', orig_content])
+    fd, tmp_path = tempfile.mkstemp(prefix='hkml_tmp_mbox_')
+    with open(tmp_path, 'w') as f:
+        f.write(updated_content)
+    mails = __read_mbox_file(tmp_path)
+    os.remove(tmp_path)
     return mails
 
 def read_mails_from_clipboard():
