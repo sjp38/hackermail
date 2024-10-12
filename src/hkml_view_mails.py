@@ -370,6 +370,7 @@ class MailDisplayEffect:
 
 def menu_effect_mails(mail_slist, selection):
     mail, slist = mail_slist
+    display_effect = MailDisplayEffect()
     q = hkml_view.CliQuestion(
             desc='Apply an effect to specific mails',
             prompt='What effect do you want to apply?')
@@ -415,10 +416,11 @@ def menu_effect_mails(mail_slist, selection):
             hkml_view.cli_any_input(e)
             return
 
-    slist.data['mails_effects'] = {
-            'action': 'bold' if answer_list[0] == '1' else 'italic',
-            'criteria': 'date' if answer_list[1] == '1' else None,
-            'min_max_dates': [from_date, until_date]}
+    display_effect.min_date = from_date
+    display_effect.max_date = until_date
+    display_effect.effect = (slist.effect_bold if answer_list[0] == '1' else
+                             slist.effect_italic)
+    slist.data['mails_effects'] = display_effect
 
 def menu_reply_mail(mail_slist, selection):
     mail, slist = mail_slist
@@ -556,15 +558,9 @@ def mails_display_effect_callback(slist, line_idx):
     mail = hkml_cache.get_mail(key=mail_key)
     if mail is None:
         return slist.effect_normal
-    mails_effects_data = slist.data['mails_effects']
-    if mails_effects_data['criteria'] == 'date':
-        min_date, max_date = mails_effects_data['min_max_dates']
-        mail_date = mail.date
-        if min_date <= mail_date and mail_date <= max_date:
-            if mails_effects_data['action'] == 'bold':
-                return slist.effect_bold
-            if mails_effects_data['action'] == 'italic':
-                return slist.effect_italic
+    mail_display_effect = slist.data['mails_effects']
+    if mail_display_effect.eligible(mail):
+        return mail_display_effect.effect
     return slist.effect_normal
 
 def show_mails_list(screen, text_lines, mail_idx_key_map, data_generator=None):
