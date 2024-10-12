@@ -380,6 +380,10 @@ class MailDisplayEffect:
                 hkml_view.ScrollableList.effect_normal: 'no effect',
                 hkml_view.ScrollableList.effect_bold: 'bold',
                 hkml_view.ScrollableList.effect_italic: 'italic',
+                hkml_view.ScrollableList.effect_blink: 'blink',
+                hkml_view.ScrollableList.effect_dim: 'dim',
+                hkml_view.ScrollableList.effect_reverse: 'reverse',
+                hkml_view.ScrollableList.effect_underline: 'underline',
                 }[self.effect]
 
     def __str__(self):
@@ -424,18 +428,38 @@ class MailDisplayEffect:
             return
         q = hkml_view.CliQuestion(
                 desc='Select the display effect to apply.', prompt=None)
+
+        def handle_selection(data, answer):
+            rule, selections = data
+            rule.effect = selections[int(answer) - 1].data
+
+        selections=[
+                hkml_view.CliSelection(
+                    text='Normal', handle_fn=handle_selection,
+                    data=hkml_view.ScrollableList.effect_normal),
+                hkml_view.CliSelection(
+                    text='Bold', handle_fn=handle_selection,
+                    data=hkml_view.ScrollableList.effect_bold),
+                hkml_view.CliSelection(
+                    text='Italic', handle_fn=handle_selection,
+                    data=hkml_view.ScrollableList.effect_italic),
+                hkml_view.CliSelection(
+                    text='Blink', handle_fn=handle_selection,
+                    data=hkml_view.ScrollableList.effect_blink),
+                hkml_view.CliSelection(
+                    text='Dim', handle_fn=handle_selection,
+                    data=hkml_view.ScrollableList.effect_dim),
+                hkml_view.CliSelection(
+                    text='Reverse', handle_fn=handle_selection,
+                    data=hkml_view.ScrollableList.effect_reverse),
+                hkml_view.CliSelection(
+                    text='Underline', handle_fn=handle_selection,
+                    data=hkml_view.ScrollableList.effect_underline),
+                ]
         _, selection, err = q.ask_selection(
-                data=None,
-                selections=[
-                    hkml_view.CliSelection('Bold', handle_fn=None),
-                    hkml_view.CliSelection('Italic', handle_fn=None),
-                    ])
+                data=[self, selections], selections=selections)
         if err is not None:
             return
-        if selection.text == 'Bold':
-            self.effect = hkml_view.ScrollableList.effect_bold
-        else:
-            self.effect = hkml_view.ScrollableList.effect_italic
         self.interactive_setup_dates()
 
 def menu_effect_mails(mail_slist, selection):
