@@ -43,19 +43,9 @@ def get_mail_of_row(slist, row):
     return mail, None
 
 def get_focused_mail(slist):
-    mail_idx = focused_mail_idx(slist.lines, slist.focus_row)
-    if mail_idx is None:
-        slist.toast('no mail focused?')
-        return None
-    mail_idx = '%d' % mail_idx
-    mail_idx_key_map = slist.data['mail_idx_key_map']
-    if not mail_idx in mail_idx_key_map:
-        slist.toast('wrong index?')
-        return None
-    mail_key = mail_idx_key_map[mail_idx]
-    mail = hkml_cache.get_mail(key=mail_key)
-    if mail is None:
-        slist.toast('mail not cached?')
+    mail, err = get_mail_of_row(slist, slist.focus_row)
+    if err is not None:
+        slist.toast(err)
         return None
     return mail
 
