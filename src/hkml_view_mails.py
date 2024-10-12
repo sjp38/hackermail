@@ -536,28 +536,28 @@ def after_input_handle_callback(slist):
 
 def mails_display_effect_callback(slist, line_idx):
     if not 'mails_effects' in slist.data:
-        return curses.A_NORMAL
+        return slist.effect_normal
     mail_idx = focused_mail_idx(slist.lines, line_idx)
     if mail_idx is None:
-        return curses.A_NORMAL
+        return slist.effect_normal
     mail_idx = '%d' % mail_idx
     mail_idx_key_map = slist.data['mail_idx_key_map']
     if not mail_idx in mail_idx_key_map:
-        return curses.A_NORMAL
+        return slist.effect_normal
     mail_key = mail_idx_key_map[mail_idx]
     mail = hkml_cache.get_mail(key=mail_key)
     if mail is None:
-        return curses.A_NORMAL
+        return slist.effect_normal
     mails_effects_data = slist.data['mails_effects']
     if mails_effects_data['criteria'] == 'date':
         min_date, max_date = mails_effects_data['min_max_dates']
         mail_date = mail.date
         if min_date <= mail_date and mail_date <= max_date:
             if mails_effects_data['action'] == 'bold':
-                return curses.A_BOLD
+                return slist.effect_bold
             if mails_effects_data['action'] == 'italic':
-                return curses.A_ITALIC
-    return curses.A_NORMAL
+                return slist.effect_italic
+    return slist.effect_normal
 
 def show_mails_list(screen, text_lines, mail_idx_key_map, data_generator=None):
     slist = hkml_view.ScrollableList(screen, text_lines,
