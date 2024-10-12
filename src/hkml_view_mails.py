@@ -406,7 +406,9 @@ class MailDisplayEffect:
             self.effect = hkml_view.ScrollableList.effect_bold
         else:
             self.effect = hkml_view.ScrollableList.effect_italic
-        q = hkml_view.CliQuestion(prompt='From date (inclusive, YYYY MM DD HH MM)')
+
+        q = hkml_view.CliQuestion(
+                prompt='Minimum date (inclusive, YYYY MM DD HH MM)')
         answer, _, err = q.ask_input(data=None, handle_fn=None)
         if err is not None:
             return
@@ -416,7 +418,8 @@ class MailDisplayEffect:
         except Exception as e:
             hkml_view.cli_any_input(e)
             return
-        q = hkml_view.CliQuestion(prompt='Until date (inclusive, YYYY MM DD HH MM)')
+        q = hkml_view.CliQuestion(
+                prompt='Maximum date (inclusive, YYYY MM DD HH MM)')
         answer, _, err = q.ask_input(data=None, handle_fn=None)
         if err is not None:
             return
