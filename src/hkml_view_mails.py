@@ -373,12 +373,32 @@ class MailDisplayEffect:
             return False
         return True
 
+    def effect_str(self):
+        if self.effect == hkml_view.ScrollableList.effect_normal:
+            return 'no effect'
+        if self.effect == hkml_view.ScrollableList.effect_bold:
+            return 'bold'
+        if self.effect == hkml_view.ScrollableList.effect_italic:
+            return 'italic'
+        return 'something wrong'
+
+    def __str__(self):
+        return '\n'.join([
+            'minimum date: %s' % self.min_date,
+            'maximum date: %s' % self.max_date,
+            'effect: %s' % self.effect_str()
+            ])
+
 def menu_effect_mails(mail_slist, selection):
+    print('Apply a display effect to specific mails.')
+    print()
     mail, slist = mail_slist
-    display_effect = MailDisplayEffect()
+    if 'mails_effects' in slist.data:
+        print('current display effect:')
+        print('%s' % slist.data['mails_effects'])
+        print()
     q = hkml_view.CliQuestion(
-            desc='Apply an effect to specific mails',
-            prompt='What effect do you want to apply?')
+            desc='Select the display effect to apply.', prompt=None)
     answer_list = []
     def add_answer(answer_list, answer):
         answer_list.append(answer)
@@ -420,6 +440,7 @@ def menu_effect_mails(mail_slist, selection):
             hkml_view.cli_any_input(e)
             return
 
+    display_effect = MailDisplayEffect()
     display_effect.min_date = from_date
     display_effect.max_date = until_date
     display_effect.effect = (slist.effect_bold if answer_list[0] == '1' else
