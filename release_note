@@ -5,7 +5,7 @@ v1.1.5
 - Support <3.9 Python
 - Fix a few corner cases including UTF-8 encoded mail headers
 - Wordsmith exported patch file names
-- Allow cv unmergeable on the first patch from interactive list ui
+- Ask whether to merge CV into the first patch from the interactive list UI
 
 v1.1.4
 - Support collapsing/expanding threads on list ('c' and 'e' key bindings)
