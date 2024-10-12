@@ -367,10 +367,12 @@ class MailDisplayEffect:
     effect = None
 
     def eligible(self, mail):
-        if self.min_date is not None and mail.date < self.min_date:
-            return False
-        if self.max_date is not None and mail.date > self.max_date:
-            return False
+        if self.min_date is not None:
+            if self.min_date != 'min' and mail.date < self.min_date:
+                return False
+        if self.max_date is not None:
+            if self.max_date != 'max' and mail.date > self.max_date:
+                return False
         return True
 
     def effect_str(self):
@@ -391,27 +393,33 @@ class MailDisplayEffect:
 
     def interactive_setup_dates(self):
         q = hkml_view.CliQuestion(
-                prompt='Minimum date (inclusive, YYYY MM DD HH MM)')
+                prompt='Minimum date (inclusive, YYYY MM DD HH MM or min)')
         answer, _, err = q.ask_input(data=None, handle_fn=None)
         if err is not None:
             return
-        try:
-            self.min_date = datetime.datetime(
-                    *[int(x) for x in answer.split()]).astimezone()
-        except Exception as e:
-            hkml_view.cli_any_input(e)
-            return
+        if answer == 'min':
+            self.min_date = answer
+        else:
+            try:
+                self.min_date = datetime.datetime(
+                        *[int(x) for x in answer.split()]).astimezone()
+            except Exception as e:
+                hkml_view.cli_any_input(e)
+                return
         q = hkml_view.CliQuestion(
-                prompt='Maximum date (inclusive, YYYY MM DD HH MM)')
+                prompt='Maximum date (inclusive, YYYY MM DD HH MM or max)')
         answer, _, err = q.ask_input(data=None, handle_fn=None)
         if err is not None:
             return
-        try:
-            self.max_date = datetime.datetime(
-                    *[int(x) for x in answer.split()]).astimezone()
-        except Exception as e:
-            hkml_view.cli_any_input(e)
-            return
+        if answer == 'max':
+            self.max_date = answer
+        else:
+            try:
+                self.max_date = datetime.datetime(
+                        *[int(x) for x in answer.split()]).astimezone()
+            except Exception as e:
+                hkml_view.cli_any_input(e)
+                return
 
     def __init__(self, interactive):
         if interactive is False:
