@@ -385,13 +385,11 @@ def menu_effect_mails(mail_slist, selection):
                 hkml_view.CliSelection('date', add_answer),
                 ])
     if err is not None:
-        hkml_view.cli_any_input(err)
         return
     if answer_list[-1] == '1':
         q = hkml_view.CliQuestion(prompt='From date (inclusive, YYYY MM DD HH MM)')
         err = q.ask_input(answer_list, add_answer)
         if err is not None:
-            hkml_view.cli_any_input(err)
             return
         try:
             from_date = datetime.datetime(
@@ -402,7 +400,6 @@ def menu_effect_mails(mail_slist, selection):
         q = hkml_view.CliQuestion(prompt='Until date (inclusive, YYYY MM DD HH MM)')
         err = q.ask_input(answer_list, add_answer)
         if err is not None:
-            hkml_view.cli_any_input(err)
             return
         try:
             until_date = datetime.datetime(
