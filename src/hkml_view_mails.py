@@ -361,6 +361,13 @@ class MailDisplayEffect:
     max_date = None
     effect = None
 
+    def eligible(self, mail):
+        if self.min_date is not None and mail.date < self.min_date:
+            return False
+        if self.max_date is not None and mail.date > self.max_date:
+            return False
+        return True
+
 def menu_effect_mails(mail_slist, selection):
     mail, slist = mail_slist
     q = hkml_view.CliQuestion(
