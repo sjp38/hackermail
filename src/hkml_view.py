@@ -22,10 +22,12 @@ Curses-based TUI viewer for hkml list/open outputs.
 class CliSelection:
     text = None
     handle_fn = None    # function receiving data and the answer
+    data = None         # for carrying selection-specific data
 
-    def __init__(self, text, handle_fn):
+    def __init__(self, text, handle_fn, data=None):
         self.text = text
         self.handle_fn = handle_fn
+        self.data = data
 
 def cli_any_input(prompt):
     print('%s  Press any key to return' % prompt)
