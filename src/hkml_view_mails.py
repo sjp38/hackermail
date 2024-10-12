@@ -402,7 +402,7 @@ def menu_effect_mails(mail_slist, selection):
     answer_list = []
     def add_answer(answer_list, answer):
         answer_list.append(answer)
-    err = q.ask_selection(
+    _, _, err = q.ask_selection(
             data=answer_list,
             selections=[
                 hkml_view.CliSelection('Bold', add_answer),
@@ -411,7 +411,7 @@ def menu_effect_mails(mail_slist, selection):
     if err is not None:
         return
     q = hkml_view.CliQuestion(prompt='From date (inclusive, YYYY MM DD HH MM)')
-    err = q.ask_input(answer_list, add_answer)
+    _, _, err = q.ask_input(answer_list, add_answer)
     if err is not None:
         return
     try:
@@ -421,7 +421,7 @@ def menu_effect_mails(mail_slist, selection):
         hkml_view.cli_any_input(e)
         return
     q = hkml_view.CliQuestion(prompt='Until date (inclusive, YYYY MM DD HH MM)')
-    err = q.ask_input(answer_list, add_answer)
+    _, _, err = q.ask_input(answer_list, add_answer)
     if err is not None:
         return
     try:

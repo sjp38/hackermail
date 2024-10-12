@@ -40,6 +40,7 @@ class CliQuestion:
         self.prompt = prompt
 
     def ask(self, data, selections, handle_fn, notify_completion):
+        # return answer, selection, and error
         lines = []
         if self.description is not None:
             lines.append(self.description)
@@ -54,22 +55,25 @@ class CliQuestion:
         answer = input('%s (enter \'\' to cancel): ' % self.prompt)
         if answer == '':
             cli_any_input('Canceled.')
-            return 'canceled'
+            return None, None, 'canceled'
 
+        selection = None
         if selections is not None:
             try:
-                handle_fn = selections[int(answer) - 1].handle_fn
+                selection = selections[int(answer) - 1]
+                handle_fn = selection.handle_fn
             except:
                 cli_any_input('Wrong input.')
-                return 'wrong input'
+                return None, None, 'wrong input'
 
         err = handle_fn(data, answer)
         if err:
-            # handle_fn() must notified the error.
-            return
+            # handle_fn() must notified the error.  Do not cli_any_input()
+            return None, None, 'handler return err (%s)' % err
 
         if notify_completion:
             cli_any_input('Done.')
+        return answer, selection, None
 
     def ask_input(self, data, handle_fn, notify_completion=False):
         return self.ask(data, None, handle_fn, notify_completion)
@@ -368,7 +372,7 @@ def receive_file_path(for_read):
                     '2. a directory (e.g., "./") to list files under it.',
                     ]),
                 prompt='')
-        err = q.ask_input([answers, for_read], handle_fn)
+        _, _, err = q.ask_input([answers, for_read], handle_fn)
         if err == 'canceled':
             return None
         if len(answers) != 1:
