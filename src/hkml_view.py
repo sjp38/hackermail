@@ -124,7 +124,10 @@ class ScrollableList:
     # constants for display_effect_callback return values
     effect_normal = curses.A_NORMAL
     effect_bold = curses.A_BOLD
-    effect_italic = curses.A_ITALIC
+    try:
+        effect_italic = curses.A_ITALIC
+    except:
+        effect_italic = curses.A_BOLD
     effect_blink = curses.A_BLINK
     effect_dim = curses.A_DIM
     effect_reverse = curses.A_REVERSE
