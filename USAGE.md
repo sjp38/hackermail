@@ -75,7 +75,7 @@ mailing list as the manifest.  Hence, you will be able to use `hkml` for Linux
 kernel mails from anywhere by using `hkml` file in this directory.
 
 ```
-$ hkml init --manifest ./manifests/lore.json
+$ hkml init --manifest ./manifests/lore.js
 ```
 
 Fetching Mails
