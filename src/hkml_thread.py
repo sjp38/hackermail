@@ -12,6 +12,13 @@ import hkml_list
 def get_thread_mails_from_web(msgid):
     if msgid.startswith('<') and msgid.endswith('>'):
         msgid = msgid[1:-1]
+    # public inbox url could also be received.
+    if msgid.startswith('http'):
+        fields = msgid.split('/')
+        for field in fields:
+            if '@' in field:
+                msgid = field
+                break
     tmp_path = tempfile.mkdtemp(prefix='hkml_thread_')
     pi_url = _hkml.get_manifest()['site']
     down_url = '%s/all/%s/t.mbox.gz' % (pi_url, msgid)
