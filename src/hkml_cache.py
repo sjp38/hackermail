@@ -95,6 +95,15 @@ def load_one_more_archived_cache():
         archived_caches.append(json.load(f))
     return True
 
+def __get_mail(key, cache):
+    if not key in cache:
+        # msgid_key_map has introduced from v1.1.6
+        if 'msgid_key_map' in cache and key in cache['msgid_key_map']:
+            key = cache['msgid_key_map'][key]
+    if not key in cache:
+        return None
+    return _hkml.Mail(kvpairs=cache[key])
+
 def get_mail(gitid=None, gitdir=None, key=None):
     global archived_caches
 
@@ -102,14 +111,20 @@ def get_mail(gitid=None, gitdir=None, key=None):
         key = get_cache_key(gitid, gitdir)
 
     cache = get_active_mails_cache()
-    if key in cache:
-        return _hkml.Mail(kvpairs=cache[key])
+    mail = __get_mail(key, cache)
+    if mail is not None:
+        return mail
+
     for cache in archived_caches:
-        if key in cache:
-            return _hkml.Mail(kvpairs=cache[key])
+        mail = __get_mail(key, cache)
+        if mail is not None:
+            return mail
+
     while load_one_more_archived_cache() == True:
-        if key in archived_caches[-1]:
-            return _hkml.Mail(kvpairs=archived_caches[-1][key])
+        mail = __get_mail(key, archived_caches[-1])
+        if mail is not None:
+            return mail
+
     return None
 
 def set_mail(mail, overwrite=False):
