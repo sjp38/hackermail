@@ -269,7 +269,7 @@ def threads_of(mails, do_find_ancestors_from_cache=False):
     if do_find_ancestors_from_cache:
         found_parents = []
         for mail in mails:
-            best_effort_ancestor_finding(mail, by_msgids, found_parents)
+            find_ancestors_from_cache(mail, by_msgids, found_parents)
         mails += found_parents
 
     threads = []
@@ -521,11 +521,12 @@ def format_stat(mails_to_show, stat_authors):
             lines.append('# - %s: %d' % (author, nr_mails))
     return lines
 
-def sort_filter_mails(mails_to_show, mails_filter, list_decorator,
-                      show_thread_of, runtime_profile):
+def sort_filter_mails(mails_to_show, do_find_ancestors_from_cache,
+                      mails_filter, list_decorator, show_thread_of,
+                      runtime_profile):
 
     timestamp = time.time()
-    threads = threads_of(mails_to_show)
+    threads = threads_of(mails_to_show, do_find_ancestors_from_cache)
     sort_threads_by = list_decorator.sort_threads_by
     for sort_category in sort_threads_by:
         sort_threads(threads, sort_category)
@@ -590,7 +591,9 @@ def fmt_mails_text(mails, list_decorator, mails_to_collapse):
 
     if mails_to_collapse:
         # set parent_mail
-        threads_of(mails)
+        # set do_find_ancestors_from_cache as False, since the caller should
+        # already did that before.
+        threads_of(mails, do_find_ancestors_from_cache=False)
 
     for mail in mails:
         show_nr_replies = False
@@ -606,14 +609,15 @@ def fmt_mails_text(mails, list_decorator, mails_to_collapse):
                               show_url, nr_cols)
     return lines
 
-def mails_to_str(mails_to_show, mails_filter, list_decorator, show_thread_of,
-                 runtime_profile, stat_only, stat_authors):
+def mails_to_str(mails_to_show, do_find_ancestors_from_cache, mails_filter,
+                 list_decorator, show_thread_of, runtime_profile, stat_only,
+                 stat_authors):
     if len(mails_to_show) == 0:
         return 'no mail', {}
 
     filtered_mails, mail_idx_key_map = sort_filter_mails(
-            mails_to_show, mails_filter, list_decorator, show_thread_of,
-            runtime_profile)
+            mails_to_show, do_find_ancestors_from_cache, mails_filter,
+            list_decorator, show_thread_of, runtime_profile)
 
     timestamp = time.time()
 
@@ -921,7 +925,8 @@ def get_mails_list(args):
     runtime_profile = [['get_mails', time.time() - timestamp]]
 
     to_show, mail_idx_key_map = mails_to_str(
-            mails_to_show, MailListFilter(args), MailListDecorator(args), None,
+            mails_to_show, args.find_ancestors_from_cache,
+            MailListFilter(args), MailListDecorator(args), None,
             runtime_profile, args.stat_only, args.stat_authors)
     hkml_cache.writeback_mails()
     cache_list_str(lists_cache_key, to_show, mail_idx_key_map)
@@ -1020,6 +1025,9 @@ def set_argparser(parser=None):
             help='minimum number of mails to list')
     parser.add_argument('--max_nr_mails', metavar='<int>', type=int,
             help='maximum number of mails to list')
+    parser.add_argument('--dont_find_ancestors_from_cache',
+                        action='store_false', dest='find_ancestors_from_cache',
+                        help='find missing thread ancestors from cache')
     parser.add_argument('--pisearch', metavar='<query>',
                         help='get mails via given public inbox search query')
     parser.add_argument('--stat_only', action='store_true',
