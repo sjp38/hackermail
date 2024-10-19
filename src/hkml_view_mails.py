@@ -596,7 +596,7 @@ def after_input_handle_callback(slist):
                 'thread_output', '\n'.join(slist.lines), mail_idx_key_map)
 
 def mails_display_effect_callback(slist, line_idx):
-    if not 'mails_effects' in slist.data:
+    if not 'mails_effects' in slist.data or slist.data['mails_effects'] is None:
         return slist.effect_normal
     mail, err = get_mail_of_row(slist, line_idx)
     if err is not None:
