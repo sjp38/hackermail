@@ -887,6 +887,10 @@ def get_mails_list(args):
         args.min_nr_mails = args.nr_mails
         args.max_nr_mails = args.nr_mails
 
+    if args.thread_track_since is not None:
+        args.thread_track_since = datetime.datetime.strptime(
+                args.thread_track_since, '%Y-%m-%d')
+
     if args.cols is None:
         try:
             args.cols = int(os.get_terminal_size().columns * 9 / 10)
@@ -994,6 +998,11 @@ def set_argparser(parser=None):
     parser.add_argument('--until', metavar='<date>', type=str,
             default=DEFAULT_UNTIL,
             help='show mails sent before a specific date. Format: YYYY-MM-DD')
+    parser.add_argument(
+            '--thread_track_since', metavar='<daste>', type=str,
+            help=' '.join(
+                ['additionally track ancestors of threads until this date.',
+                 'Format: YYYY-MM-DD']))
     parser.add_argument('--nr_mails', type=int, metavar='<int>',
             help='number of mails to list')
     parser.add_argument('--min_nr_mails', metavar='<int>', type=int,
