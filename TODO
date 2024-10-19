@@ -16,8 +16,6 @@
 - Sort patch series in patch order
   e.g., hkml list 20230612093537.614161713@infradead.org
 - Implement monitoring output pushing to git repo
-- Add an option to track parent mails more than --since
-- Add --dim_old <date> option to 'hkml list'
 - Suggest dimming old mails from 'hkml list'
   - Check last 'hkml list' time of the given mail source and suggest dimming
     the old mails.

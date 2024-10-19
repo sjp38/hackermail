@@ -2,6 +2,10 @@ This file contains major changes in each version since v1.0.0
 
 v1.1.6
 - Implement a menu for adding display effects to mails of specific dates range
+- list: Support public inbox link URL as mails source
+- list: Find threads parents that older than --since from cache, by default
+  (can disable using --dont_find_ancestors_from_cache)
+- list: implement an option to set old mails dimm-ed (--dim_old)
 
 v1.1.5
 - Support multiple keywords lists options for OR-relation
