@@ -1038,6 +1038,10 @@ def set_argparser(parser=None):
     add_mails_filter_arguments(parser)
     add_decoration_arguments(parser)
 
+    parser.add_argument('--dim_old', metavar='<date>', nargs='+',
+                        help=' '.join(['dim mails older than <date>.',
+                                      'Format: YYYY-MM-DD [HH:MM]']))
+
     # misc
     parser.add_argument('--fetch', action='store_true',
             help='fetch mails before listing')

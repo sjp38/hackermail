@@ -510,12 +510,13 @@ def menu_refresh_mails(mail_slist, selection):
         if answer.lower() != 'n':
             gen_args.fetch = True
 
-    text, mail_idx_key_map, err = data_generator.generate()
+    text, mail_idx_key_map, display_rule, err = data_generator.generate()
     if err is not None:
         return hkml_view.cli_any_input(
                 'Generating mails list again failed (%s).' % err)
     hkml_view.shell_mode_end(slist)
     slist.data = {'mail_idx_key_map': mail_idx_key_map,
+                  'mails_effects': display_rule,
                   'collapsed_mails': {},
                   'data_generator': data_generator,
                   }
@@ -606,10 +607,12 @@ def mails_display_effect_callback(slist, line_idx):
         return mail_display_effect.effect
     return slist.effect_normal
 
-def show_mails_list(screen, text_lines, mail_idx_key_map, data_generator=None):
+def show_mails_list(screen, text_lines, mail_idx_key_map, display_rule,
+                    data_generator=None):
     slist = hkml_view.ScrollableList(screen, text_lines,
                            get_mails_list_input_handlers())
     slist.data = {'mail_idx_key_map': mail_idx_key_map,
+                  'mails_effects': display_rule,
                   'collapsed_mails': {},
                   'data_generator': data_generator,
                   }
@@ -620,14 +623,14 @@ def show_mails_list(screen, text_lines, mail_idx_key_map, data_generator=None):
 
 def gen_show_mails_list(screen, data_generator):
     hkml_view.shell_mode_start(screen)
-    text, mail_idx_key_map, err = data_generator.generate()
+    text, mail_idx_key_map, display_rule, err = data_generator.generate()
     if err is not None:
         return hkml_view.cli_any_input(
                 'Failed mails list generating (%s).' % err)
     hkml_view.shell_mode_end(screen)
 
     return show_mails_list(screen, text.split('\n'), mail_idx_key_map,
-                           data_generator)
+                           display_rule, data_generator)
 
 class MailsListDataGenerator:
     fn = None
@@ -638,5 +641,20 @@ class MailsListDataGenerator:
         self.args = args
 
     def generate(self):
-        # returns text, mail_idx_key_map, and error
-        return self.fn(self.args)
+        # returns text, mail_idx_key_map, display_effect_rule, and error
+        text, mail_idx_key_map, err = self.fn(self.args)
+        if self.args.dim_old is None:
+            return text, mail_idx_key_map, display_effect_rule, err
+
+        display_effect_rule = MailDisplayEffect(interactive=False)
+        display_effect_rule.effect = hkml_view.ScrollableList.effect_dim
+        display_effect_rule.min_date = 'min'
+        max_date_str = ' '.join(self.args.dim_old)
+        for separator in ['-', ':']:
+            max_date_str.replace(separator, ' ')
+        try:
+            display_effect_rule.max_date = datetime.datetime(
+                    *[int(x) for x in max_date_str.split()]).astimezone()
+        except Exception as e:
+            err = 'wrong --dim_old (%s)' % self.args.dim_old
+        return text, mail_idx_key_map, display_effect_rule, err
