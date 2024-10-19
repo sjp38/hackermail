@@ -119,8 +119,13 @@ def set_mail(mail, overwrite=False):
         return
 
     cache = get_active_mails_cache()
+    msgid = mail.get_field('message-id')
     if mail.gitid is not None and mail.gitdir is not None:
         key = get_cache_key(mail.gitid, mail.gitdir)
+        # msgid_key_map has introduced from v1.1.6
+        if not 'msgid_key_map' in cache:
+            cache['msgid_key_map'] = {}
+        cache['msgid_key_map'][msgid] = key
     else:
         key = mail.get_field('message-id')
     if overwrite is False:
