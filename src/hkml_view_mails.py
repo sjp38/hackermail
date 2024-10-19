@@ -378,10 +378,10 @@ class MailDisplayEffect:
     def effect_str(self):
         return {
                 hkml_view.ScrollableList.effect_normal: 'no effect',
+                hkml_view.ScrollableList.effect_dim: 'dim',
                 hkml_view.ScrollableList.effect_bold: 'bold',
                 hkml_view.ScrollableList.effect_italic: 'italic',
                 hkml_view.ScrollableList.effect_blink: 'blink',
-                hkml_view.ScrollableList.effect_dim: 'dim',
                 hkml_view.ScrollableList.effect_reverse: 'reverse',
                 hkml_view.ScrollableList.effect_underline: 'underline',
                 }[self.effect]
@@ -438,6 +438,9 @@ class MailDisplayEffect:
                     text='Normal', handle_fn=handle_selection,
                     data=hkml_view.ScrollableList.effect_normal),
                 hkml_view.CliSelection(
+                    text='Dim', handle_fn=handle_selection,
+                    data=hkml_view.ScrollableList.effect_dim),
+                hkml_view.CliSelection(
                     text='Bold', handle_fn=handle_selection,
                     data=hkml_view.ScrollableList.effect_bold),
                 hkml_view.CliSelection(
@@ -446,9 +449,6 @@ class MailDisplayEffect:
                 hkml_view.CliSelection(
                     text='Blink', handle_fn=handle_selection,
                     data=hkml_view.ScrollableList.effect_blink),
-                hkml_view.CliSelection(
-                    text='Dim', handle_fn=handle_selection,
-                    data=hkml_view.ScrollableList.effect_dim),
                 hkml_view.CliSelection(
                     text='Reverse', handle_fn=handle_selection,
                     data=hkml_view.ScrollableList.effect_reverse),
