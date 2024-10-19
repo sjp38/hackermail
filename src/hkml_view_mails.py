@@ -644,7 +644,7 @@ class MailsListDataGenerator:
         # returns text, mail_idx_key_map, display_effect_rule, and error
         text, mail_idx_key_map, err = self.fn(self.args)
         if self.args.dim_old is None:
-            return text, mail_idx_key_map, display_effect_rule, err
+            return text, mail_idx_key_map, None, err
 
         display_effect_rule = MailDisplayEffect(interactive=False)
         display_effect_rule.effect = hkml_view.ScrollableList.effect_dim
