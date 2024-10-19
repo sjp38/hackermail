@@ -801,6 +801,25 @@ def get_mails(source, fetch, since, until,
     mails.reverse()
     return mails
 
+def get_mails_from_multiple_sources(
+        sources, do_fetch, since, until, min_nr_mails, max_nr_mails,
+        source_types, do_pisearch):
+    mails = []
+    msgids = {}
+    for idx, source in enumerate(sources):
+        for mail in get_mails(
+                source, do_fetch, since, until, min_nr_mails, max_nr_mails,
+                None, source_types[idx], do_pisearch):
+            msgid = mail.get_field('message-id')
+            if not msgid in msgids:
+                mails.append(mail)
+            msgids[msgid] = True
+
+    if max_nr_mails is not None:
+        mails = mails[:max_nr_mails]
+
+    return mails
+
 def last_listed_mails():
     cache = get_mails_lists_cache()
     last_key = sorted(cache.keys(), key=lambda x: cache[x]['date'])[-1]
@@ -876,20 +895,11 @@ def get_mails_list(args):
 
     timestamp = time.time()
     runtime_profile = []
-    mails_to_show = []
-    msgids = {}
-    for idx, source in enumerate(args.sources):
-        for mail in get_mails(
-                source, args.fetch, args.since, args.until,
-                args.min_nr_mails, args.max_nr_mails, None,
-                source_type=args.source_type[idx], pisearch=args.pisearch):
-            msgid = mail.get_field('message-id')
-            if not msgid in msgids:
-                mails_to_show.append(mail)
-            msgids[msgid] = True
+    mails_to_show = get_mails_from_multiple_sources(
+            args.sources, args.fetch, args.since, args.until,
+            args.min_nr_mails, args.max_nr_mails, args.source_type,
+            args.pisearch)
     runtime_profile = [['get_mails', time.time() - timestamp]]
-    if args.max_nr_mails is not None:
-        mails_to_show = mails_to_show[:args.max_nr_mails]
 
     to_show, mail_idx_key_map = mails_to_str(
             mails_to_show, MailListFilter(args), MailListDecorator(args), None,
