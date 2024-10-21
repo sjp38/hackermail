@@ -78,7 +78,7 @@ def thread_str(mail_id, dont_use_internet, show_url):
     list_decorator.show_runtime_profile = False
 
     return hkml_list.mails_to_str(
-            mails_to_show, find_ancestors_from_cache=False, mails_filter=None,
+            mails_to_show, do_find_ancestors_from_cache=False, mails_filter=None,
             list_decorator=list_decorator, show_thread_of=mail_id,
             runtime_profile=[], stat_only=False, stat_authors=False)
 
