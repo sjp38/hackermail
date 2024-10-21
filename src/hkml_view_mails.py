@@ -651,7 +651,7 @@ class MailsListDataGenerator:
         display_effect_rule.min_date = 'min'
         max_date_str = ' '.join(self.args.dim_old)
         for separator in ['-', ':']:
-            max_date_str.replace(separator, ' ')
+            max_date_str = max_date_str.replace(separator, ' ')
         try:
             display_effect_rule.max_date = datetime.datetime(
                     *[int(x) for x in max_date_str.split()]).astimezone()
