@@ -643,7 +643,7 @@ class MailsListDataGenerator:
     def generate(self):
         # returns text, mail_idx_key_map, display_effect_rule, and error
         text, mail_idx_key_map, err = self.fn(self.args)
-        if self.args.dim_old is None:
+        if not hasattr(self.args, 'dim_old') or self.args.dim_old is None:
             return text, mail_idx_key_map, None, err
 
         display_effect_rule = MailDisplayEffect(interactive=False)
