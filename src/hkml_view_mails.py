@@ -632,6 +632,15 @@ def gen_show_mails_list(screen, data_generator):
     return show_mails_list(screen, text.split('\n'), mail_idx_key_map,
                            display_rule, data_generator)
 
+def parse_date(date_str):
+    for s in ['-', ':']:
+        date_str = date_str.replace(s, ' ')
+    try:
+        return datetime.datetime(
+                *[int(x) for x in date_str.split()]).astimezone(), None
+    except Exception as e:
+        return None, '%s' % e
+
 class MailsListDataGenerator:
     fn = None
     args = None
@@ -649,12 +658,8 @@ class MailsListDataGenerator:
         display_effect_rule = MailDisplayEffect(interactive=False)
         display_effect_rule.effect = hkml_view.ScrollableList.effect_dim
         display_effect_rule.min_date = 'min'
-        max_date_str = ' '.join(self.args.dim_old)
-        for separator in ['-', ':']:
-            max_date_str = max_date_str.replace(separator, ' ')
-        try:
-            display_effect_rule.max_date = datetime.datetime(
-                    *[int(x) for x in max_date_str.split()]).astimezone()
-        except Exception as e:
-            err = 'wrong --dim_old (%s)' % self.args.dim_old
+        display_effect_rule.max_date, err = parse_date(
+                ' '.join(self.args.dim_old))
+        if err is not None:
+            err = 'wrong --dim_old (%s)' % err
         return text, mail_idx_key_map, display_effect_rule, err
