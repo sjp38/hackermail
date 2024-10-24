@@ -19,3 +19,5 @@
 - Suggest dimming old mails from 'hkml list'
   - Check last 'hkml list' time of the given mail source and suggest dimming
     the old mails.
+- parse_date: Support HH:MM only input
+- parse_date: Provide more appropriate help message for the format
