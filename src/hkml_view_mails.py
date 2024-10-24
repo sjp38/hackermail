@@ -362,7 +362,7 @@ def menu_collapse_expand(mail_slist, selection):
     hkml_view.shell_mode_start(slist)
 
 def parse_date(date_str):
-    for s in ['-', ':']:
+    for s in ['-', ':', '/']:
         date_str = date_str.replace(s, ' ')
     try:
         return datetime.datetime(
