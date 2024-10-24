@@ -361,6 +361,15 @@ def menu_collapse_expand(mail_slist, selection):
     collapse_focused_thread(None, slist)
     hkml_view.shell_mode_start(slist)
 
+def parse_date(date_str):
+    for s in ['-', ':']:
+        date_str = date_str.replace(s, ' ')
+    try:
+        return datetime.datetime(
+                *[int(x) for x in date_str.split()]).astimezone(), None
+    except Exception as e:
+        return None, '%s' % e
+
 class MailDisplayEffect:
     min_date = None
     max_date = None
@@ -402,11 +411,9 @@ class MailDisplayEffect:
         if answer == 'min':
             self.min_date = answer
         else:
-            try:
-                self.min_date = datetime.datetime(
-                        *[int(x) for x in answer.split()]).astimezone()
-            except Exception as e:
-                hkml_view.cli_any_input(e)
+            self.min_date, err = parse_date(answer)
+            if err is not None:
+                hkml_view.cli_any_input(err)
                 return
         q = hkml_view.CliQuestion(
                 prompt='Maximum date (inclusive, YYYY MM DD HH MM or max)')
@@ -416,11 +423,9 @@ class MailDisplayEffect:
         if answer == 'max':
             self.max_date = answer
         else:
-            try:
-                self.max_date = datetime.datetime(
-                        *[int(x) for x in answer.split()]).astimezone()
-            except Exception as e:
-                hkml_view.cli_any_input(e)
+            self.max_date, err = parse_date(answer)
+            if err is not None:
+                hkml_view.cli_any_input(err)
                 return
 
     def __init__(self, interactive):
@@ -631,15 +636,6 @@ def gen_show_mails_list(screen, data_generator):
 
     return show_mails_list(screen, text.split('\n'), mail_idx_key_map,
                            display_rule, data_generator)
-
-def parse_date(date_str):
-    for s in ['-', ':']:
-        date_str = date_str.replace(s, ' ')
-    try:
-        return datetime.datetime(
-                *[int(x) for x in date_str.split()]).astimezone(), None
-    except Exception as e:
-        return None, '%s' % e
 
 class MailsListDataGenerator:
     fn = None
