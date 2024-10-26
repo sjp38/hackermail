@@ -37,11 +37,16 @@ def parse_date_arg(tokens):
     return parse_date(date_str)
 
 def add_date_arg(parser, option_name, help_msg):
-    help_msg += ' '.join([
-        'Format: YYYY MM DD HH MM.',
-        '"-", "/", ":" are treated as space.',
+    format_msg = ' '.join([
+        'Date arguments format is "YYYY MM DD HH MM".',
+        '"-", "/", ":" on date input are treated as space.',
         '"YYYY MM DD" or "HH MM" also supported.',
-        '\'yesterday\' can be used instead of YYYY MM DD.'])
+        '\'yesterday\' can be used instead of "YYYY MM DD".'])
+    if parser.epilog is None:
+        parser.epilog = format_msg
+    elif parser.epilog.find(format_msg) == -1:
+        parser.epilog += format_msg
+    help_msg += ' Format: show end of this message.'
     parser.add_argument(
             option_name, metavar='<date token>', nargs='+',
             help=help_msg)
