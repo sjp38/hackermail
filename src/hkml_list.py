@@ -22,30 +22,6 @@ import hkml_thread
 import hkml_view
 import hkml_view_mails
 
-class MailsList:
-    txt = None
-    mail_idx_to_mail_cache_key = None
-    date = None
-
-    def __init__(self, txt, mail_idx_to_cache_key, date):
-        self.txt = txt
-        self.map_idx_to_mail_cache_key = mail_idx_to_cache_key
-        self.date = date
-        if self.date is None:
-            self.date = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
-
-    def to_kvpairs(self):
-        return {
-                'output': self.txt,
-                'index_to_cache_key': self.mail_idx_to_mail_cache_key,
-                'date': self.date
-                }
-
-    @classmethod
-    def from_kvpairs(cls, kvpairs):
-        self = cls(kvpairs['output'], kvpairs['index_to_cache_key'],
-                   kvpairs['date'])
-
 '''
 Contains list command generated outputs to cache for later fast processing.
 Keys are the json string of the list command arguments, or 'thread_output'.
