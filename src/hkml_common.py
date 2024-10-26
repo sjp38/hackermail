@@ -28,3 +28,20 @@ def parse_date(date_str):
         return datetime.datetime(*numbers).astimezone(), None
     except Exception as e:
         return None, '%s' % e
+
+def parse_date_arg(tokens):
+    try:
+        date_str = ' '.join(tokens)
+    except Exception as e:
+        return None, 'tokens to string conversion fail (%s)' % e
+    return parse_date(date_str)
+
+def add_date_arg(parser, option_name, help_msg):
+    help_msg += ' '.join([
+        'Format: YYYY MM DD HH MM.',
+        '"-", "/", ":" are treated as space.',
+        '"YYYY MM DD" or "HH MM" also supported.',
+        '\'yesterday\' can be used instead of YYYY MM DD.'])
+    parser.add_argument(
+            option_name, metavar='<date token>', nargs='+',
+            help=help_msg)
