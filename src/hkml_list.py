@@ -863,7 +863,7 @@ def show_list(text, to_stdout, to_less, mail_idx_key_map):
         return
     hkml_open.pr_with_pager_if_needed(text)
 
-def get_mails_list(args):
+def __main(args):
     # return text to show, mail_idx_key_map, and error
     if args.source_type is not None:
         if len(args.source_type) == 1:
@@ -949,8 +949,8 @@ def get_mails_list(args):
 def main(args):
     if not args.stdout and not args.use_less:
         return hkml_view.gen_view_mails_list(
-                hkml_view_mails.MailsListDataGenerator(get_mails_list, args))
-    to_show, mail_idx_key_map, err = get_mails_list(args)
+                hkml_view_mails.MailsListDataGenerator(__main, args))
+    to_show, mail_idx_key_map, err = __main(args)
     if err is not None:
         print(err)
         exit(1)
