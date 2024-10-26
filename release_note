@@ -1,5 +1,10 @@
 This file contains major changes in each version since v1.0.0
 
+v1.1.7
+- Support more flexible date formats
+- list: Suggest setting --dim_old to last same list generated time
+- list: Sort patch series in series order
+
 v1.1.6
 - Implement a menu for adding display effects to mails of specific dates range
 - list: Support public inbox link URL as mails source
