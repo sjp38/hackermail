@@ -78,6 +78,17 @@ def get_list_for(key):
         return None, None
     return outputs['output'], outputs['index_to_cache_key']
 
+def get_cache_creation_date(key):
+    cache = get_mails_lists_cache()
+    if not key in cache:
+        return None
+    outputs = cache[key]
+    # <v1.1.7 version doesn't have 'create_date' field
+    if not 'create_date' in outputs:
+        return None
+    return datetime.datetime.strptime(
+            outputs['create_date'], '%Y-%m-%d-%H-%M-%S')
+
 def get_last_mails_list():
     cache = get_mails_lists_cache()
     keys = [k for k in cache]
@@ -888,6 +899,14 @@ def __main(args):
     else:
         for source in args.sources:
             invalidate_cached_outputs(source)
+
+    if args.dim_old is None:
+        last_date = get_cache_creation_date(lists_cache_key)
+        if last_date is not None:
+            print('seems you read the list at %s' % last_date)
+            answer = input('shall I set --dim_old to the date? [y/N] ')
+            if answer.lower() == 'y':
+                args.dim_old = [last_date.strftime('%Y-%m-%d %H:%M')]
 
     if args.since is None:
         since = datetime.datetime.now() - datetime.timedelta(days=3)
