@@ -14,6 +14,7 @@ import xml.etree.ElementTree as ET
 
 import _hkml
 import hkml_cache
+import hkml_common
 import hkml_fetch
 import hkml_open
 import hkml_tag
@@ -682,9 +683,9 @@ def get_mails_from_git(mail_list, since, until,
         cmd = base_cmd + []
 
         if since is not None:
-            cmd += ['--since=%s' % since]
+            cmd += ['--since=%s' % since.strftime('%Y-%m-%d')]
         if until:
-            cmd += ['--until=%s' % until]
+            cmd += ['--until=%s' % until.strftime('%Y-%m-%d')]
         if max_nr_mails is not None:
             cmd += ['-n', max_nr_mails]
         try:
@@ -904,9 +905,19 @@ def get_mails_list(args):
         for source in args.sources:
             invalidate_cached_outputs(source)
 
+    since = None
+    if args.since is not None:
+        since, err = hkml_common.parse_date(args.since)
+        if err is not None:
+            return None, None, 'parsing --since fail (%s)' % err
+    until = None
+    if args.until is not None:
+        until, err = hkml_common.parse_date(args.until)
+        if err is not None:
+            return None, None, 'parsing --until fail (%s)' % err
+
     if args.nr_mails is not None:
-        args.since = (datetime.datetime.strptime(args.until, '%Y-%m-%d') -
-                      datetime.timedelta(days=1)).strftime('%Y-%m-%d')
+        since = (until - datetime.timedelta(days=1)).strftime('%Y-%m-%d')
         args.min_nr_mails = args.nr_mails
         args.max_nr_mails = args.nr_mails
 
@@ -919,7 +930,7 @@ def get_mails_list(args):
     timestamp = time.time()
     runtime_profile = []
     mails_to_show = get_mails_from_multiple_sources(
-            args.sources, args.fetch, args.since, args.until,
+            args.sources, args.fetch, since, until,
             args.min_nr_mails, args.max_nr_mails, args.source_type,
             args.pisearch)
     runtime_profile = [['get_mails', time.time() - timestamp]]
