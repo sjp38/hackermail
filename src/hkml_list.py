@@ -529,6 +529,14 @@ def sort_filter_mails(mails_to_show, do_find_ancestors_from_cache,
     descend = not list_decorator.ascend
     if descend:
         threads.reverse()
+
+    # sort patch series in patch order
+    # should we have an option to skip this sort?  maybe, but the usage of such
+    # option is unclear.
+    for thread in threads:
+        thread.replies.sort(key=lambda t: t.series[0] if t.series is not None
+                             else 0)
+
     runtime_profile.append(['threads_extract', time.time() - timestamp])
 
     by_pr_idx = []
