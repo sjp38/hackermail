@@ -905,14 +905,16 @@ def get_mails_list(args):
         for source in args.sources:
             invalidate_cached_outputs(source)
 
-    since = None
-    if args.since is not None:
-        since, err = hkml_common.parse_date(args.since)
+    if args.since is None:
+        since = datetime.datetime.now() - datetime.timedelta(days=3)
+    else:
+        since, err = hkml_common.parse_date_arg(args.since)
         if err is not None:
             return None, None, 'parsing --since fail (%s)' % err
-    until = None
-    if args.until is not None:
-        until, err = hkml_common.parse_date(args.until)
+    if args.until is None:
+        until = datetime.datetime.now() + datetime.timedelta(days=1)
+    else:
+        until, err = hkml_common.parse_date_arg(args.until)
         if err is not None:
             return None, None, 'parsing --until fail (%s)' % err
 
@@ -1000,11 +1002,6 @@ def add_decoration_arguments(parser):
             help='max length of the list')
 
 def set_argparser(parser=None):
-    DEFAULT_SINCE = datetime.datetime.now() - datetime.timedelta(days=3)
-    DEFAULT_SINCE = DEFAULT_SINCE.strftime('%Y-%m-%d')
-    DEFAULT_UNTIL = datetime.datetime.now() + datetime.timedelta(days=1)
-    DEFAULT_UNTIL = DEFAULT_UNTIL.strftime('%Y-%m-%d')
-
     parser.description = 'list mails'
     _hkml.set_manifest_option(parser)
     # What mails to show
@@ -1023,12 +1020,8 @@ def set_argparser(parser=None):
             '--source_type', nargs='+',
             choices=['mailing_list', 'msgid', 'mbox', 'clipboard', 'tag'],
             help='type of sources')
-    parser.add_argument('--since', metavar='<date>', type=str,
-            default=DEFAULT_SINCE,
-            help='show mails sent after a specific date. Format: YYYY-MM-DD')
-    parser.add_argument('--until', metavar='<date>', type=str,
-            default=DEFAULT_UNTIL,
-            help='show mails sent before a specific date. Format: YYYY-MM-DD')
+    hkml_common.add_date_arg(parser, '--since', 'show mails sent after this.')
+    hkml_common.add_date_arg(parser, '--until', 'show mails sent before this.')
     parser.add_argument('--nr_mails', type=int, metavar='<int>',
             help='number of mails to list')
     parser.add_argument('--min_nr_mails', metavar='<int>', type=int,
