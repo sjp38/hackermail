@@ -911,7 +911,8 @@ def __main(args):
     if args.dim_old is None:
         last_date = get_cache_creation_date(lists_cache_key)
         if last_date is not None:
-            print('seems you read the list at %s' % last_date)
+            print('seems you read the list at %s (%s before)' %
+                  (last_date, datetime.datetime.now() - last_date))
             answer = input('shall I set --dim_old to the date? [y/N] ')
             if answer.lower() == 'y':
                 args.dim_old = [last_date.strftime('%Y-%m-%d %H:%M')]
