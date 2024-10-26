@@ -365,8 +365,19 @@ def parse_date(date_str):
     for s in ['-', ':', '/']:
         date_str = date_str.replace(s, ' ')
     try:
-        return datetime.datetime(
-                *[int(x) for x in date_str.split()]).astimezone(), None
+        numbers = [int(x) for x in date_str.split()]
+    except ValueError as e:
+        return None, '%s' % e
+    if not len(numbers) in [5, 3, 2]:
+        # 5: year month day hour minute
+        # 3: year month day
+        # 2: hour minute
+        return None, 'only 5, 3, or 2 numbers are supported date input'
+    if len(numbers) == 2:
+        now = datetime.datetime.now().astimezone()
+        numbers = [now.year, now.month, now.day] + numbers
+    try:
+        return datetime.datetime(*numbers).astimezone(), None
     except Exception as e:
         return None, '%s' % e
 
