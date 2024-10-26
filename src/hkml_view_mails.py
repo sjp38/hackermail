@@ -5,6 +5,7 @@ import curses
 import datetime
 
 import hkml_cache
+import hkml_common
 import hkml_export
 import hkml_forward
 import hkml_list
@@ -361,34 +362,6 @@ def menu_collapse_expand(mail_slist, selection):
     collapse_focused_thread(None, slist)
     hkml_view.shell_mode_start(slist)
 
-def parse_date(date_str):
-    for s in ['-', ':', '/']:
-        date_str = date_str.replace(s, ' ')
-    fields = date_str.split()
-    if not len(fields) in [5, 3, 2]:
-        return None, 'unexpected number of fields (%d)' % len(fields)
-    if fields[0] == 'yesterday' and len(fields) == 3:
-        now = datetime.datetime.now().astimezone()
-        yesterday = now - datetime.timedelta(1)
-        fields = [yesterday.year, yesterday.month, yesterday.day,
-                  fields[1], fields[2]]
-    try:
-        numbers = [int(x) for x in fields]
-    except ValueError as e:
-        return None, '%s' % e
-    if not len(numbers) in [5, 3, 2]:
-        # 5: year month day hour minute
-        # 3: year month day
-        # 2: hour minute
-        return None, 'only 5, 3, or 2 numbers are supported date input'
-    if len(numbers) == 2:
-        now = datetime.datetime.now().astimezone()
-        numbers = [now.year, now.month, now.day] + numbers
-    try:
-        return datetime.datetime(*numbers).astimezone(), None
-    except Exception as e:
-        return None, '%s' % e
-
 class MailDisplayEffect:
     min_date = None
     max_date = None
@@ -430,7 +403,7 @@ class MailDisplayEffect:
         if answer == 'min':
             self.min_date = answer
         else:
-            self.min_date, err = parse_date(answer)
+            self.min_date, err = hkml_common.parse_date(answer)
             if err is not None:
                 hkml_view.cli_any_input(err)
                 return
@@ -442,7 +415,7 @@ class MailDisplayEffect:
         if answer == 'max':
             self.max_date = answer
         else:
-            self.max_date, err = parse_date(answer)
+            self.max_date, err = hkml_common.parse_date(answer)
             if err is not None:
                 hkml_view.cli_any_input(err)
                 return
@@ -673,7 +646,7 @@ class MailsListDataGenerator:
         display_effect_rule = MailDisplayEffect(interactive=False)
         display_effect_rule.effect = hkml_view.ScrollableList.effect_dim
         display_effect_rule.min_date = 'min'
-        display_effect_rule.max_date, err = parse_date(
+        display_effect_rule.max_date, err = hkml_common.parse_date(
                 ' '.join(self.args.dim_old))
         if err is not None:
             err = 'wrong --dim_old (%s)' % err
