@@ -646,8 +646,8 @@ class MailsListDataGenerator:
         display_effect_rule = MailDisplayEffect(interactive=False)
         display_effect_rule.effect = hkml_view.ScrollableList.effect_dim
         display_effect_rule.min_date = 'min'
-        display_effect_rule.max_date, err = hkml_common.parse_date(
-                ' '.join(self.args.dim_old))
+        display_effect_rule.max_date, err = hkml_common.parse_date_arg(
+                self.args.dim_old)
         if err is not None:
             err = 'wrong --dim_old (%s)' % err
         return text, mail_idx_key_map, display_effect_rule, err
