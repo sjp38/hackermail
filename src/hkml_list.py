@@ -30,6 +30,7 @@ Values are a dict containing below key/values.
 - 'index_to_cache_key': a dict having the mail index on the output as keys, and
   the corresponding mail's key in the mail cache as values.
 - 'date': last accessed date
+- 'create_date': created date
 '''
 mails_lists_cache = None
 
@@ -124,7 +125,12 @@ def cache_list_str(key, list_str, mail_idx_key_map):
     cache[key] = {
             'output': '\n'.join(['# (cached output)', list_str]),
             'index_to_cache_key': mail_idx_key_map,
-            'date': datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')}
+            # last referenced date
+            'date': datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S'),
+            # created date
+            'create_date': datetime.datetime.now().strftime(
+                '%Y-%m-%d-%H-%M-%S'),
+            }
     max_cache_sz = 64
     if len(cache) == max_cache_sz:
         keys = sorted(cache.keys(), key=lambda x: cache[x]['date'])
