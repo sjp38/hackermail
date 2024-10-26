@@ -364,8 +364,16 @@ def menu_collapse_expand(mail_slist, selection):
 def parse_date(date_str):
     for s in ['-', ':', '/']:
         date_str = date_str.replace(s, ' ')
+    fields = date_str.split()
+    if not len(fields) in [5, 3, 2]:
+        return None, 'unexpected number of fields (%d)' % len(fields)
+    if fields[0] == 'yesterday' and len(fields) == 3:
+        now = datetime.datetime.now().astimezone()
+        yesterday = now - datetime.timedelta(1)
+        fields = [yesterday.year, yesterday.month, yesterday.day,
+                  fields[1], fields[2]]
     try:
-        numbers = [int(x) for x in date_str.split()]
+        numbers = [int(x) for x in fields]
     except ValueError as e:
         return None, '%s' % e
     if not len(numbers) in [5, 3, 2]:
