@@ -395,8 +395,10 @@ class MailDisplayEffect:
             ])
 
     def interactive_setup_dates(self):
-        q = hkml_view.CliQuestion(
-                prompt='Minimum date (inclusive, YYYY MM DD HH MM or min)')
+        prompt = ' '.join(['Minimum date.',
+                           hkml_common.date_format_description(),
+                           '"min" keyword is also supported.'])
+        q = hkml_view.CliQuestion(prompt=prompt)
         answer, _, err = q.ask_input(data=None, handle_fn=None)
         if err is not None:
             return
@@ -407,8 +409,10 @@ class MailDisplayEffect:
             if err is not None:
                 hkml_view.cli_any_input(err)
                 return
-        q = hkml_view.CliQuestion(
-                prompt='Maximum date (inclusive, YYYY MM DD HH MM or max)')
+        prompt = ' '.join(['Maximum date.',
+                           hkml_common.date_format_description(),
+                           '"max" keyword is also supported.'])
+        q = hkml_view.CliQuestion(prompt=prompt)
         answer, _, err = q.ask_input(data=None, handle_fn=None)
         if err is not None:
             return
