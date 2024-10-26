@@ -44,11 +44,7 @@ def date_format_description():
         '\'yesterday\' can be used instead of "YYYY MM DD".'])
 
 def add_date_arg(parser, option_name, help_msg):
-    format_msg = ' '.join([
-        'Date arguments format is "YYYY MM DD HH MM".',
-        '"-", "/", ":" on date input are treated as space.',
-        '"YYYY MM DD" or "HH MM" also supported.',
-        '\'yesterday\' can be used instead of "YYYY MM DD".'])
+    format_msg = date_format_description()
     if parser.epilog is None:
         parser.epilog = format_msg
     elif parser.epilog.find(format_msg) == -1:
