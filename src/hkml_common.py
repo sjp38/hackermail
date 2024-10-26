@@ -6,13 +6,12 @@ def parse_date(date_str):
     for s in ['-', ':', '/']:
         date_str = date_str.replace(s, ' ')
     fields = date_str.split()
-    if not len(fields) in [5, 3, 2]:
+    if not len(fields) in [5, 3, 2, 1]:
         return None, 'unexpected number of fields (%d)' % len(fields)
-    if fields[0] == 'yesterday' and len(fields) == 3:
+    if fields[0] == 'yesterday':
         now = datetime.datetime.now().astimezone()
         yesterday = now - datetime.timedelta(1)
-        fields = [yesterday.year, yesterday.month, yesterday.day,
-                  fields[1], fields[2]]
+        fields = [yesterday.year, yesterday.month, yesterday.day] + fields[1:]
     try:
         numbers = [int(x) for x in fields]
     except ValueError as e:
