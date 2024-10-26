@@ -40,6 +40,7 @@ def args_to_lists_cache_key(args):
     dict_ = copy.deepcopy(args.__dict__)
     dict_['fetch'] = False
     dict_['stdout'] = False
+    dict_['dim_old'] = None
 
     return json.dumps(dict_, sort_keys=True)
 
