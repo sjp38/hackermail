@@ -68,6 +68,7 @@ def get_cached_list_outputs(key):
     if not key in cache:
         return None
     outputs = cache[key]
+    # update last accessed date
     outputs['date'] = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
     return outputs
 
