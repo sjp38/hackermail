@@ -16,3 +16,19 @@
 - Implement monitoring output pushing to git repo
 - Add "apply dim_old?" question for threads
 - Put dim_old selection as sub menu of display effects
+- Do --dim_old by default; easy to clear
+- Check 'curl' existance for --pisearch
+      File "/home/damian/hackermail/src/hkml_list.py", line 815, in get_mails
+        return get_mails_from_pisearch(source, pisearch)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "/home/damian/hackermail/src/hkml_list.py", line 754, in get_mails_from_pisearch
+        if subprocess.call(['curl', query_url, '-o', query_output],
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "/usr/lib/python3.11/subprocess.py", line 389, in call
+        with Popen(*popenargs, **kwargs) as p:
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "/usr/lib/python3.11/subprocess.py", line 1024, in __init__
+        self._execute_child(args, executable, preexec_fn, close_fds,
+      File "/usr/lib/python3.11/subprocess.py", line 1901, in _execute_child
+        raise child_exception_type(errno_num, err_msg, err_filename)
+    FileNotFoundError: [Errno 2] No such file or directory: 'curl'
