@@ -941,11 +941,13 @@ def __main(args):
             invalidate_cached_outputs(source)
 
     if args.dim_old is None:
-        last_date = get_cache_creation_date(lists_cache_key)
-        if last_date is not None:
-            print('seems you read the list at %s (%s before)' %
-                  (last_date, datetime.datetime.now() - last_date))
-            answer = input('shall I set --dim_old to the date? [y/N] ')
+        last_dates = get_cache_creation_dates(lists_cache_key)
+        if len(last_dates) > 0:
+            print('seems you read the list at')
+            for last_date in last_dates:
+                print('- %s (%s before)' %
+                      (last_date, datetime.datetime.now() - last_date))
+            answer = input('shall I set --dim_old to %s? [y/N] ' % last_date)
             if answer.lower() == 'y':
                 args.dim_old = [last_date.strftime('%Y-%m-%d %H:%M')]
 
