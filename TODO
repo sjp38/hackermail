@@ -16,4 +16,3 @@
 - Implement monitoring output pushing to git repo
 - Add "apply dim_old?" question for threads
 - Put dim_old selection as sub menu of display effects
-- Do --dim_old by default; easy to clear

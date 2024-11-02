@@ -1,5 +1,9 @@
 This file contains major changes in each version since v1.0.0
 
+v1.1.8
+- Add up to ten other dates selection for --dim_old suggestion
+- Set --dim_old suggestion answer as 'y' by default
+
 v1.1.7
 - Support more flexible date formats
 - list: Suggest setting --dim_old to last same list generated time
