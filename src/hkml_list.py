@@ -917,8 +917,7 @@ def suggest_dim_old(key):
         answer = idx
     return [last_dates[answer].strftime('%Y-%m-%d %H:%M')]
 
-def __main(args):
-    # return text to show, mail_idx_key_map, and error
+def validate_set_source_type(args):
     if args.source_type is not None:
         if len(args.source_type) == 1:
             args.source_type = args.source_type * len(args.sources)
@@ -936,6 +935,10 @@ def __main(args):
                     'you could use --source_type option to solve this'])
                 return None, None, err
             args.source_type.append(source_type)
+
+def __main(args):
+    # return text to show, mail_idx_key_map, and error
+    validate_set_source_type(args)
 
     lists_cache_key = args_to_lists_cache_key(args)
     use_cached_output = True
