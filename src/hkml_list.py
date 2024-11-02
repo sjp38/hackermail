@@ -959,7 +959,7 @@ def __main(args):
         for source in args.sources:
             invalidate_cached_outputs(source)
 
-    if args.dim_old is None:
+    if args.dim_old is None and args.stdout is False:
         args.dim_old = suggest_dim_old(lists_cache_key)
 
     if args.since is None:
