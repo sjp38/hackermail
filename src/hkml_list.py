@@ -31,6 +31,7 @@ Values are a dict containing below key/values.
   the corresponding mail's key in the mail cache as values.
 - 'date': last accessed date
 - 'create_date': created date
+- 'create_dates': last up to ten created dates of same key
 '''
 mails_lists_cache = None
 
@@ -135,11 +136,19 @@ def writeback_list_output_cache():
 def cache_list_str(key, list_str, mail_idx_key_map):
     cache = get_mails_lists_cache()
     now_str = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
+    create_dates = []
+    if key in cache:
+        last_cached = cache[key]
+        # 'create_dates' field has added after v1.1.7
+        if 'create_dates' in last_cached:
+            create_dates = last_cached['create_dates'][-9:]
+    create_dates.append(now_str)
     cache[key] = {
             'output': '\n'.join(['# (cached output)', list_str]),
             'index_to_cache_key': mail_idx_key_map,
             'date': now_str,        # last referenced date
             'create_date': now_str, # create date
+            'create_dates': create_dates    # last up to ten create dates
             }
     max_cache_sz = 64
     if len(cache) == max_cache_sz:
