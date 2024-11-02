@@ -79,6 +79,21 @@ def get_list_for(key):
         return None, None
     return outputs['output'], outputs['index_to_cache_key']
 
+def get_cache_creation_dates(key):
+    cache = get_mails_lists_cache()
+    if not key in cache:
+        return []
+    outputs = cache[key]
+    date_strs = []
+    # 'create_dates' field has added after v1.1.7
+    if 'create_dates' in outputs:
+        date_strs = outputs['create_dates']
+    # 'create_date' field has added after v1.1.6, removed after v1.1.7
+    if 'create_date' in outputs:
+        date_strs = [outputs['create_date']]
+    return [datetime.datetime.strptime(s, '%Y-%m-%d-%H-%M-%S')
+            for s in date_strs]
+
 def get_cache_creation_date(key):
     cache = get_mails_lists_cache()
     if not key in cache:
