@@ -134,14 +134,12 @@ def writeback_list_output_cache():
 
 def cache_list_str(key, list_str, mail_idx_key_map):
     cache = get_mails_lists_cache()
+    now_str = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
     cache[key] = {
             'output': '\n'.join(['# (cached output)', list_str]),
             'index_to_cache_key': mail_idx_key_map,
-            # last referenced date
-            'date': datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S'),
-            # created date
-            'create_date': datetime.datetime.now().strftime(
-                '%Y-%m-%d-%H-%M-%S'),
+            'date': now_str,        # last referenced date
+            'create_date': now_str, # create date
             }
     max_cache_sz = 64
     if len(cache) == max_cache_sz:
