@@ -944,12 +944,17 @@ def __main(args):
         last_dates = get_cache_creation_dates(lists_cache_key)
         if len(last_dates) > 0:
             print('seems you read the list at')
-            for last_date in last_dates:
-                print('- %s (%s before)' %
-                      (last_date, datetime.datetime.now() - last_date))
-            answer = input('shall I set --dim_old to %s? [y/N] ' % last_date)
-            if answer.lower() == 'y':
-                args.dim_old = [last_date.strftime('%Y-%m-%d %H:%M')]
+            for idx, last_date in enumerate(last_dates):
+                print(' %2d. %s (%s before)' %
+                      (idx, last_date, datetime.datetime.now() - last_date))
+            print('\nMay I set --dim_old to one of those?')
+            answer = input(
+                    'Enter the index of the date if yes, "N" otherwise: ')
+            try:
+                args.dim_old = [last_dates[int(answer)].strftime(
+                    '%Y-%m-%d %H:%M')]
+            except:
+                pass
 
     if args.since is None:
         since = datetime.datetime.now() - datetime.timedelta(days=3)
