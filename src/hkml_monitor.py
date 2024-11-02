@@ -133,6 +133,7 @@ def mail_in(mail, mails):
 
 def get_mails_to_check(request, ignore_mails_before, last_monitored_mails):
     mails_to_check = []
+    msgids = {}
     for mailing_list in request.mailing_lists:
         if not mailing_list in last_monitored_mails:
             last_monitored_mails[mailing_list] = None
@@ -150,7 +151,11 @@ def get_mails_to_check(request, ignore_mails_before, last_monitored_mails):
                 commits_range=commits_range)
         if len(fetched_mails) > 0:
             last_monitored_mails[mailing_list] = fetched_mails[-1]
-        mails_to_check += fetched_mails
+        for mail in fetched_mails:
+            msgid = mail.get_field('message-id')
+            if not msgid in msgids:
+                mails_to_check.append(mail)
+            msgids[msgid] = True
     return mails_to_check
 
 def get_mails_to_noti(mails_to_check, request):
