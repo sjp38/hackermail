@@ -15,7 +15,7 @@ version may have different features/interface.
 Pre-requisites
 ==============
 
-To use full features of hackermail, your system shoule be able to use below
+To use full features of hackermail, your system should be able to use below
 commands.
 
 - `git`: Required for reading mails from the mailing list.
