@@ -84,11 +84,16 @@ def get_cache_creation_date(key):
     if not key in cache:
         return None
     outputs = cache[key]
-    # <v1.1.7 version doesn't have 'create_date' field
-    if not 'create_date' in outputs:
-        return None
-    return datetime.datetime.strptime(
-            outputs['create_date'], '%Y-%m-%d-%H-%M-%S')
+    # 'create_dates' field has added after v1.1.7
+    if 'create_dates' in outputs:
+        return datetime.datetime.strptime(
+                outputs['create_dates'][-1], '%Y-%m-%d-%H-%M-%S')
+
+    # 'create_date' field has added after v1.1.6
+    if 'create_date' in outputs:
+        return datetime.datetime.strptime(
+                outputs['create_date'], '%Y-%m-%d-%H-%M-%S')
+    return None
 
 def get_last_mails_list():
     cache = get_mails_lists_cache()
