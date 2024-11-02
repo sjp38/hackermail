@@ -751,6 +751,12 @@ def get_mails_from_pisearch(mailing_list, query_str):
     query_str = query_str.replace(' ', '+')
     query_url = '%s/%s/?q=%s&x=A' % (pi_url, mailing_list, query_str)
     _, query_output = tempfile.mkstemp(prefix='hkml_pisearch_atom-')
+    try:
+        subprocess.check_output(['which', 'curl'])
+    except:
+        print('"which curl" fails')
+        return []
+
     if subprocess.call(['curl', query_url, '-o', query_output],
                        stderr=subprocess.DEVNULL) != 0:
         print('fetching query result from %s failed' % query_url)
