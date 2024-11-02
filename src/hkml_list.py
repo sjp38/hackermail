@@ -30,7 +30,7 @@ Values are a dict containing below key/values.
 - 'index_to_cache_key': a dict having the mail index on the output as keys, and
   the corresponding mail's key in the mail cache as values.
 - 'date': last accessed date
-- 'create_date': created date
+- 'create_date': created date.  Removed after v1.1.7.
 - 'create_dates': last up to ten created dates of same key
 '''
 mails_lists_cache = None
@@ -89,7 +89,7 @@ def get_cache_creation_date(key):
         return datetime.datetime.strptime(
                 outputs['create_dates'][-1], '%Y-%m-%d-%H-%M-%S')
 
-    # 'create_date' field has added after v1.1.6
+    # 'create_date' field has added after v1.1.6, removed after v1.1.7
     if 'create_date' in outputs:
         return datetime.datetime.strptime(
                 outputs['create_date'], '%Y-%m-%d-%H-%M-%S')
@@ -152,7 +152,6 @@ def cache_list_str(key, list_str, mail_idx_key_map):
             'output': '\n'.join(['# (cached output)', list_str]),
             'index_to_cache_key': mail_idx_key_map,
             'date': now_str,        # last referenced date
-            'create_date': now_str, # create date
             'create_dates': create_dates    # last up to ten create dates
             }
     max_cache_sz = 64
