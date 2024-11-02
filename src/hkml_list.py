@@ -906,13 +906,16 @@ def suggest_dim_old(key):
     for idx, last_date in enumerate(last_dates):
         print(' %2d. %s (%s before)' %
               (idx, last_date, datetime.datetime.now() - last_date))
-    print('\nMay I set --dim_old to one of those?')
-    answer = input(
-            'Enter the index of the date if yes, "N" otherwise: ')
-    try:
-        return [last_dates[int(answer)].strftime('%Y-%m-%d %H:%M')]
-    except:
+    answer = input(' '.join([
+        '\nMay I set --dim_old to the latest one (%s)?' % last_date,
+        '[Y/n/index of another date]: ']))
+    if answer.lower() == 'n':
         return None
+    try:
+        answer = int(answer)
+    except:
+        answer = idx
+    return [last_dates[answer].strftime('%Y-%m-%d %H:%M')]
 
 def __main(args):
     # return text to show, mail_idx_key_map, and error
