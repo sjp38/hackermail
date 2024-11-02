@@ -43,6 +43,7 @@ def args_to_lists_cache_key(args):
     dict_['fetch'] = False
     dict_['stdout'] = False
     dict_['dim_old'] = None
+    dict_['read_dates'] = False
 
     return json.dumps(dict_, sort_keys=True)
 
@@ -1007,6 +1008,15 @@ def __main(args):
     return to_show, mail_idx_key_map, None
 
 def main(args):
+    if args.read_dates:
+        validate_set_source_type(args)
+        lists_cache_key = args_to_lists_cache_key(args)
+        last_dates = get_cache_creation_dates(lists_cache_key)
+        for idx, last_date in enumerate(last_dates):
+            print(' %2d. %s (%s before)' %
+                  (idx, last_date, datetime.datetime.now() - last_date))
+        return 0
+
     if not args.stdout and not args.use_less:
         return hkml_view.gen_view_mails_list(
                 hkml_view_mails.MailsListDataGenerator(__main, args))
@@ -1113,3 +1123,5 @@ def set_argparser(parser=None):
             help='print to stdout instead of using the pager')
     parser.add_argument('--use_less', action='store_true',
                         help='use \'less\' for output paging')
+    parser.add_argument('--read_dates', action='store_true',
+                        help='print last dates that read the list')
