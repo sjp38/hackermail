@@ -898,6 +898,21 @@ def show_list(text, to_stdout, to_less, mail_idx_key_map):
         return
     hkml_open.pr_with_pager_if_needed(text)
 
+def suggest_dim_old(key):
+    last_dates = get_cache_creation_dates(key)
+    if len(last_dates) > 0:
+        print('seems you read the list at')
+        for idx, last_date in enumerate(last_dates):
+            print(' %2d. %s (%s before)' %
+                  (idx, last_date, datetime.datetime.now() - last_date))
+        print('\nMay I set --dim_old to one of those?')
+        answer = input(
+                'Enter the index of the date if yes, "N" otherwise: ')
+        try:
+            return [last_dates[int(answer)].strftime('%Y-%m-%d %H:%M')]
+        except:
+            return None
+
 def __main(args):
     # return text to show, mail_idx_key_map, and error
     if args.source_type is not None:
@@ -941,20 +956,7 @@ def __main(args):
             invalidate_cached_outputs(source)
 
     if args.dim_old is None:
-        last_dates = get_cache_creation_dates(lists_cache_key)
-        if len(last_dates) > 0:
-            print('seems you read the list at')
-            for idx, last_date in enumerate(last_dates):
-                print(' %2d. %s (%s before)' %
-                      (idx, last_date, datetime.datetime.now() - last_date))
-            print('\nMay I set --dim_old to one of those?')
-            answer = input(
-                    'Enter the index of the date if yes, "N" otherwise: ')
-            try:
-                args.dim_old = [last_dates[int(answer)].strftime(
-                    '%Y-%m-%d %H:%M')]
-            except:
-                pass
+        args.dim_old = suggest_dim_old(lists_cache_key)
 
     if args.since is None:
         since = datetime.datetime.now() - datetime.timedelta(days=3)
