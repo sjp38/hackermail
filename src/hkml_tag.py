@@ -48,6 +48,18 @@ def ask_sync_before_change():
             return True
     return False
 
+def get_mails_of_subject_tag(subject, tag):
+    mails = []
+    tags_map = read_tags_file()
+    for msgid in tags_map:
+        tags = tags_map[msgid]['tags']
+        if not tag in tags:
+            continue
+        mail = _hkml.Mail(kvpairs=tags_map[msgid]['mail'])
+        if mail.subject == subject:
+            mails.append(mail)
+    return mails
+
 def handle_before_drafts(mail, tags_map):
     for msgid in tags_map:
         tags = tags_map[msgid]['tags']
