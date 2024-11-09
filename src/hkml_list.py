@@ -805,7 +805,7 @@ def disable_ancestor_finding_for_tags(args):
             return
     args.do_find_ancestors_from_cache = False
 
-def __main(args):
+def get_text_mail_idx_key_map(args):
     # return text to show, mail_idx_key_map, and error
     validate_set_source_type(args)
     disable_ancestor_finding_for_tags(args)
@@ -889,8 +889,9 @@ def main(args):
 
     if not args.stdout and not args.use_less:
         return hkml_view.gen_view_mails_list(
-                hkml_view_mails.MailsListDataGenerator(__main, args))
-    to_show, mail_idx_key_map, err = __main(args)
+                hkml_view_mails.MailsListDataGenerator(
+                    get_text_mail_idx_key_map, args))
+    to_show, mail_idx_key_map, err = get_text_mail_idx_key_map(args)
     if err is not None:
         print(err)
         exit(1)

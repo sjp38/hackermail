@@ -133,7 +133,7 @@ def list_thread_of_focused_mail(c, slist):
     args = hkml_list_args_for_msgid(msgid)
     gen_show_mails_list(
             slist.screen, MailsListDataGenerator(
-                hkml_list.__main, args))
+                hkml_list.get_text_mail_idx_key_map, args))
 
 def refresh_list(slist):
     comment_lines = []
