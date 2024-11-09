@@ -112,15 +112,6 @@ def get_cache_creation_date(key):
                 outputs['create_date'], '%Y-%m-%d-%H-%M-%S')
     return None
 
-def get_last_mails_list():
-    cache = get_mails_lists_cache()
-    keys = [k for k in cache]
-    key = sorted(keys, key=lambda x: cache[x]['date'])[-1]
-    outputs = get_cached_list_outputs(key)
-    if outputs is None:
-        return None, None
-    return outputs['output'], outputs['index_to_cache_key']
-
 def map_idx_to_mail_cache_key(mail, mail_idx_key_map):
     idx = mail.pridx
     key = hkml_cache.get_cache_key(

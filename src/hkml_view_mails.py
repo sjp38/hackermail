@@ -615,7 +615,7 @@ def after_input_handle_callback(slist):
     mail_idx_key_map = slist.data['mail_idx_key_map']
     if mail_idx_key_map is None:
         return
-    _, last_mail_idx_key_map = hkml_list.get_last_mails_list()
+    _, last_mail_idx_key_map = _hkml_list_cache.get_last_mails_list()
     if mail_idx_key_map != last_mail_idx_key_map:
         _hkml_list_cache.cache_list_str(
                 'thread_output', '\n'.join(slist.lines), mail_idx_key_map)
