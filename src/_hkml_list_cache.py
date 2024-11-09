@@ -117,7 +117,7 @@ def writeback_list_output_cache():
     with open(list_output_cache_file_path(), 'w') as f:
         json.dump(cache, f, indent=4)
 
-def cache_list_str(key, list_str, mail_idx_key_map):
+def set_item(key, list_str, mail_idx_key_map):
     cache = get_mails_lists_cache()
     now_str = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
     create_dates = []

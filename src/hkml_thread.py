@@ -96,8 +96,7 @@ def main(args):
             args.dont_use_internet, args.url)
     if args.dont_use_internet is False:
         hkml_cache.writeback_mails()
-        _hkml_list_cache.cache_list_str(
-                'thread_output', to_show, mail_idx_key_map)
+        _hkml_list_cache.set_item('thread_output', to_show, mail_idx_key_map)
     hkml_list.show_list(to_show, to_stdout=False, to_less=args.no_interactive,
                         mail_idx_key_map=mail_idx_key_map)
 

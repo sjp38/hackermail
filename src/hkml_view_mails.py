@@ -128,8 +128,7 @@ def get_thread_txt_mail_idx_key_map(msgid):
     thread_txt, mail_idx_key_map = hkml_thread.thread_str(
             msgid, False, False)
     hkml_cache.writeback_mails()
-    _hkml_list_cache.cache_list_str(
-            'thread_output', thread_txt, mail_idx_key_map)
+    _hkml_list_cache.set_item('thread_output', thread_txt, mail_idx_key_map)
     return thread_txt, mail_idx_key_map, None
 
 def list_thread_of_focused_mail(c, slist):
@@ -617,7 +616,7 @@ def after_input_handle_callback(slist):
         return
     _, last_mail_idx_key_map = _hkml_list_cache.get_last_mails_list()
     if mail_idx_key_map != last_mail_idx_key_map:
-        _hkml_list_cache.cache_list_str(
+        _hkml_list_cache.set_item(
                 'thread_output', '\n'.join(slist.lines), mail_idx_key_map)
 
 def mails_display_effect_callback(slist, line_idx):

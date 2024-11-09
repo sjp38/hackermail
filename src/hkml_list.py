@@ -837,7 +837,7 @@ def __main(args):
             MailListFilter(args), MailListDecorator(args), None,
             runtime_profile, args.stat_only, args.stat_authors)
     hkml_cache.writeback_mails()
-    _hkml_list_cache.cache_list_str(lists_cache_key, to_show, mail_idx_key_map)
+    _hkml_list_cache.set_item(lists_cache_key, to_show, mail_idx_key_map)
 
     return to_show, mail_idx_key_map, None
 
