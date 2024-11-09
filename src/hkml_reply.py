@@ -8,11 +8,14 @@ import hkml_list
 import hkml_send
 import hkml_write
 
-def format_reply(mail, attach_file):
+def format_reply_subject(mail):
     subject = mail.get_field('subject')
     if subject and subject.split()[0].lower() != 're:':
         subject = 'Re: %s' % subject
+    return subject
 
+def format_reply(mail, attach_file):
+    subject = format_reply_subject(mail)
     in_reply_to = mail.get_field('message-id')
     cc = [x for x in [mail.get_field('to'), mail.get_field('cc')] if x]
     to = [mail.get_field('from')]
