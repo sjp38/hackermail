@@ -75,12 +75,6 @@ def get_cached_list_outputs(key):
     outputs['date'] = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
     return outputs
 
-def get_list_for(key):
-    outputs = get_cached_list_outputs(key)
-    if outputs is None:
-        return None, None
-    return outputs['output'], outputs['index_to_cache_key']
-
 def map_idx_to_mail_cache_key(mail, mail_idx_key_map):
     idx = mail.pridx
     key = hkml_cache.get_cache_key(
@@ -837,7 +831,8 @@ def __main(args):
             if to_show is None:
                 return None, None, 'no valid last list output exists'
         else:
-            to_show, mail_idx_key_map = get_list_for(lists_cache_key)
+            to_show, mail_idx_key_map = _hkml_list_cache.get_list_for(
+                    lists_cache_key)
         if to_show is not None:
             writeback_list_output()
             return to_show, mail_idx_key_map, None
