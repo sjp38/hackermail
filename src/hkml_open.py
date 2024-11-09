@@ -6,6 +6,7 @@ import subprocess
 import tempfile
 
 import _hkml
+import _hkml_list_cache
 import hkml_list
 import hkml_view
 
@@ -135,10 +136,10 @@ def main(args):
         noti_current_index = False
         args.target = int(args.target)
 
-    mail = hkml_list.get_mail(args.target)
+    mail = _hkml_list_cache.get_mail(args.target)
     if mail is None:
         print('mail is not cached.  Try older list')
-        mail = hkml_list.get_mail(args.target, not_thread_idx=True)
+        mail = _hkml_list_cache.get_mail(args.target, not_thread_idx=True)
         if mail is None:
             print('even not an older list index.  Maybe git commit?')
             error = show_git_commit('%s' % args.target, args.stdout,

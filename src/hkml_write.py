@@ -8,6 +8,7 @@ import sys
 import tempfile
 
 import _hkml
+import _hkml_list_cache
 import hkml_list
 import hkml_send
 
@@ -110,7 +111,7 @@ def write_send_mail(draft_mail, subject, in_reply_to, to, cc, body, attach,
 def main(args):
     draft_mail = None
     if args.draft is not None:
-        draft_mail = hkml_list.get_mail(args.draft)
+        draft_mail = _hkml_list_cache.get_mail(args.draft)
         if draft_mail is None:
             print('failed getting draft mail of the index.')
             exit(1)

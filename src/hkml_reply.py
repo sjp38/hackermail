@@ -4,6 +4,7 @@ import subprocess
 import tempfile
 
 import _hkml
+import _hkml_list_cache
 import hkml_list
 import hkml_send
 import hkml_write
@@ -51,7 +52,7 @@ def reply(mail, attach_files, format_only):
 
 def main(args):
     if args.mail.isdigit():
-        mail = hkml_list.get_mail(int(args.mail))
+        mail = _hkml_list_cache.get_mail(int(args.mail))
     elif args.mail == 'clipboard':
         mails, err = _hkml.read_mails_from_clipboard()
         if err != None:

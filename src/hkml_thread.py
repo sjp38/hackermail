@@ -53,7 +53,7 @@ def thread_str(mail_id, dont_use_internet, show_url):
     mails_to_show = None
     if dont_use_internet is False:
         if msgid is None:
-            mail = hkml_list.get_mail(mail_id, not_thread_idx=True)
+            mail = _hkml_list_cache.get_mail(mail_id, not_thread_idx=True)
             if mail is None:
                 print('wrong <mail_id>')
                 exit(1)

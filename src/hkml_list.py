@@ -176,29 +176,6 @@ def cache_list_str(key, list_str, mail_idx_key_map):
         del cache[keys[0]]
     writeback_list_output_cache()
 
-def get_mail(idx, not_thread_idx=False):
-    cache = get_mails_lists_cache()
-    sorted_keys = sorted(cache.keys(), key=lambda x: cache[x]['date'])
-    if not_thread_idx and sorted_keys[-1] == 'thread_output':
-        last_key = sorted_keys[-2]
-    else:
-        last_key = sorted_keys[-1]
-    idx_to_keys = cache[last_key]['index_to_cache_key']
-    idx_str = '%d' % idx
-    if not idx_str in idx_to_keys:
-        return None
-
-    output_string_lines = cache[last_key]['output'].split('\n')
-    if output_string_lines[0].startswith('# last reference: '):
-        output_string_lines = output_string_lines[2:]
-    output_string_lines = ['# last reference: %d' % idx,
-                           '#'] + output_string_lines
-    cache[last_key]['output'] = '\n'.join(output_string_lines)
-    writeback_list_output()
-
-    mail_key = idx_to_keys[idx_str]
-    return hkml_cache.get_mail(key=mail_key)
-
 def map_idx_to_mail_cache_key(mail, mail_idx_key_map):
     idx = mail.pridx
     key = hkml_cache.get_cache_key(

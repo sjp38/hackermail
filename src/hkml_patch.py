@@ -191,7 +191,7 @@ def main(args):
     if type(args.mail) is _hkml.Mail:
         mail = args.mail
     elif args.mail.isdigit():
-        mail = hkml_list.get_mail(int(args.mail))
+        mail = _hkml_list_cache.get_mail(int(args.mail))
     elif args.mail == 'clipboard':
         mails, err = _hkml.read_mails_from_clipboard()
         if err != None:

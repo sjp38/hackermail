@@ -4,6 +4,7 @@ import json
 import os
 
 import _hkml
+import _hkml_list_cache
 import hkml_list
 import hkml_sync
 
@@ -94,7 +95,7 @@ def do_add_tags(mail, tags):
     write_tags_file(tags_map, sync_after)
 
 def add_tags(mail_idx, tags):
-    mail = hkml_list.get_mail(mail_idx)
+    mail = _hkml_list_cache.get_mail(mail_idx)
     if mail is None:
         print('failed getting mail of the index.  Maybe wrong index?')
         exit(1)
@@ -118,7 +119,7 @@ def do_remove_tags(mail, tags):
     write_tags_file(tags_map, sync_after)
 
 def remove_tags(mail_idx, tags):
-    mail = hkml_list.get_mail(mail_idx)
+    mail = _hkml_list_cache.get_mail(mail_idx)
     if mail is None:
         print('failed getting mail of the index.  Maybe wrong index?')
         exit(1)
