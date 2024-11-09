@@ -83,6 +83,7 @@ def reply_mail(slist, mail):
     drafts = hkml_tag.get_mails_of_subject_tag(reply_subject, 'drafts')
     draft = None
     if len(drafts) > 0:
+        drafts = sorted(drafts, key=lambda d: d.date)
         print('you have drafts of subject "%s" written at below dates' %
               reply_subject)
         for idx, draft_mail in enumerate(drafts):
