@@ -10,39 +10,6 @@ import _hkml_list_cache
 import hkml_cache
 import hkml_list
 
-def get_thread_mails_from_web(msgid):
-    if msgid.startswith('<') and msgid.endswith('>'):
-        msgid = msgid[1:-1]
-    # public inbox url could also be received.
-    if msgid.startswith('http'):
-        fields = msgid.split('/')
-        for field in fields:
-            if '@' in field:
-                msgid = field
-                break
-    tmp_path = tempfile.mkdtemp(prefix='hkml_thread_')
-    pi_url = _hkml.get_manifest()['site']
-    down_url = '%s/all/%s/t.mbox.gz' % (pi_url, msgid)
-    if subprocess.call(['wget', down_url, '--directory-prefix=%s' % tmp_path],
-                       stderr=subprocess.DEVNULL) != 0:
-        return None, 'downloading mbox failed'
-    if subprocess.call(['gunzip', os.path.join(tmp_path, 't.mbox.gz')]) != 0:
-        return None, 'extracting mbox failed'
-    mails = hkml_list.get_mails(
-            os.path.join(tmp_path, 't.mbox'), False, None, None, None, None)
-    os.remove(os.path.join(tmp_path, 't.mbox'))
-    os.rmdir(tmp_path)
-
-    deduped_mails = []
-    msgids = {}
-    for mail in mails:
-        msgid = mail.get_field('message-id')
-        if msgid in msgids:
-            continue
-        msgids[msgid] = True
-        deduped_mails.append(mail)
-    return deduped_mails, None
-
 def thread_str(mail_id, dont_use_internet, show_url):
     if mail_id.isdigit():
         mail_id = int(mail_id)
@@ -59,7 +26,7 @@ def thread_str(mail_id, dont_use_internet, show_url):
                 exit(1)
             msgid = mail.get_field('message-id')
 
-        mails_to_show, err = get_thread_mails_from_web(msgid)
+        mails_to_show, err = hkml_list.get_thread_mails_from_web(msgid)
         if err is not None:
             print(err)
         else:

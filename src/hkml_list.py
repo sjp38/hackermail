@@ -647,6 +647,39 @@ def fetch_get_mails_from_git(fetch, source, since, until, min_nr_mails,
 
     return mails
 
+def get_thread_mails_from_web(msgid):
+    if msgid.startswith('<') and msgid.endswith('>'):
+        msgid = msgid[1:-1]
+    # public inbox url could also be received.
+    if msgid.startswith('http'):
+        fields = msgid.split('/')
+        for field in fields:
+            if '@' in field:
+                msgid = field
+                break
+    tmp_path = tempfile.mkdtemp(prefix='hkml_thread_')
+    pi_url = _hkml.get_manifest()['site']
+    down_url = '%s/all/%s/t.mbox.gz' % (pi_url, msgid)
+    if subprocess.call(['wget', down_url, '--directory-prefix=%s' % tmp_path],
+                       stderr=subprocess.DEVNULL) != 0:
+        return None, 'downloading mbox failed'
+    if subprocess.call(['gunzip', os.path.join(tmp_path, 't.mbox.gz')]) != 0:
+        return None, 'extracting mbox failed'
+    mails = get_mails(
+            os.path.join(tmp_path, 't.mbox'), False, None, None, None, None)
+    os.remove(os.path.join(tmp_path, 't.mbox'))
+    os.rmdir(tmp_path)
+
+    deduped_mails = []
+    msgids = {}
+    for mail in mails:
+        msgid = mail.get_field('message-id')
+        if msgid in msgids:
+            continue
+        msgids[msgid] = True
+        deduped_mails.append(mail)
+    return deduped_mails, None
+
 def get_mails(source, fetch, since, until,
               min_nr_mails, max_nr_mails, commits_range=None,
               source_type=None, pisearch=None):
@@ -681,7 +714,7 @@ def get_mails(source, fetch, since, until,
         return get_mails_from_pisearch(source, pisearch)
 
     if source_type == 'msgid':
-        mails, err = hkml_thread.get_thread_mails_from_web(source)
+        mails, err = get_thread_mails_from_web(source)
         if err is not None:
             print('getting mails for msgid %s failed' % source)
             exit(1)

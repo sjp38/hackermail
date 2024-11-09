@@ -256,7 +256,7 @@ def do_export_patch(data, selection):
 def handle_patches_of_mail(mail, list_mails=None):
     msgid = mail.get_field('message-id')
     if list_mails is None:
-        list_mails, err = hkml_thread.get_thread_mails_from_web(msgid)
+        list_mails, err = hkml_list.get_thread_mails_from_web(msgid)
         if err is not None:
             hkml_view.cli_any_input('get_thread_mails_from_web() failed (%s)' %
                                     err)
