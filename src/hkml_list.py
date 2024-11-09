@@ -121,15 +121,6 @@ def get_last_mails_list():
         return None, None
     return outputs['output'], outputs['index_to_cache_key']
 
-def get_last_list():
-    cache = get_mails_lists_cache()
-    keys = [k for k in cache if k != 'thread_output']
-    key = sorted(keys, key=lambda x: cache[x]['date'])[-1]
-    outputs = get_cached_list_outputs(key)
-    if outputs is None:
-        return None
-    return outputs['output'], outputs['index_to_cache_key']
-
 def map_idx_to_mail_cache_key(mail, mail_idx_key_map):
     idx = mail.pridx
     key = hkml_cache.get_cache_key(
@@ -882,7 +873,7 @@ def __main(args):
         use_cached_output = False
     if use_cached_output and (args.fetch == False or args.sources == []):
         if args.sources == []:
-            to_show, mail_idx_key_map = get_last_list()
+            to_show, mail_idx_key_map = _hkml_list_cache.get_last_list()
             if to_show is None:
                 return None, None, 'no valid last list output exists'
         else:
