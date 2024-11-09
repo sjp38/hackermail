@@ -24,15 +24,6 @@ mails_lists_cache = None
 def list_output_cache_file_path():
     return os.path.join(_hkml.get_hkml_dir(), 'list_output_cache')
 
-def args_to_lists_cache_key(args):
-    dict_ = copy.deepcopy(args.__dict__)
-    dict_['fetch'] = False
-    dict_['stdout'] = False
-    dict_['dim_old'] = None
-    dict_['read_dates'] = False
-
-    return json.dumps(dict_, sort_keys=True)
-
 def get_mails_lists_cache():
     global mails_lists_cache
 
