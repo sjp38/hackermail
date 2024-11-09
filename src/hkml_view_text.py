@@ -10,7 +10,6 @@ import _hkml_list_cache
 import hkml_cache
 import hkml_list
 import hkml_open
-import hkml_thread
 import hkml_view
 import hkml_view_mails
 

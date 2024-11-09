@@ -14,7 +14,6 @@ import hkml_open
 import hkml_patch
 import hkml_reply
 import hkml_tag
-import hkml_thread
 import hkml_view
 import hkml_view_text
 import hkml_write
