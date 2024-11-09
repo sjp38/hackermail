@@ -10,5 +10,4 @@
 - Give selection to tag removing menu
 - Update lore manifest automatically
 - Implement monitoring output pushing to git repo
-- Add "apply dim_old?" question for threads
 - Put dim_old selection as sub menu of display effects
