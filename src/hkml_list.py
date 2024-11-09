@@ -130,13 +130,6 @@ def get_last_list():
         return None
     return outputs['output'], outputs['index_to_cache_key']
 
-def get_last_thread():
-    cache = get_mails_lists_cache()
-    outputs = get_cached_list_outputs('thread_output')
-    if outputs is None:
-        return None
-    return outputs['output'], outputs['index_to_cache_key']
-
 def map_idx_to_mail_cache_key(mail, mail_idx_key_map):
     idx = mail.pridx
     key = hkml_cache.get_cache_key(
