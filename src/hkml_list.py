@@ -150,11 +150,6 @@ def invalidate_cached_outputs(source):
     for key in keys_to_del:
         del cache[key]
 
-def writeback_list_output_cache():
-    cache = get_mails_lists_cache()
-    with open(list_output_cache_file_path(), 'w') as f:
-        json.dump(cache, f, indent=4)
-
 def map_idx_to_mail_cache_key(mail, mail_idx_key_map):
     idx = mail.pridx
     key = hkml_cache.get_cache_key(
