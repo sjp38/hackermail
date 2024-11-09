@@ -762,7 +762,10 @@ def suggest_dim_old(key):
               (idx, last_date, datetime.datetime.now() - last_date))
     answer = input(' '.join([
         '\nMay I set --dim_old to the latest one (%s)?' % last_date,
-        '[Y/n/index of another date]: ']))
+        '[Y/n/index of another date/custom --dim_old argument]: ']))
+    answer_fields = answer.split()
+    if len(answer_fields) > 1:
+        return answer_fields
     if answer.lower() == 'n':
         return None
     try:
