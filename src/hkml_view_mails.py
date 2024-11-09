@@ -79,8 +79,28 @@ def get_attach_files():
 
 def reply_mail(slist, mail):
     hkml_view.shell_mode_start(slist)
-    files = get_attach_files()
-    hkml_reply.reply(mail, attach_files=files, format_only=None)
+    reply_subject = hkml_reply.format_reply_subject(mail)
+    drafts = hkml_tag.get_mails_of_subject_tag(reply_subject, 'drafts')
+    draft = None
+    if len(drafts) > 0:
+        print('you have drafts of subject "%s" written at below dates' %
+              reply_subject)
+        for idx, draft_mail in enumerate(drafts):
+            print('%d. %s' % (idx, draft_mail.date))
+        answer = input(' '.join(
+            ['Enter index of the draft to continue writing,',
+             'or "n" to write a new reply: ']))
+        try:
+            draft = drafts[int(answer)]
+        except:
+            pass
+    if draft is not None:
+        hkml_write.write_send_mail(
+                draft_mail=draft, subject=None, in_reply_to=None, to=None,
+                cc=None, body=None, attach=None, format_only=None)
+    else:
+        files = get_attach_files()
+        hkml_reply.reply(mail, attach_files=files, format_only=None)
     hkml_view.shell_mode_end(slist)
 
 def reply_focused_mail(c, slist):
