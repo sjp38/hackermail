@@ -937,9 +937,22 @@ def validate_set_source_type(args):
                 return None, None, err
             args.source_type.append(source_type)
 
+def disable_ancestor_finding_for_tags(args):
+    '''For tag-based listing, do_find_ancestors_from_cache can add unexpected
+    mails of different tags.  Prevent it.'''
+    if args.do_find_ancestors_from_cache is False:
+        return
+    if len(args.source_type) == 0:
+        return
+    for source_type in args.source_type:
+        if source_type != 'tag':
+            return
+    args.do_find_ancestors_from_cache = False
+
 def __main(args):
     # return text to show, mail_idx_key_map, and error
     validate_set_source_type(args)
+    disable_ancestor_finding_for_tags(args)
 
     lists_cache_key = args_to_lists_cache_key(args)
     use_cached_output = True
