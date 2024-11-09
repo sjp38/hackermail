@@ -6,6 +6,7 @@ import os
 import subprocess
 
 import _hkml
+import _hkml_list_cache
 import hkml_cache
 import hkml_list
 import hkml_open
