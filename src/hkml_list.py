@@ -81,21 +81,6 @@ def get_list_for(key):
         return None, None
     return outputs['output'], outputs['index_to_cache_key']
 
-def get_cache_creation_dates(key):
-    cache = get_mails_lists_cache()
-    if not key in cache:
-        return []
-    outputs = cache[key]
-    date_strs = []
-    # 'create_dates' field has added after v1.1.7
-    if 'create_dates' in outputs:
-        date_strs = outputs['create_dates']
-    # 'create_date' field has added after v1.1.6, removed after v1.1.7
-    if 'create_date' in outputs:
-        date_strs = [outputs['create_date']]
-    return [datetime.datetime.strptime(s, '%Y-%m-%d-%H-%M-%S')
-            for s in date_strs]
-
 def map_idx_to_mail_cache_key(mail, mail_idx_key_map):
     idx = mail.pridx
     key = hkml_cache.get_cache_key(
@@ -784,7 +769,7 @@ def show_list(text, to_stdout, to_less, mail_idx_key_map):
     hkml_open.pr_with_pager_if_needed(text)
 
 def suggest_dim_old(key):
-    last_dates = get_cache_creation_dates(key)
+    last_dates = _hkml_list_cache.get_cache_creation_dates(key)
     if len(last_dates) == 0:
         return None
     print('seems you read the list at')
@@ -908,7 +893,7 @@ def main(args):
     if args.read_dates:
         validate_set_source_type(args)
         lists_cache_key = args_to_lists_cache_key(args)
-        last_dates = get_cache_creation_dates(lists_cache_key)
+        last_dates = _hkml_list_cache.get_cache_creation_dates(lists_cache_key)
         for idx, last_date in enumerate(last_dates):
             print(' %2d. %s (%s before)' %
                   (idx, last_date, datetime.datetime.now() - last_date))
