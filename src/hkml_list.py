@@ -999,7 +999,7 @@ def __main(args):
     runtime_profile = [['get_mails', time.time() - timestamp]]
 
     to_show, mail_idx_key_map = mails_to_str(
-            mails_to_show, args.find_ancestors_from_cache,
+            mails_to_show, args.do_find_ancestors_from_cache,
             MailListFilter(args), MailListDecorator(args), None,
             runtime_profile, args.stat_only, args.stat_authors)
     hkml_cache.writeback_mails()
@@ -1100,7 +1100,8 @@ def set_argparser(parser=None):
     parser.add_argument('--max_nr_mails', metavar='<int>', type=int,
             help='maximum number of mails to list')
     parser.add_argument('--dont_find_ancestors_from_cache',
-                        action='store_false', dest='find_ancestors_from_cache',
+                        action='store_false',
+                        dest='do_find_ancestors_from_cache',
                         help='find missing thread ancestors from cache')
     parser.add_argument('--pisearch', metavar='<query>',
                         help='get mails via given public inbox search query')
