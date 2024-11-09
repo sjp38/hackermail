@@ -185,16 +185,6 @@ def get_mail(idx, not_thread_idx=False):
     mail_key = idx_to_keys[idx_str]
     return hkml_cache.get_mail(key=mail_key)
 
-def map_idx_to_mail_cache_key(mail, mail_idx_key_map):
-    idx = mail.pridx
-    key = hkml_cache.get_cache_key(
-            mail.gitid, mail.gitdir, mail.get_field('message-id'))
-
-    idx_str = '%d' % idx
-    if idx_str in mail_idx_key_map:
-        return
-    mail_idx_key_map[idx_str] = key
-
 def last_listed_mails():
     cache = get_mails_lists_cache()
     last_key = sorted(cache.keys(), key=lambda x: cache[x]['date'])[-1]
