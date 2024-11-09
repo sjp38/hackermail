@@ -61,11 +61,6 @@ def get_mails_lists_cache():
         mails_lists_cache = {}
     return mails_lists_cache
 
-def writeback_list_output():
-    cache = get_mails_lists_cache()
-    with open(list_output_cache_file_path(), 'w') as f:
-        json.dump(cache, f, indent=4)
-
 def map_idx_to_mail_cache_key(mail, mail_idx_key_map):
     idx = mail.pridx
     key = hkml_cache.get_cache_key(
@@ -825,7 +820,7 @@ def __main(args):
             to_show, mail_idx_key_map = _hkml_list_cache.get_list_for(
                     lists_cache_key)
         if to_show is not None:
-            writeback_list_output()
+            _hkml_list_cache.writeback_list_output()
             return to_show, mail_idx_key_map, None
     else:
         for source in args.sources:
