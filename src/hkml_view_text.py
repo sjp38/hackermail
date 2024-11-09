@@ -43,10 +43,11 @@ def menu_hkml_thread(data, answer):
     slist, selections, text = parse_menu_data(data, answer)
     hkml_view.shell_mode_end(slist)
     msgid = '<%s>' % text.split()[-1]
+    args = hkml_view_mails.hkml_list_args_for_msgid(msgid)
     hkml_view_mails.gen_show_mails_list(
             slist.screen,
             hkml_view_mails.MailsListDataGenerator(
-                get_thread_txt_mail_idx_key_map, msgid))
+                hkml_list.__main, args))
     hkml_view.shell_mode_start(slist)
 
 def menu_hkml_open(data, answer):
