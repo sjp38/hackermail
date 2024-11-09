@@ -96,22 +96,6 @@ def get_cache_creation_dates(key):
     return [datetime.datetime.strptime(s, '%Y-%m-%d-%H-%M-%S')
             for s in date_strs]
 
-def get_cache_creation_date(key):
-    cache = get_mails_lists_cache()
-    if not key in cache:
-        return None
-    outputs = cache[key]
-    # 'create_dates' field has added after v1.1.7
-    if 'create_dates' in outputs:
-        return datetime.datetime.strptime(
-                outputs['create_dates'][-1], '%Y-%m-%d-%H-%M-%S')
-
-    # 'create_date' field has added after v1.1.6, removed after v1.1.7
-    if 'create_date' in outputs:
-        return datetime.datetime.strptime(
-                outputs['create_date'], '%Y-%m-%d-%H-%M-%S')
-    return None
-
 def map_idx_to_mail_cache_key(mail, mail_idx_key_map):
     idx = mail.pridx
     key = hkml_cache.get_cache_key(
