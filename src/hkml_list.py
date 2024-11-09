@@ -48,19 +48,6 @@ def args_to_lists_cache_key(args):
 
     return json.dumps(dict_, sort_keys=True)
 
-def get_mails_lists_cache():
-    global mails_lists_cache
-
-    if mails_lists_cache is None:
-        if not os.path.isfile(list_output_cache_file_path()):
-            mails_lists_cache = {}
-        else:
-            with open(list_output_cache_file_path(), 'r') as f:
-                mails_lists_cache = json.load(f)
-    if mails_lists_cache is None:
-        mails_lists_cache = {}
-    return mails_lists_cache
-
 def map_idx_to_mail_cache_key(mail, mail_idx_key_map):
     idx = mail.pridx
     key = hkml_cache.get_cache_key(
