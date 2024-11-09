@@ -124,18 +124,17 @@ def forward_focused_mail(c, slist):
         return
     forward_mail(slist, mail)
 
-def get_thread_txt_mail_idx_key_map(msgid):
-    thread_txt, mail_idx_key_map = hkml_thread.thread_str(
-            msgid, False, False)
-    hkml_cache.writeback_mails()
-    _hkml_list_cache.set_item('thread_output', thread_txt, mail_idx_key_map)
-    return thread_txt, mail_idx_key_map, None
+def hkml_list_args_for_msgid(msgid):
+    parser = argparse.ArgumentParser()
+    hkml_list.set_argparser(parser)
+    return parser.parse_args([msgid])
 
 def list_thread_of_focused_mail(c, slist):
     msgid = get_focused_mail(slist).get_field('message-id')
+    args = hkml_list_args_for_msgid(msgid)
     gen_show_mails_list(
             slist.screen, MailsListDataGenerator(
-                get_thread_txt_mail_idx_key_map, msgid))
+                hkml_list.__main, args))
 
 def refresh_list(slist):
     comment_lines = []
