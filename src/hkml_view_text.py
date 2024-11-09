@@ -32,13 +32,6 @@ def menu_exec_git(data, answer):
     show_text_viewer(slist.screen, output)
     hkml_view.shell_mode_start(slist)
 
-def get_thread_txt_mail_idx_key_map(msgid):
-    thread_txt, mail_idx_key_map = hkml_thread.thread_str(msgid,
-            False, False)
-    hkml_cache.writeback_mails()
-    _hkml_list_cache.set_item('thread_output', thread_txt, mail_idx_key_map)
-    return thread_txt, mail_idx_key_map, None
-
 def menu_hkml_thread(data, answer):
     slist, selections, text = parse_menu_data(data, answer)
     hkml_view.shell_mode_end(slist)
