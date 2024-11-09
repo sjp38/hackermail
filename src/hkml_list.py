@@ -66,15 +66,6 @@ def writeback_list_output():
     with open(list_output_cache_file_path(), 'w') as f:
         json.dump(cache, f, indent=4)
 
-def get_cached_list_outputs(key):
-    cache = get_mails_lists_cache()
-    if not key in cache:
-        return None
-    outputs = cache[key]
-    # update last accessed date
-    outputs['date'] = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
-    return outputs
-
 def map_idx_to_mail_cache_key(mail, mail_idx_key_map):
     idx = mail.pridx
     key = hkml_cache.get_cache_key(
