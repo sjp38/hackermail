@@ -137,19 +137,6 @@ def get_last_thread():
         return None
     return outputs['output'], outputs['index_to_cache_key']
 
-def invalidate_cached_outputs(source):
-    keys_to_del = []
-    cache = get_mails_lists_cache()
-    for key in cache.keys():
-        try:
-            key_dict = json.loads(key)
-            if key_dict['source'] == source:
-                keys_to_del.append(key)
-        except:
-            pass
-    for key in keys_to_del:
-        del cache[key]
-
 def map_idx_to_mail_cache_key(mail, mail_idx_key_map):
     idx = mail.pridx
     key = hkml_cache.get_cache_key(
@@ -912,7 +899,7 @@ def __main(args):
             return to_show, mail_idx_key_map, None
     else:
         for source in args.sources:
-            invalidate_cached_outputs(source)
+            _hkml_list_cache.invalidate_cached_outputs(source)
 
     if args.dim_old is None and args.stdout is False:
         args.dim_old = suggest_dim_old(lists_cache_key)

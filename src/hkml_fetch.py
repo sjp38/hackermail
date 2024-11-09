@@ -12,7 +12,7 @@ import hkml_list
 def fetch_mail(mail_lists, quiet=False, epochs=1):
     site = _hkml.get_manifest()['site']
     for mlist in mail_lists:
-        hkml_list.invalidate_cached_outputs(mlist)
+        _hkml_list_cache.invalidate_cached_outputs(mlist)
         repo_paths = _hkml.mail_list_repo_paths(mlist)[:epochs]
         local_paths = _hkml.mail_list_data_paths(mlist)[:epochs]
 
