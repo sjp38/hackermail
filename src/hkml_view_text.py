@@ -54,7 +54,9 @@ def menu_hkml_open(data, answer):
     slist, selections, text = parse_menu_data(data, answer)
     hkml_view.shell_mode_end(slist)
     msgid = '<%s>' % text.split()[-1]
-    thread_txt, mail_idx_key_map, err = get_thread_txt_mail_idx_key_map(msgid)
+    args = hkml_view_mails.hkml_list_args_for_msgid(msgid)
+    args.stdout = True  # to bypass dim_old suggestion
+    thread_txt, mail_idx_key_map, err = hkml_list.__main(args)
     for idx, cache_key in mail_idx_key_map.items():
         mail = hkml_cache.get_mail(key=cache_key)
         if mail is None:
