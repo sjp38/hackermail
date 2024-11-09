@@ -6,6 +6,7 @@ import subprocess
 import tempfile
 
 import _hkml
+import _hkml_list_cache
 import hkml_cache
 import hkml_list
 
@@ -64,7 +65,7 @@ def thread_str(mail_id, dont_use_internet, show_url):
         else:
             mail_id = None
     if mails_to_show is None:
-        mails_to_show = hkml_list.last_listed_mails()
+        mails_to_show = _hkml_list_cache.last_listed_mails()
         # TODO: Support msgid
 
     nr_cols_in_line = int(os.get_terminal_size().columns * 9 / 10)

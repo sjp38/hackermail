@@ -880,19 +880,6 @@ def get_mails_from_multiple_sources(
 
     return mails
 
-def last_listed_mails():
-    cache = get_mails_lists_cache()
-    last_key = sorted(cache.keys(), key=lambda x: cache[x]['date'])[-1]
-    idx_to_keys = cache[last_key]['index_to_cache_key']
-    mails = []
-    for idx in sorted([int(idx) for idx in idx_to_keys.keys()]):
-        cache_key = idx_to_keys['%d' % idx]
-        mail = hkml_cache.get_mail(key=cache_key)
-        if mail is not None:
-            mail.pridx = int(idx)
-            mails.append(mail)
-    return mails
-
 def show_list(text, to_stdout, to_less, mail_idx_key_map):
     if to_stdout:
         print(text)

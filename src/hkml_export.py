@@ -4,7 +4,7 @@ import json
 import os
 
 import _hkml
-import hkml_list
+import _hkml_list_cache
 
 def export_mails(mails, export_file):
     if export_file[-5:] == '.json':
@@ -20,7 +20,7 @@ def export_mails(mails, export_file):
                 ['From hackermail Thu Jan  1 00:00:00 1970', mail.mbox,'']))
 
 def main(args):
-    mails = hkml_list.last_listed_mails()
+    mails = _hkml_list_cache.last_listed_mails()
     if args.range is not None:
         mails = [mail for mail in mails
                  if mail.pridx >= args.range[0] and mail.pridx < args.range[1]]

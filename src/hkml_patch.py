@@ -5,6 +5,7 @@ import subprocess
 import tempfile
 
 import _hkml
+import _hkml_list_cache
 import hkml_list
 import hkml_open
 
@@ -121,7 +122,7 @@ def find_mail_from_thread(thread, msgid):
             return found_mail
 
 def get_mail_with_replies(msgid):
-    mails = hkml_list.last_listed_mails()
+    mails = _hkml_list_cache.last_listed_mails()
     threads = hkml_list.threads_of(mails)
     for thread_root_mail in threads:
         mail_with_replies = find_mail_from_thread(thread_root_mail, msgid)
