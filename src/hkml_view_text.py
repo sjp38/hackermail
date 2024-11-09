@@ -35,7 +35,8 @@ def get_thread_txt_mail_idx_key_map(msgid):
     thread_txt, mail_idx_key_map = hkml_thread.thread_str(msgid,
             False, False)
     hkml_cache.writeback_mails()
-    hkml_list.cache_list_str('thread_output', thread_txt, mail_idx_key_map)
+    _hkml_list_cache.cache_list_str(
+            'thread_output', thread_txt, mail_idx_key_map)
     return thread_txt, mail_idx_key_map, None
 
 def menu_hkml_thread(data, answer):

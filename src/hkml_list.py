@@ -13,6 +13,7 @@ import time
 import xml.etree.ElementTree as ET
 
 import _hkml
+import _hkml_list_cache
 import hkml_cache
 import hkml_common
 import hkml_fetch
@@ -153,28 +154,6 @@ def writeback_list_output_cache():
     cache = get_mails_lists_cache()
     with open(list_output_cache_file_path(), 'w') as f:
         json.dump(cache, f, indent=4)
-
-def cache_list_str(key, list_str, mail_idx_key_map):
-    cache = get_mails_lists_cache()
-    now_str = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
-    create_dates = []
-    if key in cache:
-        last_cached = cache[key]
-        # 'create_dates' field has added after v1.1.7
-        if 'create_dates' in last_cached:
-            create_dates = last_cached['create_dates'][-9:]
-    create_dates.append(now_str)
-    cache[key] = {
-            'output': '\n'.join(['# (cached output)', list_str]),
-            'index_to_cache_key': mail_idx_key_map,
-            'date': now_str,        # last referenced date
-            'create_dates': create_dates    # last up to ten create dates
-            }
-    max_cache_sz = 64
-    if len(cache) == max_cache_sz:
-        keys = sorted(cache.keys(), key=lambda x: cache[x]['date'])
-        del cache[keys[0]]
-    writeback_list_output_cache()
 
 def map_idx_to_mail_cache_key(mail, mail_idx_key_map):
     idx = mail.pridx
@@ -980,7 +959,7 @@ def __main(args):
             MailListFilter(args), MailListDecorator(args), None,
             runtime_profile, args.stat_only, args.stat_authors)
     hkml_cache.writeback_mails()
-    cache_list_str(lists_cache_key, to_show, mail_idx_key_map)
+    _hkml_list_cache.cache_list_str(lists_cache_key, to_show, mail_idx_key_map)
 
     return to_show, mail_idx_key_map, None
 
