@@ -23,22 +23,6 @@ import hkml_thread
 import hkml_view
 import hkml_view_mails
 
-'''
-Contains list command generated outputs to cache for later fast processing.
-Keys are the json string of the list command arguments, or 'thread_output'.
-Values are a dict containing below key/values.
-- 'output': the list command's terminal output string.
-- 'index_to_cache_key': a dict having the mail index on the output as keys, and
-  the corresponding mail's key in the mail cache as values.
-- 'date': last accessed date
-- 'create_date': created date.  Removed after v1.1.7.
-- 'create_dates': last up to ten created dates of same key
-'''
-mails_lists_cache = None
-
-def list_output_cache_file_path():
-    return os.path.join(_hkml.get_hkml_dir(), 'list_output_cache')
-
 def args_to_lists_cache_key(args):
     dict_ = copy.deepcopy(args.__dict__)
     dict_['fetch'] = False
