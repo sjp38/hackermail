@@ -5,6 +5,7 @@ v1.1.8
 - Set --dim_old suggestion answer as 'y' by default
 - Suggest to continue draft writing when replying
 - Suggest setting --dim_old for threads
+- Don't find ancestor mails on cache for tagged mails listing
 
 v1.1.7
 - Support more flexible date formats
