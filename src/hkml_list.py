@@ -546,9 +546,9 @@ def get_mails_from_git(mail_list, since, until,
         cmd = base_cmd + []
 
         if since is not None:
-            cmd += ['--since=%s' % since.strftime('%Y-%m-%d')]
+            cmd += ['--since=%s' % since.strftime('%Y-%m-%d %H:%M:%S')]
         if until:
-            cmd += ['--until=%s' % until.strftime('%Y-%m-%d')]
+            cmd += ['--until=%s' % until.strftime('%Y-%m-%d %H:%M:%S')]
         if max_nr_mails is not None:
             cmd += ['-n', max_nr_mails]
         try:
