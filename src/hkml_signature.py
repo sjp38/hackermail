@@ -60,5 +60,5 @@ def set_argparser(parser):
     parser_list = subparsers.add_parser('list', help='list signatures')
     parser_remove = subparsers.add_parser('remove', help='remove signature')
     parser_remove.add_argument(
-            'signature_idx', metavar='<index>', type=int, nargs='+',
+            'signature_idx', metavar='<index>', type=int,
             help='index of the signature from the "list" output')
