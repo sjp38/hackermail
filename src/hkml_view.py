@@ -352,9 +352,9 @@ def show_help_msg_list(c, slist):
 
 def scrollable_list_default_handlers():
     return [
-            InputHandler(['j'], focus_down, 'focus down'),
+            InputHandler(['j', 'key_down'], focus_down, 'focus down'),
             InputHandler(['J'], focus_down_half_page, 'focus down half page'),
-            InputHandler(['k'], focus_up, 'focus up'),
+            InputHandler(['k', 'key_up'], focus_up, 'focus up'),
             InputHandler(['K'], focus_up_half_page, 'focus up half page'),
             InputHandler([':'], focus_set, 'focus specific line'),
             InputHandler(['/'], highlight_keyword, 'highlight keyword'),
@@ -362,8 +362,8 @@ def scrollable_list_default_handlers():
                          'focus the row of next highlighted keyword'),
             InputHandler(['N'], focus_prev_keyword,
                          'focus the row of prev highlighted keyword'),
-            InputHandler(['h'], scroll_left, 'scroll left'),
-            InputHandler(['l'], scroll_right, 'scroll right'),
+            InputHandler(['h', 'key_left'], scroll_left, 'scroll left'),
+            InputHandler(['l', 'key_right'], scroll_right, 'scroll right'),
             InputHandler(['q'], quit_list, 'quit current screen'),
             InputHandler(['Q'], quit_hkml, 'quit hkml'),
             InputHandler(['?'], show_help_msg_list, 'show help message'),
