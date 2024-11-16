@@ -27,7 +27,7 @@ def main(args):
     if args.action == 'list':
         signatures = read_signatures_file()
         for idx, signature in enumerate(signatures):
-            print('%d-th signature')
+            print('%d-th signature' % idx)
             print('```')
             print(signature)
             print('```')
