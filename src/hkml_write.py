@@ -11,6 +11,7 @@ import _hkml
 import _hkml_list_cache
 import hkml_list
 import hkml_send
+import hkml_signature
 
 def git_sendemail_valid_recipients(recipients):
     """each line should be less than 998 char"""
@@ -83,6 +84,18 @@ def format_mbox(subject, in_reply_to, to, cc, body, from_, draft_mail,
     if not body:
         body = '/* write your message here (keep the above blank line) */'
     lines.append(body)
+
+    lines += [
+            '',
+            '/* below are automatically added signatures. */',
+            '/* edit signatures below, or use "hkml signature" */']
+
+    signatures = hkml_signature.read_signatures_file()
+    if len(signatures) == 0:
+        signatures = ['Sent using hkml (https://github.com/sjp38/hackermail)']
+    for signature in signatures:
+        lines.append('')
+        lines.append(signature)
 
     if attach_files is not None:
         for idx, attach_file in enumerate(attach_files):
