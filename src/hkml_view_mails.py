@@ -91,12 +91,15 @@ def reply_mail(slist, mail):
             print('%d. %s' % (idx, draft_mail.date))
         print()
         answer = input(' '.join(
-            ['Enter index of the draft to continue writing,',
-             'or "n" to write a new reply: ']))
-        try:
-            draft = drafts[int(answer)]
-        except:
-            pass
+            ['Continue writing the draft that written most recently?',
+             '[Y/n/index of other draft] ']))
+        if answer.lower() != 'n':
+            if answer == '':
+                answer = -1
+            try:
+                draft = drafts[int(answer)]
+            except:
+                pass
     if draft is not None:
         hkml_write.write_send_mail(
                 draft_mail=draft, subject=None, in_reply_to=None, to=None,
