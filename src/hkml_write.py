@@ -85,17 +85,15 @@ def format_mbox(subject, in_reply_to, to, cc, body, from_, draft_mail,
         body = '/* write your message here (keep the above blank line) */'
     lines.append(body)
 
-    lines += [
-            '',
-            '/*',
-            ' * !REMOVE THIS COMMENT BLOCK BEFORE SENDING THIS MAIL!',
-            ' * below are signatures added by "hkml".',
-            ' * edit signatures below, or use "hkml signature".',
-            ' */',]
-
     signatures = hkml_signature.read_signatures_file()
-    if len(signatures) == 0:
-        signatures = ['Sent using hkml (https://github.com/sjp38/hackermail)']
+    if len(signatures) > 0:
+        lines += [
+                '',
+                '/*',
+                ' * !REMOVE THIS COMMENT BLOCK BEFORE SENDING THIS MAIL!',
+                ' * below are signatures added by "hkml".',
+                ' * edit signatures below, or use "hkml signature".',
+                ' */',]
     for signature in signatures:
         lines.append('')
         lines.append(signature)
