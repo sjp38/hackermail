@@ -87,8 +87,11 @@ def format_mbox(subject, in_reply_to, to, cc, body, from_, draft_mail,
 
     lines += [
             '',
-            '/* below are automatically added signatures. */',
-            '/* edit signatures below, or use "hkml signature" */']
+            '/*',
+            ' * !REMOVE THIS COMMENT BLOCK BEFORE SENDING THIS MAIL!',
+            ' * below are signatures added by "hkml".',
+            ' * edit signatures below, or use "hkml signature".',
+            ' */',]
 
     signatures = hkml_signature.read_signatures_file()
     if len(signatures) == 0:
