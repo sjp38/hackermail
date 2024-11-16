@@ -1,6 +1,9 @@
 # SPDX-License-Identifier: GPL-2.0
 
+import json
 import os
+import subprocess
+import tempfile
 
 import _hkml
 
@@ -28,6 +31,25 @@ def main(args):
             print('```')
             print(signature)
             print('```')
+        return
+    if args.action == 'add':
+        fd, tmp_path = tempfile.mkstemp(prefix='hkml_signature_')
+        with open(tmp_path, 'w') as f:
+            f.write('# write the signature below, save, and quit.')
+        if subprocess.call(['vim', tmp_path]) != 0:
+            print('writing signature failed')
+            exit(1)
+        with open(tmp_path, 'r') as f:
+            lines = []
+            for line in f:
+                if line.startswith('#'):
+                    continue
+                lines.append(line.strip())
+            signature = '\n'.join(lines)
+        os.remove(tmp_path)
+        signatures = read_signatures_file()
+        signatures.append(signature)
+        write_signatures_file(signatures)
         return
 
 def set_argparser(parser):
