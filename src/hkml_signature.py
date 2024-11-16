@@ -54,14 +54,12 @@ def main(args):
             print('```')
             print(signature)
             print('```')
-        return
-    if args.action == 'add':
+    elif args.action == 'add':
         add_signature()
-    if args.action == 'remove':
+    elif args.action == 'remove':
         signatures = read_signatures_file()
         del signatures[args.signature_idx]
         write_signatures_file(signatures)
-        return
 
 def set_argparser(parser):
     parser.description = 'manage signature for mails'
