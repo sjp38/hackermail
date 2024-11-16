@@ -1,5 +1,11 @@
 This file contains major changes in each version since v1.0.0
 
+v1.1.9
+- Set default answer to drafts continue question as 'yes' for latest draft
+- Implement 'signature' command
+- Automatically add signature to mail drafts
+- Support arrow keys on list
+
 v1.1.8
 - Add up to ten other dates selection for --dim_old suggestion
 - Set --dim_old suggestion answer as 'y' by default
