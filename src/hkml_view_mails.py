@@ -77,29 +77,33 @@ def get_attach_files():
             break
     return files
 
+def suggest_continuing_draft(drafts):
+    if len(drafts) == 0:
+        return None
+    drafts = sorted(drafts, key=lambda d: d.date)
+    print('you have drafts of subject "%s" written at below dates' %
+          reply_subject)
+    print()
+    for idx, draft_mail in enumerate(drafts):
+        print('%d. %s' % (idx, draft_mail.date))
+    print()
+    answer = input(' '.join(
+        ['Continue writing the draft that written most recently?',
+         '[Y/n/index of other draft] ']))
+    if answer.lower() != 'n':
+        if answer == '':
+            answer = -1
+        try:
+            return drafts[int(answer)]
+        except:
+            pass
+    return None
+
 def reply_mail(slist, mail):
     hkml_view.shell_mode_start(slist)
     reply_subject = hkml_reply.format_reply_subject(mail)
     drafts = hkml_tag.get_mails_of_subject_tag(reply_subject, 'drafts')
-    draft = None
-    if len(drafts) > 0:
-        drafts = sorted(drafts, key=lambda d: d.date)
-        print('you have drafts of subject "%s" written at below dates' %
-              reply_subject)
-        print()
-        for idx, draft_mail in enumerate(drafts):
-            print('%d. %s' % (idx, draft_mail.date))
-        print()
-        answer = input(' '.join(
-            ['Continue writing the draft that written most recently?',
-             '[Y/n/index of other draft] ']))
-        if answer.lower() != 'n':
-            if answer == '':
-                answer = -1
-            try:
-                draft = drafts[int(answer)]
-            except:
-                pass
+    draft = suggest_continuing_draft(drafts)
     if draft is not None:
         hkml_write.write_send_mail(
                 draft_mail=draft, subject=None, in_reply_to=None, to=None,
