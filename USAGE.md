@@ -383,6 +383,19 @@ to_review_later: 3 mails
 to_test_later: 4 mails
 ```
 
+Signatures
+==========
+
+Users can set and list their mail signatures using `hkml signature` command.
+The command supports `list`, `add`, `edit`, and `remove` actions.  Please use
+`-h` options for more details.
+
+The signature is set as `Sent using hkml (https://github.com/sjp38/hackermail)`
+by default.  Users can remove, edit, add their signatures using `hkml
+signature` command.  If there are one or more signatures, those are
+automatically added to mail drafts.  To avoid adding the default signature on
+the mail drafts, users should explicitly remove it via `hkml signature remove`.
+
 Monitoring Mails
 ================
 
