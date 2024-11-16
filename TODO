@@ -11,4 +11,3 @@
 - Update lore manifest automatically
 - Implement monitoring output pushing to git repo
 - Put dim_old selection as sub menu of display effects
-- Implement "Sent using hkml" like signature feature
