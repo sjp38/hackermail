@@ -4,9 +4,6 @@
 - Implement complete TUI
   - Support every feature with TUI
 - Deprecate TUI menu and related code
-- mails viewer
-  - interactive filters update
-  - interactive highlights filter
 - Give selection to tag removing menu
 - Update lore manifest automatically
 - Implement monitoring output pushing to git repo
