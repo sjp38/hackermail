@@ -86,8 +86,10 @@ def reply_mail(slist, mail):
         drafts = sorted(drafts, key=lambda d: d.date)
         print('you have drafts of subject "%s" written at below dates' %
               reply_subject)
+        print()
         for idx, draft_mail in enumerate(drafts):
             print('%d. %s' % (idx, draft_mail.date))
+        print()
         answer = input(' '.join(
             ['Enter index of the draft to continue writing,',
              'or "n" to write a new reply: ']))
