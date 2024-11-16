@@ -51,6 +51,11 @@ def main(args):
         signatures.append(signature)
         write_signatures_file(signatures)
         return
+    if args.action == 'remove':
+        signatures = read_signatures_file()
+        del signatures[args.signature_idx]
+        write_signatures_file(signatures)
+        return
 
 def set_argparser(parser):
     parser.description = 'manage signature for mails'
