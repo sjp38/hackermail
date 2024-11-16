@@ -35,7 +35,10 @@ def main(args):
     if args.action == 'add':
         fd, tmp_path = tempfile.mkstemp(prefix='hkml_signature_')
         with open(tmp_path, 'w') as f:
-            f.write('# write the signature below, save, and quit.')
+            f.write('\n'.join([
+                '',
+                '# Please enter the signature you want to add.',
+                '# Lines starting with "#" will be ingored.']))
         if subprocess.call(['vim', tmp_path]) != 0:
             print('writing signature failed')
             exit(1)
