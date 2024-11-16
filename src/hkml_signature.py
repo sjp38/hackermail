@@ -15,7 +15,7 @@ def signatures_file_path():
 
 def read_signatures_file():
     if not os.path.isfile(signatures_file_path()):
-        return []
+        return ['Sent using hkml (https://github.com/sjp38/hackermail)']
     with open(signatures_file_path(), 'r') as f:
         return json.load(f)
 
