@@ -46,6 +46,30 @@ def add_signature():
     write_signatures_file(signatures)
     return
 
+def edit_signature(signature_idx):
+    signatures = read_signatures_file()
+    signature = signatures[signature_idx]
+    fd, tmp_path = tempfile.mkstemp(prefix='hkml_signature_')
+    with open(tmp_path, 'w') as f:
+        f.write('\n'.join([
+            signature,
+            '',
+            '# Please edit the signature above as you want.',
+            '# Lines starting with "#" will be ingored.']))
+    if subprocess.call(['vim', tmp_path]) != 0:
+        print('writing signature failed')
+        exit(1)
+    with open(tmp_path, 'r') as f:
+        lines = []
+        for line in f:
+            if line.startswith('#'):
+                continue
+            lines.append(line.strip())
+        signature = '\n'.join(lines)
+    os.remove(tmp_path)
+    signatures[signature_idx] = signature
+    write_signatures_file(signatures)
+
 def main(args):
     if args.action == 'list':
         signatures = read_signatures_file()
@@ -56,6 +80,8 @@ def main(args):
             print('```')
     elif args.action == 'add':
         add_signature()
+    elif args.action == 'edit':
+        edit_signature(args.signature_idx)
     elif args.action == 'remove':
         signatures = read_signatures_file()
         del signatures[args.signature_idx]
@@ -67,6 +93,10 @@ def set_argparser(parser):
             title='action', dest='action', metavar='<action>')
     parser_add = subparsers.add_parser('add', help='add a signature')
     parser_list = subparsers.add_parser('list', help='list signatures')
+    parser_edit = subparsers.add_parser('edit', help='edit a signature')
+    parser_edit.add_argument(
+            'signature_idx', metavar='<index>', type=int,
+            help='index of the signature from the "list" output')
     parser_remove = subparsers.add_parser('remove', help='remove signature')
     parser_remove.add_argument(
             'signature_idx', metavar='<index>', type=int,
