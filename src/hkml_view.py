@@ -214,7 +214,16 @@ class ScrollableList:
             self.__draw()
 
             x = self.screen.getch()
-            c = chr(x)
+            if x == curses.KEY_DOWN:
+                c = 'key_down'
+            elif x == curses.KEY_UP:
+                c = 'key_up'
+            elif x == curses.KEY_LEFT:
+                c = 'key_left'
+            elif x == curses.KEY_RIGHT:
+                c = 'key_right'
+            else:
+                c = chr(x)
             break_loop = False
             for input_handler in self.input_handlers:
                 err = input_handler.handle(c, self)
