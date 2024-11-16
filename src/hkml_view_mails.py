@@ -81,21 +81,25 @@ def suggest_continuing_draft(drafts):
     if len(drafts) == 0:
         return None
     drafts = sorted(drafts, key=lambda d: d.date)
+    answered = False
     print('you have drafts of subject "%s" written at below dates' %
-          reply_subject)
+          drafts[0].subject)
     print()
     for idx, draft_mail in enumerate(drafts):
         print('%d. %s' % (idx, draft_mail.date))
     print()
-    answer = input(' '.join(
-        ['Continue writing the draft that written most recently?',
-         '[Y/n/index of other draft] ']))
-    if answer.lower() != 'n':
+    while True:
+        answer = input(' '.join(
+            ['Continue writing the draft that written most recently?',
+             '[Y/n/index of other draft] ']))
+        if answer.lower() == 'n':
+            return None
         if answer == '':
             answer = -1
         try:
             return drafts[int(answer)]
         except:
+            print('wrong input...')
             pass
     return None
 
