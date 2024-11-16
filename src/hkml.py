@@ -23,6 +23,7 @@ import hkml_monitor
 import hkml_patch
 import hkml_manifest
 import hkml_cache
+import hkml_signature
 
 import _hkml
 
@@ -94,6 +95,10 @@ hkml_manifest.set_argparser(parser_manifest)
 parser_cache = subparsers.add_parser('cache', help = 'manage cache')
 hkml_cache.set_argparser(parser_cache)
 
+parser_signatures = subparsers.add_parser(
+        'signature', help = 'manage signatures')
+hkml_signature.set_argparser(parser_signatures)
+
 args = parser.parse_args()
 
 if args.directory is not None:
@@ -141,6 +146,8 @@ elif args.command == 'manifest':
     hkml_manifest.main(args)
 elif args.command == 'cache':
     hkml_cache.main(args)
+elif args.command == 'signature':
+    hkml_signature.main(args)
 # elif args.command == 'interactive':
 #     hkml_interactive.main(args)
 else:
