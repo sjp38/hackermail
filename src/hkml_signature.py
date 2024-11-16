@@ -23,6 +23,29 @@ def write_signatures_file(signatures):
     with open(signatures_file_path(), 'w') as f:
         json.dump(signatures, f, indent=4)
 
+def add_signature():
+    fd, tmp_path = tempfile.mkstemp(prefix='hkml_signature_')
+    with open(tmp_path, 'w') as f:
+        f.write('\n'.join([
+            '',
+            '# Please enter the signature you want to add.',
+            '# Lines starting with "#" will be ingored.']))
+    if subprocess.call(['vim', tmp_path]) != 0:
+        print('writing signature failed')
+        exit(1)
+    with open(tmp_path, 'r') as f:
+        lines = []
+        for line in f:
+            if line.startswith('#'):
+                continue
+            lines.append(line.strip())
+        signature = '\n'.join(lines)
+    os.remove(tmp_path)
+    signatures = read_signatures_file()
+    signatures.append(signature)
+    write_signatures_file(signatures)
+    return
+
 def main(args):
     if args.action == 'list':
         signatures = read_signatures_file()
@@ -33,27 +56,7 @@ def main(args):
             print('```')
         return
     if args.action == 'add':
-        fd, tmp_path = tempfile.mkstemp(prefix='hkml_signature_')
-        with open(tmp_path, 'w') as f:
-            f.write('\n'.join([
-                '',
-                '# Please enter the signature you want to add.',
-                '# Lines starting with "#" will be ingored.']))
-        if subprocess.call(['vim', tmp_path]) != 0:
-            print('writing signature failed')
-            exit(1)
-        with open(tmp_path, 'r') as f:
-            lines = []
-            for line in f:
-                if line.startswith('#'):
-                    continue
-                lines.append(line.strip())
-            signature = '\n'.join(lines)
-        os.remove(tmp_path)
-        signatures = read_signatures_file()
-        signatures.append(signature)
-        write_signatures_file(signatures)
-        return
+        add_signature()
     if args.action == 'remove':
         signatures = read_signatures_file()
         del signatures[args.signature_idx]
