@@ -8,3 +8,8 @@
 - Update lore manifest automatically
 - Implement monitoring output pushing to git repo
 - Put dim_old selection as sub menu of display effects
+- Maintain last-opened time for each list in separate file
+  - Currently, the time records are in list output cache.  When the cache item
+    is removed due to the space limit, entire time records are gone.
+    Maintaining the information in a separate file and removing old open time
+    records in finer granularity under space limit would be better.
