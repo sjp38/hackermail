@@ -13,3 +13,5 @@
     is removed due to the space limit, entire time records are gone.
     Maintaining the information in a separate file and removing old open time
     records in finer granularity under space limit would be better.
+- Handle in-reply-to having more than msgid when ancestors searching
+  e.g., 87wmgxvs81.fsf@linux.intel.com
