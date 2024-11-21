@@ -15,3 +15,6 @@
     records in finer granularity under space limit would be better.
 - Handle in-reply-to having more than msgid when ancestors searching
   e.g., 87wmgxvs81.fsf@linux.intel.com
+- Keep applying dimming for threads that opened from a list
+  - e.g., if hkml list --dim_old 2024-11-16 and open complete thread of a mail
+    on the list, I'd want the thread also have same dim setup.
