@@ -118,6 +118,11 @@ class Mail:
                 self.__fields['in-reply-to'] = link[http_prefix_len:-1]
         if not 'in-reply-to' in self.__fields:
             self.__fields['in-reply-to'] = None
+        if 'in-reply-to' in self.__fields:
+            # some mail puts infomration in addition to message id on in-reply-to
+            # header.  E.g., 87ikvefswp.fsf@yhuang6-desk2.ccr.corp.intel.com
+            self.__fields['in-reply-to-msgid'] = self.__fields[
+                    'in-reply-to'].split()[0]
 
     def __init__(self, mbox=None, kvpairs=None, atom_entry=None, atom_ml=None):
         self.replies = []
@@ -288,6 +293,12 @@ class Mail:
             tokens = parsed['date'].split()
             if tokens[-2:] == ['[thread', 'overview]']:
                 parsed['date'] = ' '.join(tokens[:-2])
+
+        # some mail puts infomration in addition to message id on in-reply-to
+        # header.  E.g., 87ikvefswp.fsf@yhuang6-desk2.ccr.corp.intel.com
+        parsed['in-reply-to-msgid'] = None
+        if 'in-reply-to' in parsed:
+            parsed['in-reply-to-msgid'] = parsed['in-reply-to'].split()[0]
 
         self.__fields = parsed
 
