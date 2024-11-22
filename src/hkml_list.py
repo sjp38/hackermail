@@ -105,7 +105,7 @@ def wrap_line(prefix, line, nr_cols):
     return lines
 
 def find_ancestors_from_cache(mail, by_msgids, found_parents):
-    parent_msgid = mail.get_field('in-reply-to')
+    parent_msgid = mail.get_field('in-reply-to-msgid')
     if parent_msgid is None or parent_msgid in by_msgids:
         return
     parent = hkml_cache.get_mail(key=parent_msgid)
@@ -130,7 +130,7 @@ def threads_of(mails, do_find_ancestors_from_cache=False):
 
     threads = []
     for mail in mails:
-        in_reply_to = mail.get_field('in-reply-to')
+        in_reply_to = mail.get_field('in-reply-to-msgid')
         if not in_reply_to in by_msgids:
             threads.append(mail)
         else:
