@@ -58,7 +58,7 @@ Values are a dict containing below key/values.
   the corresponding mail's key in the mail cache as values.
 - 'date': last accessed date
 - 'create_date': created date.  Removed after v1.1.7.
-- 'create_dates': last up to ten created dates of same key
+- 'create_dates': last up to ten created dates of same key.  Removed after v1.1.9.
 '''
 mails_lists_cache = None
 
@@ -104,13 +104,14 @@ def get_cache_creation_dates(key):
         return []
     outputs = cache[key]
     date_strs = []
-    # 'create_dates' field has added after v1.1.7
+    # 'create_dates' field has added after v1.1.7, removed after v1.1.9
     if 'create_dates' in outputs:
         date_strs = outputs['create_dates']
     # 'create_date' field has added after v1.1.6, removed after v1.1.7
     if 'create_date' in outputs:
         date_strs = [outputs['create_date']]
 
+    # cache history has added after v1.1.9
     history = get_cache_history()
     if key in history:
         date_strs += history[key]['create_dates']
@@ -164,18 +165,10 @@ def writeback_list_output_cache():
 def set_item(key, list_str, mail_idx_key_map):
     cache = get_mails_lists_cache()
     now_str = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
-    create_dates = []
-    if key in cache:
-        last_cached = cache[key]
-        # 'create_dates' field has added after v1.1.7
-        if 'create_dates' in last_cached:
-            create_dates = last_cached['create_dates'][-9:]
-    create_dates.append(now_str)
     cache[key] = {
             'output': '\n'.join(['# (cached output)', list_str]),
             'index_to_cache_key': mail_idx_key_map,
             'date': now_str,        # last referenced date
-            'create_dates': create_dates    # last up to ten create dates
             }
     max_cache_sz = 64
     if len(cache) == max_cache_sz:
