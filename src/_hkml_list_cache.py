@@ -110,6 +110,11 @@ def get_cache_creation_dates(key):
     # 'create_date' field has added after v1.1.6, removed after v1.1.7
     if 'create_date' in outputs:
         date_strs = [outputs['create_date']]
+
+    history = get_cache_history()
+    if key in history:
+        date_strs += history[key]['create_dates']
+    date_strs = sorted(set(date_strs))[-10:]
     return [datetime.datetime.strptime(s, '%Y-%m-%d-%H-%M-%S')
             for s in date_strs]
 
