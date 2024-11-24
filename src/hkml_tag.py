@@ -102,7 +102,7 @@ def add_tags(mail_idx, tags):
         print('failed getting mail of the index.  Maybe wrong index?')
         exit(1)
 
-    do_add_tags(mail, tags)
+    do_add_tags(mail, tags, None)
 
 def do_remove_tags(mail, tags):
     msgid = mail.get_field('message-id')

@@ -199,7 +199,7 @@ def do_add_tags(data, selection):
     if 'cancel_tag' in tags:
         _ = input('Canceled.  Press enter to return')
         return 'canceled'
-    hkml_tag.do_add_tags(mail, tags)
+    hkml_tag.do_add_tags(mail, tags, None)
 
 def do_remove_tags(data, selection):
     mail, tags = data
