@@ -43,7 +43,7 @@ def tag_as_draft(draft_file, tag_name, msgid):
     draft_mail = _hkml.Mail(mbox=draft_mbox_str)
     hkml_tag.do_add_tags(draft_mail, [tag_name])
 
-def send_mail(mboxfile, get_confirm=False, erase_mbox=True):
+def send_mail(mboxfile, get_confirm, erase_mbox):
     do_send = True
     if get_confirm:
         with open(mboxfile, 'r') as f:
