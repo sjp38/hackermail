@@ -2,6 +2,7 @@ This file contains major changes in each version since v1.0.0
 
 v1.2.0
 - Maintain recent list opened dates in a separate file
+- Colorize diff and past message lines.
 
 v1.1.9
 - Set default answer to drafts continue question as 'yes' for latest draft
