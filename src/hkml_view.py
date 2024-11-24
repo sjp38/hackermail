@@ -171,8 +171,20 @@ class ScrollableList:
             line_idx = start_row + row
             if line_idx >= len(self.lines):
                 break
+
+            line = self.lines[line_idx][
+                    self.scroll_cols:self.scroll_cols + scr_cols]
+
             if line_idx == self.focus_row:
                 color = focus_color
+            elif len(line) == 0:
+                color = normal_color
+            elif line[0] == '+' and (len(line) == 1 or line[1] != '+'):
+                color = add_color
+            elif line[0] == '-' and (len(line) == 1 or line[1] != '-'):
+                color = delete_color
+            elif line[0]== '>':
+                color = original_color
             else:
                 color = normal_color
 
@@ -181,8 +193,6 @@ class ScrollableList:
             else:
                 color_attrib = curses.A_NORMAL
 
-            line = self.lines[line_idx][
-                    self.scroll_cols:self.scroll_cols + scr_cols]
             self.screen.addstr(row, 0, line, color | color_attrib)
 
             keyword = self.highlight_keyword
@@ -437,12 +447,29 @@ def __view(stdscr, text_to_show, data, view_type):
     global normal_color
     global highlight_color
 
-    curses.init_pair(1, curses.COLOR_GREEN, curses.COLOR_BLACK)
+    global add_color
+    global delete_color
+    global original_color
+
+    curses.init_pair(1, curses.COLOR_CYAN, curses.COLOR_BLACK)
     focus_color = curses.color_pair(1)
     curses.init_pair(2, curses.COLOR_WHITE, curses.COLOR_BLACK)
     normal_color = curses.color_pair(2)
     curses.init_pair(3, curses.COLOR_BLACK, curses.COLOR_YELLOW)
     highlight_color = curses.color_pair(3)
+
+    curses.init_pair(4, curses.COLOR_GREEN, curses.COLOR_BLACK)
+    add_color = curses.color_pair(4)
+    curses.init_pair(5, curses.COLOR_RED, curses.COLOR_BLACK)
+    delete_color = curses.color_pair(5)
+
+    if curses.can_change_color():
+        # Curses RGB are in [0,1000], not [0,255]
+        curses.init_color(10, 700, 700, 1000)
+        curses.init_pair(6, 10, curses.COLOR_BLACK)
+    else:
+        curses.init_pair(6, curses.COLOR_WHITE, curses.COLOR_BLACK)
+    original_color = curses.color_pair(6)
 
     if view_type in ['mail', 'text']:
         return hkml_view_text.show_text_viewer(stdscr, text_lines)

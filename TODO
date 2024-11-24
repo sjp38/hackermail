@@ -12,3 +12,4 @@
   - e.g., if hkml list --dim_old 2024-11-16 and open complete thread of a mail
     on the list, I'd want the thread also have same dim setup.
 - Allow listing recently opened threads
+- Give users ability to change color for (+), (-), (>) lines in text viewer
