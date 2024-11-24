@@ -15,6 +15,3 @@
 - Give users ability to change color for (+), (-), (>) lines in text viewer
 - Suggest deleting drafts when sending a mail if the subject is same to a draft
   - We suggest deleting duplicated drafts only.
-- Handle drafts that changed the subject
-  - If we continue writing a draft, change the subject, and save, no duplicated
-    drafts finding success.  Handle this corner case.
