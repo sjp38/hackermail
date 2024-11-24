@@ -12,7 +12,7 @@ def config_sendemail():
     if send_configured is True:
         return
     question = '  '.join([
-        'Seems git send-emtail is not configured.',
+        'Seems git send-email is not configured.',
         'Please configure it if you want to send email using hkml.',
         'If you use gmail, I can do the configuration instead.',
         'Are you gonna use gmail, and want me to do the configuration? [Y/n] '
