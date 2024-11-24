@@ -76,14 +76,16 @@ def suggest_removing_drafts_of_subject(subject, tags_map):
             continue
         tags.remove('drafts')
 
-def do_add_tags(mail, tags):
+def do_add_tags(mail, tags, draft_subject=None):
     sync_after = ask_sync_before_change()
     msgid = mail.get_field('message-id')
 
     tags_map = read_tags_file()
 
     if 'drafts' in tags:
-        suggest_removing_drafts_of_subject(mail.subject, tags_map)
+        if draft_subject is None:
+            draft_subject = mail.subject
+        suggest_removing_drafts_of_subject(draft_subject, tags_map)
 
     if not msgid in tags_map:
         tags_map[msgid] = {'mail': mail.to_kvpairs(), 'tags': tags}
