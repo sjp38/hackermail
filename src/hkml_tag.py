@@ -61,21 +61,6 @@ def get_mails_of_subject_tag(subject, tag):
             mails.append(mail)
     return mails
 
-def handle_before_drafts(mail, tags_map):
-    for msgid in tags_map:
-        tags = tags_map[msgid]['tags']
-        if not 'drafts' in tags:
-            continue
-        before_mail = _hkml.Mail(kvpairs=tags_map[msgid]['mail'])
-        if before_mail.subject != mail.subject:
-            continue
-        print('you have a draft of same subject')
-        print('- %s (%s)' % (before_mail.subject, before_mail.date))
-        answer = input('erase it? [y/N] ' )
-        if answer.lower() != 'y':
-            continue
-        tags.remove('drafts')
-
 def suggest_removing_drafts_of_subject(subject, tags_map):
     for msgid in tags_map:
         tags = tags_map[msgid]['tags']
