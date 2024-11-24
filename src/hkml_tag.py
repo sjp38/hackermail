@@ -98,7 +98,7 @@ def do_add_tags(mail, tags):
     tags_map = read_tags_file()
 
     if 'drafts' in tags:
-        handle_before_drafts(mail, tags_map)
+        suggest_removing_drafts_of_subject(mail.subject, tags_map)
 
     if not msgid in tags_map:
         tags_map[msgid] = {'mail': mail.to_kvpairs(), 'tags': tags}
