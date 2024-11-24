@@ -48,7 +48,7 @@ def reply(mail, attach_files, format_only):
         print('editing the reply failed.  The draft is at %s' %
                 reply_tmp_path)
         exit(1)
-    hkml_send.send_mail(reply_tmp_path, get_confirm=True)
+    hkml_send.send_mail(reply_tmp_path, get_confirm=True, erase_mbox=True)
 
 def main(args):
     if args.mail.isdigit():
