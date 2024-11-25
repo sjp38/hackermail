@@ -15,3 +15,4 @@
 - Give users ability to change color for (+), (-), (>) lines in text viewer
 - Suggest deleting drafts when sending a mail if the subject is same to a draft
   - We suggest deleting duplicated drafts only.
+- Suggest --dim_old for cached list
