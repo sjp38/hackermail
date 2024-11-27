@@ -451,7 +451,7 @@ def __view(stdscr, text_to_show, data, view_type):
     global delete_color
     global original_color
 
-    curses.init_pair(1, curses.COLOR_CYAN, curses.COLOR_BLACK)
+    curses.init_pair(1, curses.COLOR_YELLOW, curses.COLOR_BLACK)
     focus_color = curses.color_pair(1)
     curses.init_pair(2, curses.COLOR_WHITE, curses.COLOR_BLACK)
     normal_color = curses.color_pair(2)
