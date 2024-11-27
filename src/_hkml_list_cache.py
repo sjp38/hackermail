@@ -42,9 +42,8 @@ def record_cache_creation(cache_key):
     create_dates = []
     if 'create_dates' in history[cache_key]:
         create_dates = history[cache_key]['create_dates'][-9:]
-    else:
-        history[cache_key]['create_dates'] = create_dates
     create_dates.append(datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S'))
+    history[cache_key]['create_dates'] = create_dates
     writeback_cache_history()
 
 '''
