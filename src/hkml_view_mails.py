@@ -717,13 +717,21 @@ def suggest_dim_old(key):
     if len(last_dates) == 0:
         return None
     now_time = datetime.datetime.now().astimezone()
-    print('seems you read the list at')
+    print('Seems you read the list at')
     for idx, last_date in enumerate(last_dates):
         print(' %2d. %s (%s before)' %
               (idx, last_date, now_time - last_date))
-    answer = input(' '.join([
-        '\nMay I set --dim_old to the latest one (%s)?' % last_date,
-        '[Y/n/index of another date/custom --dim_old argument]: ']))
+    print()
+    answer = input('\n'.join([
+        'May I dim mails older than the latest one (%s)?' % last_date,
+        "- Enter 'y' or nothing if yes.",
+        "- Enter 'n' if you don't want to dim any mail.",
+        "- Enter a number to select the date on the above list of the index.",
+        "- Or, enter custom date to dim mails older than it (%s)." %
+        hkml_common.date_format_description(),
+        "",
+        "Enter: "
+        ]))
     answer_fields = answer.split()
     if len(answer_fields) > 1:
         return answer_fields
