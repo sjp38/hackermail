@@ -752,29 +752,6 @@ def show_list(text, to_stdout, to_less, mail_idx_key_map):
         return
     hkml_open.pr_with_pager_if_needed(text)
 
-def suggest_dim_old(key):
-    last_dates = _hkml_list_cache.get_cache_creation_dates(key)
-    if len(last_dates) == 0:
-        return None
-    now_time = datetime.datetime.now().astimezone()
-    print('seems you read the list at')
-    for idx, last_date in enumerate(last_dates):
-        print(' %2d. %s (%s before)' %
-              (idx, last_date, now_time - last_date))
-    answer = input(' '.join([
-        '\nMay I set --dim_old to the latest one (%s)?' % last_date,
-        '[Y/n/index of another date/custom --dim_old argument]: ']))
-    answer_fields = answer.split()
-    if len(answer_fields) > 1:
-        return answer_fields
-    if answer.lower() == 'n':
-        return None
-    try:
-        answer = int(answer)
-    except:
-        answer = idx
-    return [last_dates[answer].strftime('%Y-%m-%d %H:%M')]
-
 def validate_set_source_type(args):
     if args.source_type is not None:
         if len(args.source_type) == 1:

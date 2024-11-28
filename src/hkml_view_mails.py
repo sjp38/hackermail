@@ -712,6 +712,29 @@ def gen_show_mails_list(screen, data_generator):
     return show_mails_list(screen, text.split('\n'), mail_idx_key_map,
                            display_rule, data_generator)
 
+def suggest_dim_old(key):
+    last_dates = _hkml_list_cache.get_cache_creation_dates(key)
+    if len(last_dates) == 0:
+        return None
+    now_time = datetime.datetime.now().astimezone()
+    print('seems you read the list at')
+    for idx, last_date in enumerate(last_dates):
+        print(' %2d. %s (%s before)' %
+              (idx, last_date, now_time - last_date))
+    answer = input(' '.join([
+        '\nMay I set --dim_old to the latest one (%s)?' % last_date,
+        '[Y/n/index of another date/custom --dim_old argument]: ']))
+    answer_fields = answer.split()
+    if len(answer_fields) > 1:
+        return answer_fields
+    if answer.lower() == 'n':
+        return None
+    try:
+        answer = int(answer)
+    except:
+        answer = idx
+    return [last_dates[answer].strftime('%Y-%m-%d %H:%M')]
+
 class MailsListDataGenerator:
     fn = None
     args = None
@@ -724,7 +747,7 @@ class MailsListDataGenerator:
         # returns text, mail_idx_key_map, display_effect_rule, and error
         text, mail_idx_key_map, err = self.fn(self.args)
         if not hasattr(self.args, 'dim_old') or self.args.dim_old is None:
-            self.args.dim_old = hkml_list.suggest_dim_old(
+            self.args.dim_old = suggest_dim_old(
                     hkml_list.args_to_lists_cache_key(self.args))
 
         max_date, err = hkml_common.parse_date_arg( self.args.dim_old)
