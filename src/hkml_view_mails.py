@@ -514,22 +514,12 @@ def mk_dim_old_rule(max_date):
     effect_rule.max_date = max_date
     return effect_rule
 
-def suggest_dim_old(key):
-    print('Dim mails older than user-input date.')
-    print()
-    last_dates = _hkml_list_cache.get_cache_creation_dates(key)
-    now_time = datetime.datetime.now().astimezone()
-    print('Recent dates you read the list:')
-    if len(last_dates) == 0:
-        print('not exist')
-    for idx, last_date in enumerate(last_dates):
-        print(' %2d. %s (%s before)' %
-              (idx, last_date, now_time - last_date))
-    print()
+def build_suggest_dim_old_prompt(last_dates):
     prompt_lines = []
     if len(last_dates) > 0:
         prompt_lines = [
-                'May I dim mails older than the latest one (%s)?' % last_date,
+                'May I dim mails older than the latest one (%s)?' %
+                last_dates[-1],
                 "- Enter 'y' or nothing if yes.",
                 "- Enter 'n' if you don't want to dim any mail.",
                 "- Enter an index on the above list to select te date of it.",
@@ -544,7 +534,21 @@ def suggest_dim_old(key):
                 "- Or, enter 'n' if you don't want to dim any mail.",
                 ]
     prompt_lines += ['', 'Enter: ']
-    answer = input('\n'.join(prompt_lines))
+    return prompt_lines
+
+def suggest_dim_old(key):
+    print('Dim mails older than user-input date.')
+    print()
+    last_dates = _hkml_list_cache.get_cache_creation_dates(key)
+    now_time = datetime.datetime.now().astimezone()
+    print('Recent dates you read the list:')
+    if len(last_dates) == 0:
+        print('not exist')
+    for idx, last_date in enumerate(last_dates):
+        print(' %2d. %s (%s before)' %
+              (idx, last_date, now_time - last_date))
+    print()
+    answer = input('\n'.join(build_suggest_dim_old_prompt(last_dates)))
     answer_fields = answer.split()
     _, err = hkml_common.parse_date_arg(answer_fields)
     if err is None:
