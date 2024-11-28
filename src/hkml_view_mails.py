@@ -546,7 +546,8 @@ def suggest_dim_old(key):
     prompt_lines += ['', 'Enter: ']
     answer = input('\n'.join(prompt_lines))
     answer_fields = answer.split()
-    if len(answer_fields) > 1:
+    _, err = hkml_common.parse_date_arg(answer_fields)
+    if err is None:
         return answer_fields
     if answer.lower() == 'n':
         return None
