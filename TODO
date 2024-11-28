@@ -13,6 +13,4 @@
     on the list, I'd want the thread also have same dim setup.
 - Allow listing recently opened threads
 - Give users ability to change color for (+), (-), (>) lines in text viewer
-- Suggest deleting drafts when sending a mail if the subject is same to a draft
-  - We suggest deleting duplicated drafts only.
 - Suggest --dim_old for cached list
