@@ -115,7 +115,7 @@ def get_cache_creation_dates(key):
     if key in history:
         date_strs += history[key]['create_dates']
     date_strs = sorted(set(date_strs))[-10:]
-    return [datetime.datetime.strptime(s, '%Y-%m-%d-%H-%M-%S')
+    return [datetime.datetime.strptime(s, '%Y-%m-%d-%H-%M-%S').astimezone()
             for s in date_strs]
 
 def get_last_mails_list():

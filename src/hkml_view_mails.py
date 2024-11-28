@@ -525,7 +525,7 @@ def menu_dim_old_mails(mail_slist, selection):
     if len(last_dates) > 0:
         print()
         print('FYI, seems you read this list before at below dates.')
-    now_time = datetime.datetime.now()
+    now_time = datetime.datetime.now().astimezone()
     for last_date in last_dates:
         print('- %s (%s before)' %
               (last_date, now_time - last_date))
