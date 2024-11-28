@@ -509,8 +509,21 @@ def menu_effect_mails(mail_slist, selection):
 
 def menu_dim_old_mails(mail_slist, selection):
     print('Dim mails sent on <=user input date.')
-    print()
+
     mail, slist = mail_slist
+    data_generator = slist.data['data_generator']
+    gen_args = data_generator.args
+    key = hkml_list.args_to_lists_cache_key(gen_args)
+    last_dates = _hkml_list_cache.get_cache_creation_dates(key)
+    if len(last_dates) > 0:
+        print()
+        print('FYI, seems you read this list before at below dates.')
+    now_time = datetime.datetime.now()
+    for last_date in last_dates:
+        print('- %s (%s before)' %
+              (last_date, now_time - last_date))
+    print()
+
     prompt = ' '.join(['Enter the date.',
                        hkml_common.date_format_description()])
     q = hkml_view.CliQuestion(prompt=prompt)
