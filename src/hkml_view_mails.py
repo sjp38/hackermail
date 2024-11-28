@@ -507,6 +507,13 @@ def menu_effect_mails(mail_slist, selection):
 
     slist.data['mails_effects'] = MailDisplayEffect(interactive=True)
 
+def mk_dim_old_rule(max_date):
+    effect_rule = MailDisplayEffect(interactive=False)
+    effect_rule.effect = hkml_view.ScrollableList.effect_dim
+    effect_rule.min_date = 'min'
+    effect_rule.max_date = max_date
+    return effect_rule
+
 def menu_dim_old_mails(mail_slist, selection):
     print('Dim mails sent on <=user input date.')
 
@@ -534,11 +541,7 @@ def menu_dim_old_mails(mail_slist, selection):
     if err is not None:
         hkml_view.cli_any_input(err)
 
-    effect_rule = MailDisplayEffect(interactive=False)
-    effect_rule.effect = hkml_view.ScrollableList.effect_dim
-    effect_rule.min_date = 'min'
-    effect_rule.max_date = max_date
-    slist.data['mails_effects'] = effect_rule
+    slist.data['mails_effects'] = mk_dim_old_rule(max_date)
 
 def menu_reply_mail(mail_slist, selection):
     mail, slist = mail_slist
@@ -715,11 +718,10 @@ class MailsListDataGenerator:
         if not hasattr(self.args, 'dim_old') or self.args.dim_old is None:
             return text, mail_idx_key_map, None, err
 
-        display_effect_rule = MailDisplayEffect(interactive=False)
-        display_effect_rule.effect = hkml_view.ScrollableList.effect_dim
-        display_effect_rule.min_date = 'min'
-        display_effect_rule.max_date, err = hkml_common.parse_date_arg(
-                self.args.dim_old)
+        max_date, err = hkml_common.parse_date_arg( self.args.dim_old)
         if err is not None:
             err = 'wrong --dim_old (%s)' % err
+            display_effect_rule = None
+        else:
+            display_effect_rule = mk_dim_old_rule(max_date)
         return text, mail_idx_key_map, display_effect_rule, err
