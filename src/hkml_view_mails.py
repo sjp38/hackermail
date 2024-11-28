@@ -526,20 +526,28 @@ def menu_dim_old_mails(mail_slist, selection):
         print()
         print('FYI, seems you read this list before at below dates.')
     now_time = datetime.datetime.now().astimezone()
-    for last_date in last_dates:
-        print('- %s (%s before)' %
-              (last_date, now_time - last_date))
+    for idx, last_date in enumerate(last_dates):
+        print(' %2d. %s (%s before)' %
+              (idx, last_date, now_time - last_date))
     print()
 
-    prompt = ' '.join(['Enter the date.',
+    prompt = ' '.join(['Enter the date following the below format,',
+                       'or the index of a date from the above list.',
+                       '\n',
                        hkml_common.date_format_description()])
     q = hkml_view.CliQuestion(prompt=prompt)
     answer, _, err = q.ask_input(data=None, handle_fn=None)
     if err is not None:
         return
-    max_date, err = hkml_common.parse_date(answer)
-    if err is not None:
-        hkml_view.cli_any_input(err)
+
+    max_date = None
+    try:
+        max_date = last_dates[int(answer)]
+    except:
+        max_date, err = hkml_common.parse_date(answer)
+        if err is not None:
+            hkml_view.cli_any_input(err)
+            return
 
     slist.data['mails_effects'] = mk_dim_old_rule(max_date)
 
