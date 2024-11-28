@@ -834,9 +834,6 @@ def get_text_mail_idx_key_map(args):
         for source in args.sources:
             _hkml_list_cache.invalidate_cached_outputs(source)
 
-    if args.dim_old is None and args.stdout is False:
-        args.dim_old = suggest_dim_old(lists_cache_key)
-
     if args.since is None:
         since = datetime.datetime.now() - datetime.timedelta(days=3)
     else:
