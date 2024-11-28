@@ -959,6 +959,7 @@ def set_argparser(parser=None):
     add_mails_filter_arguments(parser)
     add_decoration_arguments(parser)
 
+    # this option is handled by hkml_view_mails
     hkml_common.add_date_arg(parser, '--dim_old', 'dim mails older than this.')
 
     # misc
