@@ -514,40 +514,60 @@ def mk_dim_old_rule(max_date):
     effect_rule.max_date = max_date
     return effect_rule
 
-def menu_dim_old_mails(mail_slist, selection):
-    print('Dim mails sent on <=user input date.')
-
-    mail, slist = mail_slist
-    data_generator = slist.data['data_generator']
-    gen_args = data_generator.args
-    key = hkml_list.args_to_lists_cache_key(gen_args)
+def suggest_dim_old(key):
+    print('Dim mails older than user-input date.')
+    print()
     last_dates = _hkml_list_cache.get_cache_creation_dates(key)
-    if len(last_dates) > 0:
-        print()
-        print('FYI, seems you read this list before at below dates.')
     now_time = datetime.datetime.now().astimezone()
+    print('Recent dates you read the list:')
+    if len(last_dates) == 0:
+        print('not exist')
     for idx, last_date in enumerate(last_dates):
         print(' %2d. %s (%s before)' %
               (idx, last_date, now_time - last_date))
     print()
-
-    prompt = ' '.join(['Enter the date following the below format,',
-                       'or the index of a date from the above list.',
-                       '\n',
-                       hkml_common.date_format_description()])
-    q = hkml_view.CliQuestion(prompt=prompt)
-    answer, _, err = q.ask_input(data=None, handle_fn=None)
-    if err is not None:
-        return
-
-    max_date = None
+    prompt_lines = []
+    if len(last_dates) > 0:
+        prompt_lines = [
+                'May I dim mails older than the latest one (%s)?' % last_date,
+                "- Enter 'y' or nothing if yes.",
+                "- Enter 'n' if you don't want to dim any mail.",
+                "- Enter an index on the above list to select te date of it.",
+                "- Or, enter custom date to dim mails older than it (%s)." %
+                hkml_common.date_format_description(),
+                ]
+    else:
+        prompt_lines = [
+                'May I dim mails older than a date?',
+                "- Enter the date to dim mails older than it (%s)." %
+                hkml_common.date_format_description(),
+                "- Or, enter 'n' if you don't want to dim any mail.",
+                ]
+    prompt_lines += ['', 'Enter: ']
+    answer = input('\n'.join(prompt_lines))
+    answer_fields = answer.split()
+    if len(answer_fields) > 1:
+        return answer_fields
+    if answer.lower() == 'n':
+        return None
     try:
-        max_date = last_dates[int(answer)]
+        answer = int(answer)
     except:
-        max_date, err = hkml_common.parse_date(answer)
-        if err is not None:
-            hkml_view.cli_any_input(err)
-            return
+        answer = idx
+    return [last_dates[answer].strftime('%Y-%m-%d %H:%M')]
+
+def menu_dim_old_mails(mail_slist, selection):
+    mail, slist = mail_slist
+    data_generator = slist.data['data_generator']
+    gen_args = data_generator.args
+    key = hkml_list.args_to_lists_cache_key(gen_args)
+    max_date_str = suggest_dim_old(key)
+    if max_date_str is None:
+        return
+    max_date, err = hkml_common.parse_date_arg(max_date_str)
+    if err is not None:
+        hkml_view.cli_any_input(err)
+        return
 
     slist.data['mails_effects'] = mk_dim_old_rule(max_date)
 
@@ -711,48 +731,6 @@ def gen_show_mails_list(screen, data_generator):
 
     return show_mails_list(screen, text.split('\n'), mail_idx_key_map,
                            display_rule, data_generator)
-
-def suggest_dim_old(key):
-    print('Dim mails older than user-input date.')
-    print()
-    last_dates = _hkml_list_cache.get_cache_creation_dates(key)
-    now_time = datetime.datetime.now().astimezone()
-    print('Recent dates you read the list:')
-    if len(last_dates) == 0:
-        print('not exist')
-    for idx, last_date in enumerate(last_dates):
-        print(' %2d. %s (%s before)' %
-              (idx, last_date, now_time - last_date))
-    print()
-    prompt_lines = []
-    if len(last_dates) > 0:
-        prompt_lines = [
-                'May I dim mails older than the latest one (%s)?' % last_date,
-                "- Enter 'y' or nothing if yes.",
-                "- Enter 'n' if you don't want to dim any mail.",
-                "- Enter an index on the above list to select te date of it.",
-                "- Or, enter custom date to dim mails older than it (%s)." %
-                hkml_common.date_format_description(),
-                ]
-    else:
-        prompt_lines = [
-                'May I dim mails older than a date?',
-                "- Enter the date to dim mails older than it (%s)." %
-                hkml_common.date_format_description(),
-                "- Or, enter 'n' if you don't want to dim any mail.",
-                ]
-    prompt_lines += ['', 'Enter: ']
-    answer = input('\n'.join(prompt_lines))
-    answer_fields = answer.split()
-    if len(answer_fields) > 1:
-        return answer_fields
-    if answer.lower() == 'n':
-        return None
-    try:
-        answer = int(answer)
-    except:
-        answer = idx
-    return [last_dates[answer].strftime('%Y-%m-%d %H:%M')]
 
 class MailsListDataGenerator:
     fn = None
