@@ -507,6 +507,26 @@ def menu_effect_mails(mail_slist, selection):
 
     slist.data['mails_effects'] = MailDisplayEffect(interactive=True)
 
+def menu_dim_old_mails(mail_slist, selection):
+    print('Dim mails sent on <=user input date.')
+    print()
+    mail, slist = mail_slist
+    prompt = ' '.join(['Enter the date.',
+                       hkml_common.date_format_description()])
+    q = hkml_view.CliQuestion(prompt=prompt)
+    answer, _, err = q.ask_input(data=None, handle_fn=None)
+    if err is not None:
+        return
+    max_date, err = hkml_common.parse_date(answer)
+    if err is not None:
+        hkml_view.cli_any_input(err)
+
+    effect_rule = MailDisplayEffect(interactive=False)
+    effect_rule.effect = hkml_view.ScrollableList.effect_dim
+    effect_rule.min_date = 'min'
+    effect_rule.max_date = max_date
+    slist.data['mails_effects'] = effect_rule
+
 def menu_reply_mail(mail_slist, selection):
     mail, slist = mail_slist
     hkml_view.shell_mode_end(slist)
@@ -585,6 +605,8 @@ def show_mails_list_menu(c, slist):
                     'list complete thread', menu_list_thread),
                 hkml_view.CliSelection(
                     'collapse/expand focused thread', menu_collapse_expand),
+                hkml_view.CliSelection(
+                    'dim old mails', menu_dim_old_mails),
                 hkml_view.CliSelection(
                     'set display effects', menu_effect_mails),
                 hkml_view.CliSelection('reply', menu_reply_mail),
