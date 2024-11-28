@@ -515,9 +515,22 @@ def mk_dim_old_rule(max_date):
     return effect_rule
 
 def build_suggest_dim_old_prompt(last_dates):
-    prompt_lines = []
-    if len(last_dates) > 0:
-        prompt_lines = [
+    lines = ['Dim mails older than user-input date.', '']
+    now_time = datetime.datetime.now().astimezone()
+    lines.append('Recent dates you read the list:')
+    if len(last_dates) == 0:
+        lines += ['not exist', '',
+                  'May I dim mails older than a date?',
+                  "- Enter the date to dim mails older than it (%s)." %
+                  hkml_common.date_format_description(),
+                  "- Or, enter 'n' if you don't want to dim any mail.",
+                  ]
+    else:
+        for idx, last_date in enumerate(last_dates):
+            lines.append(' %2d. %s (%s before)' %
+                  (idx, last_date, now_time - last_date))
+        lines += [
+                '',
                 'May I dim mails older than the latest one (%s)?' %
                 last_dates[-1],
                 "- Enter 'y' or nothing if yes.",
@@ -526,28 +539,11 @@ def build_suggest_dim_old_prompt(last_dates):
                 "- Or, enter custom date to dim mails older than it (%s)." %
                 hkml_common.date_format_description(),
                 ]
-    else:
-        prompt_lines = [
-                'May I dim mails older than a date?',
-                "- Enter the date to dim mails older than it (%s)." %
-                hkml_common.date_format_description(),
-                "- Or, enter 'n' if you don't want to dim any mail.",
-                ]
-    prompt_lines += ['', 'Enter: ']
-    return prompt_lines
+    lines += ['', 'Enter: ']
+    return lines
 
 def suggest_dim_old(key):
-    print('Dim mails older than user-input date.')
-    print()
     last_dates = _hkml_list_cache.get_cache_creation_dates(key)
-    now_time = datetime.datetime.now().astimezone()
-    print('Recent dates you read the list:')
-    if len(last_dates) == 0:
-        print('not exist')
-    for idx, last_date in enumerate(last_dates):
-        print(' %2d. %s (%s before)' %
-              (idx, last_date, now_time - last_date))
-    print()
     answer = input('\n'.join(build_suggest_dim_old_prompt(last_dates)))
     answer_fields = answer.split()
     _, err = hkml_common.parse_date_arg(answer_fields)
@@ -558,7 +554,7 @@ def suggest_dim_old(key):
     try:
         answer = int(answer)
     except:
-        answer = idx
+        answer = -1
     return [last_dates[answer].strftime('%Y-%m-%d %H:%M')]
 
 def menu_dim_old_mails(mail_slist, selection):
