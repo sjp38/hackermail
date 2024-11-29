@@ -211,10 +211,12 @@ class ScrollableList:
             self.last_drawn += [''] * (scr_rows - 1  - len(self.lines))
 
         orig_line = self.lines[self.focus_row]
-        self.screen.addstr(scr_rows - 1, 0,
-               '# focus: %d/%d row, %d/%d cols' % (
+        self.screen.addstr(scr_rows - 1, 0, '# ')
+
+        self.screen.addstr(scr_rows - 1, 2,
+               'focus: %d/%d row, %d/%d cols' % (
                    self.focus_row, len(self.lines), self.scroll_cols,
-                   len(orig_line)))
+                   len(orig_line)), focus_color)
         help_msg = 'Press ? for help'
         self.screen.addstr(scr_rows - 1, scr_cols - len(help_msg) - 1,
                            help_msg)
