@@ -554,6 +554,8 @@ def suggest_dim_old(key):
     try:
         answer = int(answer)
     except:
+        if answer == '' and len(last_dates) == 0:
+            return None
         answer = -1
     return [last_dates[answer].strftime('%Y-%m-%d %H:%M')]
 
