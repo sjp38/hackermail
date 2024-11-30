@@ -180,14 +180,6 @@ class ScrollableList:
                 color = focus_color
             elif self.color_callback:
                 color = self.color_callback(self, line_idx)
-            elif len(line) == 0:
-                color = normal_color
-            elif line[0] == '+' and (len(line) == 1 or line[1] != '+'):
-                color = add_color
-            elif line[0] == '-' and (len(line) == 1 or line[1] != '-'):
-                color = delete_color
-            elif line[0]== '>':
-                color = original_color
             else:
                 color = normal_color
 

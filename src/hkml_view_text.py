@@ -314,9 +314,23 @@ def get_text_viewer_handlers(data):
                 ['m'], show_text_viewer_menu, 'open menu'),
             ]
 
+def text_color_callback(slist, line_idx):
+    line = slist.lines[line_idx]
+    if len(line) == 0:
+        return hkml_view.normal_color
+    elif line[0] == '+' and (len(line) == 1 or line[1] != '+'):
+        return hkml_view.add_color
+    elif line[0] == '-' and (len(line) == 1 or line[1] != '-'):
+        return hkml_view.delete_color
+    elif line[0] == '>':
+        return hkml_view.original_color
+    else:
+        return hkml_view.normal_color
+
 def show_text_viewer(screen, text_lines, data=None):
     slist = hkml_view.ScrollableList(
             screen, text_lines, get_text_viewer_handlers(data))
     slist.data = data
+    slist.color_callback = text_color_callback
     slist.draw()
     return slist
