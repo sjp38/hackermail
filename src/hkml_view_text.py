@@ -325,9 +325,9 @@ def text_color_callback(slist, line_idx):
     if len(line) == 0:
         return hkml_view.normal_color
     if is_hunk:
-        if line[0] == '+' and (len(line) == 1 or line[1] != '+'):
+        if line[0] == '+':
             return hkml_view.add_color
-        elif line[0] == '-' and (len(line) == 1 or line[1] != '-'):
+        elif line[0] == '-':
             return hkml_view.delete_color
     elif line[0] == '>':
         return hkml_view.original_color
