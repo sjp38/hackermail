@@ -469,7 +469,8 @@ def __view(stdscr, text_to_show, data, view_type):
     original_color = curses.color_pair(6)
 
     if view_type in ['mail', 'text']:
-        return hkml_view_text.show_text_viewer(stdscr, text_lines)
+        return hkml_view_text.show_text_viewer(
+                stdscr, text_to_show.split('\n'))
     elif view_type == 'gen_mails_list':
         return hkml_view_mails.gen_show_mails_list(
                 stdscr, data_generator=data)
