@@ -120,6 +120,7 @@ class ScrollableList:
     data = None
     parent_list = None
     display_effect_callback = None
+    color_callback = None
 
     # constants for display_effect_callback return values
     effect_normal = curses.A_NORMAL
@@ -177,6 +178,8 @@ class ScrollableList:
 
             if line_idx == self.focus_row:
                 color = focus_color
+            elif self.color_callback:
+                color = self.color_callback(self, line_idx)
             elif len(line) == 0:
                 color = normal_color
             elif line[0] == '+' and (len(line) == 1 or line[1] != '+'):
