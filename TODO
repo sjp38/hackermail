@@ -12,6 +12,4 @@
     on the list, I'd want the thread also have same dim setup.
 - Allow listing recently opened threads
 - Give users ability to change color for (+), (-), (>) lines in text viewer
-- Remove unnecessary headers from draft continue screen
-  - e.g., 20241115012529.83546-1-sj@kernel.org
 - Apply diff colorizing to only diff section
