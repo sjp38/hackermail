@@ -10,6 +10,7 @@ import tempfile
 import _hkml
 import _hkml_list_cache
 import hkml_list
+import hkml_open
 import hkml_send
 import hkml_signature
 
@@ -44,15 +45,9 @@ def get_git_config(config_name):
 def format_mbox(subject, in_reply_to, to, cc, body, from_, draft_mail,
                 attach_files=None):
     if draft_mail is not None:
-        lines = []
-        for line in draft_mail.mbox.split('\n')[1:]:
-            if line.startswith('Message-ID: '):
-                continue
-            if line.startswith('Date: '):
-                continue
-            lines.append(line)
-        return '\n'.join(lines)
-
+        return hkml_open.mail_display_str(draft_mail, head_columns=None,
+                                          valid_mbox=False,
+                                          for_draft_continue=True)
     lines = []
     if not subject:
         subject = '/* write subject here */'
