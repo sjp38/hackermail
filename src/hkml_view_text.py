@@ -315,22 +315,74 @@ def get_text_viewer_handlers(data):
             ]
 
 def text_color_callback(slist, line_idx):
+    is_hunk = False
+    for start, end in slist.hunk_lines:
+        if start <= line_idx and line_idx <= end:
+            is_hunk = True
+            break
+
     line = slist.lines[line_idx]
     if len(line) == 0:
         return hkml_view.normal_color
-    elif line[0] == '+' and (len(line) == 1 or line[1] != '+'):
-        return hkml_view.add_color
-    elif line[0] == '-' and (len(line) == 1 or line[1] != '-'):
-        return hkml_view.delete_color
+    if is_hunk:
+        if line[0] == '+' and (len(line) == 1 or line[1] != '+'):
+            return hkml_view.add_color
+        elif line[0] == '-' and (len(line) == 1 or line[1] != '-'):
+            return hkml_view.delete_color
     elif line[0] == '>':
         return hkml_view.original_color
-    else:
-        return hkml_view.normal_color
+    return hkml_view.normal_color
+
+def hunk_length(lines, orig_content, new_content):
+    length = 0
+    for line in lines:
+        length += 1
+        if line.startswith('-'):
+            orig_content -= 1
+        elif line.startswith('+'):
+            new_content -= 1
+        else:
+            orig_content -= 1
+            new_content -= 1
+        # something wrong?
+        if orig_content < 0 or new_content < 0:
+            return -1
+        if orig_content == 0 and new_content == 0:
+            return length
+
+def hunk_lines(text_lines):
+    indices = []
+    idx = 0
+    while idx < len(text_lines):
+        line = text_lines[idx]
+        if not line.startswith('@@'):
+            idx += 1
+            continue
+        fields = line.split()
+        # format: "@@ -l,s +l,s @@ optional section heading"
+        if len(fields) < 4:
+            idx += 1
+            continue
+        numbers = fields[1].split(',') + fields[2].split(',')
+        if len(numbers) != 4:
+            idx += 1
+            continue
+        try:
+            numbers = [int(x) for x in numbers]
+        except:
+            idx += 1
+            continue
+        orig_content, new_content = numbers[1], numbers[3]
+        hunk_len = hunk_length(text_lines[idx + 1:], orig_content, new_content)
+        indices.append([idx + 1, idx + 1 + hunk_len])
+        idx += hunk_len + 1
+    return indices
 
 def show_text_viewer(screen, text_lines, data=None):
     slist = hkml_view.ScrollableList(
             screen, text_lines, get_text_viewer_handlers(data))
     slist.data = data
+    slist.hunk_lines = hunk_lines(text_lines)
     slist.color_callback = text_color_callback
     slist.draw()
     return slist
