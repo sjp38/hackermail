@@ -55,19 +55,24 @@ def pr_with_pager_if_needed(text):
     subprocess.call(['less', '-R', '-M', '--no-init', tmp_path])
     os.remove(tmp_path)
 
-def mail_display_str(mail, head_columns=None, valid_mbox=False):
+def mail_display_str(mail, head_columns=None, valid_mbox=False,
+                     for_draft_continue=False):
     lines = []
     if valid_mbox is True:
         lines.append('From hackermail Thu Jan  1 00:00:00 1970')
-    for head in ['From', 'To', 'CC', 'Subject', 'Message-Id', 'In-Reply-To',
-                 'Date']:
+    if for_draft_continue is True:
+        head_fields = ['From', 'To', 'CC', 'Subject', 'In-Reply-To']
+    else:
+        head_fields = ['From', 'To', 'CC', 'Subject', 'Message-Id',
+                       'In-Reply-To', 'Date']
+    for head in head_fields:
         value = mail.get_field(head)
         if value:
             if head_columns is not None:
                 lines += hkml_list.wrap_line('%s:' % head, value, head_columns)
             else:
                 lines.append('%s: %s' % (head, value))
-    if valid_mbox is False:
+    if valid_mbox is False and for_draft_continue is False:
         lines.append('Local-Date: %s' % mail.date)
     lines.append('\n%s' % mail.get_field('body'))
     return '\n'.join(lines)
