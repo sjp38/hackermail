@@ -25,6 +25,7 @@ import hkml_view_mails
 
 def args_to_lists_cache_key(args):
     dict_ = copy.deepcopy(args.__dict__)
+    dict_['cols'] = None
     dict_['fetch'] = False
     dict_['stdout'] = False
     dict_['dim_old'] = None
