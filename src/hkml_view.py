@@ -215,6 +215,7 @@ class ScrollableList:
         help_msg = 'Press ? for help'
         self.screen.addstr(scr_rows - 1, scr_cols - len(help_msg) - 1,
                            help_msg)
+        self.screen.move(self.focus_row - start_row, 0)
 
     def draw(self):
         while True:
