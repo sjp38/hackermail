@@ -4,7 +4,7 @@ v1.2.1
 - Implement 'dim old mails' mails list menu
 - Suggest dimming old mails for cached list, too
 - Cleanup draft edit content
-- Place cursor at the beginning of the focused line
+- Place cursor at the beginning of the focused line instead of colorizing
 
 v1.2.0
 - Maintain recent list opened dates in a separate file
