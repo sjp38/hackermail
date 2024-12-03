@@ -88,7 +88,6 @@ class CliQuestion:
 
 # ScrollableList
 
-focus_color = None
 normal_color = None
 highlight_color = None
 
@@ -176,9 +175,7 @@ class ScrollableList:
             line = self.lines[line_idx][
                     self.scroll_cols:self.scroll_cols + scr_cols]
 
-            if line_idx == self.focus_row:
-                color = focus_color
-            elif self.color_callback:
+            if self.color_callback:
                 color = self.color_callback(self, line_idx)
             else:
                 color = normal_color
@@ -206,12 +203,10 @@ class ScrollableList:
             self.last_drawn += [''] * (scr_rows - 1  - len(self.lines))
 
         orig_line = self.lines[self.focus_row]
-        self.screen.addstr(scr_rows - 1, 0, '# ')
-
-        self.screen.addstr(scr_rows - 1, 2,
-               'focus: %d/%d row, %d/%d cols' % (
-                   self.focus_row, len(self.lines), self.scroll_cols,
-                   len(orig_line)), focus_color)
+        self.screen.addstr(scr_rows - 1, 0,
+                           '# focus: %d/%d row, %d/%d cols' % (
+                               self.focus_row, len(self.lines), self.scroll_cols,
+                               len(orig_line)))
         help_msg = 'Press ? for help'
         self.screen.addstr(scr_rows - 1, scr_cols - len(help_msg) - 1,
                            help_msg)
