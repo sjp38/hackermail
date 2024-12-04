@@ -12,3 +12,6 @@
     on the list, I'd want the thread also have same dim setup.
 - Allow listing recently opened threads
 - Give users ability to change color for (+), (-), (>) lines in text viewer
+- Fix wrong dim_old suggestion
+  - With --fetch, current cache creation time is suggested, so everything is
+    dimmed.  Fix it.
