@@ -544,6 +544,10 @@ def build_suggest_dim_old_prompt(last_dates):
 
 def suggest_dim_old(key):
     last_dates = _hkml_list_cache.get_cache_creation_dates(key)
+    if len(last_dates) > 0:
+        now = datetime.datetime.now().astimezone()
+        if now - last_dates[-1] < datetime.timedelta(seconds=5):
+            last_dates = last_dates[:-1]
     answer = input('\n'.join(build_suggest_dim_old_prompt(last_dates)))
     answer_fields = answer.split()
     _, err = hkml_common.parse_date_arg(answer_fields)
