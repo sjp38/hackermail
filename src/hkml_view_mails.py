@@ -745,14 +745,15 @@ class MailsListDataGenerator:
 
     def generate(self):
         # returns text, mail_idx_key_map, display_effect_rule, and error
-        text, mail_idx_key_map, err = self.fn(self.args)
         if not hasattr(self.args, 'dim_old') or self.args.dim_old is None:
             self.args.dim_old = suggest_dim_old(
                     hkml_list.args_to_lists_cache_key(self.args))
-            if self.args.dim_old is None:
-                return text, mail_idx_key_map, None, err
 
-        max_date, err = hkml_common.parse_date_arg( self.args.dim_old)
+        text, mail_idx_key_map, err = self.fn(self.args)
+        if self.args.dim_old is None:
+            return text, mail_idx_key_map, None, err
+
+        max_date, err = hkml_common.parse_date_arg(self.args.dim_old)
         if err is not None:
             err = 'wrong --dim_old (%s)' % err
             display_effect_rule = None
