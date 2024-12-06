@@ -15,3 +15,4 @@
 - Fix wrong dim_old suggestion
   - With --fetch, current cache creation time is suggested, so everything is
     dimmed.  Fix it.
+- Support custom list format, like 'damo report access --format_region'
