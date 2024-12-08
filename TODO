@@ -14,6 +14,3 @@
 - Give users ability to change color for (+), (-), (>) lines in text viewer
 - Support custom list format, like 'damo report access --format_region'
   - Or, just remove the unnecessary mail index for non --stdout case?
-- Delete drafts after sending
-  - reproducer: reply -> save as draft -> reply again -> select the draft -> send
-    - the draft is not deleted.
