@@ -82,7 +82,7 @@ def do_add_tags(mail, tags, draft_subject=None):
 
     tags_map = read_tags_file()
 
-    if 'drafts' in tags:
+    if 'drafts' in tags or 'sent' in tags:
         if draft_subject is None:
             draft_subject = mail.subject
         suggest_removing_drafts_of_subject(draft_subject, tags_map)
