@@ -15,3 +15,5 @@
 - Support custom list format, like 'damo report access --format_region'
   - Or, just remove the unnecessary mail index for non --stdout case?
 - patch export: let it exported on specific path
+- Let cursor moves horizontally
+  - can be helpful for finding parent mail on long and deep threads
