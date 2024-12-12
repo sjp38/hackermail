@@ -21,3 +21,6 @@
   - We read mail, go back to list, com back to mail again.  Remember and
     restore the cursor position to where it was at last time, at least for
     recent ones.
+- Fix wrong diff hunk identification
+  - Diff ending line (--) is identified as diff hunk part and red-colored,
+    e.g., 20241211203951.764733-2-joshua.hahnjy@gmail.com
