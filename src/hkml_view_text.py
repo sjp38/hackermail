@@ -349,6 +349,7 @@ def hunk_length(lines, orig_content, new_content):
             return -1
         if orig_content == 0 and new_content == 0:
             return length
+    return length
 
 def hunk_lines(text_lines):
     indices = []
