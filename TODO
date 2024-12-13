@@ -24,3 +24,4 @@
 - Fix wrong diff hunk identification
   - Diff ending line (--) is identified as diff hunk part and red-colored,
     e.g., 20241211203951.764733-2-joshua.hahnjy@gmail.com
+- Remember and restore --dim_old for cached list output
