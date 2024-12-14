@@ -216,7 +216,7 @@ class ScrollableList:
         self.screen.addstr(scr_rows - 1, 0,
                            '# focus: %d/%d row, %d/%d cols' % (
                                self.focus_row, len(self.lines), self.focus_col,
-                               len(orig_line)))
+                               self.longest_line_len - 1))
         help_msg = 'Press ? for help'
         self.screen.addstr(scr_rows - 1, scr_cols - len(help_msg) - 1,
                            help_msg)
