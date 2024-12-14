@@ -167,11 +167,15 @@ class ScrollableList:
             self.screen.addstr(0, 0, 'X')
             return
 
-        draw_start_col = self.focus_col
-        if self.longest_line_len <= scr_cols:
+        max_horizon_scroll_len = self.longest_line_len - scr_cols
+        if max_horizon_scroll_len < 0:
+            # no need to horizon-scroll at all
             draw_start_col = 0
-        elif self.focus_col > self.longest_line_len - scr_cols:
-            draw_start_col = self.longest_line_len - scr_cols
+        elif self.focus_col < max_horizon_scroll_len:
+            draw_start_col = self.focus_col
+        else:
+            # don't scroll right if it will not show something more
+            draw_start_col = max_horizon_scroll_len
 
         for row in range(scr_rows - 1):
             line_idx = start_row + row
