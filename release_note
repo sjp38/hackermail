@@ -3,6 +3,7 @@ This file contains major changes in each version since v1.0.0
 v1.2.2
 - Suggest removing draft when the mail is sent
 - Let cursor moves horizontally
+- Remember and restore cursor position of previous-opened mails
 
 v1.2.1
 - Implement 'dim old mails' mails list menu

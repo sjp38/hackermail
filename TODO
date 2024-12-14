@@ -15,9 +15,5 @@
 - Support custom list format, like 'damo report access --format_region'
   - Or, just remove the unnecessary mail index for non --stdout case?
 - patch export: let it exported on specific path
-- Remember and restore cursor position on mail
-  - We read mail, go back to list, com back to mail again.  Remember and
-    restore the cursor position to where it was at last time, at least for
-    recent ones.
 - Remember and restore --dim_old for cached list output
 - Support 'hkml open' with message id or lore link
