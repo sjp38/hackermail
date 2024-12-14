@@ -43,7 +43,7 @@ def mails_of_tag(tag):
 
 def ask_sync_before_change():
     if hkml_sync.syncup_ready():
-        answer = input('Gonna update tags.  Sync before and after? [Y/n] ')
+        answer = input('Gonna read/write tags.  Sync before and after? [Y/n] ')
         if answer.lower() != 'n':
             hkml_sync.syncup(_hkml.get_hkml_dir(), remote=None)
             return True
