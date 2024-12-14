@@ -42,10 +42,6 @@ def draft_or_sent_mail(draft_file, msgid):
     draft_mbox_str = '\n'.join(fake_header + [draft_content])
     return _hkml.Mail(mbox=draft_mbox_str)
 
-def tag_as(draft_file, tag_name, msgid, orig_draft_subject=None):
-    mail = draft_or_sent_mail(draft_file, msgid)
-    hkml_tag.do_add_tags(mail, [tag_name], orig_draft_subject)
-
 def send_mail(mboxfile, get_confirm, erase_mbox, orig_draft_subject=None):
     do_send = True
     if get_confirm:
@@ -62,13 +58,8 @@ def send_mail(mboxfile, get_confirm, erase_mbox, orig_draft_subject=None):
             msgid = fields[1]
         if fields == ['Result:', '250'] or fields == ['Result:' , 'OK']:
             sent = True
-    if sent:
-        tag_name = 'sent'
-    else:
-        tag_name = 'drafts'
-    answer = input('Tag as %s? [Y/n] ' % tag_name)
-    if answer.lower() != 'n':
-        tag_as(mboxfile, tag_name, msgid, orig_draft_subject)
+    hkml_tag.handle_may_sent_mail(
+            draft_or_sent_mail(mboxfile, msgid), sent, orig_draft_subject)
     if erase_mbox:
         os.remove(mboxfile)
 
