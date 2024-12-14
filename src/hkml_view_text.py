@@ -379,11 +379,13 @@ def hunk_lines(text_lines):
         idx += hunk_len + 1
     return indices
 
-def show_text_viewer(screen, text_lines, data=None):
+def show_text_viewer(screen, text_lines, data=None, cursor_position=None):
     slist = hkml_view.ScrollableList(
             screen, text_lines, get_text_viewer_handlers(data))
     slist.data = data
     slist.hunk_lines = hunk_lines(text_lines)
     slist.color_callback = text_color_callback
+    if cursor_position is not None:
+        slist.focus_row, slist.focus_col = cursor_position
     slist.draw()
     return slist
