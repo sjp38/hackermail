@@ -3,6 +3,7 @@
 import argparse
 import curses
 import datetime
+import os
 
 import _hkml_list_cache
 import hkml_cache
@@ -269,10 +270,17 @@ def do_apply_patch(data, selection):
         hkml_view.cli_any_input('applying action failed (%s)' % err)
 
 def do_export_patch(data, selection):
+    export_dir = input('to where export the patch file[s]? ')
+    if not os.path.exists(export_dir):
+        os.mkdir(export_dir)
+    elif not os.path.isdir(export_dir):
+        print('%s exisits, and not a directory' % export_dir)
+        return
+
     mail = data
     err = hkml_patch.apply_action_to_mails(mail, argparse.Namespace(
         hkml_dir=None, command='patch', dont_add_cv='ask', action='export',
-        repo='./'))
+        repo='./', export_dir=export_dir))
     if err is not None:
         hkml_view.cli_any_input('applying action failed (%s)' % err)
 
