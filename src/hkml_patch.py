@@ -175,8 +175,14 @@ def apply_action_to_mails(mail, args):
 
     if (err_to_return is None and args.action == 'export' and
             len(patch_files) > 0):
-        print('\npatch files are saved at \'%s\'\n' %
-              os.path.dirname(patch_files[-1]))
+        saved_dir = os.path.dirname(patch_files[-1])
+        if args.export_dir is not None:
+            for patch_file in patch_files:
+                basename = os.path.basename(patch_file)
+                os.rename(patch_file, os.path.join(args.export_dir, basename))
+            os.rmdir(saved_dir)
+            saved_dir = args.export_dir
+        print('\npatch files are saved at \'%s\'\n' % saved_dir)
 
     if err_to_return is None and args.action != 'export':
         dirname = os.path.dirname(patch_files[-1])
@@ -247,3 +253,5 @@ def set_argparser(parser):
             help=' '.join(
                 ['The mail to apply as a patch.',
                 'Could be index on the list, or \'clipboard\'']))
+    parser_export.add_argument('--export_dir', metavar='<dir>',
+                               help='directory to save the patch files')
