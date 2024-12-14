@@ -4,6 +4,7 @@ v1.2.2
 - Suggest removing draft when the mail is sent
 - Let cursor moves horizontally
 - Remember and restore cursor position of previous-opened mails
+- Let users specify where to save patch files (export patch files menu)
 
 v1.2.1
 - Implement 'dim old mails' mails list menu
