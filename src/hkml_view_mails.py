@@ -57,7 +57,18 @@ def open_focused_mail(c, slist):
 
     _, cols = slist.screen.getmaxyx()
     lines = hkml_open.mail_display_str(mail, cols).split('\n')
-    hkml_view_text.show_text_viewer(slist.screen, lines, data=mail)
+
+    cursor_position_cache = slist.data['last_cursor_position']
+    msgid = mail.get_field('message-id')
+    if msgid in cursor_position_cache:
+        cursor_position = cursor_position_cache[msgid]
+    else:
+        cursor_position = None
+
+    text_view_list = hkml_view_text.show_text_viewer(
+            slist.screen, lines, data=mail, cursor_position=cursor_position)
+    cursor_position_cache[msgid] = [text_view_list.focus_row,
+                                    text_view_list.focus_col]
 
 def get_attach_files():
     answer = input('Do you want to attach files to the mail? [y/N] ')
@@ -624,6 +635,7 @@ def menu_refresh_mails(mail_slist, selection):
                   'mails_effects': display_rule,
                   'collapsed_mails': {},
                   'data_generator': data_generator,
+                  'last_cursor_position': {},
                   }
     slist.lines = text.split('\n')
     slist.screen.clear()
@@ -722,6 +734,7 @@ def show_mails_list(screen, text_lines, mail_idx_key_map, display_rule,
                   'mails_effects': display_rule,
                   'collapsed_mails': {},
                   'data_generator': data_generator,
+                  'last_cursor_position': {},
                   }
     slist.after_input_handle_callback = after_input_handle_callback
     slist.display_effect_callback = mails_display_effect_callback
