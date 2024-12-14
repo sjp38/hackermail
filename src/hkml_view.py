@@ -341,7 +341,7 @@ def focus_left(c, slist):
 
 def focus_right(c, slist):
     _, cols = slist.screen.getmaxyx()
-    focus_col = min(slist.focus_col + 1, slist.longest_line_len - cols)
+    focus_col = min(slist.focus_col + 1, slist.longest_line_len - 1)
     slist.focus_col = max(focus_col, 0)
 
 def quit_list(c, slist):
