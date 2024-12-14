@@ -20,3 +20,4 @@
     restore the cursor position to where it was at last time, at least for
     recent ones.
 - Remember and restore --dim_old for cached list output
+- Support 'hkml open' with message id or lore link
