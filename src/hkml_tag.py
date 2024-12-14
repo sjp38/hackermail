@@ -193,3 +193,33 @@ def set_argparser(parser):
                                help='indexes of the mails to remove tags')
 
     parser_list = subparsers.add_parser('list', help='list tags')
+
+def handle_may_sent_mail(mail, sent, orig_draft_subject):
+    '''Handle tags of a mail that may sent or not'''
+
+    sync_after = ask_sync_before_change()
+
+    # suggest tagging the may or may not sent mail
+    if sent:
+        tag_name = 'sent'
+    else:
+        tag_name = 'drafts'
+    answer = input('Tag the mail (%s) as %s? [Y/n] '
+                   % (mail.subject, tag_name))
+    tag_may_sent_mail = answer.lower() != 'n'
+
+    tags_map = read_tags_file()
+
+    # regardless of the answer to the above question, suggest removing
+    # drafts
+    if orig_draft_subject is None:
+        orig_draft_subject = mail.subject
+    suggest_removing_drafts_of_subject(orig_draft_subject, tags_map)
+
+    # do the tagging of the mail.  Do this after the above duplicate drafts
+    # removing, since otherwise this mail may tagged as draft and the duplicate
+    # draft removing may find it as the draft.
+    if tag_may_sent_mail:
+        add_tags_to_map(mail, [tag_name], tags_map)
+
+    write_tags_file(tags_map, sync_after)
