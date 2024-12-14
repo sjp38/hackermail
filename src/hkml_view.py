@@ -110,10 +110,10 @@ class ScrollableList:
     screen = None
     lines = None
     focus_row = None
+    focus_col = None
     input_handlers = None
     highlight_keyword = None
     last_drawn = None
-    scroll_cols = None
     longest_line_len = None
     after_input_handle_callback = None
     data = None
@@ -149,7 +149,7 @@ class ScrollableList:
                 if c in handled_inputs:
                     raise Exception('DUPLICATED INPUT HANDLER for %s' % c)
                 handled_inputs[c] = True
-        self.scroll_cols = 0
+        self.focus_col = 0
         self.longest_line_len = sorted([len(line) for line in lines])[-1]
 
     def __draw(self):
@@ -173,7 +173,7 @@ class ScrollableList:
                 break
 
             line = self.lines[line_idx][
-                    self.scroll_cols:self.scroll_cols + scr_cols]
+                    self.focus_col:self.focus_col + scr_cols]
 
             if self.color_callback:
                 color = self.color_callback(self, line_idx)
@@ -205,7 +205,7 @@ class ScrollableList:
         orig_line = self.lines[self.focus_row]
         self.screen.addstr(scr_rows - 1, 0,
                            '# focus: %d/%d row, %d/%d cols' % (
-                               self.focus_row, len(self.lines), self.scroll_cols,
+                               self.focus_row, len(self.lines), self.focus_col,
                                len(orig_line)))
         help_msg = 'Press ? for help'
         self.screen.addstr(scr_rows - 1, scr_cols - len(help_msg) - 1,
@@ -336,13 +336,13 @@ def focus_prev_keyword(c, slist):
             return
     slist.toast('no prev keyword found')
 
-def scroll_left(c, slist):
-    slist.scroll_cols = max(slist.scroll_cols - 1, 0)
+def focus_left(c, slist):
+    slist.focus_col = max(slist.focus_col - 1, 0)
 
-def scroll_right(c, slist):
+def focus_right(c, slist):
     _, cols = slist.screen.getmaxyx()
-    scroll_cols = min(slist.scroll_cols + 1, slist.longest_line_len - cols)
-    slist.scroll_cols = max(scroll_cols, 0)
+    focus_col = min(slist.focus_col + 1, slist.longest_line_len - cols)
+    slist.focus_col = max(focus_col, 0)
 
 def quit_list(c, slist):
     return 'quit list'
@@ -365,8 +365,8 @@ def scrollable_list_default_handlers():
                          'focus the row of next highlighted keyword'),
             InputHandler(['N'], focus_prev_keyword,
                          'focus the row of prev highlighted keyword'),
-            InputHandler(['h', 'key_left'], scroll_left, 'scroll left'),
-            InputHandler(['l', 'key_right'], scroll_right, 'scroll right'),
+            InputHandler(['h', 'key_left'], focus_left, 'focus left'),
+            InputHandler(['l', 'key_right'], focus_right, 'focus right'),
             InputHandler(['q'], quit_list, 'quit current screen'),
             InputHandler(['Q'], quit_hkml, 'quit hkml'),
             InputHandler(['?'], show_help_msg_list, 'show help message'),
