@@ -170,6 +170,8 @@ class ScrollableList:
         draw_start_col = self.focus_col
         if self.longest_line_len <= scr_cols:
             draw_start_col = 0
+        elif self.focus_col > self.longest_line_len - scr_cols:
+            draw_start_col = self.longest_line_len - scr_cols
 
         for row in range(scr_rows - 1):
             line_idx = start_row + row
