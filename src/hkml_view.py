@@ -167,13 +167,15 @@ class ScrollableList:
             self.screen.addstr(0, 0, 'X')
             return
 
+        draw_start_col = self.focus_col
+
         for row in range(scr_rows - 1):
             line_idx = start_row + row
             if line_idx >= len(self.lines):
                 break
 
             line = self.lines[line_idx][
-                    self.focus_col:self.focus_col + scr_cols]
+                    draw_start_col:draw_start_col + scr_cols]
 
             if self.color_callback:
                 color = self.color_callback(self, line_idx)
@@ -210,7 +212,8 @@ class ScrollableList:
         help_msg = 'Press ? for help'
         self.screen.addstr(scr_rows - 1, scr_cols - len(help_msg) - 1,
                            help_msg)
-        self.screen.move(self.focus_row - start_row, 0)
+        self.screen.move(self.focus_row - start_row,
+                         self.focus_col - draw_start_col)
 
     def draw(self):
         while True:
