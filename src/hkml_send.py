@@ -9,7 +9,7 @@ import subprocess
 import _hkml
 import hkml_tag
 
-def tag_as(draft_file, tag_name, msgid, orig_draft_subject=None):
+def draft_or_sent_mail(draft_file, msgid):
     with open(draft_file, 'r') as f:
         draft_content = f.read()
     paragraphs = draft_content.split('\n\n')
@@ -40,8 +40,11 @@ def tag_as(draft_file, tag_name, msgid, orig_draft_subject=None):
     if has_from is False:
         fake_header.append('From: ')
     draft_mbox_str = '\n'.join(fake_header + [draft_content])
-    draft_mail = _hkml.Mail(mbox=draft_mbox_str)
-    hkml_tag.do_add_tags(draft_mail, [tag_name], orig_draft_subject)
+    return _hkml.Mail(mbox=draft_mbox_str)
+
+def tag_as(draft_file, tag_name, msgid, orig_draft_subject=None):
+    mail = draft_or_sent_mail(draft_file, msgid)
+    hkml_tag.do_add_tags(mail, [tag_name], orig_draft_subject)
 
 def send_mail(mboxfile, get_confirm, erase_mbox, orig_draft_subject=None):
     do_send = True
