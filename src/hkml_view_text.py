@@ -317,7 +317,7 @@ def get_text_viewer_handlers(data):
 def text_color_callback(slist, line_idx):
     is_hunk = False
     for start, end in slist.hunk_lines:
-        if start <= line_idx and line_idx <= end:
+        if start <= line_idx and line_idx < end:
             is_hunk = True
             break
 
