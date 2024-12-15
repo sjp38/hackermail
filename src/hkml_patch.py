@@ -192,15 +192,18 @@ def apply_action_to_mails(mail, args):
 
     return err_to_return
 
-def format_patches(commits, output_dir):
-    rc = subprocess.call(['git', 'format-patch', commits, '-o', output_dir])
+def format_patches(commits, output_dir, is_rfc):
+    cmd = ['git', 'format-patch', commits, '-o', output_dir]
+    if is_rfc is True:
+        cmd.append('--rfc')
+    rc = subprocess.call(cmd)
     if rc != 0:
         print('foramtting patch files failed')
         exit(1)
 
 def main(args):
     if args.action == 'format':
-        format_patches(args.commits, args.output_dir)
+        format_patches(args.commits, args.output_dir, args.rfc)
         return
 
     # For call from hkml_view_mail
@@ -272,3 +275,5 @@ def set_argparser(parser):
     parser_format.add_argument(
             'output_dir', metavar='<dir>', default='./', nargs='?',
             help='directory to save formatted patch files')
+    parser_format.add_argument('--rfc', action='store_true',
+                               help='mark as RFC patches')
