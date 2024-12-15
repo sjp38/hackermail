@@ -230,6 +230,11 @@ def format_patches(args):
         print('get_maintainer.pl found.  add recipients using it.')
         add_maintainers(patch_files)
 
+    if os.path.exists('./scripts/checkpatch.pl'):
+        print('\ncheckpatch.pl found.  run it.')
+        for patch_file in patch_files:
+            subprocess.call(['./scripts/checkpatch.pl', patch_file])
+
 def main(args):
     if args.action == 'format':
         format_patches(args)
