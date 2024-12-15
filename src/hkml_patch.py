@@ -192,7 +192,17 @@ def apply_action_to_mails(mail, args):
 
     return err_to_return
 
+def format_patches(commits):
+    rc = subprocess.call(['git', 'format-patch', commits])
+    if rc != 0:
+        print('foramtting patch files failed')
+        exit(1)
+
 def main(args):
+    if args.action == 'format':
+        format_patches(args.commits)
+        return
+
     # For call from hkml_view_mail
     if type(args.mail) is _hkml.Mail:
         mail = args.mail
@@ -255,3 +265,7 @@ def set_argparser(parser):
                 'Could be index on the list, or \'clipboard\'']))
     parser_export.add_argument('--export_dir', metavar='<dir>',
                                help='directory to save the patch files')
+
+    parser_format = subparsers.add_parser('format', help='format patch files')
+    parser_format.add_argument('commits', metavar='<commits>',
+                               help='commits to convert to patch files')
