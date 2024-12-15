@@ -192,20 +192,20 @@ def apply_action_to_mails(mail, args):
 
     return err_to_return
 
-def format_patches(commits, output_dir, is_rfc, subject_prefix):
+def format_patches(args):
     commit_ids = subprocess.check_output(
-            ['git', 'log', '--pretty=%h', commits]
+            ['git', 'log', '--pretty=%h', args.commits]
             ).decode().strip().split('\n')
     if len(commit_ids) > 1:
         add_cv = True
     else:
         add_cv = False
-    cmd = ['git', 'format-patch', commits, '-o', output_dir]
+    cmd = ['git', 'format-patch', args.commits, '-o', args.output_dir]
     if add_cv:
         cmd.append('--cover-letter')
-    if subject_prefix is not None:
-        cmd.append('--subject-prefix=%s' % subject_prefix)
-    elif is_rfc is True:
+    if args.subject_prefix is not None:
+        cmd.append('--subject-prefix=%s' % args.subject_prefix)
+    elif args.rfc is True:
         cmd.append('--rfc')
     rc = subprocess.call(cmd)
     if rc != 0:
@@ -214,8 +214,7 @@ def format_patches(commits, output_dir, is_rfc, subject_prefix):
 
 def main(args):
     if args.action == 'format':
-        format_patches(args.commits, args.output_dir, args.rfc,
-                       args.subject_prefix)
+        format_patches(args)
         return
 
     # For call from hkml_view_mail
