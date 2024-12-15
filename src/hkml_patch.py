@@ -192,6 +192,24 @@ def apply_action_to_mails(mail, args):
 
     return err_to_return
 
+def add_maintainers(patch_files):
+    # todo: handle cover letter
+    cmd = ['./scripts/get_maintainer.pl', '--nogit', '--nogit-fallback',
+           '--norolestats']
+    for patch_file in patch_files:
+        print('add recipients to %s' % patch_file)
+        to_people = subprocess.check_output(
+                cmd + ['--nol', patch_file]).decode().strip().split('\n')
+        cc_people = subprocess.check_output(
+                cmd + ['--nom', patch_file]).decode().strip().split('\n')
+        mail = _hkml.read_mbox_file(patch_file)[0]
+        mail.set_field('to', ', '.join(to_people))
+        mail.set_field('cc', ', '.join(cc_people))
+        to_write = hkml_open.mail_display_str(mail, head_columns=80,
+                                              valid_mbox=True)
+        with open(patch_file, 'w') as f:
+            f.write(to_write)
+
 def format_patches(args):
     commit_ids = subprocess.check_output(
             ['git', 'log', '--pretty=%h', args.commits]
@@ -207,10 +225,10 @@ def format_patches(args):
         cmd.append('--subject-prefix=%s' % args.subject_prefix)
     elif args.rfc is True:
         cmd.append('--rfc')
-    rc = subprocess.call(cmd)
-    if rc != 0:
-        print('foramtting patch files failed')
-        exit(1)
+    patch_files = subprocess.check_output(cmd).decode().strip().split('\n')
+    if os.path.exists('./scripts/get_maintainer.pl'):
+        print('get_maintainer.pl found.  add recipients using it.')
+        add_maintainers(patch_files)
 
 def main(args):
     if args.action == 'format':
