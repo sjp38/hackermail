@@ -272,7 +272,7 @@ def do_apply_patch(data, selection):
 def do_export_patch(data, selection):
     export_dir = input('to where export the patch file[s]? ')
     if not os.path.exists(export_dir):
-        os.mkdir(export_dir)
+        os.makedirs(export_dir)
     elif not os.path.isdir(export_dir):
         print('%s exisits, and not a directory' % export_dir)
         return
