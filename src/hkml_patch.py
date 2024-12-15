@@ -218,13 +218,13 @@ def add_maintainers(patch_files):
     for idx, patch_file in enumerate(patch_files):
         if first_patch_is_cv and idx == 0:
             continue
-        to_people = subprocess.check_output(
+        to = subprocess.check_output(
                 cmd + ['--nol', patch_file]).decode().strip().split('\n')
-        total_to += to_people
-        cc_people = subprocess.check_output(
+        total_to += to
+        cc = subprocess.check_output(
                 cmd + ['--nom', patch_file]).decode().strip().split('\n')
-        total_cc += cc_people
-        add_recipients(patch_file, to_people, cc_people)
+        total_cc += cc
+        add_recipients(patch_file, to, cc)
     if first_patch_is_cv:
         to = sorted(set(total_to))
         cc = sorted(set(total_cc))
