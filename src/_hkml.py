@@ -174,6 +174,12 @@ class Mail:
                 'msgid': self.get_field('message-id'),
                 'mbox': self.mbox}
 
+    def set_field(self, tag, value):
+        # note that this doesn't update mbox field.  To format te mail
+        # correctly, user should use get_field() for each field, like
+        # hkml_open.mail_display_str()
+        self.__fields[tag.lower()] = value
+
     def get_field(self, tag):
         tag = tag.lower()
         # this might set from git log
