@@ -193,7 +193,16 @@ def apply_action_to_mails(mail, args):
     return err_to_return
 
 def format_patches(commits, output_dir, is_rfc):
+    commit_ids = subprocess.check_output(
+            ['git', 'log', '--pretty=%h', commits]
+            ).decode().strip().split('\n')
+    if len(commit_ids) > 1:
+        add_cv = True
+    else:
+        add_cv = False
     cmd = ['git', 'format-patch', commits, '-o', output_dir]
+    if add_cv:
+        cmd.append('--cover-letter')
     if is_rfc is True:
         cmd.append('--rfc')
     rc = subprocess.call(cmd)
