@@ -222,7 +222,7 @@ def add_maintainers(patch_files):
         with open(patch_file, 'w') as f:
             f.write(to_write)
     if first_patch_is_cv:
-        print('add recipients to %s' % patch_file)
+        print('add recipients to %s' % patch_files[0])
         mail = _hkml.read_mbox_file(patch_files[0])[0]
         to = sorted(set(total_to))
         print('\n'.join([' to: %s' % r for r in to]))
