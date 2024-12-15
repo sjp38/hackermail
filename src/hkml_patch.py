@@ -193,15 +193,25 @@ def apply_action_to_mails(mail, args):
     return err_to_return
 
 def add_maintainers(patch_files):
-    # todo: handle cover letter
+    first_patch_is_cv = False
+    first_patch_name = os.path.basename(patch_files[0])
+    if first_patch_name == '0000-cover-letter.patch':
+        first_patch_is_cv = True
+
+    total_to = []
+    total_cc = []
     cmd = ['./scripts/get_maintainer.pl', '--nogit', '--nogit-fallback',
            '--norolestats']
-    for patch_file in patch_files:
+    for idx, patch_file in enumerate(patch_files):
+        if first_patch_is_cv and idx == 0:
+            continue
         print('add recipients to %s' % patch_file)
         to_people = subprocess.check_output(
                 cmd + ['--nol', patch_file]).decode().strip().split('\n')
+        total_to += to_people
         cc_people = subprocess.check_output(
                 cmd + ['--nom', patch_file]).decode().strip().split('\n')
+        total_cc += cc_people
         mail = _hkml.read_mbox_file(patch_file)[0]
         mail.set_field('to', ', '.join(to_people))
         mail.set_field('cc', ', '.join(cc_people))
@@ -209,6 +219,16 @@ def add_maintainers(patch_files):
                                               valid_mbox=True)
         with open(patch_file, 'w') as f:
             f.write(to_write)
+    if first_patch_is_cv:
+        print('add recipients to %s' % patch_file)
+        mail = _hkml.read_mbox_file(patch_files[0])[0]
+        mail.set_field('to', ', '.join(sorted(set(total_to))))
+        mail.set_field('cc', ', '.join(sorted(set(total_cc))))
+        to_write = hkml_open.mail_display_str(mail, head_columns=80,
+                                              valid_mbox=True)
+        with open(patch_files[0], 'w') as f:
+            f.write(to_write)
+
 
 def format_patches(args):
     commit_ids = subprocess.check_output(
