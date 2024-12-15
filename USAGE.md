@@ -807,3 +807,13 @@ patch file for mail '[PATCH 1/9] Docs/mm/damon/design: fix two typos' is saved a
 patch file for mail '[PATCH 2/9] Docs/mm/damon/design: clarify regions merging operation' is saved at '/tmp/hkml_patch_-patch-2-9--docs-mm-damon-design--clarify-regions-merging-om5v8v5tv'
 [...]
 ```
+
+
+Formatting Patches
+------------------
+
+`hkml patch format` receives git commits range, and formats those into patch
+files that can be submitted using `git send-email`.  If it is called on linux
+tree, it runs `get_maintainer.pl` and adds the appropriate recipients to the
+patch files.  In the linux tree use case, it also runs `checkpatch.pl` to
+resulting patch files.
