@@ -192,7 +192,7 @@ def apply_action_to_mails(mail, args):
 
     return err_to_return
 
-def format_patches(commits, output_dir, is_rfc):
+def format_patches(commits, output_dir, is_rfc, subject_prefix):
     commit_ids = subprocess.check_output(
             ['git', 'log', '--pretty=%h', commits]
             ).decode().strip().split('\n')
@@ -203,7 +203,9 @@ def format_patches(commits, output_dir, is_rfc):
     cmd = ['git', 'format-patch', commits, '-o', output_dir]
     if add_cv:
         cmd.append('--cover-letter')
-    if is_rfc is True:
+    if subject_prefix is not None:
+        cmd.append('--subject-prefix=%s' % subject_prefix)
+    elif is_rfc is True:
         cmd.append('--rfc')
     rc = subprocess.call(cmd)
     if rc != 0:
@@ -212,7 +214,8 @@ def format_patches(commits, output_dir, is_rfc):
 
 def main(args):
     if args.action == 'format':
-        format_patches(args.commits, args.output_dir, args.rfc)
+        format_patches(args.commits, args.output_dir, args.rfc,
+                       args.subject_prefix)
         return
 
     # For call from hkml_view_mail
@@ -286,3 +289,5 @@ def set_argparser(parser):
             help='directory to save formatted patch files')
     parser_format.add_argument('--rfc', action='store_true',
                                help='mark as RFC patches')
+    parser_format.add_argument('--subject_prefix', metavar='<string>',
+                               help='subject prefix')
