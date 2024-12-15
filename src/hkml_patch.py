@@ -209,8 +209,10 @@ def add_maintainers(patch_files):
         to_people = subprocess.check_output(
                 cmd + ['--nol', patch_file]).decode().strip().split('\n')
         total_to += to_people
+        print('\n'.join([' to: %s' % r for r in to_people]))
         cc_people = subprocess.check_output(
                 cmd + ['--nom', patch_file]).decode().strip().split('\n')
+        print('\n'.join([' cc: %s' % r for r in cc_people]))
         total_cc += cc_people
         mail = _hkml.read_mbox_file(patch_file)[0]
         mail.set_field('to', ', '.join(to_people))
@@ -222,8 +224,12 @@ def add_maintainers(patch_files):
     if first_patch_is_cv:
         print('add recipients to %s' % patch_file)
         mail = _hkml.read_mbox_file(patch_files[0])[0]
-        mail.set_field('to', ', '.join(sorted(set(total_to))))
-        mail.set_field('cc', ', '.join(sorted(set(total_cc))))
+        to = sorted(set(total_to))
+        print('\n'.join([' to: %s' % r for r in to]))
+        cc = sorted(set(total_cc))
+        print('\n'.join([' cc: %s' % r for r in cc]))
+        mail.set_field('to', ', '.join(to))
+        mail.set_field('cc', ', '.join(cc))
         to_write = hkml_open.mail_display_str(mail, head_columns=80,
                                               valid_mbox=True)
         with open(patch_files[0], 'w') as f:
