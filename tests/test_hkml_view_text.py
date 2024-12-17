@@ -23,7 +23,7 @@ class TestHkmlViewText(unittest.TestCase):
 -               !(cgrp_dfl_root.flags & CGRP_ROOT_MEMORY_HUGETLB_ACCOUNTING))
 +               !cgroup_subsys_on_dfl(memory_cgrp_subsys) || !memcg_accounts_hugetlb())
                 return -EOPNOTSUPP;
-
+ 
         if (try_charge(memcg, gfp, nr_pages))
 --
 2.43.5
