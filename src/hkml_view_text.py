@@ -336,19 +336,21 @@ def text_color_callback(slist, line_idx):
 def hunk_length(lines, orig_content, new_content):
     length = 0
     for line in lines:
-        length += 1
         if line.startswith('-'):
             orig_content -= 1
         elif line.startswith('+'):
             new_content -= 1
-        else:
+        elif line.startswith(' '):
             orig_content -= 1
             new_content -= 1
-        # something wrong?
-        if orig_content < 0 or new_content < 0:
-            return -1
-        if orig_content == 0 and new_content == 0:
+        else:
             return length
+        length += 1
+
+        if orig_content < 0 or new_content < 0 or \
+                (orig_content == new_content == 0):
+            return length
+
     return length
 
 def hunk_lines(text_lines):
