@@ -318,7 +318,7 @@ def set_prdepth(mails):
 
 def get_mails(slist):
     mails = []
-    mail_idx_key_map = slist.data['mail_idx_key_map']
+    mail_idx_key_map = slist.data['list_data'].mail_idx_key_map
     for mail_idx in mail_idx_key_map:
         mail_key = mail_idx_key_map[mail_idx]
         mail = hkml_cache.get_mail(key=mail_key)
@@ -618,7 +618,6 @@ def menu_handle_patches(mail_slist, selection):
 def set_slist_data(slist, list_data, display_rule, data_generator):
     slist.data = {
             'list_data': list_data,
-            'mail_idx_key_map': list_data.mail_idx_key_map,
             'line_nr_mail_map': list_data.line_nr_mail_map,
             'len_comments': list_data.len_comments,
             'mails_effects': display_rule,
@@ -713,7 +712,7 @@ def get_mails_list_input_handlers():
             ]
 
 def after_input_handle_callback(slist):
-    mail_idx_key_map = slist.data['mail_idx_key_map']
+    mail_idx_key_map = slist.data['list_data'].mail_idx_key_map
     if mail_idx_key_map is None:
         return
     _, last_mail_idx_key_map = _hkml_list_cache.get_last_mails_list()
