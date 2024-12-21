@@ -32,16 +32,14 @@ def mail_of_row(slist, row):
         return None
     return line_nr_mail_map[row]
 
-def focused_mail_idx(lines, focus_row):
-    for idx in range(focus_row, 0, -1):
-        line = lines[idx]
-        if not line.startswith('['):
-            continue
-        return int(line.split()[0][1:-1])
-    return None
-
 def get_focused_mail(slist):
     return mail_of_row(slist, slist.focus_row)
+
+def focused_mail_idx(slist):
+    mail = get_focused_mail(slist)
+    if mail is None:
+        return None
+    return mail.pridx
 
 def open_focused_mail(c, slist):
     mail = get_focused_mail(slist)
@@ -181,14 +179,14 @@ def collapse_focused_thread(c, slist):
         slist.data['collapsed_mails'] = {}
     collapsed_mails = slist.data['collapsed_mails']
 
-    collapsed_mails[focused_mail_idx(slist.lines, slist.focus_row)] = True
+    collapsed_mails[focused_mail_idx(slist)] = True
     refresh_list(slist)
 
 def expand_focused_thread(c, slist):
     if not 'collapsed_mails' in slist.data:
         return
     collapsed_mails = slist.data['collapsed_mails']
-    del collapsed_mails[focused_mail_idx(slist.lines, slist.focus_row)]
+    del collapsed_mails[focused_mail_idx(slist)]
     refresh_list(slist)
 
 def write_mail_draft(slist, mail):
@@ -369,7 +367,7 @@ def do_export(data, answer):
     print()
 
 def export_mails(c, slist):
-    idx = focused_mail_idx(slist.lines, slist.focus_row)
+    idx = focused_mail_idx(slist)
     hkml_view.shell_mode_start(slist)
 
     q = hkml_view.CliQuestion(desc='Focused mail: %d' % idx)
@@ -399,8 +397,7 @@ def menu_list_thread(mail_slist, selection):
 def menu_collapse_expand(mail_slist, selection):
     mail, slist = mail_slist
     if ('collapsed_mails' in slist.data and
-        focused_mail_idx( slist.lines, slist.focus_row) in
-        slist.data['collapsed_mails']):
+        focused_mail_idx(slist) in slist.data['collapsed_mails']):
         hkml_view.shell_mode_end(slist)
         expand_focused_thread(None, slist)
         hkml_view.shell_mode_start(slist)
