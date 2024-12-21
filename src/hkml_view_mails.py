@@ -616,14 +616,16 @@ def menu_handle_patches(mail_slist, selection):
     handle_patches_of_mail(mail, get_mails(slist))
 
 def set_slist_data(slist, list_data, display_rule, data_generator):
-    slist.data = {'mail_idx_key_map': list_data.mail_idx_key_map,
-                  'line_nr_mail_map': list_data.line_nr_mail_map,
-                  'len_comments': list_data.len_comments,
-                  'mails_effects': display_rule,
-                  'collapsed_mails': {},
-                  'data_generator': data_generator,
-                  'last_cursor_position': {},
-                  }
+    slist.data = {
+            'list_data': list_data,
+            'mail_idx_key_map': list_data.mail_idx_key_map,
+            'line_nr_mail_map': list_data.line_nr_mail_map,
+            'len_comments': list_data.len_comments,
+            'mails_effects': display_rule,
+            'collapsed_mails': {},
+            'data_generator': data_generator,
+            'last_cursor_position': {},
+            }
 
 def menu_refresh_mails(mail_slist, selection):
     mail, slist = mail_slist
