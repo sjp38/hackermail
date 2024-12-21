@@ -770,7 +770,7 @@ class MailsListDataGenerator:
 
     def generate(self):
         # returns text, mail_idx_key_map, display_effect_rule, and error
-        text, mail_idx_key_map, err = self.fn(self.args)
+        text, mail_idx_key_map, _, _, err = self.fn(self.args)
         if not hasattr(self.args, 'dim_old') or self.args.dim_old is None:
             self.args.dim_old = suggest_dim_old(
                     hkml_list.args_to_lists_cache_key(self.args))
