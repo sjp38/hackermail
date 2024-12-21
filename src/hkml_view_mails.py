@@ -727,13 +727,12 @@ def mails_display_effect_callback(slist, line_idx):
         return mail_display_effect.effect
     return slist.effect_normal
 
-def show_mails_list(screen, text_lines, mail_idx_key_map, line_nr_mail_map,
-                    len_comments, display_rule, data_generator=None):
-    slist = hkml_view.ScrollableList(screen, text_lines,
+def show_mails_list(screen, list_data, display_rule, data_generator=None):
+    slist = hkml_view.ScrollableList(screen, list_data.text.split('\n'),
                            get_mails_list_input_handlers())
-    slist.data = {'mail_idx_key_map': mail_idx_key_map,
-                  'line_nr_mail_map': line_nr_mail_map,
-                  'len_comments': len_comments,
+    slist.data = {'mail_idx_key_map': list_data.mail_idx_key_map,
+                  'line_nr_mail_map': list_data.line_nr_mail_map,
+                  'len_comments': list_data.len_comments,
                   'mails_effects': display_rule,
                   'collapsed_mails': {},
                   'data_generator': data_generator,
@@ -754,10 +753,7 @@ def gen_show_mails_list(screen, data_generator):
                 'Failed mails list generating (%s).' % err)
     hkml_view.shell_mode_end(screen)
 
-    return show_mails_list(screen, list_data.text.split('\n'),
-                           list_data.mail_idx_key_map,
-                           list_data.line_nr_mail_map, list_data.len_comments,
-                           display_rule, data_generator)
+    return show_mails_list(screen, list_data, display_rule, data_generator)
 
 class MailsListDataGenerator:
     args = None
