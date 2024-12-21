@@ -554,17 +554,6 @@ def mails_to_list_data(
     return MailsListData(text, len_comments, line_nr_to_mail_map,
                          mail_idx_key_map)
 
-def mails_to_str(
-        mails_to_show, do_find_ancestors_from_cache, mails_filter,
-        list_decorator, show_thread_of, runtime_profile, stat_only,
-        stat_authors):
-    list_data = mails_to_list_data(
-            mails_to_show, do_find_ancestors_from_cache, mails_filter,
-            list_decorator, show_thread_of, runtime_profile, stat_only,
-            stat_authors)
-    return (list_data.text, list_data.mail_idx_key_map,
-            list_data.line_nr_to_mail_map, list_data.len_comments)
-
 def git_log_output_line_to_mail(line, mdir):
     fields = line.split()
     if len(fields) < 3:
@@ -895,14 +884,16 @@ def get_text_mail_idx_key_map(args):
             args.pisearch)
     runtime_profile = [['get_mails', time.time() - timestamp]]
 
-    to_show, mail_idx_key_map, line_nr_to_mail_map, len_comment = mails_to_str(
+    list_data = mails_to_list_data(
             mails_to_show, args.do_find_ancestors_from_cache,
             MailListFilter(args), MailListDecorator(args), None,
             runtime_profile, args.stat_only, args.stat_authors)
     hkml_cache.writeback_mails()
-    _hkml_list_cache.set_item(lists_cache_key, to_show, mail_idx_key_map)
+    _hkml_list_cache.set_item(lists_cache_key, list_data.text,
+                              list_data.mail_idx_key_map)
 
-    return to_show, mail_idx_key_map, line_nr_to_mail_map, len_comment, None
+    return (list_data.text, list_data.mail_idx_key_map,
+            list_data.line_nr_mail_map, list_data.len_comments, None)
 
 def main(args):
     if args.read_dates:
