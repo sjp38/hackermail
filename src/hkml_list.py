@@ -892,13 +892,6 @@ def args_to_mails_list_data(args):
 
     return list_data, None
 
-def get_text_mail_idx_key_map(args):
-    list_data, err = args_to_mails_list_data(args)
-    if err is not None:
-        return None, None, None, None, err
-    return (list_data.text, list_data.mail_idx_key_map,
-            list_data.line_nr_mail_map, list_data.len_comments, err)
-
 def main(args):
     if args.read_dates:
         validate_set_source_type(args)
@@ -912,12 +905,13 @@ def main(args):
     if not args.stdout and not args.use_less:
         return hkml_view.gen_view_mails_list(
                 hkml_view_mails.MailsListDataGenerator(
-                    get_text_mail_idx_key_map, args))
-    to_show, mail_idx_key_map, _, _, err = get_text_mail_idx_key_map(args)
+                    args_to_mails_list_data, args))
+    list_data, err = args_to_mails_list_data(args)
     if err is not None:
         print(err)
         exit(1)
-    show_list(to_show, args.stdout, args.use_less, mail_idx_key_map)
+    show_list(list_data.text, args.stdout, args.use_less,
+              list_data.mail_idx_key_map)
 
 def add_mails_filter_arguments(parser):
     parser.add_argument(

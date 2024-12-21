@@ -39,7 +39,7 @@ def menu_hkml_thread(data, answer):
     hkml_view_mails.gen_show_mails_list(
             slist.screen,
             hkml_view_mails.MailsListDataGenerator(
-                hkml_list.get_text_mail_idx_key_map, args))
+                hkml_list.args_to_mails_list_data, args))
     hkml_view.shell_mode_start(slist)
 
 def menu_hkml_open(data, answer):
@@ -48,9 +48,8 @@ def menu_hkml_open(data, answer):
     msgid = '<%s>' % text.split()[-1]
     args = hkml_view_mails.hkml_list_args_for_msgid(msgid)
     args.stdout = True  # to bypass dim_old suggestion
-    thread_txt, mail_idx_key_map, _, _, err = hkml_list.get_text_mail_idx_key_map(
-            args)
-    for idx, cache_key in mail_idx_key_map.items():
+    list_data, err = hkml_list.args_to_mails_list_data( args)
+    for idx, cache_key in list_data.mail_idx_key_map.items():
         mail = hkml_cache.get_mail(key=cache_key)
         if mail is None:
             continue

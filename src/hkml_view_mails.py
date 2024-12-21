@@ -148,7 +148,7 @@ def list_thread_of_focused_mail(c, slist):
     args = hkml_list_args_for_msgid(msgid)
     gen_show_mails_list(
             slist.screen, MailsListDataGenerator(
-                hkml_list.get_text_mail_idx_key_map, args))
+                hkml_list.args_to_mails_list_data, args))
 
 def refresh_list(slist):
     comment_lines = []
@@ -783,13 +783,13 @@ class MailsListDataGenerator:
     def generate(self):
         # returns text, mail_idx_key_map, line_nr_to_mail, len_comment,
         # display_effect_rule, and error
-        text, mail_idx_key_map, line_nr_to_mail, len_comment, err = self.fn(
-                self.args)
+        list_data, err = self.fn(self.args)
         if not hasattr(self.args, 'dim_old') or self.args.dim_old is None:
             self.args.dim_old = suggest_dim_old(
                     hkml_list.args_to_lists_cache_key(self.args))
             if self.args.dim_old is None:
-                return (text, mail_idx_key_map, line_nr_to_mail, len_comment,
+                return (list_data.text, list_data.mail_idx_key_map,
+                        list_data.line_nr_mail_map, list_data.len_comments,
                         None, err)
 
         max_date, err = hkml_common.parse_date_arg( self.args.dim_old)
@@ -798,5 +798,6 @@ class MailsListDataGenerator:
             display_effect_rule = None
         else:
             display_effect_rule = mk_dim_old_rule(max_date)
-        return (text, mail_idx_key_map, line_nr_to_mail, len_comment,
+        return (list_data.text, list_data.mail_idx_key_map,
+                list_data.line_nr_mail_map, list_data.len_comments,
                 display_effect_rule, err)
