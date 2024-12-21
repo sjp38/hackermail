@@ -735,6 +735,8 @@ def show_mails_list(screen, list_data, display_rule, data_generator=None):
     set_slist_data(slist, list_data, display_rule, data_generator)
     slist.after_input_handle_callback = after_input_handle_callback
     slist.display_effect_callback = mails_display_effect_callback
+    if list_data.len_comments is not None:
+        slist.focus_row = list_data.len_comments
     slist.draw()
     return slist
 
