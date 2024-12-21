@@ -307,7 +307,11 @@ class Mail:
                             word = email.header.decode_header(
                                     word)[0][0].decode()
                         decoded_words.append(word)
-                    parsed[key] = ' '.join(decoded_words)
+                    # handle multiple to: and cc: lines
+                    if key in ['to', 'cc'] and key in parsed:
+                        parsed[key] += ', %s' % ' '.join(decoded_words)
+                    else:
+                        parsed[key] = ' '.join(decoded_words)
                 elif line == '':
                     in_header = False
                 continue
