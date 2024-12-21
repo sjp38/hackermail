@@ -474,6 +474,20 @@ def fmt_mails_text(mails, list_decorator, mails_to_collapse):
                               show_url, nr_cols)
     return lines
 
+def format_stat_lines(mails_to_show, filtered_mails, stat_authors):
+    stat_lines = []
+    total_stat_lines = format_stat(mails_to_show, stat_authors)
+    filtered_stat_lines = format_stat(filtered_mails, stat_authors)
+    if total_stat_lines == filtered_stat_lines:
+        stat_lines += total_stat_lines
+    else:
+        stat_lines.append('# stat for total mails')
+        stat_lines += total_stat_lines
+        stat_lines.append('#')
+        stat_lines.append('# stat for filtered mails')
+        stat_lines += filtered_stat_lines
+    return stat_lines
+
 def mails_to_str(mails_to_show, do_find_ancestors_from_cache, mails_filter,
                  list_decorator, show_thread_of, runtime_profile, stat_only,
                  stat_authors):
@@ -490,18 +504,9 @@ def mails_to_str(mails_to_show, do_find_ancestors_from_cache, mails_filter,
                            mails_to_collapse={})
 
     stat_lines = []
-    show_stat = not list_decorator.hide_stat
-    if show_stat:
-        total_stat_lines = format_stat(mails_to_show, stat_authors)
-        filtered_stat_lines = format_stat(filtered_mails, stat_authors)
-        if total_stat_lines == filtered_stat_lines:
-            stat_lines += total_stat_lines
-        else:
-            stat_lines.append('# stat for total mails')
-            stat_lines += total_stat_lines
-            stat_lines.append('#')
-            stat_lines.append('# stat for filtered mails')
-            stat_lines += filtered_stat_lines
+    if not list_decorator.hide_stat:
+        stat_lines = format_stat_lines(
+                mails_to_show, filtered_mails, stat_authors)
 
     runtime_profile_lines = []
     total_profiled_time = sum([profile[1] for profile in runtime_profile])
