@@ -521,11 +521,12 @@ class MailsListData:
         self.line_nr_mail_map = line_nr_mail_map
         self.mail_idx_key_map = mail_idx_key_map
 
-def mails_to_str(mails_to_show, do_find_ancestors_from_cache, mails_filter,
-                 list_decorator, show_thread_of, runtime_profile, stat_only,
-                 stat_authors):
+def mails_to_list_data(
+        mails_to_show, do_find_ancestors_from_cache, mails_filter,
+        list_decorator, show_thread_of, runtime_profile, stat_only,
+        stat_authors):
     if len(mails_to_show) == 0:
-        return 'no mail', {}, {}, 0
+        return MailsListData('no mail', 0, {}, {})
 
     filtered_mails, mail_idx_key_map = sort_filter_mails(
             mails_to_show, do_find_ancestors_from_cache, mails_filter,
@@ -545,11 +546,24 @@ def mails_to_str(mails_to_show, do_find_ancestors_from_cache, mails_filter,
             runtime_profile, list_decorator.runtime_profile, timestamp)
 
     if stat_only:
-        return ('\n'.join(stat_lines), mail_idx_key_map, line_nr_to_mail_map,
-                len(stat_lines))
-    lines = runtime_profile_lines + stat_lines + lines
-    return ('\n'.join(lines), mail_idx_key_map, line_nr_to_mail_map,
-            len(runtime_profile_lines) + len(stat_lines))
+        text = '\n'.join(stat_lines)
+        len_comments = len(stat_lines)
+    else:
+        text = '\n'.join(runtime_profile_lines + stat_lines + lines)
+        len_comments = len(runtime_profile_lines) + len(stat_lines)
+    return MailsListData(text, len_comments, line_nr_to_mail_map,
+                         mail_idx_key_map)
+
+def mails_to_str(
+        mails_to_show, do_find_ancestors_from_cache, mails_filter,
+        list_decorator, show_thread_of, runtime_profile, stat_only,
+        stat_authors):
+    list_data = mails_to_list_data(
+            mails_to_show, do_find_ancestors_from_cache, mails_filter,
+            list_decorator, show_thread_of, runtime_profile, stat_only,
+            stat_authors)
+    return (list_data.text, list_data.mail_idx_key_map,
+            list_data.line_nr_to_mail_map, list_data.len_comments)
 
 def git_log_output_line_to_mail(line, mdir):
     fields = line.split()
