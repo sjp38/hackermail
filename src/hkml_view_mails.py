@@ -21,6 +21,17 @@ import hkml_write
 
 # mails list
 
+def mail_of_row(slist, row):
+    line_nr_mail_map = slist.data['line_nr_mail_map']
+    # in case of cached output reuse, the map is None
+    if line_nr_mail_map is None:
+        refresh_list(slist)
+        line_nr_mail_map = slist.data['line_nr_mail_map']
+    row -= slist.data['len_comments']
+    if not row in line_nr_mail_map:
+        return None
+    return line_nr_mail_map[row]
+
 def focused_mail_idx(lines, focus_row):
     for idx in range(focus_row, 0, -1):
         line = lines[idx]
