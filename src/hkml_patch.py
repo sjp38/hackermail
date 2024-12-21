@@ -198,8 +198,8 @@ def add_recipients(patch_file, to, cc):
     print('\n'.join([' cc: %s' % r for r in cc]))
 
     mail = _hkml.read_mbox_file(patch_file)[0]
-    mail.set_field('to', ', '.join(to))
-    mail.set_field('cc', ', '.join(cc))
+    mail.add_recipients('to', to)
+    mail.add_recipients('cc', cc)
     to_write = hkml_open.mail_display_str(mail, head_columns=80,
                                           valid_mbox=True,
                                           recipients_per_line=True)

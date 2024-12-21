@@ -46,6 +46,8 @@ class Mail:
     parent_mail = None
     tags = None # Reviewed-by: like tags
     cv_text = None  # integrated cover letter on first patch
+    additional_to = None
+    additional_cc = None
 
     def set_subject_tags_series(self):
         subject = self.subject
@@ -128,6 +130,8 @@ class Mail:
         self.replies = []
         self.subject_tags = []
         self.tags = []
+        self.additional_to = []
+        self.additional_cc = []
 
         if mbox is None and kvpairs is None and atom_entry is None:
             return
@@ -189,6 +193,21 @@ class Mail:
         if not tag in self.__fields:
             self.__parse_mbox()
 
+        if tag == 'cc' and len(self.additional_cc) > 0:
+            if not tag in self.__fields:
+                initial_cc = []
+            else:
+                initial_cc = self.__fields[tag]
+                initial_cc = [r.strip() for r in initial_cc.split(',')]
+            return ', '.join(initial_cc + self.additional_cc)
+        if tag == 'to' and len(self.additional_to) > 0:
+            if not tag in self.__fields:
+                initial_to = []
+            else:
+                initial_to = self.__fields[tag]
+                initial_to = [r.strip() for r in initial_to.split(',')]
+            return ', '.join(initial_to + self.additional_to)
+
         if not tag in self.__fields:
             return None
         if tag == 'body':
@@ -203,6 +222,7 @@ class Mail:
                             lines.insert(idx, t)
                         break
                 return '\n'.join(lines)
+
         return self.__fields[tag]
 
     def set_mbox(self):
@@ -327,6 +347,14 @@ class Mail:
         if not can_add_tag:
             return 'cannot find line to add the tag'
         self.tags.append(tag)
+
+    def add_recipients(self, to_cc, recipients):
+        if to_cc == 'to':
+            self.additional_to += recipients
+        elif to_cc == 'cc':
+            self.additional_cc += recipients
+        else:
+            raise Exception('something wrong')
 
     def add_cv(self, cvmail, sz_patchset):
         in_patch_cv_lines = []
