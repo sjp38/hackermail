@@ -146,9 +146,7 @@ def hkml_list_args_for_msgid(msgid):
 def list_thread_of_focused_mail(c, slist):
     msgid = get_focused_mail(slist).get_field('message-id')
     args = hkml_list_args_for_msgid(msgid)
-    gen_show_mails_list(
-            slist.screen, MailsListDataGenerator(
-                hkml_list.args_to_mails_list_data, args))
+    gen_show_mails_list(slist.screen, MailsListDataGenerator(args))
 
 def refresh_list(slist):
     comment_lines = []
@@ -773,17 +771,15 @@ def gen_show_mails_list(screen, data_generator):
                            data_generator)
 
 class MailsListDataGenerator:
-    fn = None
     args = None
 
-    def __init__(self, fn, args):
-        self.fn = fn
+    def __init__(self, args):
         self.args = args
 
     def generate(self):
         # returns text, mail_idx_key_map, line_nr_to_mail, len_comment,
         # display_effect_rule, and error
-        list_data, err = self.fn(self.args)
+        list_data, err = hkml_list.args_to_mails_list_data(self.args)
         if not hasattr(self.args, 'dim_old') or self.args.dim_old is None:
             self.args.dim_old = suggest_dim_old(
                     hkml_list.args_to_lists_cache_key(self.args))

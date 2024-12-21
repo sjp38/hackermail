@@ -38,8 +38,7 @@ def menu_hkml_thread(data, answer):
     args = hkml_view_mails.hkml_list_args_for_msgid(msgid)
     hkml_view_mails.gen_show_mails_list(
             slist.screen,
-            hkml_view_mails.MailsListDataGenerator(
-                hkml_list.args_to_mails_list_data, args))
+            hkml_view_mails.MailsListDataGenerator(args))
     hkml_view.shell_mode_start(slist)
 
 def menu_hkml_open(data, answer):
