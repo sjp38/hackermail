@@ -165,6 +165,7 @@ def refresh_list(slist):
     for line in slist.lines:
         if line.startswith('#'):
             comment_lines.append(line)
+    slist.data['len_comments'] = len(comment_lines)
 
     collapsed_mails = slist.data['collapsed_mails']
 
@@ -175,7 +176,9 @@ def refresh_list(slist):
     _, cols = slist.screen.getmaxyx()
     decorator.cols = int(cols * 0.9)
 
-    lines, _ = hkml_list.fmt_mails_text(mails, decorator, collapsed_mails)
+    lines, line_nr_mail_map = hkml_list.fmt_mails_text(
+            mails, decorator, collapsed_mails)
+    slist.data['line_nr_mail_map'] = line_nr_mail_map
     text = '\n'.join(lines)
     slist.lines = comment_lines + text.split('\n')
     slist.focus_row = min(slist.focus_row, len(slist.lines) - 1)
