@@ -504,6 +504,23 @@ def format_runtime_profile_lines(runtime_profile, show_always, timestamp):
     runtime_profile_lines.append('#')
     return runtime_profile_lines
 
+class MailsListData:
+    # formatted text of the list
+    text = None
+    # number of comment lines for stat and runtime profile
+    len_comments = None
+    # line number of mail of the line map
+    # line number starts from non-comment
+    line_nr_mail_map = None
+    # mail print index to cached mail key map
+    mail_idx_key_map = None
+
+    def __init__(self, text, len_comments, line_nr_mail_map, mail_idx_key_map):
+        self.text = text
+        self.len_comments = len_comments
+        self.line_nr_mail_map = line_nr_mail_map
+        self.mail_idx_key_map = mail_idx_key_map
+
 def mails_to_str(mails_to_show, do_find_ancestors_from_cache, mails_filter,
                  list_decorator, show_thread_of, runtime_profile, stat_only,
                  stat_authors):
