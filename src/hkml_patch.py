@@ -221,9 +221,11 @@ def add_maintainers(patch_files):
             continue
         to = subprocess.check_output(
                 cmd + ['--nol', patch_file]).decode().strip().split('\n')
+        to = [t for t in to if t != '']
         total_to += to
         cc = subprocess.check_output(
                 cmd + ['--nom', patch_file]).decode().strip().split('\n')
+        cc = [c for c in cc if c != '']
         total_cc += cc
         add_recipients(patch_file, to, cc)
     if first_patch_is_cv:
