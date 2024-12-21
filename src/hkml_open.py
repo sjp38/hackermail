@@ -61,14 +61,14 @@ def mail_display_str(mail, head_columns=None, valid_mbox=False,
     if valid_mbox is True:
         lines.append('From hackermail Thu Jan  1 00:00:00 1970')
     if for_draft_continue is True:
-        head_fields = ['From', 'To', 'CC', 'Subject', 'In-Reply-To']
+        head_fields = ['From', 'To', 'Cc', 'Subject', 'In-Reply-To']
     else:
-        head_fields = ['From', 'To', 'CC', 'Subject', 'Message-Id',
+        head_fields = ['From', 'To', 'Cc', 'Subject', 'Message-Id',
                        'In-Reply-To', 'Date']
     for head in head_fields:
         value = mail.get_field(head)
         if value:
-            if head in ['To', 'CC'] and recipients_per_line is True:
+            if head in ['To', 'Cc'] and recipients_per_line is True:
                 recipients = value.split(',')
                 for recipient in recipients:
                     lines.append('%s: %s' % (head, recipient.strip()))
