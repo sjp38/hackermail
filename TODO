@@ -17,3 +17,4 @@
 - Remember and restore --dim_old for cached list output
 - Support 'hkml open' with message id or lore link
 - Let interactive mails selection and menu for slected mails
+- Support patch handling of non-public mails
