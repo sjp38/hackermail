@@ -624,27 +624,21 @@ def menu_refresh_mails(mail_slist, selection):
         if answer.lower() != 'n':
             gen_args.fetch = True
 
-    values = data_generator.generate()
-    text = values[0]
-    mail_idx_key_map = values[1]
-    line_nr_mail_map = values[2]
-    len_comments = values[3]
-    display_rule = values[4]
-    err = values[5]
+    list_data, display_rule, err = data_generator.generate()
 
     if err is not None:
         return hkml_view.cli_any_input(
                 'Generating mails list again failed (%s).' % err)
     hkml_view.shell_mode_end(slist)
-    slist.data = {'mail_idx_key_map': mail_idx_key_map,
-                  'line_nr_mail_map': line_nr_mail_map,
-                  'len_comments': len_comments,
+    slist.data = {'mail_idx_key_map': list_data.mail_idx_key_map,
+                  'line_nr_mail_map': list_data.line_nr_mail_map,
+                  'len_comments': list_data.len_comments,
                   'mails_effects': display_rule,
                   'collapsed_mails': {},
                   'data_generator': data_generator,
                   'last_cursor_position': {},
                   }
-    slist.lines = text.split('\n')
+    slist.lines = list_data.text.split('\n')
     slist.screen.clear()
     hkml_view.shell_mode_start(slist)
 
@@ -753,22 +747,17 @@ def show_mails_list(screen, text_lines, mail_idx_key_map, line_nr_mail_map,
 def gen_show_mails_list(screen, data_generator):
     hkml_view.shell_mode_start(screen)
 
-    values = data_generator.generate()
-    text = values[0]
-    mail_idx_key_map = values[1]
-    line_nr_mail_map = values[2]
-    len_comments = values[3]
-    display_rule = values[4]
-    err = values[5]
+    list_data, display_rule, err = data_generator.generate()
 
     if err is not None:
         return hkml_view.cli_any_input(
                 'Failed mails list generating (%s).' % err)
     hkml_view.shell_mode_end(screen)
 
-    return show_mails_list(screen, text.split('\n'), mail_idx_key_map,
-                           line_nr_mail_map, len_comments, display_rule,
-                           data_generator)
+    return show_mails_list(screen, list_data.text.split('\n'),
+                           list_data.mail_idx_key_map,
+                           list_data.line_nr_mail_map, list_data.len_comments,
+                           display_rule, data_generator)
 
 class MailsListDataGenerator:
     args = None
@@ -784,9 +773,7 @@ class MailsListDataGenerator:
             self.args.dim_old = suggest_dim_old(
                     hkml_list.args_to_lists_cache_key(self.args))
             if self.args.dim_old is None:
-                return (list_data.text, list_data.mail_idx_key_map,
-                        list_data.line_nr_mail_map, list_data.len_comments,
-                        None, err)
+                return list_data, None, err
 
         max_date, err = hkml_common.parse_date_arg( self.args.dim_old)
         if err is not None:
@@ -794,6 +781,4 @@ class MailsListDataGenerator:
             display_effect_rule = None
         else:
             display_effect_rule = mk_dim_old_rule(max_date)
-        return (list_data.text, list_data.mail_idx_key_map,
-                list_data.line_nr_mail_map, list_data.len_comments,
-                display_effect_rule, err)
+        return list_data, display_effect_rule, err
