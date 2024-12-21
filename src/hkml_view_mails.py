@@ -615,6 +615,16 @@ def menu_handle_patches(mail_slist, selection):
     mail, slist = mail_slist
     handle_patches_of_mail(mail, get_mails(slist))
 
+def set_slist_data(slist, list_data, display_rule, data_generator):
+    slist.data = {'mail_idx_key_map': list_data.mail_idx_key_map,
+                  'line_nr_mail_map': list_data.line_nr_mail_map,
+                  'len_comments': list_data.len_comments,
+                  'mails_effects': display_rule,
+                  'collapsed_mails': {},
+                  'data_generator': data_generator,
+                  'last_cursor_position': {},
+                  }
+
 def menu_refresh_mails(mail_slist, selection):
     mail, slist = mail_slist
     data_generator = slist.data['data_generator']
@@ -630,14 +640,7 @@ def menu_refresh_mails(mail_slist, selection):
         return hkml_view.cli_any_input(
                 'Generating mails list again failed (%s).' % err)
     hkml_view.shell_mode_end(slist)
-    slist.data = {'mail_idx_key_map': list_data.mail_idx_key_map,
-                  'line_nr_mail_map': list_data.line_nr_mail_map,
-                  'len_comments': list_data.len_comments,
-                  'mails_effects': display_rule,
-                  'collapsed_mails': {},
-                  'data_generator': data_generator,
-                  'last_cursor_position': {},
-                  }
+    set_slist_data(slist, list_data, display_rule, data_generator)
     slist.lines = list_data.text.split('\n')
     slist.screen.clear()
     hkml_view.shell_mode_start(slist)
@@ -730,14 +733,7 @@ def mails_display_effect_callback(slist, line_idx):
 def show_mails_list(screen, list_data, display_rule, data_generator=None):
     slist = hkml_view.ScrollableList(screen, list_data.text.split('\n'),
                            get_mails_list_input_handlers())
-    slist.data = {'mail_idx_key_map': list_data.mail_idx_key_map,
-                  'line_nr_mail_map': list_data.line_nr_mail_map,
-                  'len_comments': list_data.len_comments,
-                  'mails_effects': display_rule,
-                  'collapsed_mails': {},
-                  'data_generator': data_generator,
-                  'last_cursor_position': {},
-                  }
+    set_slist_data(slist, list_data, display_rule, data_generator)
     slist.after_input_handle_callback = after_input_handle_callback
     slist.display_effect_callback = mails_display_effect_callback
     slist.draw()
