@@ -45,10 +45,11 @@ def thread_str(mail_id, dont_use_internet, show_url):
     list_decorator.cols = nr_cols_in_line
     list_decorator.show_runtime_profile = False
 
-    return hkml_list.mails_to_str(
+    list_txt, mail_idx_key_map, _, _ = hkml_list.mails_to_str(
             mails_to_show, do_find_ancestors_from_cache=False, mails_filter=None,
             list_decorator=list_decorator, show_thread_of=mail_id,
             runtime_profile=[], stat_only=False, stat_authors=False)
+    return list_txt, mail_idx_key_map
 
 def main(args):
     if args.mail_id is None:

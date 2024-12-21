@@ -508,7 +508,7 @@ def mails_to_str(mails_to_show, do_find_ancestors_from_cache, mails_filter,
                  list_decorator, show_thread_of, runtime_profile, stat_only,
                  stat_authors):
     if len(mails_to_show) == 0:
-        return 'no mail', {}
+        return 'no mail', {}, {}, 0
 
     filtered_mails, mail_idx_key_map = sort_filter_mails(
             mails_to_show, do_find_ancestors_from_cache, mails_filter,
@@ -516,8 +516,8 @@ def mails_to_str(mails_to_show, do_find_ancestors_from_cache, mails_filter,
 
     timestamp = time.time()
 
-    lines, _ = fmt_mails_text(filtered_mails, list_decorator,
-                           mails_to_collapse={})
+    lines, line_nr_to_mail_map = fmt_mails_text(
+            filtered_mails, list_decorator, mails_to_collapse={})
 
     stat_lines = []
     if not list_decorator.hide_stat:
@@ -528,9 +528,11 @@ def mails_to_str(mails_to_show, do_find_ancestors_from_cache, mails_filter,
             runtime_profile, list_decorator.runtime_profile, timestamp)
 
     if stat_only:
-        return '\n'.join(stat_lines), mail_idx_key_map
+        return ('\n'.join(stat_lines), mail_idx_key_map, line_nr_to_mail_map,
+                len(stat_lines))
     lines = runtime_profile_lines + stat_lines + lines
-    return '\n'.join(lines), mail_idx_key_map
+    return ('\n'.join(lines), mail_idx_key_map, line_nr_to_mail_map,
+            len(runtime_profile_lines) + len(stat_lines))
 
 def git_log_output_line_to_mail(line, mdir):
     fields = line.split()
@@ -858,7 +860,7 @@ def get_text_mail_idx_key_map(args):
             args.pisearch)
     runtime_profile = [['get_mails', time.time() - timestamp]]
 
-    to_show, mail_idx_key_map = mails_to_str(
+    to_show, mail_idx_key_map, _, _ = mails_to_str(
             mails_to_show, args.do_find_ancestors_from_cache,
             MailListFilter(args), MailListDecorator(args), None,
             runtime_profile, args.stat_only, args.stat_authors)
