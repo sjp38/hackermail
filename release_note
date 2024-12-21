@@ -1,5 +1,8 @@
 This file contains major changes in each version since v1.0.0
 
+v1.2.3
+- patch format: Support --to and --cc
+
 v1.2.2
 - Suggest removing draft when the mail is sent
 - Let cursor moves horizontally
