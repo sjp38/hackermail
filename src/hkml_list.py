@@ -442,9 +442,10 @@ def child_of_collapsed(mail, mails_to_collapse):
     return child_of_collapsed(mail.parent_mail, mails_to_collapse)
 
 def fmt_mails_text(mails, list_decorator, mails_to_collapse):
+    line_nr_to_mail_map = {}
     lines = []
     if len(mails) == 0:
-        return lines
+        return lines, line_nr_to_mail_map
     collapse_threads = list_decorator.collapse
     show_url = list_decorator.show_url
     nr_cols = list_decorator.cols
@@ -470,9 +471,12 @@ def fmt_mails_text(mails, list_decorator, mails_to_collapse):
             show_nr_replies = True
         if child_of_collapsed(mail, mails_to_collapse):
             continue
-        lines += format_entry(mail, max_digits_for_idx, show_nr_replies,
+        mail_lines = format_entry(mail, max_digits_for_idx, show_nr_replies,
                               show_url, nr_cols)
-    return lines
+        for line_nr in range(len(lines), len(lines) + len(mail_lines)):
+            line_nr_to_mail_map[line_nr] = mail
+        lines += mail_lines
+    return lines, line_nr_to_mail_map
 
 def format_stat_lines(mails_to_show, filtered_mails, stat_authors):
     stat_lines = []
@@ -512,7 +516,7 @@ def mails_to_str(mails_to_show, do_find_ancestors_from_cache, mails_filter,
 
     timestamp = time.time()
 
-    lines = fmt_mails_text(filtered_mails, list_decorator,
+    lines, _ = fmt_mails_text(filtered_mails, list_decorator,
                            mails_to_collapse={})
 
     stat_lines = []

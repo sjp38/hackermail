@@ -175,8 +175,8 @@ def refresh_list(slist):
     _, cols = slist.screen.getmaxyx()
     decorator.cols = int(cols * 0.9)
 
-    text = '\n'.join(hkml_list.fmt_mails_text(
-        mails, decorator, collapsed_mails))
+    lines, _ = hkml_list.fmt_mails_text(mails, decorator, collapsed_mails)
+    text = '\n'.join(lines)
     slist.lines = comment_lines + text.split('\n')
     slist.focus_row = min(slist.focus_row, len(slist.lines) - 1)
     slist.screen.clear()
