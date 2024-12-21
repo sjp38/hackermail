@@ -22,11 +22,11 @@ import hkml_write
 # mails list
 
 def mail_of_row(slist, row):
-    line_nr_mail_map = slist.data['line_nr_mail_map']
+    line_nr_mail_map = slist.data['list_data'].line_nr_mail_map
     # in case of cached output reuse, the map is None
     if line_nr_mail_map is None:
         refresh_list(slist)
-        line_nr_mail_map = slist.data['line_nr_mail_map']
+        line_nr_mail_map = slist.data['list_data'].line_nr_mail_map
     row -= slist.data['len_comments']
     if not row in line_nr_mail_map:
         return None
@@ -166,7 +166,7 @@ def refresh_list(slist):
 
     lines, line_nr_mail_map = hkml_list.fmt_mails_text(
             mails, decorator, collapsed_mails)
-    slist.data['line_nr_mail_map'] = line_nr_mail_map
+    slist.data['list_data'].line_nr_mail_map = line_nr_mail_map
     text = '\n'.join(lines)
     slist.lines = comment_lines + text.split('\n')
     slist.focus_row = min(slist.focus_row, len(slist.lines) - 1)
@@ -618,7 +618,6 @@ def menu_handle_patches(mail_slist, selection):
 def set_slist_data(slist, list_data, display_rule, data_generator):
     slist.data = {
             'list_data': list_data,
-            'line_nr_mail_map': list_data.line_nr_mail_map,
             'len_comments': list_data.len_comments,
             'mails_effects': display_rule,
             'collapsed_mails': {},
