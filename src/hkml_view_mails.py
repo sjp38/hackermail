@@ -27,7 +27,7 @@ def mail_of_row(slist, row):
     if line_nr_mail_map is None:
         refresh_list(slist)
         line_nr_mail_map = slist.data['list_data'].line_nr_mail_map
-    row -= slist.data['len_comments']
+    row -= slist.data['list_data'].len_comments
     if not row in line_nr_mail_map:
         return None
     return line_nr_mail_map[row]
@@ -153,7 +153,7 @@ def refresh_list(slist):
     for line in slist.lines:
         if line.startswith('#'):
             comment_lines.append(line)
-    slist.data['len_comments'] = len(comment_lines)
+    slist.data['list_data'].len_comments = len(comment_lines)
 
     collapsed_mails = slist.data['collapsed_mails']
 
@@ -618,7 +618,6 @@ def menu_handle_patches(mail_slist, selection):
 def set_slist_data(slist, list_data, display_rule, data_generator):
     slist.data = {
             'list_data': list_data,
-            'len_comments': list_data.len_comments,
             'mails_effects': display_rule,
             'collapsed_mails': {},
             'data_generator': data_generator,
