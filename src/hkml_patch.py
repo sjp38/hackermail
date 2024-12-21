@@ -201,7 +201,8 @@ def add_recipients(patch_file, to, cc):
     mail.set_field('to', ', '.join(to))
     mail.set_field('cc', ', '.join(cc))
     to_write = hkml_open.mail_display_str(mail, head_columns=80,
-                                          valid_mbox=True)
+                                          valid_mbox=True,
+                                          recipients_per_line=True)
     with open(patch_file, 'w') as f:
         f.write(to_write)
 
