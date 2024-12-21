@@ -820,11 +820,10 @@ def disable_ancestor_finding_for_tags(args):
             return
     args.do_find_ancestors_from_cache = False
 
-def get_text_mail_idx_key_map(args):
-    # return text to show, mail_idx_key_map, line_nr_to_mail_map, length of
-    # comments on text to show, and error
-    # if cached output is used, line_nr_to_mail_map and length of comments be
-    # None.  Caller would be able to make it when those are really needed.
+def args_to_mails_list_data(args):
+    # return MailsListData and error
+    # if cached output is used, line_nr_to_mail_map and len_comments of the
+    # list data becomes None.  Caller should make it when those on demand.
     validate_set_source_type(args)
     disable_ancestor_finding_for_tags(args)
 
@@ -840,14 +839,13 @@ def get_text_mail_idx_key_map(args):
         if args.sources == []:
             to_show, mail_idx_key_map = _hkml_list_cache.get_last_list()
             if to_show is None:
-                return (None, None, None, None,
-                        'no valid last list output exists')
+                return None, 'no valid last list output exists'
         else:
             to_show, mail_idx_key_map = _hkml_list_cache.get_list_for(
                     lists_cache_key)
         if to_show is not None:
             _hkml_list_cache.writeback_list_output()
-            return to_show, mail_idx_key_map, None, None, None
+            return MailsListData(to_show, None, None, mail_idx_key_map), None
     else:
         for source in args.sources:
             _hkml_list_cache.invalidate_cached_outputs(source)
@@ -857,13 +855,13 @@ def get_text_mail_idx_key_map(args):
     else:
         since, err = hkml_common.parse_date_arg(args.since)
         if err is not None:
-            return None, None, None, None, 'parsing --since fail (%s)' % err
+            return None, 'parsing --since fail (%s)' % err
     if args.until is None:
         until = datetime.datetime.now() + datetime.timedelta(days=1)
     else:
         until, err = hkml_common.parse_date_arg(args.until)
         if err is not None:
-            return None, None, None, None, 'parsing --until fail (%s)' % err
+            return None, 'parsing --until fail (%s)' % err
 
     if args.nr_mails is not None:
         since = (until - datetime.timedelta(days=1)).strftime('%Y-%m-%d')
@@ -892,8 +890,14 @@ def get_text_mail_idx_key_map(args):
     _hkml_list_cache.set_item(lists_cache_key, list_data.text,
                               list_data.mail_idx_key_map)
 
+    return list_data, None
+
+def get_text_mail_idx_key_map(args):
+    list_data, err = args_to_mails_list_data(args)
+    if err is not None:
+        return None, None, None, None, err
     return (list_data.text, list_data.mail_idx_key_map,
-            list_data.line_nr_mail_map, list_data.len_comments, None)
+            list_data.line_nr_mail_map, list_data.len_comments, err)
 
 def main(args):
     if args.read_dates:
