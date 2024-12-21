@@ -233,6 +233,10 @@ def add_maintainers(patch_files):
         cc = sorted(set(total_cc))
         add_recipients(patch_files[0], to, cc)
 
+def add_user_set_recipients(patch_files, to, cc):
+    for patch_file in patch_files:
+        add_recipients(patch_file, to, cc)
+
 def format_patches(args):
     commit_ids = subprocess.check_output(
             ['git', 'log', '--pretty=%h', args.commits]
@@ -249,6 +253,9 @@ def format_patches(args):
     elif args.rfc is True:
         cmd.append('--rfc')
     patch_files = subprocess.check_output(cmd).decode().strip().split('\n')
+
+    add_user_set_recipients(patch_files, args.to, args.cc)
+
     if os.path.exists('./scripts/get_maintainer.pl'):
         print('get_maintainer.pl found.  add recipients using it.')
         add_maintainers(patch_files)
@@ -336,3 +343,9 @@ def set_argparser(parser):
                                help='mark as RFC patches')
     parser_format.add_argument('--subject_prefix', metavar='<string>',
                                help='subject prefix')
+    parser_format.add_argument('--to', metavar='<recipient>', nargs='+',
+                               default=[],
+                               help='To: recipients')
+    parser_format.add_argument('--cc', metavar='<recipient>', nargs='+',
+                               default=[],
+                               help='Cc: recipients')
