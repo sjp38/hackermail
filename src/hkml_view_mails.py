@@ -56,11 +56,7 @@ def get_mail_of_row(slist, row):
     return mail, None
 
 def get_focused_mail(slist):
-    mail, err = get_mail_of_row(slist, slist.focus_row)
-    if err is not None:
-        slist.toast(err)
-        return None
-    return mail
+    return mail_of_row(slist, slist.focus_row)
 
 def open_focused_mail(c, slist):
     mail = get_focused_mail(slist)
@@ -749,8 +745,8 @@ def after_input_handle_callback(slist):
 def mails_display_effect_callback(slist, line_idx):
     if not 'mails_effects' in slist.data or slist.data['mails_effects'] is None:
         return slist.effect_normal
-    mail, err = get_mail_of_row(slist, line_idx)
-    if err is not None:
+    mail = mail_of_row(slist, line_idx)
+    if mail is None:
         return slist.effect_normal
     mail_display_effect = slist.data['mails_effects']
     if mail_display_effect.eligible(mail):
