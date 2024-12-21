@@ -488,6 +488,18 @@ def format_stat_lines(mails_to_show, filtered_mails, stat_authors):
         stat_lines += filtered_stat_lines
     return stat_lines
 
+def format_runtime_profile_lines(runtime_profile, show_always, timestamp):
+    runtime_profile_lines = []
+    total_profiled_time = sum([profile[1] for profile in runtime_profile])
+    if not show_always and total_profiled_time < 3:
+        return []
+    runtime_profile.append(['etc', time.time() - timestamp])
+    runtime_profile_lines = ['# runtime profile']
+    for key, value in runtime_profile:
+        runtime_profile_lines.append('# %s: %s' % (key, value))
+    runtime_profile_lines.append('#')
+    return runtime_profile_lines
+
 def mails_to_str(mails_to_show, do_find_ancestors_from_cache, mails_filter,
                  list_decorator, show_thread_of, runtime_profile, stat_only,
                  stat_authors):
@@ -508,15 +520,8 @@ def mails_to_str(mails_to_show, do_find_ancestors_from_cache, mails_filter,
         stat_lines = format_stat_lines(
                 mails_to_show, filtered_mails, stat_authors)
 
-    runtime_profile_lines = []
-    total_profiled_time = sum([profile[1] for profile in runtime_profile])
-    show_runtime_profile = list_decorator.runtime_profile
-    if show_runtime_profile is True or total_profiled_time > 3:
-        runtime_profile.append(['etc', time.time() - timestamp])
-        runtime_profile_lines = ['# runtime profile']
-        for key, value in runtime_profile:
-            runtime_profile_lines.append('# %s: %s' % (key, value))
-        runtime_profile_lines.append('#')
+    runtime_profile_lines = format_runtime_profile_lines(
+            runtime_profile, list_decorator.runtime_profile, timestamp)
 
     if stat_only:
         return '\n'.join(stat_lines), mail_idx_key_map
