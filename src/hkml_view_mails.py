@@ -730,13 +730,14 @@ def mails_display_effect_callback(slist, line_idx):
     return slist.effect_normal
 
 def show_mails_list(screen, list_data, display_rule, data_generator=None):
-    slist = hkml_view.ScrollableList(screen, list_data.text.split('\n'),
+    text_lines = list_data.text.split('\n')
+    slist = hkml_view.ScrollableList(screen, text_lines,
                            get_mails_list_input_handlers())
     set_slist_data(slist, list_data, display_rule, data_generator)
     slist.after_input_handle_callback = after_input_handle_callback
     slist.display_effect_callback = mails_display_effect_callback
     if list_data.len_comments is not None:
-        slist.focus_row = list_data.len_comments
+        slist.focus_row = min(list_data.len_comments, len(text_lines) - 1)
     slist.draw()
     return slist
 
