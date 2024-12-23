@@ -206,12 +206,7 @@ def add_recipients(patch_file, to, cc):
     with open(patch_file, 'w') as f:
         f.write(to_write)
 
-def add_maintainers(patch_files):
-    first_patch_is_cv = False
-    first_patch_name = os.path.basename(patch_files[0])
-    if first_patch_name == '0000-cover-letter.patch':
-        first_patch_is_cv = True
-
+def add_maintainers(patch_files, first_patch_is_cv):
     total_to = []
     total_cc = []
     cmd = ['./scripts/get_maintainer.pl', '--nogit', '--nogit-fallback',
@@ -258,7 +253,7 @@ def format_patches(args):
 
     if os.path.exists('./scripts/get_maintainer.pl'):
         print('get_maintainer.pl found.  add recipients using it.')
-        add_maintainers(patch_files)
+        add_maintainers(patch_files, add_cv)
 
     if os.path.exists('./scripts/checkpatch.pl'):
         print('\ncheckpatch.pl found.  run it.')
