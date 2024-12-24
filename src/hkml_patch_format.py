@@ -80,6 +80,8 @@ def add_base_commit_as_cv(patch_file, commits):
         "*** below is the commit message of %s." % base_commit,
         "*** 'hkml patch format' assumes it as a draft of this",
         "*** cover letter, and hence pasted it here.",
+        '***',
+        '*** if this only bothers you, report the issue.',
         '',
         subprocess.check_output(
             ['git', 'log', '-1', '--pretty=%b', base_commit]).decode()])
