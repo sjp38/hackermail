@@ -289,7 +289,16 @@ def format_patches(args):
     if os.path.exists('./scripts/checkpatch.pl'):
         print('\ncheckpatch.pl found.  run it.')
         for patch_file in patch_files:
-            subprocess.call(['./scripts/checkpatch.pl', patch_file])
+            try:
+                output = subprocess.check_output(
+                        ['./scripts/checkpatch.pl', patch_file]).decode()
+                last_par = output.split('\n\n')[-1]
+                if not 'and is ready for submission.' in last_par:
+                    raise Exception()
+            except:
+                print('!!! %s is not ok' % patch_file)
+                subprocess.call(['./scripts/checkpatch.pl', patch_file])
+                print()
 
 def main(args):
     if args.action == 'format':
