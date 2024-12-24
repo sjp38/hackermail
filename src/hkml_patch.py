@@ -234,7 +234,7 @@ def add_user_set_recipients(patch_files, to, cc):
 
 def add_base_commit_as_cv(patch_file, commits):
     base_commit = commits.split('..')[0]
-    cv_content = '\n'.join([
+    cv_draft = '\n'.join([
         '',
         "# below is the commit message of %s." % base_commit,
         "# 'hkml patch format' assumes it as a draft of this",
@@ -242,7 +242,12 @@ def add_base_commit_as_cv(patch_file, commits):
         '',
         subprocess.check_output(
             ['git', 'log', '-1', '--pretty=%B', base_commit]).decode()])
-    with open(patch_file, 'a') as f:
+    with open(patch_file, 'r') as f:
+        cv_orig_content = f.read()
+    cv_orig_paragraphs = cv_orig_content.split('\n\n')
+    cv_content = '\n\n'.join(
+            [cv_orig_paragraphs[0], cv_draft] + cv_orig_paragraphs[1:])
+    with open(patch_file, 'w') as f:
         f.write(cv_content)
 
 def format_patches(args):
