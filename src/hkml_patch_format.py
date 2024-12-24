@@ -79,8 +79,22 @@ def add_patches_recipients(patch_files, to, cc, first_patch_is_cv,
             total_cc.remove(t)
         cc_for_patches[patch_files[0]] = total_cc
 
+    if len(to) == 0:
+        print('You did not set --to, and we will set below as Cc:')
+        for idx, recipient in enumerate(total_cc):
+            print('%d. %s' % (idx, recipient))
+        answer = input(
+                'Shall I set one of above as To: for all mails? [N/index] ')
+        try:
+            to = [total_cc[int(answer)]]
+        except:
+            to = []
     for patch_file in patch_files:
-        add_patch_recipients(patch_file, to, cc_for_patches[patch_file])
+        patch_cc = cc_for_patches[patch_file]
+        for t in to:
+            if t in patch_cc:
+                patch_cc.remove(t)
+        add_patch_recipients(patch_file, to, patch_cc)
 
 def add_base_commit_as_cv(patch_file, commits):
     base_commit = commits.split('..')[0]
