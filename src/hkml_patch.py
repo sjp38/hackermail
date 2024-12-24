@@ -232,6 +232,13 @@ def add_user_set_recipients(patch_files, to, cc):
     for patch_file in patch_files:
         add_recipients(patch_file, to, cc)
 
+def add_base_commit_as_cv(patch_file, commits):
+    base_commit = commits.split('..')[0]
+    cv_content = subprocess.check_output(
+            ['git', 'log', '-1', '--pretty=%B', base_commit]).decode()
+    with open(patch_file, 'a') as f:
+        f.write(cv_content)
+
 def format_patches(args):
     commit_ids = subprocess.check_output(
             ['git', 'log', '--pretty=%h', args.commits]
@@ -254,6 +261,9 @@ def format_patches(args):
     if os.path.exists('./scripts/get_maintainer.pl'):
         print('get_maintainer.pl found.  add recipients using it.')
         add_maintainers(patch_files, add_cv)
+
+    if add_cv:
+        add_base_commit_as_cv(patch_files[0], args.commits)
 
     if os.path.exists('./scripts/checkpatch.pl'):
         print('\ncheckpatch.pl found.  run it.')
