@@ -292,6 +292,8 @@ def format_patches(args):
             try:
                 output = subprocess.check_output(
                         ['./scripts/checkpatch.pl', patch_file]).decode()
+                # checkpatch returns non-zero for problematic patches.
+                # for possible future change, double-check the output.
                 last_par = output.split('\n\n')[-1]
                 if not 'and is ready for submission.' in last_par:
                     raise Exception()
