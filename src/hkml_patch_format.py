@@ -70,9 +70,13 @@ def add_patches_recipients(patch_files, to, cc, first_patch_is_cv,
         else:
             linux_cc = []
         patch_cc = sorted(list(set(cc + linux_cc)))
+        for t in to:
+            patch_cc.remove(t)
         add_patch_recipients(patch_file, to, patch_cc)
     if first_patch_is_cv:
         total_cc = sorted(list(set(total_cc)))
+        for t in to:
+            total_cc.remove(t)
         add_patch_recipients(patch_files[0], to, total_cc)
 
 def add_base_commit_as_cv(patch_file, commits):
