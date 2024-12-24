@@ -158,7 +158,7 @@ def write_patch_mails(patch_mails):
         file_name = os.path.join(temp_dir, file_name)
         with open(file_name, 'w') as f:
             f.write(hkml_open.mail_display_str(
-                mail, head_columns=None, valid_mbox=True, for_patch=False))
+                mail, head_columns=None, valid_mbox=True)
         files.append(file_name)
     return files, None
 

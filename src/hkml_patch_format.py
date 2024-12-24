@@ -11,8 +11,7 @@ def add_patch_recipients(patch_file, to, cc):
     mail.add_recipients('to', to)
     mail.add_recipients('cc', cc)
     to_write = hkml_open.mail_display_str(
-            mail, head_columns=80, valid_mbox=True, recipients_per_line=True,
-            for_patch=False)
+            mail, head_columns=80, valid_mbox=True, recipients_per_line=True)
     with open(patch_file, 'w') as f:
         f.write(to_write)
 
@@ -122,16 +121,6 @@ def main(args):
 
     if add_cv:
         add_base_commit_as_cv(patch_files[0], args.commits)
-
-    # re-write as invalid mbox but valid patch files
-    # (without fake initial from line and Date: field)
-    for patch_file in patch_files:
-        mail = _hkml.read_mbox_file(patch_file)[0]
-        to_write = hkml_open.mail_display_str(
-                mail, head_columns=80, valid_mbox=False,
-                recipients_per_line=True, for_patch=True)
-        with open(patch_file, 'w') as f:
-            f.write(to_write)
 
     if on_linux_tree and os.path.exists('./scripts/checkpatch.pl'):
         print('checkpatch.pl found.  run it.')
