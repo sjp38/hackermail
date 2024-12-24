@@ -70,13 +70,9 @@ def add_patches_recipients(patch_files, to, cc, first_patch_is_cv,
         else:
             linux_cc = []
         patch_cc = sorted(list(set(cc + linux_cc)))
-        for t in to:
-            patch_cc.remove(t)
         cc_for_patches[patch_file] = patch_cc
     if first_patch_is_cv:
         total_cc = sorted(list(set(total_cc)))
-        for t in to:
-            total_cc.remove(t)
         cc_for_patches[patch_files[0]] = total_cc
 
     if len(to) == 0:
