@@ -30,19 +30,14 @@ def is_kunit_patch(patch_file):
     return False
 
 def add_maintainers(patch_files, first_patch_is_cv):
-    total_to = []
     total_cc = []
     cmd = ['./scripts/get_maintainer.pl', '--nogit', '--nogit-fallback',
            '--norolestats']
     for idx, patch_file in enumerate(patch_files):
         if first_patch_is_cv and idx == 0:
             continue
-        to = subprocess.check_output(
-                cmd + ['--nol', patch_file]).decode().strip().split('\n')
-        to = [t for t in to if t != '']
-        total_to += to
         cc = subprocess.check_output(
-                cmd + ['--nom', patch_file]).decode().strip().split('\n')
+                cmd + [patch_file]).decode().strip().split('\n')
         cc = [c for c in cc if c != '']
         if is_kunit_patch(patch_file):
             cc += ['Brendan Higgins <brendanhiggins@google.com>',
@@ -50,11 +45,10 @@ def add_maintainers(patch_files, first_patch_is_cv):
                    'kunit-dev@googlegroups.com',
                    'linux-kselftest@vger.kernel.org']
         total_cc += cc
-        add_recipients(patch_file, to, cc)
+        add_recipients(patch_file, [], cc)
     if first_patch_is_cv:
-        to = sorted(set(total_to))
         cc = sorted(set(total_cc))
-        add_recipients(patch_files[0], to, cc)
+        add_recipients(patch_files[0], [], cc)
 
 def add_user_set_recipients(patch_files, to, cc):
     for patch_file in patch_files:
