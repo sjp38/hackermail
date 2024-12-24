@@ -202,6 +202,19 @@ def add_recipients(patch_file, to, cc):
     with open(patch_file, 'w') as f:
         f.write(to_write)
 
+def is_kunit_patch(patch_file):
+    # kunit maintainers willing to be Cc-ed for any kunit tests.  But kunit
+    # tests are spread over tree, and therefore MAINTAINERS file cannot handle
+    # it always.  Add some additional rules here.
+
+    # damon kunit tests are at mm/damon/tests/
+    if 'mm/damon/tests' in patch_file:
+        return True
+    # most kunit test files are assumed to be named with kunit suffix.
+    if 'kunit' in patch_file:
+        return True
+    return False
+
 def add_maintainers(patch_files, first_patch_is_cv):
     total_to = []
     total_cc = []
@@ -217,6 +230,11 @@ def add_maintainers(patch_files, first_patch_is_cv):
         cc = subprocess.check_output(
                 cmd + ['--nom', patch_file]).decode().strip().split('\n')
         cc = [c for c in cc if c != '']
+        if is_kunit_patch(patch_file):
+            cc += ['Brendan Higgins <brendanhiggins@google.com>',
+                   'David Gow <davidgow@google.com>',
+                   'kunit-dev@googlegroups.com',
+                   'linux-kselftest@vger.kernel.org']
         total_cc += cc
         add_recipients(patch_file, to, cc)
     if first_patch_is_cv:
