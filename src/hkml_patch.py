@@ -241,7 +241,7 @@ def add_base_commit_as_cv(patch_file, commits):
         "# cover letter, and hence pasted it here.",
         '',
         subprocess.check_output(
-            ['git', 'log', '-1', '--pretty=%B', base_commit]).decode()])
+            ['git', 'log', '-1', '--pretty=%b', base_commit]).decode()])
     with open(patch_file, 'r') as f:
         cv_orig_content = f.read()
     cv_orig_paragraphs = cv_orig_content.split('\n\n')
