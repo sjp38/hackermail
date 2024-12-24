@@ -193,10 +193,6 @@ def apply_action_to_mails(mail, args):
     return err_to_return
 
 def add_recipients(patch_file, to, cc):
-    print('add recipients to %s' % patch_file)
-    print('\n'.join([' to: %s' % r for r in to]))
-    print('\n'.join([' cc: %s' % r for r in cc]))
-
     mail = _hkml.read_mbox_file(patch_file)[0]
     mail.add_recipients('to', to)
     mail.add_recipients('cc', cc)
@@ -287,7 +283,7 @@ def format_patches(args):
             f.write(to_write)
 
     if os.path.exists('./scripts/checkpatch.pl'):
-        print('\ncheckpatch.pl found.  run it.')
+        print('checkpatch.pl found.  run it.')
         for patch_file in patch_files:
             try:
                 output = subprocess.check_output(
