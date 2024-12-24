@@ -6,7 +6,7 @@ import subprocess
 import _hkml
 import hkml_open
 
-def add_recipients(patch_file, to, cc):
+def add_patch_recipients(patch_file, to, cc):
     mail = _hkml.read_mbox_file(patch_file)[0]
     mail.add_recipients('to', to)
     mail.add_recipients('cc', cc)
@@ -44,21 +44,21 @@ def find_linux_patch_recipients(patch_file):
                'linux-kselftest@vger.kernel.org']
     return recipients
 
-def add_maintainers(patch_files, first_patch_is_cv):
-    total_cc = []
+def add_patches_recipients(patch_files, to, cc, first_patch_is_cv):
+    is_linux_tree = os.path.exists('./scripts/get_maintainer.pl')
+    if is_linux_tree:
+        print('get_maintainer.pl found.  add recipients using it.')
+
+    total_cc = [] + cc
     for idx, patch_file in enumerate(patch_files):
         if first_patch_is_cv and idx == 0:
             continue
-        cc = find_linux_patch_recipients(patch_file)
-        total_cc += cc
-        add_recipients(patch_file, [], cc)
+        if is_linux_tree:
+            linux_cc = find_linux_patch_recipients(patch_file)
+            total_cc += linux_cc
+        add_patch_recipients(patch_file, to, cc + linux_cc)
     if first_patch_is_cv:
-        cc = sorted(set(total_cc))
-        add_recipients(patch_files[0], [], cc)
-
-def add_user_set_recipients(patch_files, to, cc):
-    for patch_file in patch_files:
-        add_recipients(patch_file, to, cc)
+        add_patch_recipients(patch_files[0], to, total_cc)
 
 def add_base_commit_as_cv(patch_file, commits):
     base_commit = commits.split('..')[0]
@@ -95,11 +95,7 @@ def main(args):
         cmd.append('--rfc')
     patch_files = subprocess.check_output(cmd).decode().strip().split('\n')
 
-    add_user_set_recipients(patch_files, args.to, args.cc)
-
-    if os.path.exists('./scripts/get_maintainer.pl'):
-        print('get_maintainer.pl found.  add recipients using it.')
-        add_maintainers(patch_files, add_cv)
+    add_patches_recipients(patch_files, args.to, args.cc, add_cv)
 
     if add_cv:
         add_base_commit_as_cv(patch_files[0], args.commits)
