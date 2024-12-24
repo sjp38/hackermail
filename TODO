@@ -18,3 +18,4 @@
 - Support 'hkml open' with message id or lore link
 - Let interactive mails selection and menu for slected mails
 - Support patch handling of non-public mails
+- Merge 'patch review' with 'patch check'
