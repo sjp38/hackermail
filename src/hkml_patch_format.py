@@ -127,7 +127,7 @@ def main(args):
         with open(patch_file, 'w') as f:
             f.write(to_write)
 
-    if os.path.exists('./scripts/checkpatch.pl'):
+    if on_linux_tree and os.path.exists('./scripts/checkpatch.pl'):
         print('checkpatch.pl found.  run it.')
         for patch_file in patch_files:
             try:
