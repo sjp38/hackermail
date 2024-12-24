@@ -16,13 +16,13 @@ def add_patch_recipients(patch_file, to, cc):
     with open(patch_file, 'w') as f:
         f.write(to_write)
 
-def is_linux_tree():
+def is_linux_tree(dir):
     try:
         # 1da177e4c3f41524e886b7f1b8a0c1fc7321cac2 is the initial commit of
         # Linux' git-era.
         output = subprocess.check_output(
-                ['git', 'log' '1da177e4c3f41524e886b7f1b8a0c1fc7321cac2',
-                 '--pretty=%s']).decode()
+                ['git', '-C', dir, 'log', '--pretty=%s',
+                 '1da177e4c3f41524e886b7f1b8a0c1fc7321cac2']).decode()
     except:
         return False
     return output.strip() == 'Linux-2.6.12-rc2'
@@ -56,7 +56,7 @@ def find_linux_patch_recipients(patch_file):
     return recipients
 
 def add_patches_recipients(patch_files, to, cc, first_patch_is_cv):
-    on_linux_tree = is_linux_tree()
+    on_linux_tree = is_linux_tree('./')
     if on_linux_tree and os.path.exists('./scripts/get_maintainer.pl'):
         print('get_maintainer.pl found.  add recipients using it.')
 
