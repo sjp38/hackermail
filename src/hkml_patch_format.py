@@ -29,21 +29,27 @@ def is_kunit_patch(patch_file):
         return True
     return False
 
-def add_maintainers(patch_files, first_patch_is_cv):
-    total_cc = []
+def find_linux_patch_recipients(patch_file):
+    if not os.path.exists('./scripts/get_maintainer.pl'):
+        return []
     cmd = ['./scripts/get_maintainer.pl', '--nogit', '--nogit-fallback',
            '--norolestats']
+    recipients = subprocess.check_output(
+            cmd + [patch_file]).decode().strip().split('\n')
+    recipients = [r for r in recipients if r != '']
+    if is_kunit_patch(patch_file):
+        recipients += ['Brendan Higgins <brendanhiggins@google.com>',
+               'David Gow <davidgow@google.com>',
+               'kunit-dev@googlegroups.com',
+               'linux-kselftest@vger.kernel.org']
+    return recipients
+
+def add_maintainers(patch_files, first_patch_is_cv):
+    total_cc = []
     for idx, patch_file in enumerate(patch_files):
         if first_patch_is_cv and idx == 0:
             continue
-        cc = subprocess.check_output(
-                cmd + [patch_file]).decode().strip().split('\n')
-        cc = [c for c in cc if c != '']
-        if is_kunit_patch(patch_file):
-            cc += ['Brendan Higgins <brendanhiggins@google.com>',
-                   'David Gow <davidgow@google.com>',
-                   'kunit-dev@googlegroups.com',
-                   'linux-kselftest@vger.kernel.org']
+        cc = find_linux_patch_recipients(patch_file)
         total_cc += cc
         add_recipients(patch_file, [], cc)
     if first_patch_is_cv:
