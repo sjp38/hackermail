@@ -1,7 +1,10 @@
 This file contains major changes in each version since v1.0.0
 
 v1.2.3
-- patch format: Support --to and --cc
+- patch format
+  - Support --to and --cc
+  - Set automatically added recipients as Cc
+  - Suggest setting someone on Cc as To, if no --to is provided
 
 v1.2.2
 - Suggest removing draft when the mail is sent
