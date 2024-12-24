@@ -56,11 +56,14 @@ def pr_with_pager_if_needed(text):
     os.remove(tmp_path)
 
 def mail_display_str(mail, head_columns=None, valid_mbox=False,
-                     for_draft_continue=False, recipients_per_line=False):
+                     for_draft_continue=False, recipients_per_line=False,
+                     for_patch=False):
     lines = []
     if valid_mbox is True:
         lines.append('From hackermail Thu Jan  1 00:00:00 1970')
-    if for_draft_continue is True:
+    if for_patch is True:
+        head_fields = ['From', 'To', 'Cc', 'Subject']
+    elif for_draft_continue is True:
         head_fields = ['From', 'To', 'Cc', 'Subject', 'In-Reply-To']
     else:
         head_fields = ['From', 'To', 'Cc', 'Subject', 'Message-Id',
@@ -77,7 +80,8 @@ def mail_display_str(mail, head_columns=None, valid_mbox=False,
                 lines += hkml_list.wrap_line('%s:' % head, value, head_columns)
             else:
                 lines.append('%s: %s' % (head, value))
-    if valid_mbox is False and for_draft_continue is False:
+    if (valid_mbox is False and for_draft_continue is False and
+        for_patch is False):
         lines.append('Local-Date: %s' % mail.date)
     lines.append('\n%s' % mail.get_field('body'))
     return '\n'.join(lines)
