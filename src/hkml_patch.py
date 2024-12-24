@@ -193,9 +193,21 @@ def apply_action_to_mails(mail, args):
 
     return err_to_return
 
+def review_patches(args):
+    patch_files = args.patch_files
+    for patch_file in patch_files:
+        patch_mail = _hkml.read_mbox_file(patch_file)[0]
+        print(patch_file)
+        print('Subject:', patch_mail.subject)
+        print('To:', patch_mail.get_field('to'))
+        print('Cc:', patch_mail.get_field('cc'))
+        print()
+
 def main(args):
     if args.action == 'format':
         return hkml_patch_format.main(args)
+    elif args.action == 'review':
+        return review_patches(args)
 
     # For call from hkml_view_mail
     if type(args.mail) is _hkml.Mail:
@@ -262,3 +274,8 @@ def set_argparser(parser):
 
     parser_format = subparsers.add_parser('format', help='format patch files')
     hkml_patch_format.set_argparser(parser_format)
+
+    parser_review = subparsers.add_parser(
+            'review', help='review patch files before sending')
+    parser_review.add_argument('patch_files', metavar='<file>', nargs='+',
+                               help='patch files to review')
