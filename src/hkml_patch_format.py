@@ -60,6 +60,7 @@ def add_patches_recipients(patch_files, to, cc, first_patch_is_cv,
         print('get_maintainer.pl found.  add recipients using it.')
 
     total_cc = [] + cc
+    cc_for_patches = {}
     for idx, patch_file in enumerate(patch_files):
         if first_patch_is_cv and idx == 0:
             continue
@@ -71,12 +72,15 @@ def add_patches_recipients(patch_files, to, cc, first_patch_is_cv,
         patch_cc = sorted(list(set(cc + linux_cc)))
         for t in to:
             patch_cc.remove(t)
-        add_patch_recipients(patch_file, to, patch_cc)
+        cc_for_patches[patch_file] = patch_cc
     if first_patch_is_cv:
         total_cc = sorted(list(set(total_cc)))
         for t in to:
             total_cc.remove(t)
-        add_patch_recipients(patch_files[0], to, total_cc)
+        cc_for_patches[patch_files[0]] = total_cc
+
+    for patch_file in patch_files:
+        add_patch_recipients(patch_file, to, cc_for_patches[patch_file])
 
 def add_base_commit_as_cv(patch_file, commits):
     base_commit = commits.split('..')[0]
