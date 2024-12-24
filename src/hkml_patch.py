@@ -236,9 +236,9 @@ def add_base_commit_as_cv(patch_file, commits):
     base_commit = commits.split('..')[0]
     cv_draft = '\n'.join([
         '',
-        "# below is the commit message of %s." % base_commit,
-        "# 'hkml patch format' assumes it as a draft of this",
-        "# cover letter, and hence pasted it here.",
+        "*** below is the commit message of %s." % base_commit,
+        "*** 'hkml patch format' assumes it as a draft of this",
+        "*** cover letter, and hence pasted it here.",
         '',
         subprocess.check_output(
             ['git', 'log', '-1', '--pretty=%b', base_commit]).decode()])
