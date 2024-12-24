@@ -55,8 +55,8 @@ def find_linux_patch_recipients(patch_file):
                'linux-kselftest@vger.kernel.org']
     return recipients
 
-def add_patches_recipients(patch_files, to, cc, first_patch_is_cv):
-    on_linux_tree = is_linux_tree('./')
+def add_patches_recipients(patch_files, to, cc, first_patch_is_cv,
+                           on_linux_tree):
     if on_linux_tree and os.path.exists('./scripts/get_maintainer.pl'):
         print('get_maintainer.pl found.  add recipients using it.')
 
@@ -110,7 +110,9 @@ def main(args):
         cmd.append('--rfc')
     patch_files = subprocess.check_output(cmd).decode().strip().split('\n')
 
-    add_patches_recipients(patch_files, args.to, args.cc, add_cv)
+    on_linux_tree = is_linux_tree('./')
+    add_patches_recipients(patch_files, args.to, args.cc, add_cv,
+                           on_linux_tree)
 
     if add_cv:
         add_base_commit_as_cv(patch_files[0], args.commits)
