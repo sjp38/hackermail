@@ -256,7 +256,7 @@ class Mail:
             # 'm' doesn't have start 'From' line in some case.  Add a fake one.
             mbox_str = '\n'.join(['From mboxrd@z Thu Jan  1 00:00:00 1970',
                 self.mbox])
-            msg = mailbox.Message(mbox_str)
+            msg = mailbox.Message(mbox_str.encode())
             parsed['body'] = mbox_body_decoded(msg)
         except:
             # Still decode() could fail due to encoding
@@ -381,6 +381,14 @@ def mbox_body_decoded(message):
         payload = payload.decode(charset)
     return payload
 
+def mbox_message_to_str(message):
+    strs = []
+    for key in message:
+        strs.append('%s: %s' % (key, message[key]))
+    strs.append('')
+    strs.append(mbox_body_decoded(message))
+    return '\n'.join(strs)
+
 def __read_mbox_file(filepath):
     mails = []
     if filepath[-5:] == '.json':
@@ -393,7 +401,7 @@ def __read_mbox_file(filepath):
             return mails
 
     for message in mailbox.mbox(filepath):
-        mail = Mail(mbox='%s' % message)
+        mail = Mail(mbox=mbox_message_to_str(message))
         if mail.broken():
             continue
         mails.append(mail)
