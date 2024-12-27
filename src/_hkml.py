@@ -257,19 +257,7 @@ class Mail:
             mbox_str = '\n'.join(['From mboxrd@z Thu Jan  1 00:00:00 1970',
                 self.mbox])
             msg = mailbox.Message(mbox_str)
-            while msg.is_multipart():
-                msg = msg.get_payload()[0]
-            payload = msg.get_payload(decode=True)
-            chrsets = set({})
-            for chrset in msg.get_charsets():
-                if chrset is None:
-                    continue
-                chrsets.update([chrset])
-            if len(chrsets) == 0:
-                payload = payload.decode()
-            for chrset in chrsets:
-                payload = payload.decode(chrset)
-            parsed['body'] = payload
+            parsed['body'] = mbox_body_decoded(msg)
         except:
             # Still decode() could fail due to encoding
             parsed['body'] = '\n'.join(mbox_lines[idx:])
@@ -379,6 +367,19 @@ class Mail:
     def url(self):
         site = get_manifest()['site']
         return '%s/%s' % (site, self.get_field('message-id')[1:-1])
+
+def mbox_body_decoded(message):
+    '''message: email.message.Message'''
+    while message.is_multipart():
+        message = message.get_payload()[0]
+    payload = message.get_payload(decode=True)
+    charsets = [c for c in message.get_charsets() if c is not None]
+    charsets = set(charsets)
+    if len(charsets) == 0:
+        return payload.decode()
+    for charset in charsets:
+        payload = payload.decode(charset)
+    return payload
 
 def __read_mbox_file(filepath):
     mails = []
