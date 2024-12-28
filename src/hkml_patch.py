@@ -25,12 +25,16 @@ def apply_action(args, mail, patch_file):
         if rc != 0:
             return 'checker complains something'
 
-    if args.action == 'apply':
-        if is_cover_letter(mail):
-            return None
-        rc = subprocess.call(['git', '-C', args.repo, 'am', patch_file])
+def apply_patches(patch_files, first_patch_is_cv, repo):
+    for idx, patch_file in enumerate(patch_files):
+        if idx == 0 and first_patch_is_cv:
+            continue
+        rc = subprocess.call(['git', '-C', repo, 'am', patch_file])
         if rc != 0:
             return 'applying patch (%s) failed' % patch_file
+    # cleanup tempoeral patches only when success, to let investigation easy
+    rm_tmp_patch_dir(patch_files)
+    return None
 
 def move_patches(patch_files, dest_dir):
     if len(patch_files) == 0:
@@ -188,11 +192,17 @@ def apply_action_to_mails(mail, args):
         if err is not None:
             err_to_return = err
 
-    if args.action == 'export':
+    first_patch_is_cv = False
+    if len(patch_mails) > 0:
+        first_patch_is_cv = is_cover_letter(patch_mails[0])
+
+    if args.action == 'apply':
+        return apply_patches(patch_files, first_patch_is_cv, args.repo)
+    elif args.action == 'export':
         move_patches(patch_files, args.export_dir)
         return None
 
-    if err_to_return is None and args.action != 'export':
+    if err_to_return is None and args.action == 'check':
         rm_tmp_patch_dir(patch_files)
 
     return err_to_return
