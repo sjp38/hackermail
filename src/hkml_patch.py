@@ -36,6 +36,18 @@ def apply_action(args, mail, patch_file):
         print('patch file for mail \'%s\' is saved at \'%s\'' %
               (mail.subject, patch_file))
 
+def move_patches(patch_files, dest_dir):
+    if len(patch_files) == 0:
+        print('no patch to export')
+    saved_dir = os.path.dirname(patch_files[-1])
+    if dest_dir is not None:
+        for patch_file in patch_files:
+            basename = os.path.basename(patch_file)
+            os.rename(patch_file, os.path.join(dest_dir, basename))
+        os.rmdir(saved_dir)
+        saved_dir = dest_dir
+    print('\npatch files are saved at \'%s\'\n' % saved_dir)
+
 def get_patch_index(mail):
     tag_end_idx = mail.subject.find(']')
     for field in mail.subject[:tag_end_idx].split():
@@ -180,16 +192,9 @@ def apply_action_to_mails(mail, args):
         if err is not None:
             err_to_return = err
 
-    if (err_to_return is None and args.action == 'export' and
-            len(patch_files) > 0):
-        saved_dir = os.path.dirname(patch_files[-1])
-        if args.export_dir is not None:
-            for patch_file in patch_files:
-                basename = os.path.basename(patch_file)
-                os.rename(patch_file, os.path.join(args.export_dir, basename))
-            os.rmdir(saved_dir)
-            saved_dir = args.export_dir
-        print('\npatch files are saved at \'%s\'\n' % saved_dir)
+    if args.action == 'export':
+        move_patches(patch_files, args.export_dir)
+        return None
 
     if err_to_return is None and args.action != 'export':
         rm_tmp_patch_dir(patch_files)
