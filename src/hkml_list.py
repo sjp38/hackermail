@@ -781,7 +781,7 @@ def get_mails_from_multiple_sources(
     if max_nr_mails is not None:
         mails = mails[:max_nr_mails]
 
-    return mails
+    return mails, None
 
 def show_list(text, to_stdout, to_less, mail_idx_key_map):
     if to_stdout:
@@ -877,10 +877,12 @@ def args_to_mails_list_data(args):
 
     timestamp = time.time()
     runtime_profile = []
-    mails_to_show = get_mails_from_multiple_sources(
+    mails_to_show, err = get_mails_from_multiple_sources(
             args.sources, args.fetch, since, until,
             args.min_nr_mails, args.max_nr_mails, args.source_type,
             args.pisearch)
+    if err is not None:
+        return None, 'getting mails failed (%s)' % err
     runtime_profile = [['get_mails', time.time() - timestamp]]
 
     list_data = mails_to_list_data(
