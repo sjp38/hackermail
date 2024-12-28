@@ -763,6 +763,8 @@ class MailsListDataGenerator:
         # returns text, mail_idx_key_map, line_nr_to_mail, len_comment,
         # display_effect_rule, and error
         list_data, err = hkml_list.args_to_mails_list_data(self.args)
+        if err is not None:
+            return None, None, err
         if not hasattr(self.args, 'dim_old') or self.args.dim_old is None:
             self.args.dim_old = suggest_dim_old(
                     hkml_list.args_to_lists_cache_key(self.args))
