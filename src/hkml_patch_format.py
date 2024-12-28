@@ -138,18 +138,18 @@ def main(args):
         add_base_commit_as_cv(patch_files[0], args.commits)
 
     if on_linux_tree and os.path.exists('./scripts/checkpatch.pl'):
-        answer = input('checkpatch.pl found.  shall I run it? [Y/n] ')
-        if answer.lower() == 'n':
-            print('ok, you can do \'hkml patch check --patch_file\' later')
-        else:
+        print('checkpatch.pl found.  shall I run it?')
+        print('(hint: you can do this manually via \'hkml patch check\')')
+        answer = input('[Y/n] ')
+        if answer.lower() != 'n':
             hkml_patch.check_patches(
                     './scripts/checkpatch.pl', patch_files, None,
                     rm_patches=False)
 
-    answer = input('would you review recipients of patches? [Y/n]')
-    if answer.lower() == 'n':
-        print('ok, you can do \'hkml patch recipients\' later')
-    else:
+    print('would you review recipients of formatted patches?')
+    print('(hint: you can do this manually via \'hkml patch recipients\')')
+    answer = input('[Y/n] ')
+    if answer.lower() != 'n':
         hkml_patch.list_recipients(patch_files)
 
 def set_argparser(parser):
