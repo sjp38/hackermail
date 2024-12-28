@@ -24,7 +24,7 @@ def check_patches(checker, patch_files, patch_mails):
         else:
             return '<cheker> is not given; checkpatch.pl is also not found'
 
-    nr_complained_patches = 0
+    complained_patches = []
     for idx, patch_file in enumerate(patch_files):
         try:
             output = subprocess.check_output([checker, patch_file]).decode()
@@ -33,8 +33,11 @@ def check_patches(checker, patch_files, patch_mails):
                 patch_mails[idx].subject, checker))
             subprocess.call([checker, patch_file])
             print()
-            nr_complained_patches += 1
-    print('%d complained patches found' % nr_complained_patches)
+            complained_patches.append(patch_file)
+    print('Below %d patches may have problems' % len(complained_patches))
+    for patch_file in complained_patches:
+        print(' - %s' % patch_file)
+
     # cleanup tempoeral patches only when success, to let investigation easy
     rm_tmp_patch_dir(patch_files)
     return None
