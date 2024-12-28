@@ -229,15 +229,31 @@ def review_patches(args):
         print('Cc:', patch_mail.get_field('cc'))
         print()
 
+def is_files_argument(arg):
+    if type(arg) is not list:
+        return False
+    for entry in arg:
+        if not os.path.isfile(entry):
+            return False
+    return True
+
 def main(args):
     if args.action == 'format':
         return hkml_patch_format.main(args)
-    elif args.action == 'check' and args.patch_file is not None:
-        err = check_patches(args.checker, args.patch_file, None, rm_patches=False)
-        if err is not None:
-            print(err)
+
+    if args.action == 'check':
+        if is_files_argument(args.patch):
+            err = check_patches(
+                    args.checker, args.patch, None, rm_patches=False)
+            if err is not None:
+                print(err)
+                return 1
+            return 0
+        elif len(args.patch) > 1:
+            print('wrong patch argument')
             return 1
-        return 0
+        else:
+            args.mail = args.patch[0]
     elif args.action == 'review':
         return review_patches(args)
 
@@ -288,10 +304,11 @@ def set_argparser(parser):
     parser_check = subparsers.add_parser('check',
                                          help='run a checker for the patch')
     parser_check.add_argument(
-            'mail', metavar='<mail>', nargs='?',
+            'patch', metavar='<mail or patch file>', nargs='+',
             help=' '.join(
-                ['The mail to apply as a patch.',
-                'Could be index on the list, or \'clipboard\'']))
+                ['The mail or patch files to check.',
+                'In case of a mail, this could be index on the list,',
+                 'or \'clipboard\'']))
     parser_check.add_argument('checker', metavar='<program>', nargs='?',
                               help='patch checker program')
     parser_check.add_argument(
