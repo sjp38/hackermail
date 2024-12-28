@@ -10,21 +10,6 @@ import hkml_list
 import hkml_open
 import hkml_patch_format
 
-def apply_action(args, mail, patch_file):
-    if args.action == 'check':
-        if is_cover_letter(mail):
-            return None
-        if args.checker is None:
-            checkpatch = os.path.join('scripts', 'checkpatch.pl')
-            if os.path.isfile(checkpatch):
-                args.checker = checkpatch
-            else:
-                return '<cheker> is not given; checkpatch.pl is also not found'
-        print(mail.subject)
-        rc = subprocess.call([args.checker, patch_file])
-        if rc != 0:
-            return 'checker complains something'
-
 def check_patches(checker, patch_files, patch_mails, first_patch_is_cv):
     if checker is None:
         checkpatch = os.path.join('scripts', 'checkpatch.pl')
