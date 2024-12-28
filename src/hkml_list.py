@@ -702,10 +702,12 @@ def get_thread_mails_from_web(msgid):
         return None, 'downloading mbox failed'
     if subprocess.call(['gunzip', os.path.join(tmp_path, 't.mbox.gz')]) != 0:
         return None, 'extracting mbox failed'
-    mails = get_mails(
+    mails, err = get_mails(
             os.path.join(tmp_path, 't.mbox'), False, None, None, None, None)
     os.remove(os.path.join(tmp_path, 't.mbox'))
     os.rmdir(tmp_path)
+    if err is not None:
+        return None, 'parsing mbox failed (%s)' % err
 
     deduped_mails = []
     msgids = {}
@@ -723,46 +725,45 @@ def get_mails(source, fetch, since, until,
     if source_type is None:
         source_type, err = infer_source_type(source, pisearch is not None)
         if err is not None:
-            print('source type inference for %s failed: %s' % (source, err))
-            print('you could use --source_type option to solve this')
-            exit(1)
+            return None, '\n'.join(
+                    ['source type inference for %s failed: %s' % (source, err),
+                     'you could use --source_type option to solve this'])
 
     if source_type == 'clipboard':
         mails, err = _hkml.read_mails_from_clipboard()
         if err != None:
-            print('reading mails from clipboard failed: %s' % err)
-            exit(1)
+            return None, 'reading mails from clipboard failed: %s' % err
         if max_nr_mails is not None:
             mails = mails[:max_nr_mails]
         mails.sort(key=lambda mail: mail.date)
-        return mails
+        return mails, None
 
     if source_type == 'mbox':
         mails = _hkml.read_mbox_file(source)
         if max_nr_mails is not None:
             mails = mails[:max_nr_mails]
         mails.sort(key=lambda mail: mail.date)
-        return mails
+        return mails, None
 
     if source_type == 'tag':
-        return hkml_tag.mails_of_tag(source)
+        return hkml_tag.mails_of_tag(source), None
 
     if pisearch:
-        return get_mails_from_pisearch(source, pisearch)
+        return get_mails_from_pisearch(source, pisearch), None
 
     if source_type == 'msgid':
         mails, err = get_thread_mails_from_web(source)
         if err is not None:
             print('getting mails for msgid %s failed' % source)
             exit(1)
-        return mails
+        return mails, None
 
     mails = fetch_get_mails_from_git(
             fetch, source, since, until, min_nr_mails, max_nr_mails,
             commits_range)
 
     mails.reverse()
-    return mails
+    return mails, None
 
 def get_mails_from_multiple_sources(
         sources, do_fetch, since, until, min_nr_mails, max_nr_mails,
@@ -770,9 +771,12 @@ def get_mails_from_multiple_sources(
     mails = []
     msgids = {}
     for idx, source in enumerate(sources):
-        for mail in get_mails(
+        total_mails, err = get_mails(
                 source, do_fetch, since, until, min_nr_mails, max_nr_mails,
-                None, source_types[idx], do_pisearch):
+                None, source_types[idx], do_pisearch)
+        if err is not None:
+            return None, err
+        for mail in total_mails:
             msgid = mail.get_field('message-id')
             if not msgid in msgids:
                 mails.append(mail)

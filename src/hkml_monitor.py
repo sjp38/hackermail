@@ -145,10 +145,13 @@ def get_mails_to_check(request, ignore_mails_before, last_monitored_mails):
             since = None
             commits_range = '%s..' % last_mail.gitid
 
-        fetched_mails = hkml_list.get_mails(
+        fetched_mails, err = hkml_list.get_mails(
                 source=mailing_list, fetch=True,
                 since=since, until=None, min_nr_mails=None, max_nr_mails=None,
                 commits_range=commits_range)
+        if err is not None:
+            print('hkml_list.get_mails() failed (%s)' % err)
+            return []
         if len(fetched_mails) > 0:
             last_monitored_mails[mailing_list] = fetched_mails[-1]
         for mail in fetched_mails:
