@@ -425,7 +425,10 @@ def read_mbox_file(filepath):
     return mails
 
 def read_mails_from_clipboard():
-    mbox_str = cmd_str_output(['xclip', '-o', '-sel', 'clip'])
+    try:
+        mbox_str = cmd_str_output(['xclip', '-o', '-sel', 'clip'])
+    except:
+        return [], 'accessing clipboard failed'
     mail = Mail(mbox=mbox_str)
     if mail.broken():
         return [], 'clipboard is not complete mbox string'
