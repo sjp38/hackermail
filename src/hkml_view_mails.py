@@ -416,6 +416,8 @@ class MailDisplayEffect:
         if self.max_date is not None:
             if self.max_date != 'max' and mail.date > self.max_date:
                 return False
+        if self.effect is None:
+            return False
         return True
 
     def effect_str(self):
