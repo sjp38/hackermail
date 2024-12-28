@@ -30,7 +30,7 @@ class CliSelection:
         self.data = data
 
 def cli_any_input(prompt):
-    print('%s  Press any key to return' % prompt)
+    print('%s  Press enter to return' % prompt)
     sys.stdin.read(1)
 
 class CliQuestion:
