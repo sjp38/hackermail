@@ -311,9 +311,6 @@ def set_argparser(parser):
                  'or \'clipboard\'']))
     parser_check.add_argument('checker', metavar='<program>', nargs='?',
                               help='patch checker program')
-    parser_check.add_argument(
-            '--patch_file', metavar='<file>', nargs='+',
-            help='patch files to check')
 
     parser_export = subparsers.add_parser('export', help='save as patch files')
     parser_export.add_argument(
