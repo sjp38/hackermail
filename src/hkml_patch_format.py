@@ -146,11 +146,11 @@ def main(args):
                     './scripts/checkpatch.pl', patch_files, None,
                     rm_patches=False)
 
-    answer = input('may I show summary of the recipients? [Y/n]')
+    answer = input('would you review recipients of patches? [Y/n]')
     if answer.lower() == 'n':
-        print('ok, you can do \'hkml patch review\' later')
+        print('ok, you can do \'hkml patch recipients\' later')
     else:
-        hkml_patch.review_patches(patch_files)
+        hkml_patch.list_recipients(patch_files)
 
 def set_argparser(parser):
     parser.add_argument('commits', metavar='<commits>',
