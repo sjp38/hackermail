@@ -407,6 +407,7 @@ def menu_collapse_expand(mail_slist, selection):
 class MailDisplayEffect:
     min_date = None
     max_date = None
+    old_effect = None
     effect = None
 
     def eligible(self, mail):
@@ -468,7 +469,7 @@ class MailDisplayEffect:
                 hkml_view.cli_any_input(err)
                 return
 
-    def __init__(self, interactive):
+    def __init__(self, interactive, old_effect=None):
         if interactive is False:
             return
         q = hkml_view.CliQuestion(
@@ -504,6 +505,7 @@ class MailDisplayEffect:
         _, selection, err = q.ask_selection(
                 data=[self, selections], selections=selections)
         if err is not None:
+            self.effect = old_effect
             return
         self.interactive_setup_dates()
 
@@ -516,7 +518,16 @@ def menu_effect_mails(mail_slist, selection):
         print('%s' % slist.data['mails_effects'])
         print()
 
-    slist.data['mails_effects'] = MailDisplayEffect(interactive=True)
+    # In case the user cancels the effect selection, we want to be able
+    # to restore their old settings.
+    old_mail_display_effect = slist.data['mails_effects']
+    if old_mail_display_effect is not None:
+        old_effect = old_mail_display_effect.effect
+    else:
+        old_effect = None
+
+    slist.data['mails_effects'] = MailDisplayEffect(interactive=True,
+                                                    old_effect=old_effect)
 
 def mk_dim_old_rule(max_date):
     effect_rule = MailDisplayEffect(interactive=False)
