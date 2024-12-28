@@ -6,6 +6,8 @@ v1.2.3
   - Set automatically added recipients as only Cc
   - Suggest setting someone on Cc as To, if no --to is provided
 - Fix incorrect encoding/decoding handling
+- Fix display effect no input handling crash
+- hkml patch format: make checkpatch.pl run optional
 
 v1.2.2
 - Suggest removing draft when the mail is sent
