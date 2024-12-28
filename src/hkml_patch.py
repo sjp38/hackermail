@@ -16,7 +16,7 @@ def rm_tmp_patch_dir(patch_files):
         os.remove(patch_file)
     os.rmdir(dirname)
 
-def check_patches(checker, patch_files, patch_mails, first_patch_is_cv):
+def check_patches(checker, patch_files, patch_mails):
     if checker is None:
         checkpatch = os.path.join('scripts', 'checkpatch.pl')
         if os.path.isfile(checkpatch):
@@ -26,8 +26,6 @@ def check_patches(checker, patch_files, patch_mails, first_patch_is_cv):
 
     nr_complained_patches = 0
     for idx, patch_file in enumerate(patch_files):
-        if idx == 0 and first_patch_is_cv:
-            continue
         print(patch_mails[idx].subject)
         rc = subprocess.call([checker, patch_file])
         if rc != 0:
@@ -199,7 +197,7 @@ def apply_action_to_mails(mail, args):
 
     if args.action == 'check':
         return check_patches(
-                args.checker, patch_files, patch_mails, first_patch_is_cv)
+                args.checker, patch_files, patch_mails)
     elif args.action == 'apply':
         return apply_patches(patch_files, first_patch_is_cv, args.repo)
     elif args.action == 'export':
