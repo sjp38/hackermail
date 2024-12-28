@@ -219,11 +219,43 @@ def apply_action_to_mails(mail, args):
         move_patches(patch_files, args.export_dir)
         return None
 
+def recipients_of(mail, to_cc):
+    field = mail.get_field(to_cc)
+    if field is None:
+        return []
+    return [r.strip() for r in field.split(',')]
+
+def common_recipients(patch_mails, to_cc):
+    if len(patch_mails) == 0:
+        return []
+    to_return = []
+    for recipient in recipients_of(patch_mails[0], to_cc):
+        is_common = True
+        for mail in patch_mails[1:]:
+            if not recipient in recipients_of(mail, to_cc):
+                is_common = False
+                break
+        if is_common is True:
+            to_return.append(recipient)
+    return to_return
+
 def review_patches(args):
     patch_files = args.patch_files
+    patch_mails = []
     for patch_file in patch_files:
-        patch_mail = _hkml.read_mbox_file(patch_file)[0]
-        print(patch_file)
+        patch_mails.append(_hkml.read_mbox_file(patch_file)[0])
+    common_to = common_recipients(patch_mails, 'to')
+    if len(common_to) > 0:
+        print('Common To:')
+        for to in common_to:
+            print(' - %s' % to)
+
+    common_cc = common_recipients(patch_mails, 'cc')
+    if len(common_cc) > 0:
+        print('Common Cc:')
+        for cc in common_cc:
+            print('  - %s' % cc)
+    for patch_mail in patch_mails:
         print('Subject:', patch_mail.subject)
         print('To:', patch_mail.get_field('to'))
         print('Cc:', patch_mail.get_field('cc'))
