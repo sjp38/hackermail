@@ -239,8 +239,7 @@ def common_recipients(patch_mails, to_cc):
             to_return.append(recipient)
     return to_return
 
-def review_patches(args):
-    patch_files = args.patch_files
+def review_patches(patch_files):
     patch_mails = []
     for patch_file in patch_files:
         patch_mails.append(_hkml.read_mbox_file(patch_file)[0])
@@ -293,7 +292,7 @@ def main(args):
         else:
             args.mail = args.patch[0]
     elif args.action == 'review':
-        return review_patches(args)
+        return review_patches(args.patch_files)
 
     # For call from hkml_view_mail
     if type(args.mail) is _hkml.Mail:

@@ -141,9 +141,16 @@ def main(args):
         answer = input('checkpatch.pl found.  shall I run it? [Y/n] ')
         if answer.lower() == 'n':
             print('ok, you can do \'hkml patch check --patch_file\' later')
-            return
-        hkml_patch.check_patches(
-                './scripts/checkpatch.pl', patch_files, None, rm_patches=False)
+        else:
+            hkml_patch.check_patches(
+                    './scripts/checkpatch.pl', patch_files, None,
+                    rm_patches=False)
+
+    answer = input('may I show summary of the recipients? [Y/n]')
+    if answer.lower() == 'n':
+        print('ok, you can do \'hkml patch review\' later')
+    else:
+        hkml_patch.review_patches(patch_files)
 
 def set_argparser(parser):
     parser.add_argument('commits', metavar='<commits>',
