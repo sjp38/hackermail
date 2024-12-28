@@ -26,9 +26,13 @@ def check_patches(checker, patch_files, patch_mails):
 
     nr_complained_patches = 0
     for idx, patch_file in enumerate(patch_files):
-        print(patch_mails[idx].subject)
-        rc = subprocess.call([checker, patch_file])
-        if rc != 0:
+        try:
+            output = subprocess.check_output([checker, patch_file]).decode()
+        except:
+            print('[!!!] %s complained by %s' % (
+                patch_mails[idx].subject, checker))
+            subprocess.call([checker, patch_file])
+            print()
             nr_complained_patches += 1
     print('%d complained patches found' % nr_complained_patches)
     # cleanup tempoeral patches only when success, to let investigation easy
