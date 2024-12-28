@@ -162,6 +162,12 @@ def write_patch_mails(patch_mails):
         files.append(file_name)
     return files, None
 
+def rm_tmp_patch_dir(patch_files):
+    dirname = os.path.dirname(patch_files[-1])
+    for patch_file in patch_files:
+        os.remove(patch_file)
+    os.rmdir(dirname)
+
 def apply_action_to_mails(mail, args):
     err_to_return = None
     patch_mails = get_patch_mails(mail, args.dont_add_cv)
@@ -186,10 +192,7 @@ def apply_action_to_mails(mail, args):
         print('\npatch files are saved at \'%s\'\n' % saved_dir)
 
     if err_to_return is None and args.action != 'export':
-        dirname = os.path.dirname(patch_files[-1])
-        for patch_file in patch_files:
-            os.remove(patch_file)
-        os.rmdir(dirname)
+        rm_tmp_patch_dir(patch_files)
 
     return err_to_return
 
