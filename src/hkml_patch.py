@@ -25,6 +25,27 @@ def apply_action(args, mail, patch_file):
         if rc != 0:
             return 'checker complains something'
 
+def check_patches(checker, patch_files, patch_mails, first_patch_is_cv):
+    if checker is None:
+        checkpatch = os.path.join('scripts', 'checkpatch.pl')
+        if os.path.isfile(checkpatch):
+            checker = checkpatch
+        else:
+            return '<cheker> is not given; checkpatch.pl is also not found'
+
+    nr_complained_patches = 0
+    for idx, patch_file in enumerate(patch_files):
+        if idx == 0 and first_patch_is_cv:
+            continue
+        print(patch_mails[idx].subject)
+        rc = subprocess.call([checker, patch_file])
+        if rc != 0:
+            nr_complained_patches += 1
+    print('%d complained patches found' % nr_complained_patches)
+    # cleanup tempoeral patches only when success, to let investigation easy
+    rm_tmp_patch_dir(patch_files)
+    return None
+
 def apply_patches(patch_files, first_patch_is_cv, repo):
     for idx, patch_file in enumerate(patch_files):
         if idx == 0 and first_patch_is_cv:
@@ -187,25 +208,18 @@ def apply_action_to_mails(mail, args):
     if err is not None:
         return 'writing patch files failed (%s)' % err
 
-    for idx in range(len(patch_mails)):
-        err = apply_action(args, patch_mails[idx], patch_files[idx])
-        if err is not None:
-            err_to_return = err
-
     first_patch_is_cv = False
     if len(patch_mails) > 0:
         first_patch_is_cv = is_cover_letter(patch_mails[0])
 
-    if args.action == 'apply':
+    if args.action == 'check':
+        return check_patches(
+                args.checker, patch_files, patch_mails, first_patch_is_cv)
+    elif args.action == 'apply':
         return apply_patches(patch_files, first_patch_is_cv, args.repo)
     elif args.action == 'export':
         move_patches(patch_files, args.export_dir)
         return None
-
-    if err_to_return is None and args.action == 'check':
-        rm_tmp_patch_dir(patch_files)
-
-    return err_to_return
 
 def review_patches(args):
     patch_files = args.patch_files
