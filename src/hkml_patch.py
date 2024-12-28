@@ -16,7 +16,11 @@ def rm_tmp_patch_dir(patch_files):
         os.remove(patch_file)
     os.rmdir(dirname)
 
-def check_patches(checker, patch_files, patch_mails):
+def check_patches(checker, patch_files, patch_mails, rm_patches):
+    if patch_mails is None:
+        patch_mails = []
+        for patch_file in patch_files:
+            patch_mails.append(_hkml.read_mbox_file(patch_file)[0])
     if checker is None:
         checkpatch = os.path.join('scripts', 'checkpatch.pl')
         if os.path.isfile(checkpatch):
@@ -38,8 +42,8 @@ def check_patches(checker, patch_files, patch_mails):
     for patch_file in complained_patches:
         print(' - %s' % patch_file)
 
-    # cleanup tempoeral patches only when success, to let investigation easy
-    rm_tmp_patch_dir(patch_files)
+    if rm_patches:
+        rm_tmp_patch_dir(patch_files)
     return None
 
 def apply_patches(patch_files, first_patch_is_cv, repo):
@@ -204,7 +208,7 @@ def apply_action_to_mails(mail, args):
 
     if args.action == 'check':
         return check_patches(
-                args.checker, patch_files, patch_mails)
+                args.checker, patch_files, patch_mails, rm_patches=True)
     elif args.action == 'apply':
         return apply_patches(patch_files, first_patch_is_cv, args.repo)
     elif args.action == 'export':
@@ -220,6 +224,12 @@ def review_patches(args):
 def main(args):
     if args.action == 'format':
         return hkml_patch_format.main(args)
+    elif args.action == 'check' and args.patch_file is not None:
+        err = check_patches(args.checker, args.patch_file, None, rm_patches=False)
+        if err is not None:
+            print(err)
+            return 1
+        return 0
     elif args.action == 'review':
         return review_patches(args)
 
@@ -270,12 +280,15 @@ def set_argparser(parser):
     parser_check = subparsers.add_parser('check',
                                          help='run a checker for the patch')
     parser_check.add_argument(
-            'mail', metavar='<mail>',
+            'mail', metavar='<mail>', nargs='?',
             help=' '.join(
                 ['The mail to apply as a patch.',
                 'Could be index on the list, or \'clipboard\'']))
     parser_check.add_argument('checker', metavar='<program>', nargs='?',
                               help='patch checker program')
+    parser_check.add_argument(
+            '--patch_file', metavar='<file>', nargs='+',
+            help='patch files to check')
 
     parser_export = subparsers.add_parser('export', help='save as patch files')
     parser_export.add_argument(
