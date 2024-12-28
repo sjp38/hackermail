@@ -5,6 +5,7 @@ import subprocess
 
 import _hkml
 import hkml_open
+import hkml_patch
 
 def add_patch_recipients(patch_file, to, cc):
     mail = _hkml.read_mbox_file(patch_file)[0]
@@ -138,19 +139,8 @@ def main(args):
 
     if on_linux_tree and os.path.exists('./scripts/checkpatch.pl'):
         print('checkpatch.pl found.  run it.')
-        for patch_file in patch_files:
-            try:
-                output = subprocess.check_output(
-                        ['./scripts/checkpatch.pl', patch_file]).decode()
-                # checkpatch returns non-zero for problematic patches.
-                # for possible future change, double-check the output.
-                last_par = output.split('\n\n')[-1]
-                if not 'and is ready for submission.' in last_par:
-                    raise Exception()
-            except:
-                print('!!! %s is not ok' % patch_file)
-                subprocess.call(['./scripts/checkpatch.pl', patch_file])
-                print()
+        hkml_patch.check_patches(
+                './scripts/checkpatch.pl', patch_files, None, rm_patches=False)
 
 def set_argparser(parser):
     parser.add_argument('commits', metavar='<commits>',
