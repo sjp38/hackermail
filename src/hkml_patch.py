@@ -32,10 +32,6 @@ def apply_action(args, mail, patch_file):
         if rc != 0:
             return 'applying patch (%s) failed' % patch_file
 
-    if args.action == 'export':
-        print('patch file for mail \'%s\' is saved at \'%s\'' %
-              (mail.subject, patch_file))
-
 def move_patches(patch_files, dest_dir):
     if len(patch_files) == 0:
         print('no patch to export')
