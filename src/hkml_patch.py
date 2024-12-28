@@ -35,10 +35,10 @@ def check_patches(checker, patch_files, patch_mails, rm_patches):
             if checker == checkpatch:
                 last_par = output.split('\n\n')[-1]
                 if not 'and is ready for submission.' in last_par:
-                    raise Exception()
-        except:
-            print('[!!!] %s complained by %s' % (
-                patch_mails[idx].subject, checker))
+                    raise Exception('checkpatch.pl output seems wrong')
+        except Exception as e:
+            print('[!!!] %s complained by %s (%s)' % (
+                patch_mails[idx].subject, checker, e))
             subprocess.call([checker, patch_file])
             print()
             complained_patches.append(patch_file)
