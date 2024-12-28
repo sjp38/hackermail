@@ -823,7 +823,9 @@ def args_to_mails_list_data(args):
     # return MailsListData and error
     # if cached output is used, line_nr_to_mail_map and len_comments of the
     # list data becomes None.  Caller should make it when those on demand.
-    validate_set_source_type(args)
+    err = validate_set_source_type(args)
+    if err is not None:
+        return None, err
     disable_ancestor_finding_for_tags(args)
 
     lists_cache_key = args_to_lists_cache_key(args)
@@ -893,7 +895,10 @@ def args_to_mails_list_data(args):
 
 def main(args):
     if args.read_dates:
-        validate_set_source_type(args)
+        err = validate_set_source_type(args)
+        if err is not None:
+            print(err)
+            exit(1)
         lists_cache_key = args_to_lists_cache_key(args)
         last_dates = _hkml_list_cache.get_cache_creation_dates(lists_cache_key)
         for idx, last_date in enumerate(last_dates):
