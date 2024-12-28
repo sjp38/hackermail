@@ -794,19 +794,18 @@ def validate_set_source_type(args):
         if len(args.source_type) == 1:
             args.source_type = args.source_type * len(args.sources)
         else:
-            err = 'numbers of --source_type and --sources mismatch'
-            return None, None, err
+            return 'numbers of --source_type and --sources mismatch'
     else:
         args.source_type = []
         for source in args.sources:
             source_type, err = infer_source_type(
                     source, args.pisearch is not None)
             if err is not None:
-                err = '\n'.join([
+                return '\n'.join([
                     'source type inference for %s failed: %s' % (source, err),
                     'you could use --source_type option to solve this'])
-                return None, None, err
             args.source_type.append(source_type)
+    return None
 
 def disable_ancestor_finding_for_tags(args):
     '''For tag-based listing, do_find_ancestors_from_cache can add unexpected
