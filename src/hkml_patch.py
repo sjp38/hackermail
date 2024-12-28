@@ -245,21 +245,27 @@ def review_patches(args):
     for patch_file in patch_files:
         patch_mails.append(_hkml.read_mbox_file(patch_file)[0])
     common_to = common_recipients(patch_mails, 'to')
-    if len(common_to) > 0:
-        print('Common To:')
-        for to in common_to:
-            print(' - %s' % to)
-
     common_cc = common_recipients(patch_mails, 'cc')
-    if len(common_cc) > 0:
-        print('Common Cc:')
-        for cc in common_cc:
-            print('  - %s' % cc)
+    print('Common recipients:')
+    for to in common_to:
+        print('  To: %s' % to)
+    for cc in common_cc:
+        print('  Cc: %s' % cc)
     for patch_mail in patch_mails:
-        print('Subject:', patch_mail.subject)
-        print('To:', patch_mail.get_field('to'))
-        print('Cc:', patch_mail.get_field('cc'))
-        print()
+        exclusive_to = []
+        exclusive_cc = []
+        for recipient in recipients_of(patch_mail, 'to'):
+            if not recipient in common_to:
+                exclusive_to.append(recipient)
+        for recipient in recipients_of(patch_mail, 'cc'):
+            if not recipient in common_cc:
+                exclusive_cc.append(recipient)
+        if len(exclusive_to + exclusive_cc) > 0:
+            print('Additional recipients for "%s"' % patch_mail.subject)
+            for to in exclusive_to:
+                print('  To: %s' % to)
+            for cc in exclusive_cc:
+                print('  Cc: %s' % cc)
 
 def is_files_argument(arg):
     if type(arg) is not list:
