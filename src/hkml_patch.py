@@ -21,8 +21,8 @@ def check_patches(checker, patch_files, patch_mails, rm_patches):
         patch_mails = []
         for patch_file in patch_files:
             patch_mails.append(_hkml.read_mbox_file(patch_file)[0])
+    checkpatch = os.path.join('scripts', 'checkpatch.pl')
     if checker is None:
-        checkpatch = os.path.join('scripts', 'checkpatch.pl')
         if os.path.isfile(checkpatch):
             checker = checkpatch
         else:
@@ -32,6 +32,10 @@ def check_patches(checker, patch_files, patch_mails, rm_patches):
     for idx, patch_file in enumerate(patch_files):
         try:
             output = subprocess.check_output([checker, patch_file]).decode()
+            if checker == checkpatch:
+                last_par = output.split('\n\n')[-1]
+                if not 'and is ready for submission.' in last_par:
+                    raise Exception()
         except:
             print('[!!!] %s complained by %s' % (
                 patch_mails[idx].subject, checker))
