@@ -816,4 +816,64 @@ Formatting Patches
 files that can be submitted using `git send-email`.  If it is called on linux
 tree, it runs `get_maintainer.pl` and adds the appropriate recipients to the
 patch files.  In the linux tree use case, it also runs `checkpatch.pl` to
-resulting patch files.
+resulting patch files.  Finally, it lists recipients that set for each patch
+file.  The `checkpatch.pl` run and recipients listing are optional.  An example
+output is like below:
+
+```
+$ hkml patch format fa09068a354b..4b75ad374d3f
+get_maintainer.pl found.  add recipients using it.
+You did not set --to, and we will set below as Cc:
+0. Andrew Morton <akpm@linux-foundation.org>
+1. Jonathan Corbet <corbet@lwn.net>
+2. SeongJae Park <sj@kernel.org>
+3. damon@lists.linux.dev
+4. linux-doc@vger.kernel.org
+5. linux-kernel@vger.kernel.org
+6. linux-mm@kvack.org
+Shall I set one of above as To: for all mails? [N/index] 0
+
+checkpatch.pl found.  shall I run it?
+(hint: you can do this manually via 'hkml patch check')
+[Y/n] y
+[!!!] [PATCH 00/10] *** SUBJECT HERE *** complained by ./scripts/checkpatch.pl (Command '['./scripts/checkpatch.pl', './0000-cover-letter.patch']' returned non-zero exit status 1.)
+WARNING: Prefer a maximum 75 chars per line (possible unwrapped commit description?)
+#52:
+[2] https://git.kernel.org/sj/damo/c/b6a722c85ff91e5abe9dd47135e300df243da056
+
+total: 0 errors, 1 warnings, 0 lines checked
+
+NOTE: For some of the reported defects, checkpatch may be able to
+      mechanically convert to the typical style using --fix or --fix-inplace.
+
+./0000-cover-letter.patch has style problems, please review.
+
+NOTE: If any of the errors are false positives, please report
+      them to the maintainer, see CHECKPATCH in MAINTAINERS.
+
+Below 1 patches may have problems
+ - ./0000-cover-letter.patch
+
+would you review recipients of formatted patches?
+(hint: you can do this manually via 'hkml patch recipients')
+[Y/n] y
+Common recipients:
+  To: Andrew Morton <akpm@linux-foundation.org>
+  Cc: SeongJae Park <sj@kernel.org>
+  Cc: damon@lists.linux.dev
+  Cc: linux-kernel@vger.kernel.org
+  Cc: linux-mm@kvack.org
+Additional recipients for "[PATCH 00/10] *** SUBJECT HERE ***"
+  Cc: Jonathan Corbet <corbet@lwn.net>
+  Cc: linux-doc@vger.kernel.org
+Additional recipients for "[PATCH 07/10] Docs/mm/damon/design: document pass/block filters behaviors"
+  Cc: Jonathan Corbet <corbet@lwn.net>
+  Cc: linux-doc@vger.kernel.org
+Additional recipients for "[PATCH 09/10] Docs/admin-guide/mm/damon/usage: omit DAMOS filter details in favor of design doc"
+  Cc: Jonathan Corbet <corbet@lwn.net>
+  Cc: linux-doc@vger.kernel.org
+Additional recipients for "[PATCH 10/10] Docs/admin-guide/mm/damon/usage: document DAMOS filter 'pass' sysfs file"
+  Cc: Jonathan Corbet <corbet@lwn.net>
+  Cc: linux-doc@vger.kernel.org
+$
+```
