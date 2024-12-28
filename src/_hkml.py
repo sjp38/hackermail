@@ -383,8 +383,8 @@ def mbox_body_decoded(message):
 
 def mbox_message_to_str(message):
     strs = []
-    for key in message:
-        strs.append('%s: %s' % (key, message[key]))
+    for key, value in message.items():
+        strs.append('%s: %s' % (key, value))
     strs.append('')
     strs.append(mbox_body_decoded(message))
     return '\n'.join(strs)
