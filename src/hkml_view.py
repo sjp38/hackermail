@@ -492,7 +492,9 @@ def view(text, data, view_type):
             slist = e.args[1]
         else:
             raise e
-    print('\n'.join(slist.last_drawn))
+    # the view was well finished.
+    if slist is not None:
+        print('\n'.join(slist.last_drawn))
 
 def gen_view_mails_list(generator):
     view('', generator, 'gen_mails_list')
