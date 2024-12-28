@@ -223,7 +223,11 @@ def review_patches(args):
     patch_files = args.patch_files
     for patch_file in patch_files:
         patch_mail = _hkml.read_mbox_file(patch_file)[0]
-        print(hkml_open.mail_display_str(patch_mail, valid_mbox=True, recipients_per_line=True))
+        print(patch_file)
+        print('Subject:', patch_mail.subject)
+        print('To:', patch_mail.get_field('to'))
+        print('Cc:', patch_mail.get_field('cc'))
+        print()
 
 def main(args):
     if args.action == 'format':
