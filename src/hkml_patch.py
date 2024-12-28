@@ -10,6 +10,12 @@ import hkml_list
 import hkml_open
 import hkml_patch_format
 
+def rm_tmp_patch_dir(patch_files):
+    dirname = os.path.dirname(patch_files[-1])
+    for patch_file in patch_files:
+        os.remove(patch_file)
+    os.rmdir(dirname)
+
 def check_patches(checker, patch_files, patch_mails, first_patch_is_cv):
     if checker is None:
         checkpatch = os.path.join('scripts', 'checkpatch.pl')
@@ -179,12 +185,6 @@ def write_patch_mails(patch_mails):
                 mail, head_columns=None, valid_mbox=True))
         files.append(file_name)
     return files, None
-
-def rm_tmp_patch_dir(patch_files):
-    dirname = os.path.dirname(patch_files[-1])
-    for patch_file in patch_files:
-        os.remove(patch_file)
-    os.rmdir(dirname)
 
 def apply_action_to_mails(mail, args):
     err_to_return = None
