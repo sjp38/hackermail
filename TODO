@@ -15,6 +15,5 @@
 - Support custom list format, like 'damo report access --format_region'
   - Or, just remove the unnecessary mail index for non --stdout case?
 - Remember and restore --dim_old for cached list output
-- Support 'hkml open' with message id or lore link
 - Let interactive mails selection and menu for slected mails
 - Support patch handling of non-public mails

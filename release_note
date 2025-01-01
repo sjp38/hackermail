@@ -5,6 +5,8 @@ v1.2.4
 - hkml patch format: suggest to run/show checkpatch.pl output and recipients summary
 - hkml patch review: show common and additional recipients
 - Display mail subjects at the end of headers
+- hkml list: Show row number of the mail of the msgid when the list is made for
+  the msgid
 
 v1.2.3
 - More features for 'patch format'
