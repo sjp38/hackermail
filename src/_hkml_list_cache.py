@@ -164,6 +164,11 @@ def writeback_list_output_cache():
 def set_item(key, list_str, mail_idx_key_map):
     cache = get_mails_lists_cache()
     now_str = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
+    list_lines = list_str.split('\n')
+    if list_lines[0].startswith('# mail of the msgid is at row '):
+        new_nr = int(list_lines[0].split()[-1][:-1]) + 1
+        list_lines[0] = '# mail of the msgid is at row %d' % new_nr
+        list_str = '\n'.join(list_lines)
     cache[key] = {
             'output': '\n'.join(['# (cached output)', list_str]),
             'index_to_cache_key': mail_idx_key_map,
