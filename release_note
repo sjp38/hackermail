@@ -4,6 +4,7 @@ v1.2.4
 - Fix display effect no input handling crash
 - hkml patch format: suggest to run/show checkpatch.pl output and recipients summary
 - hkml patch review: show common and additional recipients
+- Display mail subjects at the end of headers
 
 v1.2.3
 - More features for 'patch format'
