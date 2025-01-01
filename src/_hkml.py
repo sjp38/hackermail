@@ -190,6 +190,9 @@ class Mail:
         if tag == 'subject' and self.subject:
             return self.subject
 
+        if tag == 'local-date' and self.date:
+            return '%s' % self.date
+
         if not tag in self.__fields:
             self.__parse_mbox()
 
