@@ -61,12 +61,13 @@ def mail_display_str(mail, head_columns=None, valid_mbox=False,
     if valid_mbox is True:
         lines.append('From hackermail Thu Jan  1 00:00:00 1970')
     if for_draft_continue is True:
-        head_fields = ['From', 'To', 'Cc', 'Subject', 'In-Reply-To']
+        head_fields = ['From', 'To', 'Cc', 'In-Reply-To']
     else:
         head_fields = ['From', 'To', 'Cc', 'Message-Id',
-                       'In-Reply-To', 'Date', 'Subject']
+                       'In-Reply-To', 'Date']
     if valid_mbox is False and for_draft_continue is False:
         head_fields.append('Local-Date')
+    head_fields.append('Subject')
     for head in head_fields:
         value = mail.get_field(head)
         if value:
