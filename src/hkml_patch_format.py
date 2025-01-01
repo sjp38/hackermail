@@ -49,7 +49,7 @@ def find_linux_patch_recipients(patch_file):
             cmd + [patch_file]).decode().strip().split('\n')
     recipients = [r for r in recipients if r != '']
     if is_kunit_patch(patch_file):
-        recipients += ['Brendan Higgins <brendanhiggins@google.com>',
+        recipients += ['Brendan Higgins <brendan.higgins@linux.dev>',
                'David Gow <davidgow@google.com>',
                'kunit-dev@googlegroups.com',
                'linux-kselftest@vger.kernel.org']
