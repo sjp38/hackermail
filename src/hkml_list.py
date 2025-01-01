@@ -893,6 +893,16 @@ def args_to_mails_list_data(args):
             mails_to_show, args.do_find_ancestors_from_cache,
             MailListFilter(args), MailListDecorator(args), None,
             runtime_profile, args.stat_only, args.stat_authors)
+    if args.source_type == ['msgid']:
+        for line_nr, mail in list_data.line_nr_mail_map.items():
+            # drop enclosing <>
+            mail_msgid = mail.get_field('message-id')[1:-1]
+            if mail_msgid in args.sources[0]:
+                list_data.text = '# mail of the msgid is at row %d.\n%s' % (
+                        line_nr + list_data.len_comments + 1, list_data.text)
+                list_data.len_comments += 1
+                break
+
     hkml_cache.writeback_mails()
     _hkml_list_cache.set_item(lists_cache_key, list_data.text,
                               list_data.mail_idx_key_map)
