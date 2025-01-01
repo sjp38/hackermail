@@ -63,8 +63,10 @@ def mail_display_str(mail, head_columns=None, valid_mbox=False,
     if for_draft_continue is True:
         head_fields = ['From', 'To', 'Cc', 'Subject', 'In-Reply-To']
     else:
-        head_fields = ['From', 'To', 'Cc', 'Subject', 'Message-Id',
-                       'In-Reply-To', 'Date']
+        head_fields = ['From', 'To', 'Cc', 'Message-Id',
+                       'In-Reply-To', 'Date', 'Subject']
+    if valid_mbox is False and for_draft_continue is False:
+        head_fields.append('Local-Date')
     for head in head_fields:
         value = mail.get_field(head)
         if value:
@@ -77,8 +79,6 @@ def mail_display_str(mail, head_columns=None, valid_mbox=False,
                 lines += hkml_list.wrap_line('%s:' % head, value, head_columns)
             else:
                 lines.append('%s: %s' % (head, value))
-    if valid_mbox is False and for_draft_continue is False:
-        lines.append('Local-Date: %s' % mail.date)
     lines.append('\n%s' % mail.get_field('body'))
     return '\n'.join(lines)
 
