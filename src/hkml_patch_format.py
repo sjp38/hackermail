@@ -162,8 +162,8 @@ def set_argparser(parser):
     parser.add_argument('--subject_prefix', metavar='<string>',
                         help='subject prefix')
     parser.add_argument('--to', metavar='<recipient>', nargs='+',
-                        default=[],
+                        default=[], action='extend',
                         help='To: recipients')
     parser.add_argument('--cc', metavar='<recipient>', nargs='+',
-                        default=[],
+                        default=[], action='extend',
                         help='Cc: recipients')
