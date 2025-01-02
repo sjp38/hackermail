@@ -154,17 +154,17 @@ def main(args):
 
 def set_argparser(parser):
     parser.add_argument('commits', metavar='<commits>',
-                               help='commits to convert to patch files')
+                        help='commits to convert to patch files')
     parser.add_argument(
             'output_dir', metavar='<dir>', default='./', nargs='?',
             help='directory to save formatted patch files')
     parser.add_argument('--rfc', action='store_true',
-                               help='mark as RFC patches')
+                        help='mark as RFC patches')
     parser.add_argument('--subject_prefix', metavar='<string>',
-                               help='subject prefix')
+                        help='subject prefix')
     parser.add_argument('--to', metavar='<recipient>', nargs='+',
-                               default=[],
-                               help='To: recipients')
+                        default=[],
+                        help='To: recipients')
     parser.add_argument('--cc', metavar='<recipient>', nargs='+',
-                               default=[],
-                               help='Cc: recipients')
+                        default=[],
+                        help='Cc: recipients')
