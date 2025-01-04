@@ -532,6 +532,11 @@ class MailsListData:
         self.comments_lines = lines[:len_comments]
         self.mail_lines = lines[len_comments:]
 
+    def append_comments(self, comments_lines):
+        self.comments_lines += comments_lines
+        self.len_comments += len(comments_lines)
+        self.text = '\n'.join(self.comments_lines + self.mail_lines)
+
 def mails_to_list_data(
         mails_to_show, do_find_ancestors_from_cache, mails_filter,
         list_decorator, show_thread_of, runtime_profile, stat_only,
