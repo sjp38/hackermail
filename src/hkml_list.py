@@ -901,9 +901,16 @@ def args_to_mails_list_data(args):
             # drop enclosing <>
             mail_msgid = mail.get_field('message-id')[1:-1]
             if mail_msgid in args.sources[0]:
-                list_data.text = '# mail of the msgid is at row %d.\n%s' % (
-                        line_nr + list_data.len_comments + 1, list_data.text)
-                list_data.len_comments += 1
+                lines = list_data.text.split('\n')
+                comments_lines = lines[:list_data.len_comments]
+                mails_lines = lines[list_data.len_comments:]
+                comments_lines += [
+                        '#',
+                        '# mail of the msgid is at row %d.' % (
+                            line_nr + list_data.len_comments + 2)
+                        ]
+                list_data.text = '\n'.join(comments_lines + mails_lines)
+                list_data.len_comments += 2
                 break
 
     hkml_cache.writeback_mails()
