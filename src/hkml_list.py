@@ -121,6 +121,9 @@ def find_ancestors_from_cache(mail, by_msgids, found_parents):
 def threads_of(mails, do_find_ancestors_from_cache=False):
     by_msgids = {}
     for mail in mails:
+        msgid = mail.get_field('message-id')
+        if msgid is None:
+            continue
         by_msgids[mail.get_field('message-id')] = mail
 
     if do_find_ancestors_from_cache:
