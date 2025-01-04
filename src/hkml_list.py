@@ -906,8 +906,10 @@ def args_to_mails_list_data(args):
                 mails_lines = lines[list_data.len_comments:]
                 comments_lines += [
                         '#',
-                        '# mail of the msgid is at row %d.' % (
-                            line_nr + list_data.len_comments + 2)
+                        '# mail of the msgid is at row %d (%s ...)' % (
+                            line_nr + list_data.len_comments + 2,
+                            lines[line_nr + list_data.len_comments][:45]
+                            )
                         ]
                 list_data.text = '\n'.join(comments_lines + mails_lines)
                 list_data.len_comments += 2

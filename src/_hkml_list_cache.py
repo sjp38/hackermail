@@ -172,8 +172,10 @@ def set_item(key, list_data):
     mails_lines = list_lines[list_data.len_comments:]
     if len(comments_lines) > 0:
         if comments_lines[-1].startswith('# mail of the msgid is at row '):
-            new_nr = int(comments_lines[-1].split()[-1][:-1]) + 1
-            comments_lines[-1] = '# mail of the msgid is at row %d' % new_nr
+            fields = comments_lines[-1].split()
+            new_nr = int(fields[8]) + 1
+            new_line = ' '.join(fields[:8] + ['%d' % new_nr] + fields[9:])
+            comments_lines[-1] = new_line
         list_str = '\n'.join(comments_lines + mails_lines)
     cache[key] = {
             'output': '\n'.join(['# (cached output)', list_str]),
