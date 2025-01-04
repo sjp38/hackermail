@@ -167,16 +167,16 @@ def set_item(key, list_data):
     cache = get_mails_lists_cache()
     now_str = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
 
-    list_lines = list_str.split('\n')
-    comments_lines = list_lines[:list_data.len_comments]
-    mails_lines = list_lines[list_data.len_comments:]
+    comments_lines = list_data.comments_lines
     if len(comments_lines) > 0:
         if comments_lines[-1].startswith('# mail of the msgid is at row '):
             fields = comments_lines[-1].split()
             new_nr = int(fields[8]) + 1
             new_line = ' '.join(fields[:8] + ['%d' % new_nr] + fields[9:])
-            comments_lines[-1] = new_line
+            comments_lines = comments_lines[:-1] + [new_line]
+        mails_lines = list_data.mail_lines
         list_str = '\n'.join(comments_lines + mails_lines)
+
     cache[key] = {
             'output': '\n'.join(['# (cached output)', list_str]),
             'index_to_cache_key': mail_idx_key_map,
