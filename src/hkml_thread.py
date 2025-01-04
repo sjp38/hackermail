@@ -49,7 +49,7 @@ def thread_str(mail_id, dont_use_internet, show_url):
             mails_to_show, do_find_ancestors_from_cache=False, mails_filter=None,
             list_decorator=list_decorator, show_thread_of=mail_id,
             runtime_profile=[], stat_only=False, stat_authors=False)
-    return list_data.text, list_data.mail_idx_key_map
+    return list_data
 
 def main(args):
     if args.mail_id is None:
@@ -60,8 +60,10 @@ def main(args):
                             mail_idx_key_map=mail_idx_key_map)
         return
 
-    to_show, mail_idx_key_map = thread_str(args.mail_id,
+    list_data = thread_str(args.mail_id,
             args.dont_use_internet, args.url)
+    to_show = list_data.text
+    mail_idx_key_map = list_data.mail_idx_key_map
     if args.dont_use_internet is False:
         hkml_cache.writeback_mails()
         _hkml_list_cache.set_item('thread_output', to_show, mail_idx_key_map)
