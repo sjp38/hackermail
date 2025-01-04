@@ -512,6 +512,8 @@ class MailsListData:
     text = None
     # number of comment lines for stat and runtime profile
     len_comments = None
+    comments_lines = None
+    mail_lines = None
     # line number of mail of the line map
     # line number starts from non-comment
     line_nr_mail_map = None
@@ -523,6 +525,12 @@ class MailsListData:
         self.len_comments = len_comments
         self.line_nr_mail_map = line_nr_mail_map
         self.mail_idx_key_map = mail_idx_key_map
+        if self.text is None:
+            lines = []
+        else:
+            lines = text.split('\n')
+        self.comments_lines = lines[:len_comments]
+        self.mail_lines = lines[len_comments:]
 
 def mails_to_list_data(
         mails_to_show, do_find_ancestors_from_cache, mails_filter,
