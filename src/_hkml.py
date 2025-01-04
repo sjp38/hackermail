@@ -272,13 +272,9 @@ class Mail:
                 except:
                     pass
 
-    def __parse_mbox(self):
-        if not self.mbox:
-            self.set_mbox()
-
+    def parse_mbox_header(self, parsed, mbox_lines):
+        # todo: use mailbox.Message.items()
         in_header = True
-        parsed = {}
-        mbox_lines = self.mbox.split('\n')
         for idx, line in enumerate(mbox_lines):
             if in_header:
                 if line and line[0] in [' ', '\t'] and key:
@@ -307,7 +303,16 @@ class Mail:
                     in_header = False
                 continue
             break
-        self.__parse_body(parsed, mbox_lines, idx)
+        return idx
+
+    def __parse_mbox(self):
+        if not self.mbox:
+            self.set_mbox()
+
+        parsed = {}
+        mbox_lines = self.mbox.split('\n')
+        body_start_idx = self.parse_mbox_header(parsed, mbox_lines)
+        self.__parse_body(parsed, mbox_lines, body_start_idx)
 
         # for lore-pasted string case
         if 'date' in parsed:
