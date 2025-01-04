@@ -250,6 +250,8 @@ def list_recipients(patch_files):
         print('  To: %s' % to)
     for cc in common_cc:
         print('  Cc: %s' % cc)
+    if len(common_to) + len(common_cc) == 0:
+        print('  No one')
     for patch_mail in patch_mails:
         exclusive_to = []
         exclusive_cc = []
