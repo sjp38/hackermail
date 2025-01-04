@@ -210,3 +210,8 @@ def set_argparser(parser):
                             'File of the main changes.',
                             'If this is given and you\'re on linux tree,',
                             'add maintainers of <file> as common Cc.']))
+    parser.epilog = ' '.join([
+        'If this is called on linux tree and a source file is given to',
+        '--to and/or --cc, get_maintainer.pl found maintainers of the file',
+        'are added as To or Cc, respectively.',
+        ])
