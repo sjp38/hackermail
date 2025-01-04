@@ -40,30 +40,28 @@ def is_kunit_patch(patch_file):
         return True
     return False
 
-def find_linux_patch_recipients(patch_file):
-    if not os.path.exists('./scripts/get_maintainer.pl'):
-        return []
+def linux_maintainers_of(patch_or_source_file):
     cmd = ['./scripts/get_maintainer.pl', '--nogit', '--nogit-fallback',
-           '--norolestats']
-    recipients = subprocess.check_output(
-            cmd + [patch_file]).decode().strip().split('\n')
-    recipients = [r for r in recipients if r != '']
-    if is_kunit_patch(patch_file):
-        recipients += ['Brendan Higgins <brendan.higgins@linux.dev>',
-               'David Gow <davidgow@google.com>',
-               'kunit-dev@googlegroups.com',
-               'linux-kselftest@vger.kernel.org']
-    return recipients
-
-def linux_maintainers_of(source_file):
-    cmd = ['./scripts/get_maintainer.pl', '--nogit', '--nogit-fallback',
-           '--norolestats', source_file]
+           '--norolestats', patch_or_source_file]
     try:
         recipients = subprocess.check_output(cmd).decode().strip().split('\n')
     except Exception as e:
         return None, '%s fail' % (' '.join(cmd))
 
     return [r for r in recipients if r != ''], None
+
+def find_linux_patch_recipients(patch_file):
+    if not os.path.exists('./scripts/get_maintainer.pl'):
+        return []
+    recipients, err = linux_maintainers_of(patch_file)
+    if err is not None:
+        return []
+    if is_kunit_patch(patch_file):
+        recipients += ['Brendan Higgins <brendan.higgins@linux.dev>',
+               'David Gow <davidgow@google.com>',
+               'kunit-dev@googlegroups.com',
+               'linux-kselftest@vger.kernel.org']
+    return recipients
 
 def add_patches_recipients(patch_files, to, cc, first_patch_is_cv,
                            on_linux_tree, main_change_file):
