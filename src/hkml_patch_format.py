@@ -22,7 +22,8 @@ def is_linux_tree(dir):
         # Linux' git-era.
         output = subprocess.check_output(
                 ['git', '-C', dir, 'log', '--pretty=%s',
-                 '1da177e4c3f41524e886b7f1b8a0c1fc7321cac2']).decode()
+                 '1da177e4c3f41524e886b7f1b8a0c1fc7321cac2'],
+                stderr=subprocess.DEVNULL).decode()
     except:
         return False
     return output.strip() == 'Linux-2.6.12-rc2'
