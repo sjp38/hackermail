@@ -63,8 +63,27 @@ def find_linux_patch_recipients(patch_file):
                'linux-kselftest@vger.kernel.org']
     return recipients, None
 
+def handle_special_recipients(recipients):
+    handled = []
+    for r in recipients:
+        if os.path.exists(r):
+            maintainers, err = linux_maintainers_of(r)
+            if err is None:
+                handled += maintainers
+            else:
+                return None, err
+        else:
+            handled.append(r)
+    return handled, None
+
 def add_patches_recipients(patch_files, to, cc, first_patch_is_cv,
                            on_linux_tree, main_change_file):
+    to, err = handle_special_recipients(to)
+    if err is not None:
+        return err
+    cc, err = handle_special_recipients(cc)
+    if err is not None:
+        return err
     if on_linux_tree and os.path.exists('./scripts/get_maintainer.pl'):
         print('get_maintainer.pl found.  add recipients using it.')
         if main_change_file is not None:
