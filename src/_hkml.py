@@ -386,7 +386,10 @@ def mbox_body_decoded(message):
     if len(charsets) == 0:
         return payload.decode()
     for charset in charsets:
-        payload = payload.decode(charset)
+        try:
+            payload = payload.decode(charset)
+        except:
+            payload = payload.decode('utf-8')
     return payload
 
 def mbox_message_to_str(message):
