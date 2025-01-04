@@ -144,8 +144,11 @@ def main(args):
     patch_files = subprocess.check_output(cmd).decode().strip().split('\n')
 
     on_linux_tree = is_linux_tree('./')
-    add_patches_recipients(patch_files, args.to, args.cc, add_cv,
+    err = add_patches_recipients(patch_files, args.to, args.cc, add_cv,
                            on_linux_tree, args.main_file)
+    if err is not None:
+        print('adding recipients fail (%s)' % err)
+        return -1
 
     if add_cv:
         add_base_commit_as_cv(patch_files[0], args.commits)
