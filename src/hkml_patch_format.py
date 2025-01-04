@@ -55,10 +55,25 @@ def find_linux_patch_recipients(patch_file):
                'linux-kselftest@vger.kernel.org']
     return recipients
 
+def linux_maintainers_of(source_file):
+    cmd = ['./scripts/get_maintainer.pl', '--nogit', '--nogit-fallback',
+           '--norolestats', source_file]
+    try:
+        recipients = subprocess.check_output(cmd).decode().strip().split('\n')
+    except Exception as e:
+        return None, '%s fail' % (' '.join(cmd))
+
+    return [r for r in recipients if r != ''], None
+
 def add_patches_recipients(patch_files, to, cc, first_patch_is_cv,
-                           on_linux_tree):
+                           on_linux_tree, main_change_file):
     if on_linux_tree and os.path.exists('./scripts/get_maintainer.pl'):
         print('get_maintainer.pl found.  add recipients using it.')
+        if main_change_file is not None:
+            recipients, err = linux_maintainers_of(main_change_file)
+            if err is not None:
+                return err
+            cc += recipients
 
     total_cc = [] + cc
     cc_for_patches = {}
@@ -132,7 +147,7 @@ def main(args):
 
     on_linux_tree = is_linux_tree('./')
     add_patches_recipients(patch_files, args.to, args.cc, add_cv,
-                           on_linux_tree)
+                           on_linux_tree, args.main_file)
 
     if add_cv:
         add_base_commit_as_cv(patch_files[0], args.commits)
@@ -167,3 +182,8 @@ def set_argparser(parser):
     parser.add_argument('--cc', metavar='<recipient>', nargs='+',
                         default=[], action='extend',
                         help='Cc: recipients')
+    parser.add_argument('--main_file', metavar='<file>',
+                        help=' '.join([
+                            'File of the main changes.',
+                            'If this is given and you\'re on linux tree,',
+                            'add maintainers of <file> as common Cc.']))
