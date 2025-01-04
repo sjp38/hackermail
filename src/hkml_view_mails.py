@@ -723,13 +723,13 @@ def get_mails_list_input_handlers():
             ]
 
 def after_input_handle_callback(slist):
-    mail_idx_key_map = slist.data['list_data'].mail_idx_key_map
+    list_data = slist.data['list_data']
+    mail_idx_key_map = list_data.mail_idx_key_map
     if mail_idx_key_map is None:
         return
     _, last_mail_idx_key_map = _hkml_list_cache.get_last_mails_list()
     if mail_idx_key_map != last_mail_idx_key_map:
-        _hkml_list_cache.set_item(
-                'thread_output', '\n'.join(slist.lines), mail_idx_key_map)
+        _hkml_list_cache.set_item('thread_output', list_data)
 
 def mails_display_effect_callback(slist, line_idx):
     if not 'mails_effects' in slist.data or slist.data['mails_effects'] is None:

@@ -907,8 +907,7 @@ def args_to_mails_list_data(args):
                 break
 
     hkml_cache.writeback_mails()
-    _hkml_list_cache.set_item(lists_cache_key, list_data.text,
-                              list_data.mail_idx_key_map)
+    _hkml_list_cache.set_item(lists_cache_key, list_data)
 
     return list_data, None
 

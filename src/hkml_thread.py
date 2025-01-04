@@ -66,7 +66,7 @@ def main(args):
     mail_idx_key_map = list_data.mail_idx_key_map
     if args.dont_use_internet is False:
         hkml_cache.writeback_mails()
-        _hkml_list_cache.set_item('thread_output', to_show, mail_idx_key_map)
+        _hkml_list_cache.set_item('thread_output', list_data)
     hkml_list.show_list(to_show, to_stdout=False, to_less=args.no_interactive,
                         mail_idx_key_map=mail_idx_key_map)
 
