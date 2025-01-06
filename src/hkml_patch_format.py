@@ -106,7 +106,7 @@ def add_patches_recipients(patch_files, to, cc, first_patch_is_cv,
         total_cc = sorted(list(set(total_cc)))
         cc_for_patches[patch_files[0]] = total_cc
 
-    if len(to) == 0 and len(cc) > 0:
+    if len(to) == 0 and len(total_cc) > 0:
         print('You did not set --to, and we will set below as Cc:')
         for idx, recipient in enumerate(total_cc):
             print('%d. %s' % (idx, recipient))
