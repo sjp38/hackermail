@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: GPL-2.0
 
 import os
+import shutil
 import subprocess
 import tempfile
 
@@ -68,7 +69,7 @@ def move_patches(patch_files, dest_dir):
     if dest_dir is not None:
         for patch_file in patch_files:
             basename = os.path.basename(patch_file)
-            os.rename(patch_file, os.path.join(dest_dir, basename))
+            shutil.move(patch_file, os.path.join(dest_dir, basename))
         os.rmdir(saved_dir)
         saved_dir = dest_dir
     print('\npatch files are saved at \'%s\'\n' % saved_dir)
