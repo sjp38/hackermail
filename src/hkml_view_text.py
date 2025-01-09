@@ -275,7 +275,7 @@ def menu_selections_for_mail():
                 'continue draft writing', menu_write_draft),
             hkml_view.CliSelection('manage tags', menu_manage_tags),
             hkml_view.CliSelection(
-                'hanlde as patches', menu_handle_patches),
+                'handle as patches', menu_handle_patches),
             ]
 
 def menu_selections(slist):
