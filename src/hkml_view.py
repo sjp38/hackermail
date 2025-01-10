@@ -472,7 +472,7 @@ def __view(stdscr, text_to_show, data, view_type):
         curses.init_color(10, 700, 700, 1000)
         curses.init_pair(6, 10, curses.COLOR_BLACK)
     else:
-        curses.init_pair(6, curses.COLOR_WHITE, curses.COLOR_BLACK)
+        curses.init_pair(6, curses.COLOR_BLUE, curses.COLOR_BLACK)
     original_color = curses.color_pair(6)
 
     if view_type in ['mail', 'text']:
