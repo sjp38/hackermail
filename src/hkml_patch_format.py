@@ -124,8 +124,7 @@ def add_patches_recipients(patch_files, to, cc, first_patch_is_cv,
         add_patch_recipients(patch_file, to, patch_cc)
 
 def add_base_commit_as_cv(patch_file, base_commit):
-    answer = input('May I add the base commit (%s) to the coverletter? [Y/n] '
-                   % base_commit)
+    answer = input('May I add the base commit to the coverletter? [Y/n] ')
     if answer.lower() == 'n':
         return
 
@@ -136,6 +135,29 @@ def add_base_commit_as_cv(patch_file, base_commit):
 
     subject = cv_pars[0]
     content = '\n\n'.join(cv_pars[1:-1]) # exclude signed-off-by
+
+    print('Ok, I will do below to the coverletter')
+    print('- replace "*** SUBJECT HERE ***" with')
+    print()
+    print('  %s' % subject)
+    print()
+    print('- replace "*** BLURB HERE ***" with')
+    content_lines = content.split('\n')
+    preview_lines = []
+    if len(content_lines) > 5:
+        preview_lines += content_lines[:2]
+        preview_lines.append('[...]')
+        preview_lines += content_lines[-2:]
+    else:
+        preview_lines = content_lines
+    print()
+    for l in preview_lines:
+        print('    %s' % l)
+    print()
+    answer = input('looks good? [Y/n] ')
+    if answer.lower() == 'n':
+        return
+
 
     with open(patch_file, 'r') as f:
         cv_orig_content = f.read()
