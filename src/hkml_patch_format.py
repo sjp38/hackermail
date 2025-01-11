@@ -217,7 +217,14 @@ def main(args):
     if answer.lower() != 'n':
         hkml_patch.list_recipients(patch_files)
 
-    answer = input("\nMay I 'git send-email' the patches? [y/N] ")
+    print("\nMay I sned the patches?  If you say yes, I will do below")
+    print()
+    print('    git send-email \\')
+    for patch_file in patch_files:
+        print('            %s \\' % patch_file)
+    print()
+    answer = input('Do it? [y/N] ')
+
     if answer.lower() == 'y':
         subprocess.call(['git', 'send-email'] + patch_files)
 
