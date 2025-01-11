@@ -903,7 +903,7 @@ May I add the base commit to the coverletter? [Y/n] y
 Ok, I will do below to the coverletter
 - replace "*** SUBJECT HERE ***" with
 
-  mm/damon: extend DAMOS filters for inclusion of target memory
+    mm/damon: extend DAMOS filters for inclusion of target memory
 
 - replace "*** BLURB HERE ***" with
 
