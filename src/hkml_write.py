@@ -117,13 +117,19 @@ def write_send_mail(draft_mail, subject, in_reply_to, to, cc, body, attach,
         exit(1)
     with open(tmp_path, 'r') as f:
         written_mail = f.read()
-        header = written_mail.split('\n\n')[0]
-        for line in header.split('\n'):
-            if line in [
-                    'To: /* write recipients here and REMOVE this comment */',
-                    'Cc: /* wrtite cc recipients here and REMOVE this comment */']:
-                print('recipients comments (%s) should be removed' % line)
-                exit(1)
+    pars = written_mail.split('\n\n')
+    header = pars[0]
+    header_lines = []
+    for line in header.split('\n'):
+        if line in [
+                'To: /* write recipients here and REMOVE this comment */',
+                'Cc: /* wrtite cc recipients here and REMOVE this comment */']:
+            continue
+        header_lines.append(line)
+    header = '\n'.join(header_lines)
+    written_mail = '\n\n'.join([header] + pars[1:])
+    with open(tmp_path, 'w') as f:
+        f.write(written_mail)
 
     orig_draft_subject = None
     if draft_mail:
