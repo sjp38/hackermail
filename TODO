@@ -17,5 +17,4 @@
 - Remember and restore --dim_old for cached list output
 - Let interactive mails selection and menu for slected mails
 - Support patch handling of non-public mails
-- Handle '/* */' line on recipients header
 - Support sending patch files
