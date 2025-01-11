@@ -246,5 +246,5 @@ def set_argparser(parser):
     parser.epilog = ' '.join([
         'If this is called on linux tree and a source file is given to',
         '--to and/or --cc, get_maintainer.pl found maintainers of the file',
-        'are added as To or Cc, respectively.',
+        'are added as To and/or Cc, respectively.',
         ])
