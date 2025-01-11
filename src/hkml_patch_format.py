@@ -217,6 +217,10 @@ def main(args):
     if answer.lower() != 'n':
         hkml_patch.list_recipients(patch_files)
 
+    answer = input("\nMay I 'git send-email' the patches? [y/N] ")
+    if answer.lower() == 'y':
+        subprocess.call(['git', 'send-email'] + patch_files)
+
 def set_argparser(parser):
     parser.add_argument('commits', metavar='<commits>',
                         help='commits to convert to patch files')
