@@ -154,7 +154,11 @@ def main(args):
         add_cv = True
     else:
         add_cv = False
-    cmd = ['git', 'format-patch', args.commits, '-o', args.output_dir]
+
+    base_commit = subprocess.check_output(
+            ['git', 'rev-parse', '%s^' % commit_ids[-1]]).decode().strip()
+    cmd = ['git', 'format-patch', args.commits, '--base', base_commit,
+           '-o', args.output_dir]
     if add_cv:
         cmd.append('--cover-letter')
     if args.subject_prefix is not None:
