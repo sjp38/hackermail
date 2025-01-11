@@ -188,6 +188,9 @@ def main(args):
     elif args.rfc is True:
         cmd.append('--rfc')
     patch_files = subprocess.check_output(cmd).decode().strip().split('\n')
+    print('made below patch files')
+    print('\n'.join(patch_files))
+    print()
 
     on_linux_tree = is_linux_tree('./')
     err = add_patches_recipients(patch_files, args.to, args.cc, add_cv,
