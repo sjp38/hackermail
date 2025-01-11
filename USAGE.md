@@ -813,7 +813,10 @@ Formatting Patches
 ------------------
 
 `hkml patch format` receives git commits range, and formats those into patch
-files that can be submitted using `git send-email`.
+files that can be submitted using `git send-email`.  It uses `git format-patch`
+internally, and do below additional works.
+
+### Cover Letter Edit
 
 If it is for multiple commits, it creates a cover letter.  Keeping the cover
 letter draft as a commit message of a fake or empty commit before the first
@@ -834,15 +837,57 @@ For example, it would look like below:
 
     Signed-off-by: SeongJae Park <sj@kernel.org>
 
-If it is called on linux tree, it runs `get_maintainer.pl` and adds the
-appropriate recipients to the patch files.  In the linux tree use case, it also
-runs `checkpatch.pl` to resulting patch files.  Finally, it lists recipients
-that set for each patch file.  The `checkpatch.pl` run and recipients listing
-are optional.  An example output is like below:
+### Recipients Fillup
+
+If it is called on linux tree and `get_maintainer.pl` file exists, it runs the
+script to find appropriate recipients for each generated patch file, and add
+them as cc to the patch file.  For the cover letter, all the recipients for any
+of the patch files are added as cc.  The user can set recipients for all
+patches via `--to` and `--cc` options, like `git format-patch`.  If a source
+file path is passed to the options, `hkml` finds appropriate recipients for the
+source file using `get_maintainer.pl` and add them as cc.
+
+If user didn't set 'To:' recipients, `hkml` shows automatically found and/or
+manually user-added cc recipients and let the user picks one of them to be set
+as 'To:' recipient (maybe the maintainer of the tree that the patch aim to
+landed on) for all patches.
+
+### Checker Run
+
+In the linux tree use case, it also runs `checkpatch.pl` to resulting patch
+files, and show found problems if the user wants.
+
+### Recipients Review
+
+After doing the above works, if the user wants, `hkml` lists recipients of the
+generated patch files in a format that easy to review for multiple patches.
+
+### Sending Patches
+
+If the user wants, `hkml` can further send the patch files using `git
+send-email` command.
+
+### Example Output
+
+Below is an example usage and output of `hkml patch format`.
 
 ```
 $ hkml patch format fa09068a354b..4b75ad374d3f
+made below patch files
+./0000-cover-letter.patch
+./0001-mm-damon-fixup-damos_filter-kernel-doc.patch
+./0002-mm-damon-core-add-damos_filter-pass-field.patch
+./0003-mm-damon-core-support-damos_filter-pass.patch
+./0004-mm-damon-paddr-support-damos_filter-pass.patch
+./0005-mm-damon-add-pass-argument-to-damos_new_filter.patch
+./0006-mm-damon-sysfs-schemes-add-a-file-for-setting-damos_.patch
+./0007-Docs-mm-damon-design-document-pass-block-filters-beh.patch
+./0008-Docs-ABI-damon-document-DAMOS-filter-pass-sysfs-file.patch
+./0009-Docs-admin-guide-mm-damon-usage-omit-DAMOS-filter-de.patch
+./0010-Docs-admin-guide-mm-damon-usage-document-DAMOS-filte.patch
+
 get_maintainer.pl found.  add recipients using it.
+
 You did not set --to, and we will set below as Cc:
 0. Andrew Morton <akpm@linux-foundation.org>
 1. Jonathan Corbet <corbet@lwn.net>
@@ -853,12 +898,28 @@ You did not set --to, and we will set below as Cc:
 6. linux-mm@kvack.org
 Shall I set one of above as To: for all mails? [N/index] 0
 
+May I add the base commit to the coverletter? [Y/n] y
+Ok, I will do below to the coverletter
+- replace "*** SUBJECT HERE ***" with
+
+  mm/damon: extend DAMOS filters for inclusion of target memory
+
+- replace "*** BLURB HERE ***" with
+
+    DAMOS fitlers are exclusive filters.  It only excludes memory of
+    specific types from the DAMOS action targets.  This has below problems.
+    [...]
+    (https://lore.kernel.org/20241226221445.78433-1-sj@kernel.org)
+    - Fix encoding issue on the last patch
+
+looks good? [Y/n] y
+
 checkpatch.pl found.  shall I run it?
 (hint: you can do this manually via 'hkml patch check')
 [Y/n] y
-[!!!] [PATCH 00/10] *** SUBJECT HERE *** complained by ./scripts/checkpatch.pl (Command '['./scripts/checkpatch.pl', './0000-cover-letter.patch']' returned non-zero exit status 1.)
+[!!!] [PATCH 00/10] mm/damon: extend DAMOS filters for inclusion of target memory complained by ./scripts/checkpatch.pl (Command '['./scripts/checkpatch.pl', './0000-cover-letter.patch']' returned non-zero exit status 1.)
 WARNING: Prefer a maximum 75 chars per line (possible unwrapped commit description?)
-#52:
+#43:
 [2] https://git.kernel.org/sj/damo/c/b6a722c85ff91e5abe9dd47135e300df243da056
 
 total: 0 errors, 1 warnings, 0 lines checked
@@ -883,7 +944,7 @@ Common recipients:
   Cc: damon@lists.linux.dev
   Cc: linux-kernel@vger.kernel.org
   Cc: linux-mm@kvack.org
-Additional recipients for "[PATCH 00/10] *** SUBJECT HERE ***"
+Additional recipients for "[PATCH 00/10] mm/damon: extend DAMOS filters for inclusion of target memory"
   Cc: Jonathan Corbet <corbet@lwn.net>
   Cc: linux-doc@vger.kernel.org
 Additional recipients for "[PATCH 07/10] Docs/mm/damon/design: document pass/block filters behaviors"
@@ -895,5 +956,22 @@ Additional recipients for "[PATCH 09/10] Docs/admin-guide/mm/damon/usage: omit D
 Additional recipients for "[PATCH 10/10] Docs/admin-guide/mm/damon/usage: document DAMOS filter 'pass' sysfs file"
   Cc: Jonathan Corbet <corbet@lwn.net>
   Cc: linux-doc@vger.kernel.org
+
+May I sned the patches?  If you say yes, I will do below
+
+    git send-email \
+            ./0000-cover-letter.patch \
+            ./0001-mm-damon-fixup-damos_filter-kernel-doc.patch \
+            ./0002-mm-damon-core-add-damos_filter-pass-field.patch \
+            ./0003-mm-damon-core-support-damos_filter-pass.patch \
+            ./0004-mm-damon-paddr-support-damos_filter-pass.patch \
+            ./0005-mm-damon-add-pass-argument-to-damos_new_filter.patch \
+            ./0006-mm-damon-sysfs-schemes-add-a-file-for-setting-damos_.patch \
+            ./0007-Docs-mm-damon-design-document-pass-block-filters-beh.patch \
+            ./0008-Docs-ABI-damon-document-DAMOS-filter-pass-sysfs-file.patch \
+            ./0009-Docs-admin-guide-mm-damon-usage-omit-DAMOS-filter-de.patch \
+            ./0010-Docs-admin-guide-mm-damon-usage-document-DAMOS-filte.patch \
+
+Do it? [y/N] n
 $
 ```
