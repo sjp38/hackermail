@@ -827,7 +827,7 @@ cover letter subject, then one blank line, and body of the cover letter.  The
 subject of the commit and last signed-off-by like tags paragraph are ignored.
 For example, it would look like below:
 
-    git log cv_commit --pretty=%B
+    $ git log cv_commit --pretty=%B
     ==== Marking start of the work (hkml patch format will ignore this) ====
 
     hkml_patch_format: support new feature X
@@ -836,6 +836,7 @@ For example, it would look like below:
     long description of the patch series line 2.
 
     Signed-off-by: SeongJae Park <sj@kernel.org>
+    $
 
 ### Recipients Fillup
 
