@@ -33,11 +33,11 @@ List recent mails in Linux kernel DAMON subsystem mailing list
 
     $ ./hkml list damon --fetch
 
-For the first time, the command will ask you if you want to do initialize the
+For the first time, the command will ask you if you want to initialize the
 setup, with some questions.  For this specific case (listing mails of a Linux
-kernel subsystem mailing list), select default options.  Then, it will open an
-interactive list of the mails.  From it, users can do actions for mails
-including below.
+kernel subsystem mailing list), you can simply select default options.  Then,
+it will open an interactive list of the mails.  From it, users can do actions
+for mails including below.
 
 - Opening a mail
 - Listing complete thread of a mail
