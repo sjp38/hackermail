@@ -144,9 +144,12 @@ def add_base_commit_as_cv(patch_file, commits):
         f.write(cv_content)
 
 def main(args):
-    commit_ids = subprocess.check_output(
-            ['git', 'log', '--pretty=%h', args.commits]
-            ).decode().strip().split('\n')
+    commit_ids = [hash for hash in subprocess.check_output(
+        ['git', 'log', '--pretty=%h', args.commits]
+        ).decode().strip().split('\n') if hash != '']
+    if len(commit_ids) == 0:
+        print('no commit to format patch')
+        return 1
     if len(commit_ids) > 1:
         add_cv = True
     else:
