@@ -19,5 +19,4 @@
 - Support patch handling of non-public mails
 - Handle '/* */' line on recipients header
 - Support sending patch files
-- Handle `hkml patch format HEAD..HEAD` gracefully
 - Support `hkml patch format -n`
