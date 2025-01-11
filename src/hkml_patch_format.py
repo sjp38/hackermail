@@ -107,7 +107,7 @@ def add_patches_recipients(patch_files, to, cc, first_patch_is_cv,
         cc_for_patches[patch_files[0]] = total_cc
 
     if len(to) == 0 and len(total_cc) > 0:
-        print('You did not set --to, and we will set below as Cc:')
+        print('\nYou did not set --to, and we will set below as Cc:')
         for idx, recipient in enumerate(total_cc):
             print('%d. %s' % (idx, recipient))
         answer = input(
@@ -124,7 +124,7 @@ def add_patches_recipients(patch_files, to, cc, first_patch_is_cv,
         add_patch_recipients(patch_file, to, patch_cc)
 
 def add_base_commit_as_cv(patch_file, base_commit):
-    answer = input('May I add the base commit to the coverletter? [Y/n] ')
+    answer = input('\nMay I add the base commit to the coverletter? [Y/n] ')
     if answer.lower() == 'n':
         return
 
@@ -157,7 +157,6 @@ def add_base_commit_as_cv(patch_file, base_commit):
     answer = input('looks good? [Y/n] ')
     if answer.lower() == 'n':
         return
-
 
     with open(patch_file, 'r') as f:
         cv_orig_content = f.read()
@@ -201,7 +200,7 @@ def main(args):
         add_base_commit_as_cv(patch_files[0], base_commit)
 
     if on_linux_tree and os.path.exists('./scripts/checkpatch.pl'):
-        print('checkpatch.pl found.  shall I run it?')
+        print('\ncheckpatch.pl found.  shall I run it?')
         print('(hint: you can do this manually via \'hkml patch check\')')
         answer = input('[Y/n] ')
         if answer.lower() != 'n':
@@ -209,7 +208,7 @@ def main(args):
                     './scripts/checkpatch.pl', patch_files, None,
                     rm_patches=False)
 
-    print('would you review recipients of formatted patches?')
+    print('\nwould you review recipients of formatted patches?')
     print('(hint: you can do this manually via \'hkml patch recipients\')')
     answer = input('[Y/n] ')
     if answer.lower() != 'n':
