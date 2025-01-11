@@ -123,8 +123,7 @@ def add_patches_recipients(patch_files, to, cc, first_patch_is_cv,
                 patch_cc.remove(t)
         add_patch_recipients(patch_file, to, patch_cc)
 
-def add_base_commit_as_cv(patch_file, commits):
-    base_commit = commits.split('..')[0]
+def add_base_commit_as_cv(patch_file, base_commit):
     cv_draft = '\n'.join([
         '',
         "*** below is the commit message of %s." % base_commit,
@@ -175,7 +174,7 @@ def main(args):
         return -1
 
     if add_cv:
-        add_base_commit_as_cv(patch_files[0], args.commits)
+        add_base_commit_as_cv(patch_files[0], base_commit)
 
     if on_linux_tree and os.path.exists('./scripts/checkpatch.pl'):
         print('checkpatch.pl found.  shall I run it?')
