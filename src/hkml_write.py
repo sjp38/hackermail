@@ -52,9 +52,9 @@ def format_mbox(subject, in_reply_to, to, cc, body, from_, draft_mail,
     if not subject:
         subject = '/* write subject here */'
     if not to:
-        to = ['/* write recipients here */']
+        to = ['/* write recipients here and REMOVE this comment */']
     if not cc:
-        cc = ['/* wrtite cc recipients here */']
+        cc = ['/* wrtite cc recipients here and REMOVE this comment */']
     if from_ is None:
         from_, err = get_git_config('sendemail.from')
         if err is not None:
