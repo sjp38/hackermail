@@ -813,12 +813,32 @@ Formatting Patches
 ------------------
 
 `hkml patch format` receives git commits range, and formats those into patch
-files that can be submitted using `git send-email`.  If it is called on linux
-tree, it runs `get_maintainer.pl` and adds the appropriate recipients to the
-patch files.  In the linux tree use case, it also runs `checkpatch.pl` to
-resulting patch files.  Finally, it lists recipients that set for each patch
-file.  The `checkpatch.pl` run and recipients listing are optional.  An example
-output is like below:
+files that can be submitted using `git send-email`.
+
+If it is for multiple commits, it creates a cover letter.  Keeping the cover
+letter draft as a commit message of a fake or empty commit before the first
+commit is a workflow of some programmers.  `hkml patch format` hence helps
+filling the cover letter with the fake commit's message if the user wants.  In
+the case, the cover letter draft commit's commit message should starts with the
+cover letter subject, then one blank line, and body of the cover letter.  The
+subject of the commit and last signed-off-by like tags paragraph are ignored.
+For example, it would look like below:
+
+    git log cv_commit --pretty=%B
+    ==== Marking start of the work (hkml patch format will ignore this) ====
+
+    hkml_patch_format: support new feature X
+
+    long description of the patch series.
+    long description of the patch series line 2.
+
+    Signed-off-by: SeongJae Park <sj@kernel.org>
+
+If it is called on linux tree, it runs `get_maintainer.pl` and adds the
+appropriate recipients to the patch files.  In the linux tree use case, it also
+runs `checkpatch.pl` to resulting patch files.  Finally, it lists recipients
+that set for each patch file.  The `checkpatch.pl` run and recipients listing
+are optional.  An example output is like below:
 
 ```
 $ hkml patch format fa09068a354b..4b75ad374d3f
