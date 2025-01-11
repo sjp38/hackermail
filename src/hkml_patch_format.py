@@ -139,7 +139,7 @@ def add_base_commit_as_cv(patch_file, base_commit):
     print('Ok, I will do below to the coverletter')
     print('- replace "*** SUBJECT HERE ***" with')
     print()
-    print('  %s' % subject)
+    print('    %s' % subject)
     print()
     print('- replace "*** BLURB HERE ***" with')
     content_lines = content.split('\n')
