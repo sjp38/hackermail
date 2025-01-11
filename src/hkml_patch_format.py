@@ -156,6 +156,7 @@ def add_base_commit_as_cv(patch_file, base_commit):
     print()
     answer = input('looks good? [Y/n] ')
     if answer.lower() == 'n':
+        print('ok, I will keep it (%s) untouched' % patch_file)
         return
 
     with open(patch_file, 'r') as f:
