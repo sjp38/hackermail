@@ -17,4 +17,3 @@
 - Remember and restore --dim_old for cached list output
 - Let interactive mails selection and menu for slected mails
 - Support patch handling of non-public mails
-- Support sending patch files
