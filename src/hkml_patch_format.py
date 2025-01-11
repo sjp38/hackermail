@@ -124,6 +124,10 @@ def add_patches_recipients(patch_files, to, cc, first_patch_is_cv,
         add_patch_recipients(patch_file, to, patch_cc)
 
 def add_base_commit_as_cv(patch_file, base_commit):
+    answer = input('May I add the base commit (%s) to the coverletter? [Y/n] '
+                   % base_commit)
+    if answer.lower() == 'n':
+        return
     cv_draft = '\n'.join([
         '',
         "*** below is the commit message of %s." % base_commit,
