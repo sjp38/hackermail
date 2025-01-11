@@ -1,5 +1,12 @@
 This file contains major changes in each version since v1.0.0
 
+v1.2.6
+- hkml patch format: fill up cover letter to be ready to be posted
+- hkml patch format: provide preview of automatically filled cover letter
+- hkml patch format: support -<N> commit range input, e.g., hkml patch format -5
+- hkml write: remove unremoved recipients draft comments before sending
+- hkml patch format: support sending the patches directly
+
 v1.2.5
 - hkml patch format: support source file on --to and --cc
 
