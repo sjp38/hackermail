@@ -115,6 +115,16 @@ def write_send_mail(draft_mail, subject, in_reply_to, to, cc, body, attach,
     if subprocess.call(['vim', tmp_path]) != 0:
         print('writing mail with editor failed')
         exit(1)
+    with open(tmp_path, 'r') as f:
+        written_mail = f.read()
+        header = written_mail.split('\n\n')[0]
+        for line in header.split('\n'):
+            if line in [
+                    'To: /* write recipients here and REMOVE this comment */',
+                    'Cc: /* wrtite cc recipients here and REMOVE this comment */']:
+                print('recipients comments (%s) should be removed' % line)
+                exit(1)
+
     orig_draft_subject = None
     if draft_mail:
         orig_draft_subject = draft_mail.subject
