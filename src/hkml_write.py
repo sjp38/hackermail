@@ -100,21 +100,7 @@ def format_mbox(subject, in_reply_to, to, cc, body, from_, draft_mail,
                 lines.append('\n%s\n%s' % (marker_line, f.read()))
     return '\n'.join(lines)
 
-def write_send_mail(draft_mail, subject, in_reply_to, to, cc, body, attach,
-                    format_only):
-    mbox = format_mbox(subject, in_reply_to, to, cc, body, None, draft_mail,
-                       attach)
-
-    if format_only:
-        print(mbox)
-        return
-
-    fd, tmp_path = tempfile.mkstemp(prefix='hkml_mail_')
-    with open(tmp_path, 'w') as f:
-        f.write(mbox)
-    if subprocess.call(['vim', tmp_path]) != 0:
-        print('writing mail with editor failed')
-        exit(1)
+def handle_user_edit_mistakes(tmp_path):
     with open(tmp_path, 'r') as f:
         written_mail = f.read()
     pars = written_mail.split('\n\n')
@@ -130,6 +116,24 @@ def write_send_mail(draft_mail, subject, in_reply_to, to, cc, body, attach,
     written_mail = '\n\n'.join([header] + pars[1:])
     with open(tmp_path, 'w') as f:
         f.write(written_mail)
+
+def write_send_mail(draft_mail, subject, in_reply_to, to, cc, body, attach,
+                    format_only):
+    mbox = format_mbox(subject, in_reply_to, to, cc, body, None, draft_mail,
+                       attach)
+
+    if format_only:
+        print(mbox)
+        return
+
+    fd, tmp_path = tempfile.mkstemp(prefix='hkml_mail_')
+    with open(tmp_path, 'w') as f:
+        f.write(mbox)
+    if subprocess.call(['vim', tmp_path]) != 0:
+        print('writing mail with editor failed')
+        exit(1)
+
+    handle_user_edit_mistakes(tmp_path)
 
     orig_draft_subject = None
     if draft_mail:
