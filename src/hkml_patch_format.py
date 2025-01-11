@@ -128,21 +128,19 @@ def add_base_commit_as_cv(patch_file, base_commit):
                    % base_commit)
     if answer.lower() == 'n':
         return
-    cv_draft = '\n'.join([
-        '',
-        "*** below is the commit message of %s." % base_commit,
-        "*** 'hkml patch format' assumes it as a draft of this",
-        "*** cover letter, and hence pasted it here.",
-        '***',
-        '*** if this only bothers you, report the issue.',
-        '',
-        subprocess.check_output(
-            ['git', 'log', '-1', '--pretty=%b', base_commit]).decode()])
+
+    cv_content = subprocess.check_output(
+            ['git', 'log', '-1', '--pretty=%b', base_commit]).decode().strip()
+    # paragraphs
+    cv_pars = cv_content.split('\n\n')
+
+    subject = cv_pars[0]
+    content = '\n\n'.join(cv_pars[1:-1]) # exclude signed-off-by
+
     with open(patch_file, 'r') as f:
         cv_orig_content = f.read()
-    cv_orig_paragraphs = cv_orig_content.split('\n\n')
-    cv_content = '\n\n'.join(
-            [cv_orig_paragraphs[0], cv_draft] + cv_orig_paragraphs[1:])
+    cv_content = cv_orig_content.replace('*** SUBJECT HERE ***', subject)
+    cv_content = cv_content.replace('*** BLURB HERE ***', content)
     with open(patch_file, 'w') as f:
         f.write(cv_content)
 
