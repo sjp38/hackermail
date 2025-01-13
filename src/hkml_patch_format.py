@@ -218,7 +218,7 @@ def main(args):
     if answer.lower() != 'n':
         hkml_patch.list_recipients(patch_files)
 
-    print("\nMay I sned the patches?  If you say yes, I will do below")
+    print("\nMay I send the patches?  If you say yes, I will do below")
     print()
     print('    git send-email \\')
     for patch_file in patch_files:
