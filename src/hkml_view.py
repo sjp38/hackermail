@@ -120,6 +120,7 @@ class ScrollableList:
     parent_list = None
     display_effect_callback = None
     color_callback = None
+    enable_highlight = None
 
     # constants for display_effect_callback return values
     effect_normal = curses.A_NORMAL
@@ -151,6 +152,7 @@ class ScrollableList:
                 handled_inputs[c] = True
         self.focus_col = 0
         self.longest_line_len = sorted([len(line) for line in lines])[-1]
+        self.search_keyword = '['
 
     def __draw(self):
         self.last_drawn = []
@@ -198,7 +200,8 @@ class ScrollableList:
             self.screen.addstr(row, 0, line, color | color_attrib)
 
             keyword = self.search_keyword
-            if keyword is not None and keyword in line:
+            if self.enable_highlight and keyword is not None and \
+                    keyword in line:
                 search_from = 0
                 while True:
                     idx = line[search_from:].find(keyword)
@@ -331,6 +334,15 @@ def search_keyword(c, slist):
         slist.search_keyword = answer
 
     question.ask_input(slist, handle_fn=handle_fn)
+
+    if slist.enable_highlight is None:
+        question = 'Would you like to enable search highlighting? [Y/n] '
+        answer = input(question)
+        if answer == 'n':
+            slist.enable_highlight = False
+        else:
+            slist.enable_highlight = True
+
     shell_mode_end(slist)
 
 def focus_next_keyword(c, slist):
