@@ -112,7 +112,7 @@ class ScrollableList:
     focus_row = None
     focus_col = None
     input_handlers = None
-    highlight_keyword = None
+    search_keyword = None
     last_drawn = None
     longest_line_len = None
     after_input_handle_callback = None
@@ -197,7 +197,7 @@ class ScrollableList:
 
             self.screen.addstr(row, 0, line, color | color_attrib)
 
-            keyword = self.highlight_keyword
+            keyword = self.search_keyword
             if keyword is not None and keyword in line:
                 search_from = 0
                 while True:
@@ -322,27 +322,27 @@ def focus_set(c, slist):
     question.ask_input(slist, handle_fn=handle_fn)
     shell_mode_end(slist)
 
-def highlight_keyword(c, slist):
+def search_keyword(c, slist):
     shell_mode_start(slist)
 
-    question = CliQuestion('Enter keyword to highlight')
+    question = CliQuestion('Enter keyword to search')
 
     def handle_fn(slist, answer):
-        slist.highlight_keyword = answer
+        slist.search_keyword = answer
 
     question.ask_input(slist, handle_fn=handle_fn)
     shell_mode_end(slist)
 
 def focus_next_keyword(c, slist):
     for idx, line in enumerate(slist.lines[slist.focus_row + 1:]):
-        if slist.highlight_keyword in line:
+        if slist.search_keyword in line:
             slist.focus_row += idx + 1
             return
     slist.toast('no more keyword found')
 
 def focus_prev_keyword(c, slist):
     for idx in range(slist.focus_row - 1, 0, -1):
-        if slist.highlight_keyword in slist.lines[idx]:
+        if slist.search_keyword in slist.lines[idx]:
             slist.focus_row = idx
             return
     slist.toast('no prev keyword found')
@@ -371,11 +371,11 @@ def scrollable_list_default_handlers():
             InputHandler(['k', 'key_up'], focus_up, 'focus up'),
             InputHandler(['K'], focus_up_half_page, 'focus up half page'),
             InputHandler([':'], focus_set, 'focus specific line'),
-            InputHandler(['/'], highlight_keyword, 'highlight keyword'),
+            InputHandler(['/'], search_keyword, 'search keyword'),
             InputHandler(['n'], focus_next_keyword,
-                         'focus the row of next highlighted keyword'),
+                         'focus the row of next searched keyword'),
             InputHandler(['N'], focus_prev_keyword,
-                         'focus the row of prev highlighted keyword'),
+                         'focus the row of prev searched keyword'),
             InputHandler(['h', 'key_left'], focus_left, 'focus left'),
             InputHandler(['l', 'key_right'], focus_right, 'focus right'),
             InputHandler(['q'], quit_list, 'quit current screen'),

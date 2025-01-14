@@ -229,7 +229,7 @@ selected, respectively.
 and `end` keyword could also be used, to specify the start and end line of the
 content.
 
-`/` key starts keyword highlighting.  `n` and `N` keys move the focus to
+`/` key starts keyword searching.  `n` and `N` keys move the focus to
 next/previous line containing the keyword.
 
 `h` and `l` keys scroll the screen left and right one column, respectively.
