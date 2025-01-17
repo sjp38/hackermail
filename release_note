@@ -6,6 +6,9 @@ v1.2.6
 - hkml patch format: support -<N> commit range input, e.g., hkml patch format -5
 - hkml write: remove unremoved recipients draft comments before sending
 - hkml patch format: support sending the patches directly
+- let user searches keywords without highlighting
+- hkml list: set searching '[' without higlighting by default
+  - let user moves between mails with 'n' and 'N'
 
 v1.2.5
 - hkml patch format: support source file on --to and --cc
