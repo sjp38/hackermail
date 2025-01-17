@@ -328,20 +328,31 @@ def focus_set(c, slist):
 def search_keyword(c, slist):
     shell_mode_start(slist)
 
-    question = CliQuestion('Enter keyword to search')
+    prompt = '[Search keyword]\n\n' \
+             "Current Keyword: '{}'\n"\
+             'Searched keyword highlighting: {}\n' \
+             .format(slist.search_keyword,
+                     'Enabled' if slist.enable_highlight else 'Disabled')
+    print(prompt)
+
+    question = CliQuestion('Enter a new keyword to search')
 
     def handle_fn(slist, answer):
         slist.search_keyword = answer
 
-    question.ask_input(slist, handle_fn=handle_fn)
+    _, _, result = question.ask_input(slist, handle_fn=handle_fn)
 
-    if slist.enable_highlight is None:
-        question = 'Would you like to enable search highlighting? [Y/n] '
-        answer = input(question)
-        if answer == 'n':
-            slist.enable_highlight = False
-        else:
-            slist.enable_highlight = True
+    if result == 'canceled':
+        shell_mode_end(slist)
+        return
+
+    question = 'Would you like to enable search highlighting? [Y/n] '
+    answer = input(question)
+
+    if answer == 'n':
+        slist.enable_highlight = False
+    else:
+        slist.enable_highlight = True
 
     shell_mode_end(slist)
 
