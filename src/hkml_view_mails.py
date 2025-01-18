@@ -22,12 +22,13 @@ import hkml_write
 # mails list
 
 def mail_of_row(slist, row):
-    line_nr_mail_map = slist.data['list_data'].line_nr_mail_map
+    line_nr_mail_map = slist.data['mails_view_data'].list_data.line_nr_mail_map
     # in case of cached output reuse, the map is None
     if line_nr_mail_map is None:
         refresh_list(slist)
-        line_nr_mail_map = slist.data['list_data'].line_nr_mail_map
-    row -= slist.data['list_data'].len_comments
+        line_nr_mail_map = slist.data[
+                'mails_view_data'].list_data.line_nr_mail_map
+    row -= slist.data['mails_view_data'].list_data.len_comments
     if not row in line_nr_mail_map:
         return None
     return line_nr_mail_map[row]
@@ -49,7 +50,7 @@ def open_focused_mail(c, slist):
     _, cols = slist.screen.getmaxyx()
     lines = hkml_open.mail_display_str(mail, cols).split('\n')
 
-    cursor_position_cache = slist.data['last_cursor_position']
+    cursor_position_cache = slist.data['mails_view_data'].last_cursor_position
     msgid = mail.get_field('message-id')
     if msgid in cursor_position_cache:
         cursor_position = cursor_position_cache[msgid]
@@ -153,9 +154,9 @@ def refresh_list(slist):
     for line in slist.lines:
         if line.startswith('#'):
             comment_lines.append(line)
-    slist.data['list_data'].len_comments = len(comment_lines)
+    slist.data['mails_view_data'].list_data.len_comments = len(comment_lines)
 
-    collapsed_mails = slist.data['collapsed_mails']
+    collapsed_mails = slist.data['mails_view_data'].collapsed_mails
 
     mails = get_mails(slist)
     decorator = hkml_list.MailListDecorator(None)
@@ -166,24 +167,20 @@ def refresh_list(slist):
 
     lines, line_nr_mail_map = hkml_list.fmt_mails_text(
             mails, decorator, collapsed_mails)
-    slist.data['list_data'].line_nr_mail_map = line_nr_mail_map
+    slist.data['mails_view_data'].list_data.line_nr_mail_map = line_nr_mail_map
     text = '\n'.join(lines)
     slist.lines = comment_lines + text.split('\n')
     slist.focus_row = min(slist.focus_row, len(slist.lines) - 1)
     slist.screen.clear()
 
 def collapse_focused_thread(c, slist):
-    if not 'collapsed_mails' in slist.data:
-        slist.data['collapsed_mails'] = {}
-    collapsed_mails = slist.data['collapsed_mails']
+    collapsed_mails = slist.data['mails_view_data'].collapsed_mails
 
     collapsed_mails[focused_mail_idx(slist)] = True
     refresh_list(slist)
 
 def expand_focused_thread(c, slist):
-    if not 'collapsed_mails' in slist.data:
-        return
-    collapsed_mails = slist.data['collapsed_mails']
+    collapsed_mails = slist.data['mails_view_data'].collapsed_mails
     del collapsed_mails[focused_mail_idx(slist)]
     refresh_list(slist)
 
@@ -318,7 +315,7 @@ def set_prdepth(mails):
 
 def get_mails(slist):
     mails = []
-    mail_idx_key_map = slist.data['list_data'].mail_idx_key_map
+    mail_idx_key_map = slist.data['mails_view_data'].list_data.mail_idx_key_map
     for mail_idx in mail_idx_key_map:
         mail_key = mail_idx_key_map[mail_idx]
         mail = hkml_cache.get_mail(key=mail_key)
@@ -394,8 +391,8 @@ def menu_list_thread(mail_slist, selection):
 
 def menu_collapse_expand(mail_slist, selection):
     mail, slist = mail_slist
-    if ('collapsed_mails' in slist.data and
-        focused_mail_idx(slist) in slist.data['collapsed_mails']):
+    if focused_mail_idx(slist) in slist.data[
+            'mails_view_data'].collapsed_mails:
         hkml_view.shell_mode_end(slist)
         expand_focused_thread(None, slist)
         hkml_view.shell_mode_start(slist)
@@ -513,21 +510,20 @@ def menu_effect_mails(mail_slist, selection):
     print('Apply a display effect to specific mails.')
     print()
     mail, slist = mail_slist
-    if 'mails_effects' in slist.data:
-        print('current display effect:')
-        print('%s' % slist.data['mails_effects'])
-        print()
+    print('current display effect:')
+    print('%s' % slist.data['mails_view_data'].display_rule)
+    print()
 
     # In case the user cancels the effect selection, we want to be able
     # to restore their old settings.
-    old_mail_display_effect = slist.data['mails_effects']
+    old_mail_display_effect = slist.data['mails_view_data'].display_rule
     if old_mail_display_effect is not None:
         old_effect = old_mail_display_effect.effect
     else:
         old_effect = None
 
-    slist.data['mails_effects'] = MailDisplayEffect(interactive=True,
-                                                    old_effect=old_effect)
+    slist.data['mails_view_data'].display_rule = MailDisplayEffect(
+            interactive=True, old_effect=old_effect)
 
 def mk_dim_old_rule(max_date):
     effect_rule = MailDisplayEffect(interactive=False)
@@ -587,7 +583,7 @@ def suggest_dim_old(key):
 
 def menu_dim_old_mails(mail_slist, selection):
     mail, slist = mail_slist
-    gen_args = slist.data['list_args']
+    gen_args = slist.data['mails_view_data'].list_args
     key = hkml_list.args_to_lists_cache_key(gen_args)
     max_date_str = suggest_dim_old(key)
     if max_date_str is None:
@@ -597,7 +593,7 @@ def menu_dim_old_mails(mail_slist, selection):
         hkml_view.cli_any_input(err)
         return
 
-    slist.data['mails_effects'] = mk_dim_old_rule(max_date)
+    slist.data['mails_view_data'].display_rule = mk_dim_old_rule(max_date)
 
 def menu_reply_mail(mail_slist, selection):
     mail, slist = mail_slist
@@ -653,7 +649,7 @@ def set_slist_data(slist, mails_view_data):
 
 def menu_refresh_mails(mail_slist, selection):
     mail, slist = mail_slist
-    gen_args = slist.data['list_args']
+    gen_args = slist.data['mails_view_data'].list_args
     if type(gen_args) is argparse.Namespace and gen_args.fetch is False:
         answer = input('"--fetch" is unset.  Set it? [Y/n] ')
         if answer.lower() != 'n':
@@ -736,7 +732,7 @@ def get_mails_list_input_handlers():
             ]
 
 def after_input_handle_callback(slist):
-    list_data = slist.data['list_data']
+    list_data = slist.data['mails_view_data'].list_data
     mail_idx_key_map = list_data.mail_idx_key_map
     if mail_idx_key_map is None:
         return
@@ -745,12 +741,12 @@ def after_input_handle_callback(slist):
         _hkml_list_cache.set_item('thread_output', list_data)
 
 def mails_display_effect_callback(slist, line_idx):
-    if not 'mails_effects' in slist.data or slist.data['mails_effects'] is None:
+    if slist.data['mails_view_data'].display_rule is None:
         return slist.effect_normal
     mail = mail_of_row(slist, line_idx)
     if mail is None:
         return slist.effect_normal
-    mail_display_effect = slist.data['mails_effects']
+    mail_display_effect = slist.data['mails_view_data'].display_rule
     if mail_display_effect.eligible(mail):
         return mail_display_effect.effect
     return slist.effect_normal
