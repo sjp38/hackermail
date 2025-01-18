@@ -587,8 +587,7 @@ def suggest_dim_old(key):
 
 def menu_dim_old_mails(mail_slist, selection):
     mail, slist = mail_slist
-    data_generator = slist.data['data_generator']
-    gen_args = data_generator.args
+    gen_args = slist.data['list_args']
     key = hkml_list.args_to_lists_cache_key(gen_args)
     max_date_str = suggest_dim_old(key)
     if max_date_str is None:
@@ -641,8 +640,7 @@ def set_slist_data(slist, list_data, display_rule, args):
 
 def menu_refresh_mails(mail_slist, selection):
     mail, slist = mail_slist
-    data_generator = slist.data['data_generator']
-    gen_args = data_generator.args
+    gen_args = slist.data['list_args']
     if type(gen_args) is argparse.Namespace and gen_args.fetch is False:
         answer = input('"--fetch" is unset.  Set it? [Y/n] ')
         if answer.lower() != 'n':
