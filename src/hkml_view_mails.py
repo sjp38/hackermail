@@ -782,9 +782,3 @@ def gen_show_mails_list(screen, list_args):
     hkml_view.shell_mode_end(screen)
 
     return show_mails_list(screen, list_data, display_rule, list_args)
-
-class MailsListDataGenerator:
-    args = None
-
-    def __init__(self, args):
-        self.args = args
