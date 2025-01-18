@@ -658,7 +658,7 @@ def menu_refresh_mails(mail_slist, selection):
         if answer.lower() != 'n':
             gen_args.fetch = True
 
-    mails_view_data, err = generate_mails_list_data(gen_args)
+    mails_view_data, err = generate_mails_view_data(gen_args)
     if err is not None:
         return hkml_view.cli_any_input(
                 'Generating mails list again failed (%s).' % err)
@@ -767,7 +767,7 @@ def show_mails_list(screen, list_data, display_rule, list_args):
     slist.draw()
     return slist
 
-def generate_mails_list_data(args):
+def generate_mails_view_data(args):
     # returns MailsViewData and error
     list_data, err = hkml_list.args_to_mails_list_data(args)
     if err is not None:
@@ -789,7 +789,7 @@ def generate_mails_list_data(args):
 def gen_show_mails_list(screen, list_args):
     hkml_view.shell_mode_start(screen)
 
-    mails_view_data, err = generate_mails_list_data(list_args)
+    mails_view_data, err = generate_mails_view_data(list_args)
     if err is not None:
         return hkml_view.cli_any_input(
                 'Failed mails list generating (%s).' % err)
