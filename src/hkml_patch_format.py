@@ -168,7 +168,12 @@ def add_base_commit_as_cv(patch_file, base_commit):
         return
 
     subject = cv_pars[0]
-    content = '\n\n'.join(cv_pars[1:-1]) # exclude signed-off-by
+    body_pars = cv_pars[1:]
+    for line in body_pars[-1].split('\n'):
+        if line.startswith('Signed-off-by:'):
+            body_pars = body_pars[:-1]
+            break
+    content = '\n\n'.join(body_pars)
 
     fillup_cv(patch_file, subject, content)
 
