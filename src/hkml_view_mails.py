@@ -630,21 +630,21 @@ def menu_handle_patches(mail_slist, selection):
 class MailsViewData:
     list_data = None
     list_args = None
-    display_rules = None
+    display_rule = None
     collapsed_mails = None
     last_cursor_position = None
 
-    def __init__(self, list_data, list_args, display_rules):
+    def __init__(self, list_data, list_args, display_rule):
         self.list_data = list_data
         self.list_args = list_args
-        self.display_rules = display_rules
+        self.display_rule = display_rule
         self.collapsed_mails = {}
         self.last_cursor_position = {}
 
 def set_slist_data(slist, mails_view_data):
     slist.data = {
             'list_data': mails_view_data.list_data,
-            'mails_effects': mails_view_data.display_rules,
+            'mails_effects': mails_view_data.display_rule,
             'collapsed_mails': {},
             'list_args': mails_view_data.list_args,
             'last_cursor_position': {},
@@ -757,7 +757,7 @@ def mails_display_effect_callback(slist, line_idx):
 
 def show_mails_list(screen, mails_view_data):
     list_data = mails_view_data.list_data
-    display_rule = mails_view_data.display_rules
+    display_rule = mails_view_data.display_rule
     list_args = mails_view_data.list_args
     text_lines = list_data.text.split('\n')
     slist = hkml_view.ScrollableList(screen, text_lines,
