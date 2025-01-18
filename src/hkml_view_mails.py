@@ -627,6 +627,20 @@ def menu_handle_patches(mail_slist, selection):
     mail, slist = mail_slist
     handle_patches_of_mail(mail, get_mails(slist))
 
+class MailsViewData:
+    list_data = None
+    list_args = None
+    display_rules = None
+    collapsed_mails = None
+    last_cursor_position = None
+
+    def __init__(self, list_data, list_args, display_rules):
+        self.list_data = list_data
+        self.list_args = list_args
+        self.display_rules = display_rules
+        self.collapsed_mails = {}
+        self.last_cursor_position = {}
+
 def set_slist_data(slist, list_data, display_rule, args):
     slist.data = {
             'list_data': list_data,
