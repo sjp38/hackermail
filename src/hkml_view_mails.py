@@ -639,11 +639,6 @@ class MailsViewData:
 
 def set_slist_data(slist, mails_view_data):
     slist.data = {
-            'list_data': mails_view_data.list_data,
-            'mails_effects': mails_view_data.display_rule,
-            'collapsed_mails': {},
-            'list_args': mails_view_data.list_args,
-            'last_cursor_position': {},
             'mails_view_data': mails_view_data,
             }
 
