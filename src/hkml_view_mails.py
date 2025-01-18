@@ -628,7 +628,8 @@ def menu_handle_patches(mail_slist, selection):
     mail, slist = mail_slist
     handle_patches_of_mail(mail, get_mails(slist))
 
-def set_slist_data(slist, list_data, display_rule, data_generator):
+def set_slist_data(slist, list_data, display_rule, args):
+    data_generator = MailsListDataGenerator(args)
     slist.data = {
             'list_data': list_data,
             'mails_effects': display_rule,
@@ -653,7 +654,7 @@ def menu_refresh_mails(mail_slist, selection):
         return hkml_view.cli_any_input(
                 'Generating mails list again failed (%s).' % err)
     hkml_view.shell_mode_end(slist)
-    set_slist_data(slist, list_data, display_rule, data_generator)
+    set_slist_data(slist, list_data, display_rule, gen_args)
     slist.lines = list_data.text.split('\n')
     slist.screen.clear()
     hkml_view.shell_mode_start(slist)
@@ -747,7 +748,7 @@ def show_mails_list(screen, list_data, display_rule, data_generator=None):
     text_lines = list_data.text.split('\n')
     slist = hkml_view.ScrollableList(screen, text_lines,
                            get_mails_list_input_handlers())
-    set_slist_data(slist, list_data, display_rule, data_generator)
+    set_slist_data(slist, list_data, display_rule, data_generator.args)
     slist.after_input_handle_callback = after_input_handle_callback
     slist.display_effect_callback = mails_display_effect_callback
     if list_data.len_comments is not None:
