@@ -754,6 +754,25 @@ def show_mails_list(screen, list_data, display_rule, data_generator=None):
     slist.draw()
     return slist
 
+def generate_mails_list_data(args):
+    # returns MailsListData, DisplayEffectRule, and error
+    list_data, err = hkml_list.args_to_mails_list_data(args)
+    if err is not None:
+        return None, None, err
+    if not hasattr(args, 'dim_old') or args.dim_old is None:
+        args.dim_old = suggest_dim_old(
+                hkml_list.args_to_lists_cache_key(args))
+        if args.dim_old is None:
+            return list_data, None, err
+
+    max_date, err = hkml_common.parse_date_arg(args.dim_old)
+    if err is not None:
+        err = 'wrong --dim_old (%s)' % err
+        display_effect_rule = None
+    else:
+        display_effect_rule = mk_dim_old_rule(max_date)
+    return list_data, display_effect_rule, err
+
 def gen_show_mails_list(screen, data_generator):
     hkml_view.shell_mode_start(screen)
 
@@ -773,21 +792,4 @@ class MailsListDataGenerator:
         self.args = args
 
     def generate(self):
-        # returns text, mail_idx_key_map, line_nr_to_mail, len_comment,
-        # display_effect_rule, and error
-        list_data, err = hkml_list.args_to_mails_list_data(self.args)
-        if err is not None:
-            return None, None, err
-        if not hasattr(self.args, 'dim_old') or self.args.dim_old is None:
-            self.args.dim_old = suggest_dim_old(
-                    hkml_list.args_to_lists_cache_key(self.args))
-            if self.args.dim_old is None:
-                return list_data, None, err
-
-        max_date, err = hkml_common.parse_date_arg( self.args.dim_old)
-        if err is not None:
-            err = 'wrong --dim_old (%s)' % err
-            display_effect_rule = None
-        else:
-            display_effect_rule = mk_dim_old_rule(max_date)
-        return list_data, display_effect_rule, err
+        return generate_mails_list_data(self.args)
