@@ -906,6 +906,10 @@ paragraph are ignored.  For example, it would look like below:
     Signed-off-by: SeongJae Park <sj@kernel.org>
     $
 
+Or, users can provide a file containing the cover letter content via `--cv`
+option.  The file should have the cover letter subject at the first line.
+Then, a blank line and the body of the message should follow.
+
 ### Recipients Fillup
 
 If it is called on linux tree and `get_maintainer.pl` file exists, it runs the
