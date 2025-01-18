@@ -641,13 +641,14 @@ class MailsViewData:
         self.collapsed_mails = {}
         self.last_cursor_position = {}
 
-def set_slist_data(slist, list_data, display_rule, args):
+def set_slist_data(slist, mails_view_data):
     slist.data = {
-            'list_data': list_data,
-            'mails_effects': display_rule,
+            'list_data': mails_view_data.list_data,
+            'mails_effects': mails_view_data.display_rules,
             'collapsed_mails': {},
-            'list_args': args,
+            'list_args': mails_view_data.list_args,
             'last_cursor_position': {},
+            'mails_view_data': mails_view_data,
             }
 
 def menu_refresh_mails(mail_slist, selection):
@@ -663,9 +664,8 @@ def menu_refresh_mails(mail_slist, selection):
         return hkml_view.cli_any_input(
                 'Generating mails list again failed (%s).' % err)
     list_data = mails_view_data.list_data
-    display_rule = mails_view_data.display_rules
     hkml_view.shell_mode_end(slist)
-    set_slist_data(slist, list_data, display_rule, gen_args)
+    set_slist_data(slist, mails_view_data)
     slist.lines = list_data.text.split('\n')
     slist.screen.clear()
     hkml_view.shell_mode_start(slist)
@@ -762,7 +762,7 @@ def show_mails_list(screen, mails_view_data):
     text_lines = list_data.text.split('\n')
     slist = hkml_view.ScrollableList(screen, text_lines,
                            get_mails_list_input_handlers())
-    set_slist_data(slist, list_data, display_rule, list_args)
+    set_slist_data(slist, mails_view_data)
     slist.after_input_handle_callback = after_input_handle_callback
     slist.display_effect_callback = mails_display_effect_callback
     if list_data.len_comments is not None:
