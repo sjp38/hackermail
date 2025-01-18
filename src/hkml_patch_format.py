@@ -217,6 +217,16 @@ def main(args):
     answer = input('[Y/n] ')
     if answer.lower() != 'n':
         hkml_patch.list_recipients(patch_files)
+    answer = input('Looks good? [Y/n] ')
+    if answer.lower() == 'n':
+        print('Ok, aborting remaining works.')
+        print(' '.join([
+        'Patches are generated as below.',
+        "You can manually modify those or use 'hkml patch format' again."]))
+        print()
+        for patch_file in patch_files:
+            print('    %s' % patch_file)
+        return
 
     print("\nMay I send the patches?  If you say yes, I will do below")
     print()
