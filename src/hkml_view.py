@@ -503,7 +503,7 @@ def __view(stdscr, text_to_show, data, view_type):
                 stdscr, text_to_show.split('\n'))
     elif view_type == 'gen_mails_list':
         return hkml_view_mails.gen_show_mails_list(
-                stdscr, data.args)
+                stdscr, data)
     else:
         raise Exception('unknonw view : %s' % view_type)
 
@@ -519,8 +519,8 @@ def view(text, data, view_type):
     if slist is not None:
         print('\n'.join(slist.last_drawn))
 
-def gen_view_mails_list(generator):
-    view('', generator, 'gen_mails_list')
+def gen_view_mails_list(list_args):
+    view('', list_args, 'gen_mails_list')
 
 def view_mail(text, mail):
     view(text, mail, 'mail')

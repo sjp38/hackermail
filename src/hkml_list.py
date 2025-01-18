@@ -940,8 +940,7 @@ def main(args):
         return 0
 
     if not args.stdout and not args.use_less:
-        return hkml_view.gen_view_mails_list(
-                hkml_view_mails.MailsListDataGenerator(args))
+        return hkml_view.gen_view_mails_list(args)
     list_data, err = args_to_mails_list_data(args)
     if err is not None:
         print(err)
