@@ -69,12 +69,15 @@ def suggest_removing_drafts_of_subject(subject, tags_map):
         draft_mail = _hkml.Mail(kvpairs=tags_map[msgid]['mail'])
         if draft_mail.subject != subject:
             continue
-        prompt = 'remove draft of subject "%s" that written on %s? [y/N] ' % (
-                subject, draft_mail.date)
-        answer = input(prompt)
-        if answer.lower() != 'y':
-            continue
-        tags.remove('drafts')
+        while True:
+            prompt = 'remove draft of subject "%s" that written on %s? [y/N] ' % (
+                    subject, draft_mail.date)
+            answer = input(prompt)
+            if answer.lower() not in ['y', 'n']:
+                continue
+            if answer.lower() == 'y':
+                tags.remove('drafts')
+            break
 
 def add_tags_to_map(mail, tags, tags_map):
     msgid = mail.get_field('message-id')
