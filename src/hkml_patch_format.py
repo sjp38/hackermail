@@ -166,6 +166,43 @@ def add_base_commit_as_cv(patch_file, base_commit):
     with open(patch_file, 'w') as f:
         f.write(cv_content)
 
+def fillup_cv(patch_file, cv_file):
+    with open(cv_file, 'r') as f:
+        content = f.read()
+    pars = content.split('\n\n')
+    subject = pars[0]
+    content = '\n\n'.join(pars[1:])
+
+    print('Adding cover letter content from %s as below.' % cv_file)
+    print('- replace "*** SUBJECT HERE ***" with')
+    print()
+    print('    %s' % subject)
+    print()
+    print('- replace "*** BLURB HERE ***" with')
+    content_lines = content.split('\n')
+    preview_lines = []
+    if len(content_lines) > 5:
+        preview_lines += content_lines[:2]
+        preview_lines.append('[...]')
+        preview_lines += content_lines[-2:]
+    else:
+        preview_lines = content_lines
+    print()
+    for l in preview_lines:
+        print('    %s' % l)
+    print()
+    answer = input('looks good? [Y/n] ')
+    if answer.lower() == 'n':
+        print('ok, I will keep it (%s) untouched' % patch_file)
+        return
+
+    with open(patch_file, 'r') as f:
+        cv_orig_content = f.read()
+    cv_content = cv_orig_content.replace('*** SUBJECT HERE ***', subject)
+    cv_content = cv_content.replace('*** BLURB HERE ***', content)
+    with open(patch_file, 'w') as f:
+        f.write(cv_content)
+
 def main(args):
     commit_ids = [hash for hash in subprocess.check_output(
         ['git', 'log', '--pretty=%h', args.commits]
@@ -201,7 +238,10 @@ def main(args):
         return -1
 
     if add_cv:
-        add_base_commit_as_cv(patch_files[0], base_commit)
+        if args.cv is None:
+            add_base_commit_as_cv(patch_files[0], base_commit)
+        else:
+            fillup_cv(patch_files[0], args.cv)
 
     if on_linux_tree and os.path.exists('./scripts/checkpatch.pl'):
         print('\ncheckpatch.pl found.  shall I run it?')
@@ -257,6 +297,8 @@ def set_argparser(parser):
     parser.add_argument('--cc', metavar='<recipient>', nargs='+',
                         default=[], action='extend',
                         help='Cc: recipients')
+    parser.add_argument('--cv', metavar='<file>',
+                        help='file containing cover letter content')
     parser.epilog = ' '.join([
         'If this is called on linux tree and a source file is given to',
         '--to and/or --cc, get_maintainer.pl found maintainers of the file',
