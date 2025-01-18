@@ -792,6 +792,3 @@ class MailsListDataGenerator:
 
     def __init__(self, args):
         self.args = args
-
-    def generate(self):
-        return generate_mails_list_data(self.args)
