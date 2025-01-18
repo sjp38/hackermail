@@ -234,6 +234,9 @@ def main(args):
     for patch_file in patch_files:
         print('            %s \\' % patch_file)
     print()
+    print(' '.join([
+        'You can manually review and modify the patch files',
+        'before answering the next question.']))
     answer = input('Do it? [y/N] ')
 
     if answer.lower() == 'y':
