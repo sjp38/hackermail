@@ -647,7 +647,7 @@ def menu_refresh_mails(mail_slist, selection):
         if answer.lower() != 'n':
             gen_args.fetch = True
 
-    list_data, display_rule, err = data_generator.generate()
+    list_data, display_rule, err = generate_mails_list_data(gen_args)
 
     if err is not None:
         return hkml_view.cli_any_input(
@@ -777,7 +777,8 @@ def generate_mails_list_data(args):
 def gen_show_mails_list(screen, data_generator):
     hkml_view.shell_mode_start(screen)
 
-    list_data, display_rule, err = data_generator.generate()
+    list_data, display_rule, err = generate_mails_list_data(
+            data_generator.args)
 
     if err is not None:
         return hkml_view.cli_any_input(
