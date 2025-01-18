@@ -123,6 +123,37 @@ def add_patches_recipients(patch_files, to, cc, first_patch_is_cv,
                 patch_cc.remove(t)
         add_patch_recipients(patch_file, to, patch_cc)
 
+def fillup_cv(patch_file, subject, content):
+    print('I will do below to the coverletter (%s)' % patch_file)
+    print('- replace "*** SUBJECT HERE ***" with')
+    print()
+    print('    %s' % subject)
+    print()
+    print('- replace "*** BLURB HERE ***" with')
+    content_lines = content.split('\n')
+    preview_lines = []
+    if len(content_lines) > 5:
+        preview_lines += content_lines[:2]
+        preview_lines.append('[...]')
+        preview_lines += content_lines[-2:]
+    else:
+        preview_lines = content_lines
+    print()
+    for l in preview_lines:
+        print('    %s' % l)
+    print()
+    answer = input('looks good? [Y/n] ')
+    if answer.lower() == 'n':
+        print('ok, I will keep it (%s) untouched' % patch_file)
+        return
+
+    with open(patch_file, 'r') as f:
+        cv_orig_content = f.read()
+    cv_content = cv_orig_content.replace('*** SUBJECT HERE ***', subject)
+    cv_content = cv_content.replace('*** BLURB HERE ***', content)
+    with open(patch_file, 'w') as f:
+        f.write(cv_content)
+
 def add_base_commit_as_cv(patch_file, base_commit):
     answer = input('\nMay I add the base commit to the coverletter? [Y/n] ')
     if answer.lower() == 'n':
@@ -136,72 +167,17 @@ def add_base_commit_as_cv(patch_file, base_commit):
     subject = cv_pars[0]
     content = '\n\n'.join(cv_pars[1:-1]) # exclude signed-off-by
 
-    print('Ok, I will do below to the coverletter')
-    print('- replace "*** SUBJECT HERE ***" with')
-    print()
-    print('    %s' % subject)
-    print()
-    print('- replace "*** BLURB HERE ***" with')
-    content_lines = content.split('\n')
-    preview_lines = []
-    if len(content_lines) > 5:
-        preview_lines += content_lines[:2]
-        preview_lines.append('[...]')
-        preview_lines += content_lines[-2:]
-    else:
-        preview_lines = content_lines
-    print()
-    for l in preview_lines:
-        print('    %s' % l)
-    print()
-    answer = input('looks good? [Y/n] ')
-    if answer.lower() == 'n':
-        print('ok, I will keep it (%s) untouched' % patch_file)
-        return
+    fillup_cv(patch_file, subject, content)
 
-    with open(patch_file, 'r') as f:
-        cv_orig_content = f.read()
-    cv_content = cv_orig_content.replace('*** SUBJECT HERE ***', subject)
-    cv_content = cv_content.replace('*** BLURB HERE ***', content)
-    with open(patch_file, 'w') as f:
-        f.write(cv_content)
-
-def fillup_cv(patch_file, cv_file):
+def fillup_cv_from_file(patch_file, cv_file):
     with open(cv_file, 'r') as f:
         content = f.read()
     pars = content.split('\n\n')
     subject = pars[0]
     content = '\n\n'.join(pars[1:])
 
-    print('Adding cover letter content from %s as below.' % cv_file)
-    print('- replace "*** SUBJECT HERE ***" with')
-    print()
-    print('    %s' % subject)
-    print()
-    print('- replace "*** BLURB HERE ***" with')
-    content_lines = content.split('\n')
-    preview_lines = []
-    if len(content_lines) > 5:
-        preview_lines += content_lines[:2]
-        preview_lines.append('[...]')
-        preview_lines += content_lines[-2:]
-    else:
-        preview_lines = content_lines
-    print()
-    for l in preview_lines:
-        print('    %s' % l)
-    print()
-    answer = input('looks good? [Y/n] ')
-    if answer.lower() == 'n':
-        print('ok, I will keep it (%s) untouched' % patch_file)
-        return
-
-    with open(patch_file, 'r') as f:
-        cv_orig_content = f.read()
-    cv_content = cv_orig_content.replace('*** SUBJECT HERE ***', subject)
-    cv_content = cv_content.replace('*** BLURB HERE ***', content)
-    with open(patch_file, 'w') as f:
-        f.write(cv_content)
+    print("Adding cover letter content from '%s' as you requested." % cv_file)
+    fillup_cv(patch_file, subject, content)
 
 def main(args):
     commit_ids = [hash for hash in subprocess.check_output(
@@ -241,7 +217,7 @@ def main(args):
         if args.cv is None:
             add_base_commit_as_cv(patch_files[0], base_commit)
         else:
-            fillup_cv(patch_files[0], args.cv)
+            fillup_cv_from_file(patch_files[0], args.cv)
 
     if on_linux_tree and os.path.exists('./scripts/checkpatch.pl'):
         print('\ncheckpatch.pl found.  shall I run it?')
