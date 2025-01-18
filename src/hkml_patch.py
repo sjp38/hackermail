@@ -277,6 +277,17 @@ def is_files_argument(arg):
             return False
     return True
 
+def make_cover_letter_commit(subject):
+    bogus_dir = 'hkml_cv_bogus'
+    if not os.path.isdir(bogus_dir):
+        os.mkdir(bogus_dir)
+    _, bogus_path = tempfile.mkstemp(prefix='hkml_cv_bogus_', dir=bogus_dir)
+    err = subprocess.call(['git', 'add', bogus_path])
+    if err:
+        print('git add failed')
+        return -1
+    return subprocess.call(['git', 'commit', '-s', '-m', subject])
+
 def main(args):
     if args.action == 'format':
         return hkml_patch_format.main(args)
@@ -296,6 +307,8 @@ def main(args):
             args.mail = args.patch[0]
     elif args.action == 'recipients':
         return list_recipients(args.patch_files)
+    elif args.action == 'commit_cv':
+        return make_cover_letter_commit(args.subject)
 
     # For call from hkml_view_mail
     if type(args.mail) is _hkml.Mail:
@@ -368,3 +381,8 @@ def set_argparser(parser):
             'recipients', help='show recipients of patch files')
     parser_recipients.add_argument('patch_files', metavar='<file>', nargs='+',
                                    help='the patch files')
+
+    parser_cv_commit = subparsers.add_parser(
+            'commit_cv', help='make a commit of cover letter message')
+    parser_cv_commit.add_argument('subject', metavar='<subject>',
+                                  help='subject of the cover letter commit')
