@@ -658,11 +658,12 @@ def menu_refresh_mails(mail_slist, selection):
         if answer.lower() != 'n':
             gen_args.fetch = True
 
-    list_data, display_rule, err = generate_mails_list_data(gen_args)
-
+    mails_view_data, err = generate_mails_list_data(gen_args)
     if err is not None:
         return hkml_view.cli_any_input(
                 'Generating mails list again failed (%s).' % err)
+    list_data = mails_view_data.list_data
+    display_rule = mails_view_data.display_rules
     hkml_view.shell_mode_end(slist)
     set_slist_data(slist, list_data, display_rule, gen_args)
     slist.lines = list_data.text.split('\n')
@@ -767,15 +768,15 @@ def show_mails_list(screen, list_data, display_rule, list_args):
     return slist
 
 def generate_mails_list_data(args):
-    # returns MailsListData, DisplayEffectRule, and error
+    # returns MailsViewData and error
     list_data, err = hkml_list.args_to_mails_list_data(args)
     if err is not None:
-        return None, None, err
+        return None, err
     if not hasattr(args, 'dim_old') or args.dim_old is None:
         args.dim_old = suggest_dim_old(
                 hkml_list.args_to_lists_cache_key(args))
         if args.dim_old is None:
-            return list_data, None, err
+            return MailsViewData(list_data, args, None), err
 
     max_date, err = hkml_common.parse_date_arg(args.dim_old)
     if err is not None:
@@ -783,16 +784,16 @@ def generate_mails_list_data(args):
         display_effect_rule = None
     else:
         display_effect_rule = mk_dim_old_rule(max_date)
-    return list_data, display_effect_rule, err
+    return MailsViewData(list_data, args, display_effect_rule), err
 
 def gen_show_mails_list(screen, list_args):
     hkml_view.shell_mode_start(screen)
 
-    list_data, display_rule, err = generate_mails_list_data(list_args)
-
+    mails_view_data, err = generate_mails_list_data(list_args)
     if err is not None:
         return hkml_view.cli_any_input(
                 'Failed mails list generating (%s).' % err)
     hkml_view.shell_mode_end(screen)
 
-    return show_mails_list(screen, list_data, display_rule, list_args)
+    return show_mails_list(screen, mails_view_data.list_data,
+                           mails_view_data.display_rules, list_args)
