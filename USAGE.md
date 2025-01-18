@@ -887,14 +887,13 @@ internally, and do below additional works.
 
 ### Cover Letter Edit
 
-If it is for multiple commits, it creates a cover letter.  Keeping the cover
-letter draft as a commit message of a fake or empty commit before the first
-commit is a workflow of some programmers.  `hkml patch format` hence helps
-filling the cover letter with the fake commit's message if the user wants.  In
-the case, the cover letter draft commit's commit message should starts with the
-cover letter subject, then one blank line, and body of the cover letter.  The
-subject of the commit and last signed-off-by like tags paragraph are ignored.
-For example, it would look like below:
+If it is for multiple commits, it creates a cover letter.  Assuming a cover
+letter [bogus commit](#cover-letter-purpose-bogus-commit) is used, `hkml patch
+format` helps filling the cover letter with the fake commit's message if the
+user wants.  In the case, the cover letter draft commit's commit message should
+starts with the cover letter subject, then one blank line, and body of the
+cover letter.  The subject of the commit and last signed-off-by like tags
+paragraph are ignored.  For example, it would look like below:
 
     $ git log cv_commit --pretty=%B
     ==== Marking start of the work (hkml patch format will ignore this) ====
