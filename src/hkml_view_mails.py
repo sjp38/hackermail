@@ -146,7 +146,7 @@ def hkml_list_args_for_msgid(msgid):
 def list_thread_of_focused_mail(c, slist):
     msgid = get_focused_mail(slist).get_field('message-id')
     args = hkml_list_args_for_msgid(msgid)
-    gen_show_mails_list(slist.screen, MailsListDataGenerator(args))
+    gen_show_mails_list(slist.screen, args)
 
 def refresh_list(slist):
     comment_lines = []
@@ -771,19 +771,17 @@ def generate_mails_list_data(args):
         display_effect_rule = mk_dim_old_rule(max_date)
     return list_data, display_effect_rule, err
 
-def gen_show_mails_list(screen, data_generator):
+def gen_show_mails_list(screen, list_args):
     hkml_view.shell_mode_start(screen)
 
-    list_data, display_rule, err = generate_mails_list_data(
-            data_generator.args)
+    list_data, display_rule, err = generate_mails_list_data(list_args)
 
     if err is not None:
         return hkml_view.cli_any_input(
                 'Failed mails list generating (%s).' % err)
     hkml_view.shell_mode_end(screen)
 
-    return show_mails_list(screen, list_data, display_rule,
-                           data_generator.args)
+    return show_mails_list(screen, list_data, display_rule, list_args)
 
 class MailsListDataGenerator:
     args = None
