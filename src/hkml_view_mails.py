@@ -744,11 +744,11 @@ def mails_display_effect_callback(slist, line_idx):
         return mail_display_effect.effect
     return slist.effect_normal
 
-def show_mails_list(screen, list_data, display_rule, data_generator=None):
+def show_mails_list(screen, list_data, display_rule, list_args):
     text_lines = list_data.text.split('\n')
     slist = hkml_view.ScrollableList(screen, text_lines,
                            get_mails_list_input_handlers())
-    set_slist_data(slist, list_data, display_rule, data_generator.args)
+    set_slist_data(slist, list_data, display_rule, list_args)
     slist.after_input_handle_callback = after_input_handle_callback
     slist.display_effect_callback = mails_display_effect_callback
     if list_data.len_comments is not None:
@@ -786,7 +786,8 @@ def gen_show_mails_list(screen, data_generator):
                 'Failed mails list generating (%s).' % err)
     hkml_view.shell_mode_end(screen)
 
-    return show_mails_list(screen, list_data, display_rule, data_generator)
+    return show_mails_list(screen, list_data, display_rule,
+                           data_generator.args)
 
 class MailsListDataGenerator:
     args = None
