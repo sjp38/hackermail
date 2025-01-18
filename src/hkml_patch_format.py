@@ -163,6 +163,9 @@ def add_base_commit_as_cv(patch_file, base_commit):
             ['git', 'log', '-1', '--pretty=%b', base_commit]).decode().strip()
     # paragraphs
     cv_pars = cv_content.split('\n\n')
+    if len(cv_pars) < 2:
+        print('Less than two paragraphs.  Forgiving coverletter update.')
+        return
 
     subject = cv_pars[0]
     content = '\n\n'.join(cv_pars[1:-1]) # exclude signed-off-by
