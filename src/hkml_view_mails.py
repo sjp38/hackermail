@@ -628,12 +628,11 @@ def menu_handle_patches(mail_slist, selection):
     handle_patches_of_mail(mail, get_mails(slist))
 
 def set_slist_data(slist, list_data, display_rule, args):
-    data_generator = MailsListDataGenerator(args)
     slist.data = {
             'list_data': list_data,
             'mails_effects': display_rule,
             'collapsed_mails': {},
-            'list_args': data_generator.args,
+            'list_args': args,
             'last_cursor_position': {},
             }
 
