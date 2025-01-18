@@ -634,6 +634,7 @@ def set_slist_data(slist, list_data, display_rule, data_generator):
             'mails_effects': display_rule,
             'collapsed_mails': {},
             'data_generator': data_generator,
+            'list_args': data_generator.args,
             'last_cursor_position': {},
             }
 
