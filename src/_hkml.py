@@ -323,7 +323,7 @@ class Mail:
         # some mail puts infomration in addition to message id on in-reply-to
         # header.  E.g., 87ikvefswp.fsf@yhuang6-desk2.ccr.corp.intel.com
         parsed['in-reply-to-msgid'] = None
-        if 'in-reply-to' in parsed:
+        if 'in-reply-to' in parsed and parsed['in-reply-to']:
             parsed['in-reply-to-msgid'] = parsed['in-reply-to'].split()[0]
 
         self.__fields = parsed
