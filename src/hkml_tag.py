@@ -70,7 +70,7 @@ def suggest_removing_drafts_of_subject(subject, tags_map):
         if draft_mail.subject != subject:
             continue
         while True:
-            prompt = 'remove draft of subject "%s" that written on %s? [y/N] ' % (
+            prompt = 'remove draft of subject "%s" that written on %s? [y/n] ' % (
                     subject, draft_mail.date)
             answer = input(prompt)
             if answer.lower() not in ['y', 'n']:
