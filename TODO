@@ -18,3 +18,4 @@
 - Let interactive mails selection and menu for slected mails
 - Support patch handling of non-public mails
 - Support mail content searching
+- bug: handle as patch -> export -> just enter -> crash!
