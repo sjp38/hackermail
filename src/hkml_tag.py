@@ -173,7 +173,7 @@ def main(args):
 def set_argparser(parser):
     parser.description = 'manage tags of mails'
     subparsers = parser.add_subparsers(
-            title='action', dest='action', metavar='<action>')
+            title='action', dest='action', metavar='<action>', required=True)
 
     parser_add = subparsers.add_parser('add', help='add tags to a mail')
     parser_add.add_argument(

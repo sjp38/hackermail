@@ -90,7 +90,8 @@ def main(args):
 def set_argparser(parser):
     parser.description = 'manage signature for mails'
     subparsers = parser.add_subparsers(
-            title='action', dest='action', metavar='<action>')
+            title='action', dest='action', metavar='<action>', required=True)
+
     parser_add = subparsers.add_parser('add', help='add a signature')
     parser_list = subparsers.add_parser('list', help='list signatures')
     parser_edit = subparsers.add_parser('edit', help='edit a signature')

@@ -208,7 +208,7 @@ def set_argparser(parser):
     parser.description = 'manage mails cache'
 
     subparsers = parser.add_subparsers(
-            title='action', dest='action', metavar='<action>')
+            title='action', dest='action', metavar='<action>', required=True)
 
     parser_status = subparsers.add_parser('status', help='show cache status')
     parser_status.add_argument('--config_only', action='store_true',

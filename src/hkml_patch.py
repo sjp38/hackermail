@@ -343,7 +343,7 @@ def set_argparser(parser):
                         help='don\'t add cover letter to first patch')
 
     subparsers = parser.add_subparsers(
-            title='action', dest='action', metavar='<action>')
+            title='action', dest='action', metavar='<action>', required=True)
 
     parser_apply = subparsers.add_parser('apply', help='apply the patch')
     parser_apply.add_argument(
