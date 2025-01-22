@@ -114,42 +114,9 @@ if not args.command:
     parser.print_help()
     exit(1)
 
-if args.command == 'init':
-    hkml_init.main(args)
-elif args.command == 'list':
-    hkml_list.main(args)
-elif args.command == 'thread':
-    hkml_thread.main(args)
-elif args.command == 'fetch':
-    hkml_fetch.main(args)
-elif args.command == 'open':
-    hkml_open.main(args)
-elif args.command == 'reply':
-    hkml_reply.main(args)
-elif args.command == 'forward':
-    hkml_forward.main(args)
-elif args.command == 'tag':
-    hkml_tag.main(args)
-elif args.command == 'write':
-    hkml_write.main(args)
-elif args.command == 'sync':
-    hkml_sync.main(args)
-elif args.command == 'send':
-    hkml_send.main(args)
-elif args.command == 'export':
-    hkml_export.main(args)
-elif args.command == 'monitor':
-    hkml_monitor.main(args)
-elif args.command == 'patch':
-    hkml_patch.main(args)
-elif args.command == 'manifest':
-    hkml_manifest.main(args)
-elif args.command == 'cache':
-    hkml_cache.main(args)
-elif args.command == 'signature':
-    hkml_signature.main(args)
-# elif args.command == 'interactive':
-#     hkml_interactive.main(args)
-else:
+command = globals().get(f'hkml_{args.command}')
+if not command:
     print('wrong command (%s)' % args.command)
     exit(1)
+else:
+    command.main(args)
