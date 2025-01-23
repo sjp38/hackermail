@@ -19,3 +19,4 @@
 - Support patch handling of non-public mails
 - Support mail content searching
 - bug: handle as patch -> export -> just enter -> crash!
+- Support $EDITOR
