@@ -30,9 +30,7 @@ def forward(mail, subject=None, in_reply_to=None, to=None, cc=None,
     fd, tmp_path = tempfile.mkstemp(prefix='hkml_forward_')
     with open(tmp_path, 'w') as f:
         f.write(mbox)
-    if subprocess.call(['vim', tmp_path]) != 0:
-        print('writing mail with editor failed')
-        exit(1)
+    hkml_write.open_editor(tmp_path)
     hkml_send.send_mail(tmp_path, get_confirm=True, erase_mbox=True,
                         orig_draft_subject=None)
 
