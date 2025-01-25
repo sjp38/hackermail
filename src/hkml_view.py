@@ -107,10 +107,12 @@ class CliQuestion:
     Should be invoked in shell mode (show shell_mode_start() and
     shell_mode_end()).
 
-    Returns user's input to the question, None, and error.
+    Returns user's input to the question and error.
     '''
     def ask_input(self, data, handle_fn, notify_completion=False):
-        return self.ask(data, None, handle_fn, notify_completion)
+        answer, selection, err = self.ask(data, None, handle_fn,
+                                          notify_completion)
+        return answer, err
 
     '''
     Ask user to select on of CliSelection objects.  If the selected
@@ -380,9 +382,9 @@ def search_keyword(c, slist):
     def handle_fn(slist, answer):
         slist.search_keyword = answer
 
-    _, _, result = question.ask_input(slist, handle_fn=handle_fn)
+    _, error = question.ask_input(slist, handle_fn=handle_fn)
 
-    if result == 'canceled':
+    if error == 'canceled':
         shell_mode_end(slist)
         return
 
@@ -468,7 +470,7 @@ def receive_file_path(for_read):
                     '2. a directory (e.g., "./") to list files under it.',
                     ]),
                 prompt='')
-        _, _, err = q.ask_input([answers, for_read], handle_fn)
+        _, err = q.ask_input([answers, for_read], handle_fn)
         if err == 'canceled':
             return None
         if len(answers) != 1:

@@ -258,7 +258,7 @@ def do_apply_patch(data, answer, selection):
         hkml_view.cli_any_input('applying action failed (%s)' % err)
 
 def do_export_patch(data, answer, selection):
-    export_dir, _, err = hkml_view.CliQuestion(
+    export_dir, err = hkml_view.CliQuestion(
             'Enter directory to export patch files').ask_input(None, None)
     if err == 'canceled':
         return
@@ -448,7 +448,7 @@ class MailDisplayEffect:
                            hkml_common.date_format_description(),
                            '"min" keyword is also supported.'])
         q = hkml_view.CliQuestion(prompt=prompt)
-        answer, _, err = q.ask_input(data=None, handle_fn=None)
+        answer, err = q.ask_input(data=None, handle_fn=None)
         if err is not None:
             return
         if answer == 'min':
@@ -462,7 +462,7 @@ class MailDisplayEffect:
                            hkml_common.date_format_description(),
                            '"max" keyword is also supported.'])
         q = hkml_view.CliQuestion(prompt=prompt)
-        answer, _, err = q.ask_input(data=None, handle_fn=None)
+        answer, err = q.ask_input(data=None, handle_fn=None)
         if err is not None:
             return
         if answer == 'max':
