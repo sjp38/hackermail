@@ -14,11 +14,6 @@ import hkml_view
 import hkml_view_mails
 import hkml_write
 
-def parse_menu_data(data, answer):
-    slist, selections = data
-    text = selections[int(answer) - 1].text
-    return slist, selections, text
-
 def menu_exec_git(data, answer, selection):
     slist, selections = data
     hkml_view.shell_mode_end(slist)
