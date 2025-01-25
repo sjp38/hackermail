@@ -34,9 +34,9 @@ def menu_exec_git(data, answer, selection):
     hkml_view.shell_mode_start(slist)
 
 def menu_hkml_thread(data, answer, selection):
-    slist, selections, text = parse_menu_data(data, answer)
+    slist, selections = data
     hkml_view.shell_mode_end(slist)
-    msgid = '<%s>' % text.split()[-1]
+    msgid = selection.data
     args = hkml_view_mails.hkml_list_args_for_msgid(msgid)
     hkml_view_mails.gen_show_mails_list(slist.screen, args)
     hkml_view.shell_mode_start(slist)
@@ -126,7 +126,7 @@ def menu_selections_for_msgid(line):
         if msgid is None:
             continue
         selections.append(hkml_view.CliSelection(
-            'hkml thread %s' % msgid, handle_fn=menu_hkml_thread))
+            'hkml thread %s' % msgid, handle_fn=menu_hkml_thread, data=msgid))
         selections.append(hkml_view.CliSelection(
             'hkml open %s' % msgid, handle_fn=menu_hkml_open))
     return selections
