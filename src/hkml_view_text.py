@@ -195,7 +195,7 @@ def reply_mail(c, slist):
     hkml_view_mails.reply_mail(slist, mail)
 
 def menu_reply_mail(data, answer, selection):
-    slist, selections, text = parse_menu_data(data, answer)
+    slist, selections = data
     mail = slist.data
     hkml_view.shell_mode_end(slist)
     hkml_view_mails.reply_mail(slist, mail)
@@ -213,7 +213,7 @@ def forward_mail(c, slist):
     hkml_view_mails.forward_mail(slist, mail)
 
 def menu_forward_mail(data, answer, selection):
-    slist, selections, text = parse_menu_data(data, answer)
+    slist, selections = data
     mail = slist.data
     hkml_view.shell_mode_end(slist)
     hkml_view_mails.forward_mail(slist, mail)
@@ -230,7 +230,7 @@ def write_draft_mail(c, slist):
     hkml_view_mails.write_mail_draft(slist, mail)
 
 def menu_write_draft(data, answer, selection):
-    slist, selections, text = parse_menu_data(data, answer)
+    slist, selections = data
     mail = slist.data
     hkml_view.shell_mode_end(slist)
     hkml_view_mails.write_mail_draft(slist, mail)
@@ -247,7 +247,7 @@ def manage_tags(c, slist):
     hkml_view_mails.manage_tags_of_mail(slist, mail)
 
 def menu_manage_tags(data, answer, selection):
-    slist, selections, text = parse_menu_data(data, answer)
+    slist, selections = data
     mail = slist.data
     hkml_view_mails.manage_tags_of_mail(slist, mail)
 
@@ -260,7 +260,7 @@ def handle_patches(c, slist):
     hkml_view.shell_mode_end(slist)
 
 def menu_handle_patches(data, answer, selection):
-    slist, selections, text = parse_menu_data(data, answer)
+    slist, selections = data
     mail = slist.data
     hkml_view_mails.handle_patches_of_mail(mail)
 
