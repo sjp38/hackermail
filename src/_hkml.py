@@ -287,18 +287,13 @@ class Mail:
                     if key == 'message-id':
                         if len(val.split()) >= 1:
                             val = val.split()[0]
-                    # handle UTF-8 encoded headers
-                    decoded_words = []
-                    for word in val.split():
-                        if word.lower().startswith('=?utf-8?'):
-                            word = email.header.decode_header(
-                                    word)[0][0].decode()
-                        decoded_words.append(word)
+                    decoded_header = email.header.decode_header(val)
+                    val = str(email.header.make_header(decoded_header))
                     # handle multiple to: and cc: lines
                     if key in ['to', 'cc'] and key in parsed:
-                        parsed[key] += ', %s' % ' '.join(decoded_words)
+                        parsed[key] += ', %s' % val
                     else:
-                        parsed[key] = ' '.join(decoded_words)
+                        parsed[key] = val
                 elif line == '':
                     in_header = False
                 continue
