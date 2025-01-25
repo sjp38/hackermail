@@ -66,18 +66,6 @@ def menu_open_file(data, answer):
     show_text_viewer(slist.screen, lines)
     hkml_view.shell_mode_start(slist)
 
-def text_viewer_menu_vim_file(c, slist):
-    if slist.data is None:
-        # tui menu
-        line = slist.lines[slist.focus_row]
-    else:
-        # cli menu
-        line = slist.data
-    file_path = line.split()[1:][-1]
-    hkml_view.shell_mode_start(slist)
-    subprocess.call(['vim', file_path])
-    hkml_view.shell_mode_end(slist)
-
 def menu_vim_file(data, answer):
     slist, selections, text = parse_menu_data(data, answer)
     file_path = text.split()[-1]
