@@ -443,7 +443,7 @@ def receive_file_path(for_read):
 
 def save_as(content):
     q = CliQuestion(desc='Save the content to', prompt='Enter selection')
-    def txt_handle_fn(data, answer):
+    def txt_handle_fn(data, answer, selection):
         content = data
         file_path = receive_file_path(for_read=False)
         if file_path is None:
@@ -451,7 +451,7 @@ def save_as(content):
         with open(file_path, 'w') as f:
             f.write(content)
 
-    def clipboard_handle_fn(data, answer):
+    def clipboard_handle_fn(data, answer, selection):
         content = data
         _, tmp_path = tempfile.mkstemp(prefix='hkml_view_save_')
         with open(tmp_path, 'w') as f:
@@ -463,8 +463,8 @@ def save_as(content):
 
     q.ask_selection(
             data=content, selections=[
-                CliSelection('text file', txt_handle_fn),
-                CliSelection('clipboard', clipboard_handle_fn)])
+                CliSelection('text file', handle_fn_v2=txt_handle_fn),
+                CliSelection('clipboard', handle_fn_v2=clipboard_handle_fn)])
 
 def handle_save_content_menu_selection(c, slist):
     shell_mode_start(slist)
