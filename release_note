@@ -1,5 +1,8 @@
 This file contains major changes in each version since v1.0.0
 
+v1.2.8
+- Decode any header lines with any encoding
+
 v1.2.7
 - Support making coverletter bogus commit (hkml patch commit_cv)
 - Support filling up cover letter with file
