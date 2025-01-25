@@ -663,6 +663,24 @@ def menu_refresh_mails(mail_slist, answer, selection):
     slist.screen.clear()
     hkml_view.shell_mode_start(slist)
 
+def menu_new_list(mail_slist, answer, selection):
+    mail, slist = mail_slist
+    answer, err = hkml_view.CliQuestion(
+            desc='Open new list with different arguments',
+            prompt=' '.join([
+                "Enter 'hml list' command line arguments",
+                'for the new list'])).ask_input()
+    if err is not None:
+        return
+    parser = argparse.ArgumentParser()
+    hkml_list.set_argparser(parser)
+    try:
+        args = parser.parse_args(answer.split())
+    except Exception as e:
+        print('parsing new option failed: %s' % e)
+        return
+    gen_show_mails_list(slist.screen, args)
+
 def menu_export_mails(mail_slist, answer, selection):
     mail, slist = mail_slist
     hkml_view.shell_mode_end(slist)
@@ -706,6 +724,8 @@ def show_mails_list_menu(c, slist):
                     'handle as patches', handle_fn=menu_handle_patches),
                 hkml_view.CliSelection(
                     'refresh', handle_fn=menu_refresh_mails),
+                hkml_view.CliSelection(
+                    'open new list', handle_fn=menu_new_list),
                 hkml_view.CliSelection(
                     'export as an mbox file', handle_fn=menu_export_mails),
                 hkml_view.CliSelection(
