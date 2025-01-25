@@ -109,7 +109,7 @@ class CliQuestion:
 
     Returns user's input to the question and error.
     '''
-    def ask_input(self, data, handle_fn, notify_completion=False):
+    def ask_input(self, data=None, handle_fn=None, notify_completion=False):
         answer, selection, err = self.ask(data, None, handle_fn,
                                           notify_completion)
         return answer, err
