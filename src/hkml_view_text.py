@@ -60,7 +60,7 @@ def menu_hkml_open(data, answer, selection):
     hkml_view.shell_mode_start(slist)
 
 def menu_open_file(data, answer, selection):
-    slist, selections, text = parse_menu_data(data, answer)
+    slist, selections = data
     hkml_view.shell_mode_end(slist)
     file_path = selection.data
     with open(file_path, 'r') as f:
@@ -69,7 +69,7 @@ def menu_open_file(data, answer, selection):
     hkml_view.shell_mode_start(slist)
 
 def menu_open_file_editor(data, answer, selection):
-    slist, selections, text = parse_menu_data(data, answer)
+    slist, selections = data
     file_path = selection.data
     hkml_write.open_editor(file_path, 'file')
 
