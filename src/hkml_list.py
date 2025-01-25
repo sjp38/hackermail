@@ -381,6 +381,19 @@ def format_stat(mails_to_show, stat_authors):
             lines.append('# - %s: %d' % (author, nr_mails))
     return lines
 
+def get_filtered_mails(mails, ls_range, mails_filter):
+    filtered_mails = []
+    for mail in mails:
+        if ls_range is not None and not mail.pridx in ls_range:
+            mail.filtered_out = True
+            continue
+        if mails_filter is not None and mails_filter.should_filter_out(mail):
+            mail.filtered_out = True
+            continue
+        mail.filtered_out = False
+        filtered_mails.append(mail)
+    return filtered_mails
+
 def sort_filter_mails(mails_to_show, do_find_ancestors_from_cache,
                       mails_filter, list_decorator, show_thread_of,
                       runtime_profile):
@@ -424,16 +437,8 @@ def sort_filter_mails(mails_to_show, do_find_ancestors_from_cache,
         end_idx = root.pridx + nr_replies_of(root) + 1
     ls_range = range(start_idx, end_idx)
 
-    filtered_mails = []
-    for mail in by_pr_idx:
-        if ls_range is not None and not mail.pridx in ls_range:
-            mail.filtered_out = True
-            continue
-        if mails_filter is not None and mails_filter.should_filter_out(mail):
-            mail.filtered_out = True
-            continue
-        mail.filtered_out = False
-        filtered_mails.append(mail)
+    filtered_mails = get_filtered_mails(by_pr_idx, ls_range, mails_filter)
+
     runtime_profile.append(['filtering', time.time() - timestamp])
     return filtered_mails, mail_idx_key_map
 
