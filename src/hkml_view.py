@@ -123,7 +123,7 @@ class CliQuestion:
 
     Returns user's input to the question, selected CliSelection, and error.
     '''
-    def ask_selection(self, data, selections, notify_completion=False):
+    def ask_selection(self, selections, data=None, notify_completion=False):
         if self.prompt is None:
             self.prompt = 'Enter the item number'
         return self.ask(data, selections, None, notify_completion)
