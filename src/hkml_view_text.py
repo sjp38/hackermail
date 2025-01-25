@@ -58,10 +58,10 @@ def menu_hkml_open(data, answer):
             break
     hkml_view.shell_mode_start(slist)
 
-def menu_open_file(data, answer):
+def menu_open_file(data, answer, selection):
     slist, selections, text = parse_menu_data(data, answer)
     hkml_view.shell_mode_end(slist)
-    file_path = text.split()[-1]
+    file_path = selection.data
     with open(file_path, 'r') as f:
         lines = f.read().split('\n')
     show_text_viewer(slist.screen, lines)
@@ -168,9 +168,12 @@ def menu_selections_for_files(line):
         if not word in found_files and os.path.isfile(word):
             found_files[word] = True
             selections.append(hkml_view.CliSelection(
-                'hkml open file %s' % word, menu_open_file))
+                text='hkml open file %s' % word, handle_fn=None,
+                handle_fn_v2=menu_open_file,
+                data=word))
             selections.append(hkml_view.CliSelection(
-                'open %s with a text editor' % word, menu_open_file_editor))
+                text='open %s with a text editor' % word,
+                handle_fn=menu_open_file_editor, data=word))
     return selections
 
 def reply_mail(c, slist):
