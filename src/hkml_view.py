@@ -25,7 +25,7 @@ class CliSelection:
     handle_fn_v2 = None # function receiving question data, answer, selection
     data = None         # for carrying selection-specific data
 
-    def __init__(self, text, handle_fn, data=None, handle_fn_v2=None):
+    def __init__(self, text, handle_fn=None, data=None, handle_fn_v2=None):
         self.text = text
         self.handle_fn = handle_fn
         self.handle_fn_v2 = handle_fn_v2
