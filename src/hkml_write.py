@@ -141,12 +141,13 @@ def ask_editor(default_editor):
         cmd = choices[0]
     return cmd
 
-def open_editor(file_path):
+def open_editor(file_path, target_desc='mail'):
     editor = os.environ.get('EDITOR')
     editor = ask_editor(editor)
 
+    print('I will open a text editor for the %s.' % target_desc)
     if subprocess.call([editor, file_path]) != 0:
-        print('writing mail with editor failed')
+        print('The editor exit with an error.' % target_desc)
         exit(1)
 
 def write_send_mail(draft_mail, subject, in_reply_to, to, cc, body, attach,
