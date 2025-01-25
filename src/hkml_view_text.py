@@ -42,9 +42,9 @@ def menu_hkml_thread(data, answer, selection):
     hkml_view.shell_mode_start(slist)
 
 def menu_hkml_open(data, answer, selection):
-    slist, selections, text = parse_menu_data(data, answer)
+    slist, selections = data
     hkml_view.shell_mode_end(slist)
-    msgid = '<%s>' % text.split()[-1]
+    msgid = selection.data
     args = hkml_view_mails.hkml_list_args_for_msgid(msgid)
     args.stdout = True  # to bypass dim_old suggestion
     list_data, err = hkml_list.args_to_mails_list_data( args)
@@ -128,7 +128,7 @@ def menu_selections_for_msgid(line):
         selections.append(hkml_view.CliSelection(
             'hkml thread %s' % msgid, handle_fn=menu_hkml_thread, data=msgid))
         selections.append(hkml_view.CliSelection(
-            'hkml open %s' % msgid, handle_fn=menu_hkml_open))
+            'hkml open %s' % msgid, handle_fn=menu_hkml_open, data=msgid))
     return selections
 
 def menu_exec_web(data, answer, selection):
