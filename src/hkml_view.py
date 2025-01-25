@@ -21,13 +21,11 @@ Curses-based TUI viewer for hkml list/open outputs.
 
 class CliSelection:
     text = None
-    handle_fn = None    # function receiving data and the answer
     handle_fn_v2 = None # function receiving question data, answer, selection
     data = None         # for carrying selection-specific data
 
-    def __init__(self, text, handle_fn=None, data=None, handle_fn_v2=None):
+    def __init__(self, text, data=None, handle_fn_v2=None):
         self.text = text
-        self.handle_fn = handle_fn
         self.handle_fn_v2 = handle_fn_v2
         self.data = data
 
@@ -66,7 +64,6 @@ class CliQuestion:
         if selections is not None:
             try:
                 selection = selections[int(answer) - 1]
-                handle_fn = selection.handle_fn
                 selection_handle_fn = selection.handle_fn_v2
             except:
                 cli_any_input('Wrong input.')
