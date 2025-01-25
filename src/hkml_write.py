@@ -117,7 +117,7 @@ def handle_user_edit_mistakes(tmp_path):
     with open(tmp_path, 'w') as f:
         f.write(written_mail)
 
-def open_editor(file_path):
+def ask_editor():
     choices = ['vim', 'nvim', 'emacs', 'nano']
     print('I will open a text editor to let you edit the mail.')
     print('what text editor do you prefer?')
@@ -130,7 +130,14 @@ def open_editor(file_path):
         cmd = choices[int(answer) - 1]
     except:
         cmd = 'vim'
-    if subprocess.call([cmd, file_path]) != 0:
+    return cmd
+
+def open_editor(file_path):
+    editor = os.environ.get('EDITOR')
+    if editor is None:
+        editor = ask_editor()
+
+    if subprocess.call([editor, file_path]) != 0:
         print('writing mail with editor failed')
         exit(1)
 
