@@ -20,9 +20,10 @@ def parse_menu_data(data, answer):
     return slist, selections, text
 
 def menu_exec_git(data, answer, selection):
-    slist, selections, text = parse_menu_data(data, answer)
+    slist, selections = data
     hkml_view.shell_mode_end(slist)
-    words = text.split()
+    git_cmd = selection.data
+    words = git_cmd.split()
     try:
         output = subprocess.check_output(
                 words, stderr=subprocess.DEVNULL).decode().split('\n')
@@ -87,16 +88,19 @@ def menu_selections_for_commit(line):
     for word in line.split():
         if not is_git_hash(word):
             continue
+        show_cmd = 'git show %s' % word
+        log_five_cmd = 'git log -n 5 %s' % word
+        log_oneline_cmd = 'git log --oneline -n 64 %s' % word
         selections.append(
                 hkml_view.CliSelection(
-                    'git show %s' % word, handle_fn=menu_exec_git))
+                    show_cmd, handle_fn=menu_exec_git, data=show_cmd))
         selections.append(
                 hkml_view.CliSelection(
-                    'git log -n 5 %s' % word, handle_fn=menu_exec_git))
+                    log_five_cmd, handle_fn=menu_exec_git, data=log_five_cmd))
         selections.append(
                 hkml_view.CliSelection(
-                    'git log --oneline -n 64 %s' % word,
-                    handle_fn=menu_exec_git))
+                    log_oneline_cmd, handle_fn=menu_exec_git,
+                    data=log_oneline_cmd))
     return selections
 
 def get_msgid_from_public_inbox_link(word):
