@@ -12,6 +12,7 @@ import hkml_list
 import hkml_open
 import hkml_view
 import hkml_view_mails
+import hkml_write
 
 def parse_menu_data(data, answer):
     slist, selections = data
@@ -66,10 +67,10 @@ def menu_open_file(data, answer):
     show_text_viewer(slist.screen, lines)
     hkml_view.shell_mode_start(slist)
 
-def menu_vim_file(data, answer):
+def menu_open_file_editor(data, answer):
     slist, selections, text = parse_menu_data(data, answer)
-    file_path = text.split()[-1]
-    subprocess.call(['vim', file_path])
+    file_path = text.split()[1]
+    hkml_write.open_editor(file_path, 'file')
 
 def is_git_hash(word):
     if len(word) < 10:
@@ -169,7 +170,7 @@ def menu_selections_for_files(line):
             selections.append(hkml_view.CliSelection(
                 'hkml open file %s' % word, menu_open_file))
             selections.append(hkml_view.CliSelection(
-                'vim %s' % word, menu_vim_file))
+                'open %s with a text editor' % word, menu_open_file_editor))
     return selections
 
 def reply_mail(c, slist):
