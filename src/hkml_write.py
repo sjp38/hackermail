@@ -124,7 +124,15 @@ def ask_editor(default_editor):
         choices = []
     for editor in ['vim', 'nvim', 'emacs', 'nano']:
         if not editor in choices:
-            choices.append(editor)
+            try:
+                subprocess.check_output(['which', editor])
+                choices.append(editor)
+            except:
+                # the editor is not installed on this system
+                pass
+    if choices == []:
+        print('please install vim, nvim, emacs or nano and retry')
+        exit(1)
     print('I will open a text editor to let you edit the mail.')
     print('What text editor shall I use?')
     print()
