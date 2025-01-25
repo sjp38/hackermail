@@ -19,6 +19,14 @@ Curses-based TUI viewer for hkml list/open outputs.
 
 # CLI menu
 
+'''
+object for CliQuestion.ask_selection()
+'text' is displayed to the user with the selection question.
+'handle_fn' of user-selected one is called if it is not None.  The function
+    receives user-set CliQuestion.data, user-entered input (number), and the
+    selected CliSelection object.
+'data' can save any selection-specific data.
+'''
 class CliSelection:
     text = None
     handle_fn = None    # function receiving question data, answer, selection
@@ -29,10 +37,18 @@ class CliSelection:
         self.handle_fn = handle_fn
         self.data = data
 
+'''
+For letting user show the output before showing others, e.g., returning to
+previous ScrollableList screen.
+'''
 def cli_any_input(prompt):
     print('%s\n\nPress enter to return' % prompt)
     sys.stdin.read(1)
 
+'''
+question that will be provided to the user, in shell mode.
+ask_input() and ask_selection() are the methods that user will really use.
+'''
 class CliQuestion:
     description = None
     prompt = None
@@ -41,6 +57,9 @@ class CliQuestion:
         self.description = desc
         self.prompt = prompt
 
+    '''
+    internal method.  Shouldn't be called directly from CliQuestion user.
+    '''
     def ask(self, data, selections, handle_fn, notify_completion):
         # return answer, selection, and error
         lines = []
@@ -81,9 +100,27 @@ class CliQuestion:
             cli_any_input('Done.')
         return answer, selection, None
 
+    '''
+    Ask user to answer any text input.  If handle_fn is not None, the function
+    is called with 'data' and user's input to the question.
+
+    Should be invoked in shell mode (show shell_mode_start() and
+    shell_mode_end()).
+
+    Returns user's input to the question, None, and error.
+    '''
     def ask_input(self, data, handle_fn, notify_completion=False):
         return self.ask(data, None, handle_fn, notify_completion)
 
+    '''
+    Ask user to select on of CliSelection objects.  If the selected
+    CliSelection has handle_fn field set, it is invoked.
+
+    Should be invoked in shell mode (show shell_mode_start() and
+    shell_mode_end()).
+
+    Returns user's input to the question, selected CliSelection, and error.
+    '''
     def ask_selection(self, data, selections, notify_completion=False):
         if self.prompt is None:
             self.prompt = 'Enter the item number'
