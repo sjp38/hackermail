@@ -258,7 +258,10 @@ def do_apply_patch(data, answer, selection):
         hkml_view.cli_any_input('applying action failed (%s)' % err)
 
 def do_export_patch(data, answer, selection):
-    export_dir = input('to where export the patch file[s]? ')
+    export_dir, _, err = hkml_view.CliQuestion(
+            'Enter directory to export patch files').ask_input(None, None)
+    if err == 'canceled':
+        return
     if not os.path.exists(export_dir):
         os.makedirs(export_dir)
     elif not os.path.isdir(export_dir):
