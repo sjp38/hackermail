@@ -89,14 +89,14 @@ def menu_selections_for_commit(line):
             continue
         selections.append(
                 hkml_view.CliSelection(
-                    'git show %s' % word, handle_fn_v2=menu_exec_git))
+                    'git show %s' % word, handle_fn=menu_exec_git))
         selections.append(
                 hkml_view.CliSelection(
-                    'git log -n 5 %s' % word, handle_fn_v2=menu_exec_git))
+                    'git log -n 5 %s' % word, handle_fn=menu_exec_git))
         selections.append(
                 hkml_view.CliSelection(
                     'git log --oneline -n 64 %s' % word,
-                    handle_fn_v2=menu_exec_git))
+                    handle_fn=menu_exec_git))
     return selections
 
 def get_msgid_from_public_inbox_link(word):
@@ -122,9 +122,9 @@ def menu_selections_for_msgid(line):
         if msgid is None:
             continue
         selections.append(hkml_view.CliSelection(
-            'hkml thread %s' % msgid, handle_fn_v2=menu_hkml_thread))
+            'hkml thread %s' % msgid, handle_fn=menu_hkml_thread))
         selections.append(hkml_view.CliSelection(
-            'hkml open %s' % msgid, handle_fn_v2=menu_hkml_open))
+            'hkml open %s' % msgid, handle_fn=menu_hkml_open))
     return selections
 
 def menu_exec_web(data, answer, selection):
@@ -141,14 +141,14 @@ def menu_selections_for_url(line):
         try:
             subprocess.check_output(['which', 'lynx'])
             selections.append(hkml_view.CliSelection(
-                'lynx %s' % word, handle_fn_v2=menu_exec_web))
+                'lynx %s' % word, handle_fn=menu_exec_web))
         except:
             # lynx not installed.
             pass
         try:
             subprocess.check_output(['which', 'w3m'])
             selections.append(hkml_view.CliSelection(
-                'w3m %s' % word, handle_fn_v2=menu_exec_web))
+                'w3m %s' % word, handle_fn=menu_exec_web))
         except:
             # w3m not installed.
             pass
@@ -170,12 +170,11 @@ def menu_selections_for_files(line):
         if not word in found_files and os.path.isfile(word):
             found_files[word] = True
             selections.append(hkml_view.CliSelection(
-                text='hkml open file %s' % word, handle_fn=None,
-                handle_fn_v2=menu_open_file,
+                text='hkml open file %s' % word, handle_fn=menu_open_file,
                 data=word))
             selections.append(hkml_view.CliSelection(
-                text='open %s with a text editor' % word, handle_fn=None,
-                handle_fn_v2=menu_open_file_editor, data=word))
+                text='open %s with a text editor' % word,
+                handle_fn=menu_open_file_editor, data=word))
     return selections
 
 def reply_mail(c, slist):
@@ -261,14 +260,14 @@ def menu_handle_patches(data, answer, selection):
 
 def menu_selections_for_mail():
     return [
-            hkml_view.CliSelection('reply', handle_fn_v2=menu_reply_mail),
-            hkml_view.CliSelection('forward', handle_fn_v2=menu_forward_mail),
+            hkml_view.CliSelection('reply', handle_fn=menu_reply_mail),
+            hkml_view.CliSelection('forward', handle_fn=menu_forward_mail),
             hkml_view.CliSelection(
-                'continue draft writing', handle_fn_v2=menu_write_draft),
+                'continue draft writing', handle_fn=menu_write_draft),
             hkml_view.CliSelection('manage tags',
-                                   handle_fn_v2=menu_manage_tags),
+                                   handle_fn=menu_manage_tags),
             hkml_view.CliSelection(
-                'handle as patches', handle_fn_v2=menu_handle_patches),
+                'handle as patches', handle_fn=menu_handle_patches),
             ]
 
 def menu_selections(slist):

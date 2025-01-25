@@ -21,12 +21,12 @@ Curses-based TUI viewer for hkml list/open outputs.
 
 class CliSelection:
     text = None
-    handle_fn_v2 = None # function receiving question data, answer, selection
+    handle_fn = None    # function receiving question data, answer, selection
     data = None         # for carrying selection-specific data
 
-    def __init__(self, text, data=None, handle_fn_v2=None):
+    def __init__(self, text, handle_fn, data=None):
         self.text = text
-        self.handle_fn_v2 = handle_fn_v2
+        self.handle_fn = handle_fn
         self.data = data
 
 def cli_any_input(prompt):
@@ -64,7 +64,7 @@ class CliQuestion:
         if selections is not None:
             try:
                 selection = selections[int(answer) - 1]
-                selection_handle_fn = selection.handle_fn_v2
+                selection_handle_fn = selection.handle_fn
             except:
                 cli_any_input('Wrong input.')
                 return None, None, 'wrong input'
@@ -460,8 +460,8 @@ def save_as(content):
 
     q.ask_selection(
             data=content, selections=[
-                CliSelection('text file', handle_fn_v2=txt_handle_fn),
-                CliSelection('clipboard', handle_fn_v2=clipboard_handle_fn)])
+                CliSelection('text file', txt_handle_fn),
+                CliSelection('clipboard', clipboard_handle_fn)])
 
 def handle_save_content_menu_selection(c, slist):
     shell_mode_start(slist)

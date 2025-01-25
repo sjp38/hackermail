@@ -236,9 +236,9 @@ def manage_tags_of_mail(slist, mail):
     q.ask_selection(
             data=[mail, tags],
             selections=[
-                hkml_view.CliSelection('Add tags', handle_fn_v2=do_add_tags),
+                hkml_view.CliSelection('Add tags', handle_fn=do_add_tags),
                 hkml_view.CliSelection('Remove tags',
-                                       handle_fn_v2=do_remove_tags)])
+                                       handle_fn=do_remove_tags)])
     hkml_view.shell_mode_end(slist)
 
 def do_check_patch(data, answer, selection):
@@ -299,11 +299,11 @@ def handle_patches_of_mail(mail, list_mails=None):
             data=mail,
             selections=[
                 hkml_view.CliSelection(
-                    'check patch[es]', handle_fn_v2=do_check_patch),
+                    'check patch[es]', handle_fn=do_check_patch),
                 hkml_view.CliSelection(
-                    'apply patch[es]', handle_fn_v2=do_apply_patch),
+                    'apply patch[es]', handle_fn=do_apply_patch),
                 hkml_view.CliSelection(
-                    'export patch[es]', handle_fn_v2=do_export_patch)],
+                    'export patch[es]', handle_fn=do_export_patch)],
             notify_completion=True)
 
 def __set_prdepth(mail, depth):
@@ -373,12 +373,12 @@ def export_mails(c, slist):
             data=[slist, idx],
             selections=[
                 hkml_view.CliSelection(
-                    'Export only focused mail', handle_fn_v2=do_export),
+                    'Export only focused mail', handle_fn=do_export),
                 hkml_view.CliSelection(
                     'Export a range of mails of the list',
-                    handle_fn_v2=do_export),
+                    handle_fn=do_export),
                 hkml_view.CliSelection(
-                    'Export all mails of the list', handle_fn_v2=do_export)],
+                    'Export all mails of the list', handle_fn=do_export)],
                 notify_completion=True)
     hkml_view.shell_mode_end(slist)
 
@@ -482,25 +482,25 @@ class MailDisplayEffect:
 
         selections=[
                 hkml_view.CliSelection(
-                    text='Normal', handle_fn_v2=handle_selection,
+                    text='Normal', handle_fn=handle_selection,
                     data=hkml_view.ScrollableList.effect_normal),
                 hkml_view.CliSelection(
-                    text='Dim', handle_fn_v2=handle_selection,
+                    text='Dim', handle_fn=handle_selection,
                     data=hkml_view.ScrollableList.effect_dim),
                 hkml_view.CliSelection(
-                    text='Bold', handle_fn_v2=handle_selection,
+                    text='Bold', handle_fn=handle_selection,
                     data=hkml_view.ScrollableList.effect_bold),
                 hkml_view.CliSelection(
-                    text='Italic', handle_fn_v2=handle_selection,
+                    text='Italic', handle_fn=handle_selection,
                     data=hkml_view.ScrollableList.effect_italic),
                 hkml_view.CliSelection(
-                    text='Blink', handle_fn_v2=handle_selection,
+                    text='Blink', handle_fn=handle_selection,
                     data=hkml_view.ScrollableList.effect_blink),
                 hkml_view.CliSelection(
-                    text='Reverse', handle_fn_v2=handle_selection,
+                    text='Reverse', handle_fn=handle_selection,
                     data=hkml_view.ScrollableList.effect_reverse),
                 hkml_view.CliSelection(
-                    text='Underline', handle_fn_v2=handle_selection,
+                    text='Underline', handle_fn=handle_selection,
                     data=hkml_view.ScrollableList.effect_underline),
                 ]
         _, selection, err = q.ask_selection(
@@ -682,31 +682,31 @@ def show_mails_list_menu(c, slist):
     q.ask_selection(
             data=[mail, slist],
             selections=[
-                hkml_view.CliSelection('open', handle_fn_v2=menu_open_mail),
+                hkml_view.CliSelection('open', handle_fn=menu_open_mail),
                 hkml_view.CliSelection(
-                    'list complete thread', handle_fn_v2=menu_list_thread),
+                    'list complete thread', handle_fn=menu_list_thread),
                 hkml_view.CliSelection(
                     'collapse/expand focused thread',
-                    handle_fn_v2=menu_collapse_expand),
+                    handle_fn=menu_collapse_expand),
                 hkml_view.CliSelection(
-                    'dim old mails', handle_fn_v2=menu_dim_old_mails),
+                    'dim old mails', handle_fn=menu_dim_old_mails),
                 hkml_view.CliSelection(
-                    'set display effects', handle_fn_v2=menu_effect_mails),
-                hkml_view.CliSelection('reply', handle_fn_v2=menu_reply_mail),
+                    'set display effects', handle_fn=menu_effect_mails),
+                hkml_view.CliSelection('reply', handle_fn=menu_reply_mail),
                 hkml_view.CliSelection(
-                    'forward', handle_fn_v2=menu_forward_mail),
+                    'forward', handle_fn=menu_forward_mail),
                 hkml_view.CliSelection(
-                    'continue draft writing', handle_fn_v2=menu_write_draft),
+                    'continue draft writing', handle_fn=menu_write_draft),
                 hkml_view.CliSelection(
-                    'manage tags', handle_fn_v2=menu_manage_tags),
+                    'manage tags', handle_fn=menu_manage_tags),
                 hkml_view.CliSelection(
-                    'handle as patches', handle_fn_v2=menu_handle_patches),
+                    'handle as patches', handle_fn=menu_handle_patches),
                 hkml_view.CliSelection(
-                    'refresh', handle_fn_v2=menu_refresh_mails),
+                    'refresh', handle_fn=menu_refresh_mails),
                 hkml_view.CliSelection(
-                    'export as an mbox file', handle_fn_v2=menu_export_mails),
+                    'export as an mbox file', handle_fn=menu_export_mails),
                 hkml_view.CliSelection(
-                    'save screen content as ...', handle_fn_v2=menu_save_as),
+                    'save screen content as ...', handle_fn=menu_save_as),
                 ])
     hkml_view.shell_mode_end(slist)
 
