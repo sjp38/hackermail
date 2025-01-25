@@ -132,8 +132,8 @@ def menu_selections_for_msgid(line):
     return selections
 
 def menu_exec_web(data, answer, selection):
-    slist, selections, text = parse_menu_data(data, answer)
-    subprocess.call(text.split())
+    cmd = selection.data
+    subprocess.call(cmd.split())
 
 def menu_selections_for_url(line):
     for separator in [',', '(', ')', '[', ']', '"']:
@@ -144,15 +144,17 @@ def menu_selections_for_url(line):
             continue
         try:
             subprocess.check_output(['which', 'lynx'])
+            cmd = 'lynx %s' % word
             selections.append(hkml_view.CliSelection(
-                'lynx %s' % word, handle_fn=menu_exec_web))
+                cmd, handle_fn=menu_exec_web, data=cmd))
         except:
             # lynx not installed.
             pass
         try:
             subprocess.check_output(['which', 'w3m'])
+            cmd = 'w3m %s' % word
             selections.append(hkml_view.CliSelection(
-                'w3m %s' % word, handle_fn=menu_exec_web))
+                cmd, handle_fn=menu_exec_web, data=cmd))
         except:
             # w3m not installed.
             pass
