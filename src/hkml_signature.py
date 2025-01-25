@@ -6,6 +6,7 @@ import subprocess
 import tempfile
 
 import _hkml
+import hkml_write
 
 '''
 The file is a json format, having a list of strings.
@@ -30,9 +31,7 @@ def add_signature():
             '',
             '# Please enter the signature you want to add.',
             '# Lines starting with "#" will be ingored.']))
-    if subprocess.call(['vim', tmp_path]) != 0:
-        print('writing signature failed')
-        exit(1)
+    hkml_write.open_editor(tmp_path, 'signature')
     with open(tmp_path, 'r') as f:
         lines = []
         for line in f:
@@ -56,9 +55,7 @@ def edit_signature(signature_idx):
             '',
             '# Please edit the signature above as you want.',
             '# Lines starting with "#" will be ingored.']))
-    if subprocess.call(['vim', tmp_path]) != 0:
-        print('writing signature failed')
-        exit(1)
+    hkml_write.open_editor(tmp_path, 'signature')
     with open(tmp_path, 'r') as f:
         lines = []
         for line in f:
