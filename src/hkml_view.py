@@ -32,7 +32,7 @@ class CliSelection:
     handle_fn = None    # function receiving question data, answer, selection
     data = None         # for carrying selection-specific data
 
-    def __init__(self, text, handle_fn, data=None):
+    def __init__(self, text, handle_fn=None, data=None):
         self.text = text
         self.handle_fn = handle_fn
         self.data = data
