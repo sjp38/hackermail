@@ -67,9 +67,9 @@ def menu_open_file(data, answer, selection):
     show_text_viewer(slist.screen, lines)
     hkml_view.shell_mode_start(slist)
 
-def menu_open_file_editor(data, answer):
+def menu_open_file_editor(data, answer, selection):
     slist, selections, text = parse_menu_data(data, answer)
-    file_path = text.split()[1]
+    file_path = selection.data
     hkml_write.open_editor(file_path, 'file')
 
 def is_git_hash(word):
@@ -172,8 +172,8 @@ def menu_selections_for_files(line):
                 handle_fn_v2=menu_open_file,
                 data=word))
             selections.append(hkml_view.CliSelection(
-                text='open %s with a text editor' % word,
-                handle_fn=menu_open_file_editor, data=word))
+                text='open %s with a text editor' % word, handle_fn=None,
+                handle_fn_v2=menu_open_file_editor, data=word))
     return selections
 
 def reply_mail(c, slist):
