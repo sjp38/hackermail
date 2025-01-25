@@ -19,7 +19,7 @@ def parse_menu_data(data, answer):
     text = selections[int(answer) - 1].text
     return slist, selections, text
 
-def menu_exec_git(data, answer):
+def menu_exec_git(data, answer, selection):
     slist, selections, text = parse_menu_data(data, answer)
     hkml_view.shell_mode_end(slist)
     words = text.split()
@@ -32,7 +32,7 @@ def menu_exec_git(data, answer):
     show_text_viewer(slist.screen, output)
     hkml_view.shell_mode_start(slist)
 
-def menu_hkml_thread(data, answer):
+def menu_hkml_thread(data, answer, selection):
     slist, selections, text = parse_menu_data(data, answer)
     hkml_view.shell_mode_end(slist)
     msgid = '<%s>' % text.split()[-1]
@@ -40,7 +40,7 @@ def menu_hkml_thread(data, answer):
     hkml_view_mails.gen_show_mails_list(slist.screen, args)
     hkml_view.shell_mode_start(slist)
 
-def menu_hkml_open(data, answer):
+def menu_hkml_open(data, answer, selection):
     slist, selections, text = parse_menu_data(data, answer)
     hkml_view.shell_mode_end(slist)
     msgid = '<%s>' % text.split()[-1]
@@ -88,13 +88,15 @@ def menu_selections_for_commit(line):
         if not is_git_hash(word):
             continue
         selections.append(
-                hkml_view.CliSelection('git show %s' % word, menu_exec_git))
+                hkml_view.CliSelection(
+                    'git show %s' % word, handle_fn_v2=menu_exec_git))
         selections.append(
                 hkml_view.CliSelection(
-                    'git log -n 5 %s' % word, menu_exec_git))
+                    'git log -n 5 %s' % word, handle_fn_v2=menu_exec_git))
         selections.append(
                 hkml_view.CliSelection(
-                    'git log --oneline -n 64 %s' % word, menu_exec_git))
+                    'git log --oneline -n 64 %s' % word,
+                    handle_fn_v2=menu_exec_git))
     return selections
 
 def get_msgid_from_public_inbox_link(word):
@@ -120,12 +122,12 @@ def menu_selections_for_msgid(line):
         if msgid is None:
             continue
         selections.append(hkml_view.CliSelection(
-            'hkml thread %s' % msgid, menu_hkml_thread))
+            'hkml thread %s' % msgid, handle_fn_v2=menu_hkml_thread))
         selections.append(hkml_view.CliSelection(
-            'hkml open %s' % msgid, menu_hkml_open))
+            'hkml open %s' % msgid, handle_fn_v2=menu_hkml_open))
     return selections
 
-def menu_exec_web(data, answer):
+def menu_exec_web(data, answer, selection):
     slist, selections, text = parse_menu_data(data, answer)
     subprocess.call(text.split())
 
@@ -139,14 +141,14 @@ def menu_selections_for_url(line):
         try:
             subprocess.check_output(['which', 'lynx'])
             selections.append(hkml_view.CliSelection(
-                'lynx %s' % word, menu_exec_web))
+                'lynx %s' % word, handle_fn_v2=menu_exec_web))
         except:
             # lynx not installed.
             pass
         try:
             subprocess.check_output(['which', 'w3m'])
             selections.append(hkml_view.CliSelection(
-                'w3m %s' % word, menu_exec_web))
+                'w3m %s' % word, handle_fn_v2=menu_exec_web))
         except:
             # w3m not installed.
             pass
@@ -187,7 +189,7 @@ def reply_mail(c, slist):
 
     hkml_view_mails.reply_mail(slist, mail)
 
-def menu_reply_mail(data, answer):
+def menu_reply_mail(data, answer, selection):
     slist, selections, text = parse_menu_data(data, answer)
     mail = slist.data
     hkml_view.shell_mode_end(slist)
@@ -205,7 +207,7 @@ def forward_mail(c, slist):
 
     hkml_view_mails.forward_mail(slist, mail)
 
-def menu_forward_mail(data, answer):
+def menu_forward_mail(data, answer, selection):
     slist, selections, text = parse_menu_data(data, answer)
     mail = slist.data
     hkml_view.shell_mode_end(slist)
@@ -222,7 +224,7 @@ def write_draft_mail(c, slist):
         return
     hkml_view_mails.write_mail_draft(slist, mail)
 
-def menu_write_draft(data, answer):
+def menu_write_draft(data, answer, selection):
     slist, selections, text = parse_menu_data(data, answer)
     mail = slist.data
     hkml_view.shell_mode_end(slist)
@@ -239,7 +241,7 @@ def manage_tags(c, slist):
         return
     hkml_view_mails.manage_tags_of_mail(slist, mail)
 
-def menu_manage_tags(data, answer):
+def menu_manage_tags(data, answer, selection):
     slist, selections, text = parse_menu_data(data, answer)
     mail = slist.data
     hkml_view_mails.manage_tags_of_mail(slist, mail)
@@ -252,20 +254,21 @@ def handle_patches(c, slist):
     hkml_view_mails.handle_patches_of_mail(mail)
     hkml_view.shell_mode_end(slist)
 
-def menu_handle_patches(data, answer):
+def menu_handle_patches(data, answer, selection):
     slist, selections, text = parse_menu_data(data, answer)
     mail = slist.data
     hkml_view_mails.handle_patches_of_mail(mail)
 
 def menu_selections_for_mail():
     return [
-            hkml_view.CliSelection('reply', menu_reply_mail),
-            hkml_view.CliSelection('forward', menu_forward_mail),
+            hkml_view.CliSelection('reply', handle_fn_v2=menu_reply_mail),
+            hkml_view.CliSelection('forward', handle_fn_v2=menu_forward_mail),
             hkml_view.CliSelection(
-                'continue draft writing', menu_write_draft),
-            hkml_view.CliSelection('manage tags', menu_manage_tags),
+                'continue draft writing', handle_fn_v2=menu_write_draft),
+            hkml_view.CliSelection('manage tags',
+                                   handle_fn_v2=menu_manage_tags),
             hkml_view.CliSelection(
-                'handle as patches', menu_handle_patches),
+                'handle as patches', handle_fn_v2=menu_handle_patches),
             ]
 
 def menu_selections(slist):
