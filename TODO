@@ -18,3 +18,5 @@
 - Let interactive mails selection and menu for slected mails
 - Support patch handling of non-public mails
 - Support mail content searching
+- Support commit for --since and --until
+  - e.g., hkml list --since v6.14 --until linus/master
