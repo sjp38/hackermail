@@ -3,6 +3,7 @@
 import json
 import os
 import subprocess
+import sys
 import tempfile
 
 import _hkml
@@ -86,8 +87,12 @@ def main(args):
 
 def set_argparser(parser):
     parser.description = 'manage signature for mails'
-    subparsers = parser.add_subparsers(
-            title='action', dest='action', metavar='<action>', required=True)
+    if sys.version_info >= (3,8):
+        subparsers = parser.add_subparsers(
+                title='action', dest='action', metavar='<action>', required=True)
+    else:
+        subparsers = parser.add_subparsers(
+                title='action', dest='action', metavar='<action>')
 
     parser_add = subparsers.add_parser('add', help='add a signature')
     parser_list = subparsers.add_parser('list', help='list signatures')

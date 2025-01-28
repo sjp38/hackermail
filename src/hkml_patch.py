@@ -3,6 +3,7 @@
 import os
 import shutil
 import subprocess
+import sys
 import tempfile
 
 import _hkml
@@ -342,8 +343,13 @@ def set_argparser(parser):
     parser.add_argument('--dont_add_cv', action='store_true',
                         help='don\'t add cover letter to first patch')
 
-    subparsers = parser.add_subparsers(
-            title='action', dest='action', metavar='<action>', required=True)
+    if sys.version_info >= (3,7):
+        subparsers = parser.add_subparsers(
+                title='action', dest='action', metavar='<action>',
+                required=True)
+    else:
+        subparsers = parser.add_subparsers(
+                title='action', dest='action', metavar='<action>')
 
     parser_apply = subparsers.add_parser('apply', help='apply the patch')
     parser_apply.add_argument(

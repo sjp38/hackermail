@@ -2,6 +2,7 @@
 
 import os
 import subprocess
+import sys
 
 import _hkml
 import hkml_open
@@ -275,12 +276,20 @@ def set_argparser(parser):
                         help='mark as RFC patches')
     parser.add_argument('--subject_prefix', metavar='<string>',
                         help='subject prefix')
-    parser.add_argument('--to', metavar='<recipient>', nargs='+',
-                        default=[], action='extend',
-                        help='To: recipients')
-    parser.add_argument('--cc', metavar='<recipient>', nargs='+',
-                        default=[], action='extend',
-                        help='Cc: recipients')
+    if sys.version_info >= (3, 7):
+        parser.add_argument('--to', metavar='<recipient>', nargs='+',
+                            default=[], action='extend',
+                            help='To: recipients')
+        parser.add_argument('--cc', metavar='<recipient>', nargs='+',
+                            default=[], action='extend',
+                            help='Cc: recipients')
+    else:
+        parser.add_argument('--to', metavar='<recipient>', nargs='+',
+                            default=[],
+                            help='To: recipients')
+        parser.add_argument('--cc', metavar='<recipient>', nargs='+',
+                            default=[],
+                            help='Cc: recipients')
     parser.add_argument('--cv', metavar='<file>',
                         help='file containing cover letter content')
     parser.epilog = ' '.join([

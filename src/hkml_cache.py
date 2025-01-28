@@ -4,6 +4,7 @@ import argparse
 import datetime
 import json
 import os
+import sys
 import time
 
 import _hkml
@@ -207,8 +208,12 @@ def main(args):
 def set_argparser(parser):
     parser.description = 'manage mails cache'
 
-    subparsers = parser.add_subparsers(
-            title='action', dest='action', metavar='<action>', required=True)
+    if sys.version_info >= (3,7):
+        subparsers = parser.add_subparsers(
+                title='action', dest='action', metavar='<action>', required=True)
+    else:
+        subparsers = parser.add_subparsers(
+                title='action', dest='action', metavar='<action>')
 
     parser_status = subparsers.add_parser('status', help='show cache status')
     parser_status.add_argument('--config_only', action='store_true',

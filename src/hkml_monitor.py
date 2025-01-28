@@ -5,6 +5,7 @@ import datetime
 import json
 import math
 import os
+import sys
 import tempfile
 import time
 
@@ -330,8 +331,12 @@ def set_add_arguments(parser):
 
 def set_argparser(parser):
     _hkml.set_manifest_option(parser)
-    subparsers = parser.add_subparsers(
-            title='action', dest='action', metavar='<action>', required=True)
+    if sys.version_info >= (3,7):
+        subparsers = parser.add_subparsers(
+                title='action', dest='action', metavar='<action>', required=True)
+    else:
+     subparsers = parser.add_subparsers(
+            title='action', dest='action', metavar='<action>')
 
     parser_add = subparsers.add_parser('add', help='add a monitoring request')
     set_add_arguments(parser_add)
