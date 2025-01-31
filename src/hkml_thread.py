@@ -53,7 +53,11 @@ def thread_str(mail_id, dont_use_internet, show_url):
 
 def main(args):
     if args.mail_id is None:
-        to_show, mail_idx_key_map = _hkml_list_cache.get_last_thread()
+        cached = _hkml_list_cache.get_last_thread()
+        if cached is None:
+            print("No message identifier or cached thread")
+            return
+        to_show, mail_idx_key_map = cached
         _hkml_list_cache.writeback_list_output()
         hkml_list.show_list(to_show, to_stdout=False,
                             to_less=args.no_interactive,
