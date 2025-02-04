@@ -775,7 +775,7 @@ def get_mails(source, fetch, since, until,
     if source_type == 'msgid':
         mails, err = get_thread_mails_from_web(source)
         if err is not None:
-            print('getting mails for msgid %s failed' % source)
+            return None, 'failed: %s for %s' % (err, source)
             exit(1)
         return mails, None
 
