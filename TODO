@@ -21,3 +21,4 @@
 - Support commit for --since and --until
   - e.g., hkml list --since v6.14 --until linus/master
 - Break long lines to given length
+- Let re-reading list without updating dim_old candidates
