@@ -22,3 +22,5 @@
   - e.g., hkml list --since v6.14 --until linus/master
 - Break long lines to given length
 - Let re-reading list without updating dim_old candidates
+- Handle tabs on horizontal scroll
+  (https://lore.kernel.org/20250205160529.GB1183495@cmpxchg.org)
