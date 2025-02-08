@@ -164,6 +164,11 @@ def tabs_to_spaces(line, spaces_per_tab):
 def wrap_line(line, cols):
     if len(line) < cols:
         return [line]
+    if line[:2] in ['> ', '+ ', '- ']:
+        prefix = line[:2]
+        line = line[2:]
+    else:
+        prefix = ''
     last_space = None
     for idx, c in enumerate(line):
         if c.isspace():
@@ -172,9 +177,11 @@ def wrap_line(line, cols):
             break
     if last_space is None:
         last_space = len(line)
-    wrapped_lines = [line[:last_space]]
-    if len(line) > last_space + 1:
-        wrapped_lines += wrap_line(line[last_space + 1:], cols)
+    wrapped_lines = ['%s%s' % (prefix, line[:last_space])]
+    next_line = line[last_space + 1:]
+    if len(next_line) > 0:
+        next_line = '%s%s' % (prefix, next_line)
+        wrapped_lines += wrap_line(next_line, cols)
     return wrapped_lines
 
 def wrap_text(lines, cols):
