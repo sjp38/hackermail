@@ -189,14 +189,20 @@ class ScrollableList:
     effect_reverse = curses.A_REVERSE
     effect_underline = curses.A_UNDERLINE
 
-    def __init__(self, screen, lines, input_handlers):
-        self.screen = screen
-
+    def set_lines(self, lines):
         converted = []
         for line in lines:
             converted.append(tabs_to_spaces(line, 8))
         lines = converted
         self.lines = lines
+        self.longest_line_len = sorted([len(line) for line in lines])[-1]
+        if self.focus_col is not None:
+            self.focus_col = min(self.focus_col, self.longest_line_len - 1)
+
+    def __init__(self, screen, lines, input_handlers):
+        self.screen = screen
+
+        self.set_lines(lines)
 
         # set focus on middle of the screen or the content
         scr_rows, _ = screen.getmaxyx()
@@ -211,7 +217,6 @@ class ScrollableList:
                     raise Exception('DUPLICATED INPUT HANDLER for %s' % c)
                 handled_inputs[c] = True
         self.focus_col = 0
-        self.longest_line_len = sorted([len(line) for line in lines])[-1]
         self.search_keyword = '['
 
     def __draw(self):
