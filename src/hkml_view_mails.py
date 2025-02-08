@@ -168,7 +168,7 @@ def refresh_list(slist):
             mails, decorator, collapsed_mails)
     slist.data.list_data.line_nr_mail_map = line_nr_mail_map
     text = '\n'.join(lines)
-    slist.lines = comment_lines + text.split('\n')
+    slist.set_lines(comment_lines + text.split('\n'))
     slist.focus_row = min(slist.focus_row, len(slist.lines) - 1)
     slist.screen.clear()
 
@@ -659,7 +659,7 @@ def menu_refresh_mails(mail_slist, answer, selection):
     list_data = mails_view_data.list_data
     hkml_view.shell_mode_end(slist)
     slist.data = mails_view_data
-    slist.lines = list_data.text.split('\n')
+    slist.set_lines(list_data.text.split('\n'))
     slist.screen.clear()
     hkml_view.shell_mode_start(slist)
 
