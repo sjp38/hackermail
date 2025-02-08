@@ -478,7 +478,7 @@ def search_keyword(c, slist):
 
     shell_mode_end(slist)
 
-def focus_next_keyword(c, slist):
+def focus_next_searched(c, slist):
     for idx, line in enumerate(slist.lines[slist.focus_row + 1:]):
         idx = slist.focus_row + idx + 1
         if idx in slist.searched_lines or slist.search_keyword in line:
@@ -486,7 +486,7 @@ def focus_next_keyword(c, slist):
             return
     slist.toast('no more keyword found')
 
-def focus_prev_keyword(c, slist):
+def focus_prev_searched(c, slist):
     for idx in range(slist.focus_row - 1, 0, -1):
         if (idx in slist.searched_lines or
             slist.search_keyword in slist.lines[idx]):
@@ -519,10 +519,10 @@ def scrollable_list_default_handlers():
             InputHandler(['K'], focus_up_half_page, 'focus up half page'),
             InputHandler([':'], focus_set, 'focus specific line'),
             InputHandler(['/'], search_keyword, 'search keyword'),
-            InputHandler(['n'], focus_next_keyword,
-                         'focus the row of next searched keyword'),
-            InputHandler(['N'], focus_prev_keyword,
-                         'focus the row of prev searched keyword'),
+            InputHandler(['n'], focus_next_searched,
+                         'focus the next searched row'),
+            InputHandler(['N'], focus_prev_searched,
+                         'focus the prev searched row'),
             InputHandler(['h', 'key_left'], focus_left, 'focus left'),
             InputHandler(['l', 'key_right'], focus_right, 'focus right'),
             InputHandler(['q'], quit_list, 'quit current screen'),
