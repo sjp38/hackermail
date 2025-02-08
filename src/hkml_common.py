@@ -34,7 +34,8 @@ def commit_date(commit):
     try:
         text = subprocess.check_output(
                 ['git', 'log', '-1', commit, '--pretty=%cd',
-                 '--date=iso-strict']).decode().strip()
+                 '--date=iso-strict'],
+                stderr=subprocess.DEVNULL).decode().strip()
     except Exception as e:
         return None, 'git log %s fail (%s)' % (commit, e)
     try:
