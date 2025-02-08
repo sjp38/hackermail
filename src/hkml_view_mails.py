@@ -663,6 +663,34 @@ def menu_refresh_mails(mail_slist, answer, selection):
     slist.screen.clear()
     hkml_view.shell_mode_start(slist)
 
+def menu_search(mail_slist, answer, selection):
+    _, slist = mail_slist
+    answer, err = hkml_view.CliQuestion(
+            desc='Search mails having keywords',
+            prompt='Enter keywords').ask_input()
+    if err is not None:
+        return
+    keywords = answer.split()
+    searched_lines = []
+    last_mail = None
+    for row in range(0, len(slist.lines)):
+        mail = mail_of_row(slist, row)
+        if mail is None or mail == last_mail:
+            continue
+        body = mail.get_field('body')
+        searched = True
+        for keyword in keywords:
+            if not keyword in body:
+                searched = False
+                continue
+        if searched:
+            searched_lines. append(row)
+    slist.set_searched_lines(searched_lines)
+    if len(searched_lines) > 0:
+        hkml_view.ask_highlight_enabling(slist)
+        # TODO: support None keyword
+        slist.search_keyword = 'asldgkjl34kgnmdfkes3o'
+
 def menu_new_list(mail_slist, answer, selection):
     mail, slist = mail_slist
     answer, err = hkml_view.CliQuestion(
@@ -724,6 +752,8 @@ def show_mails_list_menu(c, slist):
                     'handle as patches', handle_fn=menu_handle_patches),
                 hkml_view.CliSelection(
                     'refresh', handle_fn=menu_refresh_mails),
+                hkml_view.CliSelection(
+                    'search mails', handle_fn=menu_search),
                 hkml_view.CliSelection(
                     'open new list', handle_fn=menu_new_list),
                 hkml_view.CliSelection(
