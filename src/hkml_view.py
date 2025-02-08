@@ -475,6 +475,7 @@ def search_keyword(c, slist):
         return
 
     ask_highlight_enabling(slist)
+    slist.searched_lines = []
 
     shell_mode_end(slist)
 
