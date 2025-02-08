@@ -31,6 +31,8 @@ class TestHkmlViewText(unittest.TestCase):
                 hkml_view.wrap_text([''], 5), [''])
         self.assertEqual(
                 hkml_view.wrap_text(['  ab'], 5), ['  ab'])
+        self.assertEqual(
+                hkml_view.wrap_text(['> abc def'], 5), ['> abc', '> def'])
 
 if __name__ == '__main__':
     unittest.main()
