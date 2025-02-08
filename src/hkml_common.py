@@ -64,10 +64,12 @@ def parse_date_arg(tokens):
 
 def date_format_description():
     return ' '.join([
-        'Date arguments format is "YYYY MM DD HH MM".',
+        'Date arguments format is "YYYY MM DD HH MM" or "commit".',
         '"-", "/", ":" on date input are treated as space.',
         '"YYYY MM DD" or "HH MM" also supported.',
-        '\'yesterday\' can be used instead of "YYYY MM DD".'])
+        '\'yesterday\' can be used instead of "YYYY MM DD".',
+        'If a commit is given, its commit date will be used.',
+        ])
 
 def add_date_arg(parser, option_name, help_msg):
     format_msg = date_format_description()
