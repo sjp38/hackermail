@@ -651,3 +651,7 @@ def view_mail(text, mail):
 
 def view_text(text):
     view(text, None, 'text')
+
+def log(msg):
+    with open('.hkml_log', 'a') as f:
+        f.write('%s\n' % msg)
