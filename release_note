@@ -1,5 +1,11 @@
 This file contains major changes in each version since v1.0.0
 
+v1.2.9
+- Convert tabs to eight spaces on interactive screens
+- Support wrapping text on interactive text viewer
+- Support mail body keyword searching from the interactive list
+- Show only older version lists creation dates as dim_old suggestions.
+
 v1.2.8
 - Decode any header lines with any encoding
 - Add a menu to open new list from interactive list
