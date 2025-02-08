@@ -542,7 +542,7 @@ def mk_dim_old_rule(max_date):
 def build_suggest_dim_old_prompt(last_dates):
     lines = ['Dim mails older than user-input date.', '']
     now_time = datetime.datetime.now().astimezone()
-    lines.append('Recent dates you read the list:')
+    lines.append('Dates you generated old versions of the list are:')
     if len(last_dates) == 0:
         lines += ['not exist', '',
                   'May I dim mails older than a date?',
