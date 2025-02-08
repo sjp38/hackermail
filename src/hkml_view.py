@@ -444,6 +444,15 @@ def focus_set(c, slist):
     question.ask_input(slist, handle_fn=handle_fn)
     shell_mode_end(slist)
 
+def ask_highlight_enabling(slist):
+    question = 'Would you like to enable search highlighting? [Y/n] '
+    answer = input(question)
+
+    if answer == 'n':
+        slist.enable_highlight = False
+    else:
+        slist.enable_highlight = True
+
 def search_keyword(c, slist):
     shell_mode_start(slist)
 
@@ -465,13 +474,7 @@ def search_keyword(c, slist):
         shell_mode_end(slist)
         return
 
-    question = 'Would you like to enable search highlighting? [Y/n] '
-    answer = input(question)
-
-    if answer == 'n':
-        slist.enable_highlight = False
-    else:
-        slist.enable_highlight = True
+    ask_highlight_enabling(slist)
 
     shell_mode_end(slist)
 
