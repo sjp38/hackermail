@@ -478,18 +478,23 @@ def search_keyword(c, slist):
 
     shell_mode_end(slist)
 
+def is_searched_line(slist, line_idx):
+    if line_idx in slist.searched_lines:
+        return True
+    keyword = slist.search_keyword
+    return keyword is not None and keyword in slist.lines[line_idx]
+
 def focus_next_searched(c, slist):
     for idx, line in enumerate(slist.lines[slist.focus_row + 1:]):
         idx = slist.focus_row + idx + 1
-        if idx in slist.searched_lines or slist.search_keyword in line:
+        if is_searched_line(slist, idx):
             slist.focus_row = idx
             return
     slist.toast('no more keyword found')
 
 def focus_prev_searched(c, slist):
     for idx in range(slist.focus_row - 1, 0, -1):
-        if (idx in slist.searched_lines or
-            slist.search_keyword in slist.lines[idx]):
+        if is_searched_line(slist, idx):
             slist.focus_row = idx
             return
     slist.toast('no prev keyword found')
