@@ -81,6 +81,5 @@ class TestHkmlViewText(unittest.TestCase):
         hunk_indices = hkml_view_text.hunk_lines(text.split('\n'))
         self.assertEqual(hunk_indices, [[2, 9]])
 
-
 if __name__ == '__main__':
     unittest.main()
