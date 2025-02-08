@@ -198,6 +198,7 @@ class ScrollableList:
     focus_col = None
     input_handlers = None
     search_keyword = None
+    searched_lines = None
     last_drawn = None
     longest_line_len = None
     after_input_handle_callback = None
@@ -250,6 +251,7 @@ class ScrollableList:
                 handled_inputs[c] = True
         self.focus_col = 0
         self.search_keyword = '['
+        self.searched_lines = []
 
     def __draw(self):
         self.last_drawn = []
@@ -294,7 +296,10 @@ class ScrollableList:
             else:
                 color_attrib = curses.A_NORMAL
 
-            self.screen.addstr(row, 0, line, color | color_attrib)
+            if line_idx in self.searched_lines and self.enable_highlight:
+                self.screen.addstr(row, 0, line, highlight_color | color_attrib)
+            else:
+                self.screen.addstr(row, 0, line, color | color_attrib)
 
             keyword = self.search_keyword
             if self.enable_highlight and keyword is not None and \
@@ -307,6 +312,7 @@ class ScrollableList:
                     self.screen.addstr(row, search_from + idx, keyword,
                                        highlight_color | color_attrib)
                     search_from += len(keyword)
+
 
             self.last_drawn.append(self.lines[line_idx])
         if len(self.lines) < scr_rows - 1:
@@ -375,6 +381,9 @@ class ScrollableList:
 
     def wrapped_text(self):
         return self.unwrapped_lines is not None
+
+    def set_searched_lines(self, line_idxs):
+        self.searched_lines = line_idxs
 
 def shell_mode_start(slist_or_screen):
     if type(slist_or_screen) == ScrollableList:
@@ -468,14 +477,16 @@ def search_keyword(c, slist):
 
 def focus_next_keyword(c, slist):
     for idx, line in enumerate(slist.lines[slist.focus_row + 1:]):
-        if slist.search_keyword in line:
-            slist.focus_row += idx + 1
+        idx = slist.focus_row + idx + 1
+        if idx in slist.searched_lines or slist.search_keyword in line:
+            slist.focus_row = idx
             return
     slist.toast('no more keyword found')
 
 def focus_prev_keyword(c, slist):
     for idx in range(slist.focus_row - 1, 0, -1):
-        if slist.search_keyword in slist.lines[idx]:
+        if (idx in slist.searched_lines or
+            slist.search_keyword in slist.lines[idx]):
             slist.focus_row = idx
             return
     slist.toast('no prev keyword found')
