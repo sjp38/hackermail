@@ -161,6 +161,28 @@ def tabs_to_spaces(line, spaces_per_tab):
         idx += nr_spaces
     return ''.join(chrs)
 
+def wrap_line(line, cols):
+    if len(line) < cols:
+        return [line]
+    last_space = None
+    for idx, c in enumerate(line):
+        if c.isspace():
+            last_space = idx
+        if idx >= cols and last_space is not None:
+            break
+    if last_space is None:
+        last_space = len(line)
+    wrapped_lines = [line[:last_space]]
+    if len(line) > last_space + 1:
+        wrapped_lines += wrap_line(line[last_space + 1:], cols)
+    return wrapped_lines
+
+def wrap_text(lines, cols):
+    wrapped_lines = []
+    for line in lines:
+        wrapped_lines += wrap_line(line, cols)
+    return wrapped_lines
+
 class ScrollableList:
     screen = None
     lines = None
@@ -198,6 +220,8 @@ class ScrollableList:
         self.longest_line_len = sorted([len(line) for line in lines])[-1]
         if self.focus_col is not None:
             self.focus_col = min(self.focus_col, self.longest_line_len - 1)
+        if self.focus_row is not None:
+            self.focus_row = min(self.focus_row, len(lines) - 1)
 
     def __init__(self, screen, lines, input_handlers):
         self.screen = screen
