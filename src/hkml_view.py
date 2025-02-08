@@ -148,6 +148,19 @@ class InputHandler:
             return
         return self.handler_fn(input_chr, arg)
 
+def tabs_to_spaces(line, spaces_per_tab):
+    chrs = []
+    idx = 0
+    for chr in line:
+        if chr != '\t':
+            chrs.append(chr)
+            idx += 1
+            continue
+        nr_spaces = (idx // spaces_per_tab + 1) * spaces_per_tab - idx
+        chrs += [' '] * nr_spaces
+        idx += nr_spaces
+    return ''.join(chrs)
+
 class ScrollableList:
     screen = None
     lines = None
