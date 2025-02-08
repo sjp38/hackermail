@@ -186,6 +186,7 @@ def wrap_text(lines, cols):
 class ScrollableList:
     screen = None
     lines = None
+    unwrapped_lines = None
     focus_row = None
     focus_col = None
     input_handlers = None
@@ -354,6 +355,19 @@ class ScrollableList:
             input_chrs = input_chrs.replace('\n', '<Enter>')
             lines.append('%s: %s' % (input_chrs, handler.help_msg))
         return lines
+
+    def wrap_text(self):
+        _, scr_cols = self.screen.getmaxyx()
+        self.unwrapped_lines = self.lines
+        wrapped_lines = wrap_text(self.lines, scr_cols)
+        self.set_lines(wrapped_lines)
+
+    def unwrap_text(self):
+        self.set_lines(self.unwrapped_lines)
+        self.unwrapped_lines = None
+
+    def wrapped_text(self):
+        return self.unwrapped_lines is not None
 
 def shell_mode_start(slist_or_screen):
     if type(slist_or_screen) == ScrollableList:
