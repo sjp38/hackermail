@@ -271,6 +271,13 @@ def menu_selections_for_mail():
                 'handle as patches', handle_fn=menu_handle_patches),
             ]
 
+def menu_wrap_text(data, answer, selection):
+    slist, selections = data
+    if slist.wrapped_text():
+        slist.unwrap_text()
+    else:
+        slist.wrap_text()
+
 def menu_selections(slist):
     line = slist.lines[slist.focus_row]
 
@@ -281,6 +288,15 @@ def menu_selections(slist):
 
     if type(slist.data) is _hkml.Mail:
         selections += menu_selections_for_mail()
+
+    if slist.wrapped_text():
+        menu_text = 'unwrap text'
+    else:
+        menu_text = 'wrap text'
+    selections.append(
+            hkml_view.CliSelection(menu_text, handle_fn=menu_wrap_text,
+                                   data=slist))
+
     return selections
 
 def show_text_viewer_menu(c, slist):
