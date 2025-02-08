@@ -17,5 +17,20 @@ class TestHkmlViewText(unittest.TestCase):
                 hkml_view.tabs_to_spaces('01234567\t123\t1', 8),
                 '01234567        123     1')
 
+    def test_wrap_text(self):
+        self.assertEqual(
+                hkml_view.wrap_text(
+                    ['0123 567 9abcd'], 9),
+                ['0123 567',
+                 '9abcd'])
+        self.assertEqual(
+                hkml_view.wrap_text(
+                    ['0123456789abcd'], 5),
+                ['0123456789abcd'])
+        self.assertEqual(
+                hkml_view.wrap_text([''], 5), [''])
+        self.assertEqual(
+                hkml_view.wrap_text(['  ab'], 5), ['  ab'])
+
 if __name__ == '__main__':
     unittest.main()
