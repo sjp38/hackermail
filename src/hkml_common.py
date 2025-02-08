@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: GPL-2.0
 
 import datetime
+import subprocess
 
 def parse_date(date_str):
     for s in ['-', ':', '/']:
@@ -28,6 +29,18 @@ def parse_date(date_str):
         return datetime.datetime(*numbers).astimezone(), None
     except Exception as e:
         return None, '%s' % e
+
+def commit_date(commit):
+    try:
+        text = subprocess.check_output(
+                ['git', 'log', '-1', commit, '--pretty=%cd',
+                 '--date=iso-strict']).decode().strip()
+    except Exception as e:
+        return None, 'git log %s fail (%s)' % (commit, e)
+    try:
+        return datetime.datetime.fromisoformat(text).astimezone(), None
+    except Exception as e:
+        return None, 'parsing date (%s) fail (%s)' % (text, e)
 
 def parse_date_arg(tokens):
     try:
