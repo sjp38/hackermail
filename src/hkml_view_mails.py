@@ -688,8 +688,7 @@ def menu_search(mail_slist, answer, selection):
     slist.set_searched_lines(searched_lines)
     if len(searched_lines) > 0:
         hkml_view.ask_highlight_enabling(slist)
-        # TODO: support None keyword
-        slist.search_keyword = 'asldgkjl34kgnmdfkes3o'
+        slist.search_keyword = None
 
 def menu_new_list(mail_slist, answer, selection):
     mail, slist = mail_slist
