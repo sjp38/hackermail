@@ -191,6 +191,11 @@ class ScrollableList:
 
     def __init__(self, screen, lines, input_handlers):
         self.screen = screen
+
+        converted = []
+        for line in lines:
+            converted.append(tabs_to_spaces(line, 8))
+        lines = converted
         self.lines = lines
 
         # set focus on middle of the screen or the content
