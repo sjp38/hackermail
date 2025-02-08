@@ -42,12 +42,25 @@ def commit_date(commit):
     except Exception as e:
         return None, 'parsing date (%s) fail (%s)' % (text, e)
 
-def parse_date_arg(tokens):
+def parse_date_arg_non_commit(tokens):
     try:
         date_str = ' '.join(tokens)
     except Exception as e:
         return None, 'tokens to string conversion fail (%s)' % e
     return parse_date(date_str)
+
+def parse_date_arg(tokens):
+    parsed, err = parse_date_arg_non_commit(tokens)
+    if err is None:
+        return parsed, err
+    if len(tokens) != 1:
+        return parsed, err
+    parsed, err2 = commit_date(tokens[0])
+    if err2 != None:
+        err = 'parsing date argument fail (%s, %s)' % (err2, err)
+    else:
+        err = None
+    return parsed, err
 
 def date_format_description():
     return ' '.join([
