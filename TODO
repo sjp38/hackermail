@@ -16,3 +16,4 @@
   - Or, just remove the unnecessary mail index for non --stdout case?
 - Let interactive mails selection and menu for slected mails
 - Support patch handling of non-public mails
+- patch format: support describing commit with subject
