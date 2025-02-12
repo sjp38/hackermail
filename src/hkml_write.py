@@ -125,10 +125,11 @@ def ask_editor(default_editor):
     for editor in ['vim', 'nvim', 'emacs', 'nano']:
         if not editor in choices:
             try:
-                subprocess.check_output(['which', editor])
+                subprocess.check_output(['which', editor],
+                                        stderr = subprocess.DEVNULL)
                 choices.append(editor)
             except:
-                # the editor is not installed on this system
+                # subprocess.check_output threw an error.
                 pass
     if choices == []:
         print('please install vim, nvim, emacs or nano and retry')
