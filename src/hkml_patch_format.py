@@ -188,15 +188,59 @@ def fillup_cv_from_file(patch_file, cv_file):
     print("Adding cover letter content from '%s' as you requested." % cv_file)
     fillup_cv(patch_file, subject, content)
 
-def parse_commits_range(commits_range):
-    if len(commits_range) != 1:
-        return None, 'unsupported length of token'
-    return commits_range[0]
+def commit_subject_to_id(subject):
+    subjects_txt = subprocess.check_output(
+            'git log -2000 --pretty=%s'.split()).decode()
+    for idx, commit_subject in enumerate(subjects_txt.strip().split('\n')):
+        if commit_subject != subject:
+            continue
+        commit_ids_txt = subprocess.check_output(
+                'git log -2000 --pretty=%H'.split()).decode()
+        return commit_ids_txt.strip().split('\n')[idx]
+    return None
+
+def convert_commits_range_txt(txt):
+    if not txt.startswith('subject('):
+        return txt[0], 1
+
+    subject_chrs = []
+    parentheses_to_close = 1
+    for idx, c in enumerate(txt[len('subject('):]):
+        if c == '(':
+            parentheses_to_close += 1
+        elif c == ')':
+            parentheses_to_close -= 1
+        if parentheses_to_close > 0:
+            subject_chrs.append(c)
+            continue
+        # assume the subject to have balanced parentheses.  If not, this logic
+        # fails.
+        else:
+            break
+    processed_len = len('subject(') + idx + 1
+
+    subject = ''.join(subject_chrs)
+    commit_id = commit_subject_to_id(subject)
+    return commit_id, processed_len
+
+def convert_commit_subjects_to_ids(commits_range_txt):
+    '''
+    commits_range_txt is 'git'-supporting commits range specification.  For
+    easy specification of commits with frequent rebasing, hkml supports having
+    'subject(<subject>)' format in the text, to specify a commit of <subject>
+    subject.
+    '''
+    converted_chrs = []
+    idx = 0
+    while idx < len(commits_range_txt):
+        converted_txt, converted_len = convert_commits_range_txt(
+                commits_range_txt[idx:])
+        converted_chrs.append(converted_txt)
+        idx += converted_len
+    return ''.join(converted_chrs)
 
 def format_patches(args, on_linux_tree):
-    commits_range, err = parse_commits_range(args.commits)
-    if err is not None:
-        return None, 'commits parsing failed (%s)' % err
+    commits_range = convert_commit_subjects_to_ids(args.commits)
     commit_ids = [hash for hash in subprocess.check_output(
         ['git', 'log', '--pretty=%h', commits_range]
         ).decode().strip().split('\n') if hash != '']
@@ -309,7 +353,7 @@ def main(args):
         subprocess.call(['git', 'send-email'] + patch_files)
 
 def set_argparser(parser):
-    parser.add_argument('commits', metavar='<commits>', nargs='+',
+    parser.add_argument('commits', metavar='<commits>',
                         help='commits to convert to patch files')
     parser.add_argument('-o', '--output_dir', metavar='<dir>', default='./',
                         help='directory to save formatted patch files')
