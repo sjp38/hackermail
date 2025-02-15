@@ -280,7 +280,7 @@ def main(args):
     patch_files, err = format_patches(args, on_linux_tree)
     if err is not None:
         print('generating patch files failed (%s)' % err)
-        return
+        return -1
 
     abort = review_patches(on_linux_tree, patch_files)
     if abort is True:
