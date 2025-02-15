@@ -553,3 +553,6 @@ def is_valid_mail_list(name):
 def set_manifest_option(parser):
     parser.add_argument('--manifest', metavar='<file>', type=str,
             help='Manifesto file in grok\'s format plus site field.')
+
+def is_for_lore_kernel_org():
+    return get_manifest()['site'] == 'https://lore.kernel.org'
