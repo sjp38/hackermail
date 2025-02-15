@@ -188,6 +188,15 @@ def fillup_cv_from_file(patch_file, cv_file):
     print("Adding cover letter content from '%s' as you requested." % cv_file)
     fillup_cv(patch_file, subject, content)
 
+def notify_abort(patch_files):
+    print('Aborting remaining works.')
+    print(' '.join([
+    'Patches are generated as below.',
+    "You can manually modify those or use 'hkml patch format' again."]))
+    print()
+    for patch_file in patch_files:
+        print('    %s' % patch_file)
+
 def main(args):
     commit_ids = [hash for hash in subprocess.check_output(
         ['git', 'log', '--pretty=%h', args.commits]
@@ -246,13 +255,7 @@ def main(args):
         print()
         answer = input('Looks good? [Y/n] ')
         if answer.lower() == 'n':
-            print('Ok, aborting remaining works.')
-            print(' '.join([
-            'Patches are generated as below.',
-            "You can manually modify those or use 'hkml patch format' again."]))
-            print()
-            for patch_file in patch_files:
-                print('    %s' % patch_file)
+            notify_abort(patch_files)
             return
 
     print('\nwould you review recipients of formatted patches?')
@@ -262,13 +265,7 @@ def main(args):
         hkml_patch.list_recipients(patch_files)
     answer = input('Looks good? [Y/n] ')
     if answer.lower() == 'n':
-        print('Ok, aborting remaining works.')
-        print(' '.join([
-        'Patches are generated as below.',
-        "You can manually modify those or use 'hkml patch format' again."]))
-        print()
-        for patch_file in patch_files:
-            print('    %s' % patch_file)
+        notify_abort(patch_files)
         return
 
     print("\nMay I send the patches?  If you say yes, I will do below")
