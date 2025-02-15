@@ -252,6 +252,8 @@ def main(args):
             hkml_patch.check_patches(
                     './scripts/checkpatch.pl', patch_files, None,
                     rm_patches=False)
+            if not ok_to_continue(patch_files):
+                return
 
     print('\nwould you review subjects of formatted patches?')
     answer = input('[Y/n] ')
