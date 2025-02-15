@@ -16,8 +16,6 @@
   - Or, just remove the unnecessary mail index for non --stdout case?
 - Let interactive mails selection and menu for slected mails
 - Support patch handling of non-public mails
-- patch format: support describing commit with subject
 - Investigate why 'hkml list linux-mm --from Torvalds --body mglru --since
   2023-01-01' cannot find
   https://lore.kernel.org/linux-mm/CAHk-=wjWJgWzOf9MCuiE0oDsF6cCCn7KKDc_xDN6Q3kWNEHKLQ@mail.gmail.com/
-- patch format: support subject prefixes review

@@ -1,5 +1,10 @@
 This file contains major changes in each version since v1.0.0
 
+v1.3.0
+- hkml patch format: review patch subjects
+- hkml manifest: add an action for updating lore.kernel.org manifest: 'fetch_lore'
+- hkml patch format: support specifying commits with their subjects
+
 v1.2.9
 - Support using commit for date specification.
 - Convert tabs to eight spaces on interactive screens.
