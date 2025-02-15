@@ -188,9 +188,17 @@ def fillup_cv_from_file(patch_file, cv_file):
     print("Adding cover letter content from '%s' as you requested." % cv_file)
     fillup_cv(patch_file, subject, content)
 
+def parse_commits_range(commits_range):
+    if len(commits_range) != 1:
+        return None, 'unsupported length of token'
+    return commits_range[0]
+
 def format_patches(args, on_linux_tree):
+    commits_range, err = parse_commits_range(args.commits)
+    if err is not None:
+        return None, 'commits parsing failed (%s)' % err
     commit_ids = [hash for hash in subprocess.check_output(
-        ['git', 'log', '--pretty=%h', args.commits]
+        ['git', 'log', '--pretty=%h', commits_range]
         ).decode().strip().split('\n') if hash != '']
     if len(commit_ids) == 0:
         return None, 'no commit to format patch'
@@ -201,7 +209,7 @@ def format_patches(args, on_linux_tree):
 
     base_commit = subprocess.check_output(
             ['git', 'rev-parse', '%s^' % commit_ids[-1]]).decode().strip()
-    cmd = ['git', 'format-patch', args.commits, '--base', base_commit,
+    cmd = ['git', 'format-patch', commits_range, '--base', base_commit,
            '-o', args.output_dir]
     if add_cv:
         cmd.append('--cover-letter')
@@ -301,7 +309,7 @@ def main(args):
         subprocess.call(['git', 'send-email'] + patch_files)
 
 def set_argparser(parser):
-    parser.add_argument('commits', metavar='<commits>',
+    parser.add_argument('commits', metavar='<commits>', nargs='+',
                         help='commits to convert to patch files')
     parser.add_argument('-o', '--output_dir', metavar='<dir>', default='./',
                         help='directory to save formatted patch files')
