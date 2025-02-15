@@ -79,6 +79,9 @@ $ hkml manifest fetch_lore --fetch_lore_output ./lore.json
 $ hkml init --manifest ./lore.json
 ```
 
+If `--manifest` is not given, `hkml` will ask if the user wants to use `hkml`
+for Linux kernel development, and set the manifest for lore.kernel.org if so.
+
 Fetching Mails
 ==============
 
