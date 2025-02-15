@@ -700,8 +700,11 @@ def fetch_get_mails_from_git(fetch, source, since, until, min_nr_mails,
     mails = get_mails_from_git(source, since, until, min_nr_mails,
                                max_nr_mails, commits_range)
 
-    # TODO: if len(mails) is 0 and the manifest is lore, print advice to update
-    # the manifest.
+    if (len(mails) == 0 and _hkml.is_for_lore_kernel_org() and
+        datetime.datetime.now() - until < datetime.timedelta(minutes=5)):
+        print(' '.join([
+            "No mail has fetched from '%s'." % source,
+            "You _might_ need to run 'hkml manifest fetch_lore'."]))
 
     return mails
 
