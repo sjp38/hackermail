@@ -197,6 +197,13 @@ def notify_abort(patch_files):
     for patch_file in patch_files:
         print('    %s' % patch_file)
 
+def ok_to_continue(patch_files):
+    answer = input('Looks good? [Y/n] ')
+    if answer.lower() != 'n':
+        return True
+    notify_abort(patch_files)
+    return False
+
 def main(args):
     commit_ids = [hash for hash in subprocess.check_output(
         ['git', 'log', '--pretty=%h', args.commits]
@@ -253,9 +260,7 @@ def main(args):
         for patch_file in patch_files:
             print(_hkml.read_mbox_file(patch_file)[0].subject)
         print()
-        answer = input('Looks good? [Y/n] ')
-        if answer.lower() == 'n':
-            notify_abort(patch_files)
+        if not ok_to_continue(patch_files):
             return
 
     print('\nwould you review recipients of formatted patches?')
@@ -263,9 +268,7 @@ def main(args):
     answer = input('[Y/n] ')
     if answer.lower() != 'n':
         hkml_patch.list_recipients(patch_files)
-    answer = input('Looks good? [Y/n] ')
-    if answer.lower() == 'n':
-        notify_abort(patch_files)
+    if not ok_to_continue(patch_files):
         return
 
     print("\nMay I send the patches?  If you say yes, I will do below")
