@@ -889,6 +889,16 @@ Formatting Patches
 files that can be submitted using `git send-email`.  It uses `git format-patch`
 internally, and do below additional works.
 
+### Subjects Based Commits Identification
+
+The commits range given to `hkml patch format` should be somewhat normal `git`
+commands support.  `hkml` further allows specifying commits on the argument
+with commit subjects in `subject(<subject>)` format.  For example, below
+command will convert three commits before a commit of subject "hkml_patch:
+implement feature X" to patch files.
+
+    hkml patch format "subject(hkml_patch: implement feature X)~4..subject(hkml_patch: implement feature X)~1"
+
 ### Cover Letter Edit
 
 If it is for multiple commits, it creates a cover letter.  Assuming a cover
