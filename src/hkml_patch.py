@@ -126,7 +126,7 @@ def get_patch_mails(mail, dont_add_cv):
             msgid = msgid[1:-1]
         site = _hkml.get_manifest()['site']
         url = '%s/%s' % (site, msgid)
-        if use_patch_msgid_link is None and site == 'https://lore.kernel.org':
+        if use_patch_msgid_link is None and _hkml.is_for_lore_kernel_org():
             answer = input(
                     'use patch.msgid.link domain for patch origin? [Y/n] ')
             use_patch_msgid_link = answer.lower() != 'n'
