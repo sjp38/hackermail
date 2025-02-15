@@ -138,7 +138,8 @@ def menu_selections_for_url(line):
         if not word.startswith('http://') and not word.startswith('https://'):
             continue
         try:
-            subprocess.check_output(['which', 'lynx'])
+            subprocess.check_output(
+                    ['which', 'lynx'], stderr=subprocess.DEVNULL)
             cmd = 'lynx %s' % word
             selections.append(hkml_view.CliSelection(
                 cmd, handle_fn=menu_exec_web, data=cmd))
@@ -146,7 +147,8 @@ def menu_selections_for_url(line):
             # lynx not installed.
             pass
         try:
-            subprocess.check_output(['which', 'w3m'])
+            subprocess.check_output(
+                    ['which', 'w3m'], stderr=subprocess.DEVNULL)
             cmd = 'w3m %s' % word
             selections.append(hkml_view.CliSelection(
                 cmd, handle_fn=menu_exec_web, data=cmd))
