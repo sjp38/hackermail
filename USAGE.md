@@ -964,19 +964,17 @@ send-email` command.
 Below is an example usage and output of `hkml patch format`.
 
 ```
-$ hkml patch format fa09068a354b..4b75ad374d3f
+$ hkml patch format "subject(Docs/admin-guide/mm/damon/usage: add intervals_goal directory on the hierarchy)~8..subject(Docs/admin-guide/mm/damon/usage: add intervals_goal directory on the hierarchy)"
 made below patch files
 ./0000-cover-letter.patch
-./0001-mm-damon-fixup-damos_filter-kernel-doc.patch
-./0002-mm-damon-core-add-damos_filter-pass-field.patch
-./0003-mm-damon-core-support-damos_filter-pass.patch
-./0004-mm-damon-paddr-support-damos_filter-pass.patch
-./0005-mm-damon-add-pass-argument-to-damos_new_filter.patch
-./0006-mm-damon-sysfs-schemes-add-a-file-for-setting-damos_.patch
-./0007-Docs-mm-damon-design-document-pass-block-filters-beh.patch
-./0008-Docs-ABI-damon-document-DAMOS-filter-pass-sysfs-file.patch
-./0009-Docs-admin-guide-mm-damon-usage-omit-DAMOS-filter-de.patch
-./0010-Docs-admin-guide-mm-damon-usage-document-DAMOS-filte.patch
+./0001-mm-damon-add-data-structure-for-monitoring-intervals.patch
+./0002-mm-damon-core-implement-intervals-auto-tuning.patch
+./0003-mm-damon-sysfs-implement-intervals-tuning-goal-direc.patch
+./0004-mm-damon-sysfs-commit-intervals-tuning-goal.patch
+./0005-mm-damon-sysfs-implement-a-command-to-update-auto-tu.patch
+./0006-Docs-mm-damon-design-document-for-intervals-auto-tun.patch
+./0007-Docs-ABI-damon-document-intervals-auto-tuning-ABI.patch
+./0008-Docs-admin-guide-mm-damon-usage-add-intervals_goal-d.patch
 
 get_maintainer.pl found.  add recipients using it.
 
@@ -990,42 +988,42 @@ You did not set --to, and we will set below as Cc:
 6. linux-mm@kvack.org
 Shall I set one of above as To: for all mails? [N/index] 0
 
-May I add the base commit to the coverletter? [Y/n] y
-Ok, I will do below to the coverletter
+May I add the base commit to the coverletter? [Y/n]
+I will do below to the coverletter (./0000-cover-letter.patch)
 - replace "*** SUBJECT HERE ***" with
 
-    mm/damon: extend DAMOS filters for inclusion of target memory
+    mm/damon: auto-tune aggregation interval
 
 - replace "*** BLURB HERE ***" with
 
-    DAMOS fitlers are exclusive filters.  It only excludes memory of
-    specific types from the DAMOS action targets.  This has below problems.
+    DAMON requires time-consuming and repetitive aggregation interval
+    tuning.  Introduce a feature for automating it using a feedback loop
     [...]
-    (https://lore.kernel.org/20241226221445.78433-1-sj@kernel.org)
-    - Fix encoding issue on the last patch
+    will conduct more evaluations with more massive and realistic workloads
+    and share the results by the time that we drop the RFC tag.
 
-looks good? [Y/n] y
+looks good? [Y/n]
 
 checkpatch.pl found.  shall I run it?
 (hint: you can do this manually via 'hkml patch check')
 [Y/n] y
-[!!!] [PATCH 00/10] mm/damon: extend DAMOS filters for inclusion of target memory complained by ./scripts/checkpatch.pl (Command '['./scripts/checkpatch.pl', './0000-cover-letter.patch']' returned non-zero exit status 1.)
-WARNING: Prefer a maximum 75 chars per line (possible unwrapped commit description?)
-#43:
-[2] https://git.kernel.org/sj/damo/c/b6a722c85ff91e5abe9dd47135e300df243da056
+Below 0 patches may have problems
+Looks good? [Y/n] y
 
-total: 0 errors, 1 warnings, 0 lines checked
+would you review subjects of formatted patches?
+[Y/n] y
+below are the subjects
+[PATCH 0/8] mm/damon: auto-tune aggregation interval
+[PATCH 1/8] mm/damon: add data structure for monitoring intervals auto-tuning
+[PATCH 2/8] mm/damon/core: implement intervals auto-tuning
+[PATCH 3/8] mm/damon/sysfs: implement intervals tuning goal directory
+[PATCH 4/8] mm/damon/sysfs: commit intervals tuning goal
+[PATCH 5/8] mm/damon/sysfs: implement a command to update auto-tuned monitoring intervals
+[PATCH 6/8] Docs/mm/damon/design: document for intervals auto-tuning
+[PATCH 7/8] Docs/ABI/damon: document intervals auto-tuning ABI
+[PATCH 8/8] Docs/admin-guide/mm/damon/usage: add intervals_goal directory on the hierarchy
 
-NOTE: For some of the reported defects, checkpatch may be able to
-      mechanically convert to the typical style using --fix or --fix-inplace.
-
-./0000-cover-letter.patch has style problems, please review.
-
-NOTE: If any of the errors are false positives, please report
-      them to the maintainer, see CHECKPATCH in MAINTAINERS.
-
-Below 1 patches may have problems
- - ./0000-cover-letter.patch
+Looks good? [Y/n] y
 
 would you review recipients of formatted patches?
 (hint: you can do this manually via 'hkml patch recipients')
@@ -1036,34 +1034,30 @@ Common recipients:
   Cc: damon@lists.linux.dev
   Cc: linux-kernel@vger.kernel.org
   Cc: linux-mm@kvack.org
-Additional recipients for "[PATCH 00/10] mm/damon: extend DAMOS filters for inclusion of target memory"
+Additional recipients for "[PATCH 0/8] mm/damon: auto-tune aggregation interval"
   Cc: Jonathan Corbet <corbet@lwn.net>
   Cc: linux-doc@vger.kernel.org
-Additional recipients for "[PATCH 07/10] Docs/mm/damon/design: document pass/block filters behaviors"
+Additional recipients for "[PATCH 6/8] Docs/mm/damon/design: document for intervals auto-tuning"
   Cc: Jonathan Corbet <corbet@lwn.net>
   Cc: linux-doc@vger.kernel.org
-Additional recipients for "[PATCH 09/10] Docs/admin-guide/mm/damon/usage: omit DAMOS filter details in favor of design doc"
+Additional recipients for "[PATCH 8/8] Docs/admin-guide/mm/damon/usage: add intervals_goal directory on the hierarchy"
   Cc: Jonathan Corbet <corbet@lwn.net>
   Cc: linux-doc@vger.kernel.org
-Additional recipients for "[PATCH 10/10] Docs/admin-guide/mm/damon/usage: document DAMOS filter 'pass' sysfs file"
-  Cc: Jonathan Corbet <corbet@lwn.net>
-  Cc: linux-doc@vger.kernel.org
+Looks good? [Y/n] y
 
-May I sned the patches?  If you say yes, I will do below
+May I send the patches?  If you say yes, I will do below
 
     git send-email \
             ./0000-cover-letter.patch \
-            ./0001-mm-damon-fixup-damos_filter-kernel-doc.patch \
-            ./0002-mm-damon-core-add-damos_filter-pass-field.patch \
-            ./0003-mm-damon-core-support-damos_filter-pass.patch \
-            ./0004-mm-damon-paddr-support-damos_filter-pass.patch \
-            ./0005-mm-damon-add-pass-argument-to-damos_new_filter.patch \
-            ./0006-mm-damon-sysfs-schemes-add-a-file-for-setting-damos_.patch \
-            ./0007-Docs-mm-damon-design-document-pass-block-filters-beh.patch \
-            ./0008-Docs-ABI-damon-document-DAMOS-filter-pass-sysfs-file.patch \
-            ./0009-Docs-admin-guide-mm-damon-usage-omit-DAMOS-filter-de.patch \
-            ./0010-Docs-admin-guide-mm-damon-usage-document-DAMOS-filte.patch \
+            ./0001-mm-damon-add-data-structure-for-monitoring-intervals.patch \
+            ./0002-mm-damon-core-implement-intervals-auto-tuning.patch \
+            ./0003-mm-damon-sysfs-implement-intervals-tuning-goal-direc.patch \
+            ./0004-mm-damon-sysfs-commit-intervals-tuning-goal.patch \
+            ./0005-mm-damon-sysfs-implement-a-command-to-update-auto-tu.patch \
+            ./0006-Docs-mm-damon-design-document-for-intervals-auto-tun.patch \
+            ./0007-Docs-ABI-damon-document-intervals-auto-tuning-ABI.patch \
+            ./0008-Docs-admin-guide-mm-damon-usage-add-intervals_goal-d.patch \
 
+You can manually review and modify the patch files before answering the next question.
 Do it? [y/N] n
-$
 ```
