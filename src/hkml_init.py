@@ -5,6 +5,8 @@ import argparse
 import os
 import subprocess
 
+import hkml_manifest
+
 def config_sendemail():
     send_configured = subprocess.call(
             ['git', 'config', 'sendemail.smtpserver'],
@@ -28,30 +30,29 @@ def config_sendemail():
     subprocess.call(cmd + ['sendemail.smtpuser', mail_account])
 
 def main(args):
-    if args.manifest is None:
-        print('--manifest is not specified')
-        lore_js = os.path.abspath(
-                os.path.join(os.path.dirname(__file__), '..', 'manifests',
-                             'lore.js'))
-        question = '  '.join([
-            '%s is the manifest for lore.kernel.org.' % lore_js,
-            'Use it as the manifest? [Y/n] '])
-        answer = input(question)
-        if answer.lower() == 'n':
-            print('Cannot proceed initialization')
-            exit(1)
-        args.manifest = lore_js
-    elif not os.path.isfile(args.manifest):
-        print('--manifest (%s) not found' % args.manifest)
-        exit(1)
-
     os.mkdir('.hkm')
     os.mkdir('.hkm/archives')
 
-    with open(args.manifest, 'r') as f:
-        content = f.read()
-    with open(os.path.join('.hkm', 'manifest'), 'w') as f:
-        f.write(content)
+    if args.manifest is None:
+        question = ' '.join([
+            '--manifest is not specified.',
+            'May I set it up for lore.kernel.org? [Y/n] '])
+        answer = input(question)
+        if answer.lower() == 'n':
+            print('Cannot proceed initialization')
+            os.rmdir('.hkm/archives')
+            os.rmdir('.hkml')
+            exit(1)
+        hkml_manifest.fetch_lore()
+    else:
+        if not os.path.isfile(args.manifest):
+            print('--manifest (%s) not found' % args.manifest)
+            exit(1)
+
+        with open(args.manifest, 'r') as f:
+            content = f.read()
+        with open(os.path.join('.hkm', 'manifest'), 'w') as f:
+            f.write(content)
 
     config_sendemail()
 
