@@ -188,29 +188,12 @@ def fillup_cv_from_file(patch_file, cv_file):
     print("Adding cover letter content from '%s' as you requested." % cv_file)
     fillup_cv(patch_file, subject, content)
 
-def notify_abort(patch_files):
-    print('Aborting remaining works.')
-    print(' '.join([
-    'Patches are generated as below.',
-    "You can manually modify those or use 'hkml patch format' again."]))
-    print()
-    for patch_file in patch_files:
-        print('    %s' % patch_file)
-
-def ok_to_continue(patch_files):
-    answer = input('Looks good? [Y/n] ')
-    if answer.lower() != 'n':
-        return True
-    notify_abort(patch_files)
-    return False
-
-def main(args):
+def format_patches(args, on_linux_tree):
     commit_ids = [hash for hash in subprocess.check_output(
         ['git', 'log', '--pretty=%h', args.commits]
         ).decode().strip().split('\n') if hash != '']
     if len(commit_ids) == 0:
-        print('no commit to format patch')
-        return 1
+        return None, 'no commit to format patch'
     if len(commit_ids) > 1:
         add_cv = True
     else:
@@ -231,18 +214,41 @@ def main(args):
     print('\n'.join(patch_files))
     print()
 
-    on_linux_tree = is_linux_tree('./')
     err = add_patches_recipients(patch_files, args.to, args.cc, add_cv,
                                  on_linux_tree)
     if err is not None:
-        print('adding recipients fail (%s)' % err)
-        return -1
+        return None, 'adding recipients fail (%s)' % err
 
     if add_cv:
         if args.cv is None:
             add_base_commit_as_cv(patch_files[0], base_commit)
         else:
             fillup_cv_from_file(patch_files[0], args.cv)
+    return patch_files, None
+
+def notify_abort(patch_files):
+    print('Aborting remaining works.')
+    print(' '.join([
+    'Patches are generated as below.',
+    "You can manually modify those or use 'hkml patch format' again."]))
+    print()
+    for patch_file in patch_files:
+        print('    %s' % patch_file)
+
+def ok_to_continue(patch_files):
+    answer = input('Looks good? [Y/n] ')
+    if answer.lower() != 'n':
+        return True
+    notify_abort(patch_files)
+    return False
+
+def main(args):
+    on_linux_tree = is_linux_tree('./')
+
+    patch_files, err = format_patches(args, on_linux_tree)
+    if err is not None:
+        print('generating patch files failed (%s)' % err)
+        return
 
     if on_linux_tree and os.path.exists('./scripts/checkpatch.pl'):
         print('\ncheckpatch.pl found.  shall I run it?')
