@@ -200,8 +200,11 @@ def commit_subject_to_id(subject):
     return None
 
 def convert_commits_range_txt(txt):
-    if not txt.startswith('subject('):
-        return txt[0], 1
+    idx = txt.find('subject(')
+    if idx == -1:
+        return txt, len(txt)
+    if idx != 0:
+        return txt[:idx], idx
 
     subject_chrs = []
     parentheses_to_close = 1
