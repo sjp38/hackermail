@@ -242,14 +242,8 @@ def ok_to_continue(patch_files):
     notify_abort(patch_files)
     return False
 
-def main(args):
-    on_linux_tree = is_linux_tree('./')
-
-    patch_files, err = format_patches(args, on_linux_tree)
-    if err is not None:
-        print('generating patch files failed (%s)' % err)
-        return
-
+def review_patches(on_linux_tree, patch_files):
+    '''Return whether to abort remaining works'''
     if on_linux_tree and os.path.exists('./scripts/checkpatch.pl'):
         print('\ncheckpatch.pl found.  shall I run it?')
         print('(hint: you can do this manually via \'hkml patch check\')')
@@ -259,7 +253,7 @@ def main(args):
                     './scripts/checkpatch.pl', patch_files, None,
                     rm_patches=False)
             if not ok_to_continue(patch_files):
-                return
+                return True
 
     print('\nwould you review subjects of formatted patches?')
     answer = input('[Y/n] ')
@@ -269,7 +263,7 @@ def main(args):
             print(_hkml.read_mbox_file(patch_file)[0].subject)
         print()
         if not ok_to_continue(patch_files):
-            return
+            return True
 
     print('\nwould you review recipients of formatted patches?')
     print('(hint: you can do this manually via \'hkml patch recipients\')')
@@ -277,6 +271,19 @@ def main(args):
     if answer.lower() != 'n':
         hkml_patch.list_recipients(patch_files)
     if not ok_to_continue(patch_files):
+        return True
+    return False
+
+def main(args):
+    on_linux_tree = is_linux_tree('./')
+
+    patch_files, err = format_patches(args, on_linux_tree)
+    if err is not None:
+        print('generating patch files failed (%s)' % err)
+        return
+
+    abort = review_patches(on_linux_tree, patch_files)
+    if abort is True:
         return
 
     print("\nMay I send the patches?  If you say yes, I will do below")
