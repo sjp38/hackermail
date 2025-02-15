@@ -113,7 +113,7 @@ def handle_command_target(args):
     print('...')
     cmd = args.target.split()[0]
     try:
-        subprocess.check_output(['which', cmd])
+        subprocess.check_output(['which', cmd], stderr=subprocess.DEVNULL)
         is_cmd = True
     except:
         is_cmd = False
