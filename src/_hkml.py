@@ -483,6 +483,13 @@ def get_hkml_dir():
         set_hkml_dir()
     return __hkml_dir
 
+def update_manifest(manifest_dict):
+    hkml_dir = get_hkml_dir()
+    manifest_path = os.path.join(get_hkml_dir(), 'manifest')
+    with open(manifest_path, 'w') as f:
+        json.dump(manifest_dict, f)
+    set_hkml_dir_manifest(hkml_dir, None)
+
 def set_hkml_dir_manifest(hkml_dir, manifest):
     global __manifest
 
