@@ -237,6 +237,24 @@ def main(args):
                     './scripts/checkpatch.pl', patch_files, None,
                     rm_patches=False)
 
+    print('\nwould you review subjects of formatted patches?')
+    answer = input('[Y/n] ')
+    if answer.lower() != 'n':
+        print('below are the subjects')
+        for patch_file in patch_files:
+            print(_hkml.read_mbox_file(patch_file)[0].subject)
+        print()
+        answer = input('Looks good? [Y/n] ')
+        if answer.lower() == 'n':
+            print('Ok, aborting remaining works.')
+            print(' '.join([
+            'Patches are generated as below.',
+            "You can manually modify those or use 'hkml patch format' again."]))
+            print()
+            for patch_file in patch_files:
+                print('    %s' % patch_file)
+            return
+
     print('\nwould you review recipients of formatted patches?')
     print('(hint: you can do this manually via \'hkml patch recipients\')')
     answer = input('[Y/n] ')
