@@ -68,6 +68,12 @@ def fetch_lore(output_file=None):
             json.dump(manifest, f, indent=4)
 
 def main(args):
+    if args.action == 'fetch_lore':
+        fetch_lore(args.fetch_lore_output)
+        return
+
+    manifest = args.manifest
+    _hkml.set_hkml_dir_manifest(args.hkml_dir, manifest)
     if args.action == 'list':
         if args.mailing_lists is True:
             for key in _hkml.get_manifest():

@@ -104,7 +104,7 @@ args = parser.parse_args()
 if args.directory is not None:
     os.chdir(args.directory)
 
-if not args.command == 'init':
+if not args.command in ['init', 'manifest']:
     manifest = None
     if hasattr(args, 'manifest'):
         manifest = args.manifest
