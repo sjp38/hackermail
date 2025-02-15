@@ -487,7 +487,7 @@ def update_manifest(manifest_dict):
     hkml_dir = get_hkml_dir()
     manifest_path = os.path.join(get_hkml_dir(), 'manifest')
     with open(manifest_path, 'w') as f:
-        json.dump(manifest_dict, f)
+        json.dump(manifest_dict, f, indent=4)
     set_hkml_dir_manifest(hkml_dir, None)
 
 def set_hkml_dir_manifest(hkml_dir, manifest):
