@@ -944,6 +944,11 @@ landed on) for all patches.
 In the linux tree use case, it also runs `checkpatch.pl` to resulting patch
 files, and show found problems if the user wants.
 
+### Subjects Review
+
+If the user wants, `hkml` will list subjects of the generated patch files to
+review.  Users can avoid remaining works if they find any problem in subjects.
+
 ### Recipients Review
 
 After doing the above works, if the user wants, `hkml` lists recipients of the
