@@ -546,8 +546,9 @@ def mails_to_list_data(
         mails_to_show, do_find_ancestors_from_cache, mails_filter,
         list_decorator, show_thread_of, runtime_profile, stat_only,
         stat_authors):
+    '''Return MailsListData and an error'''
     if len(mails_to_show) == 0:
-        return MailsListData('no mail', 0, {}, {})
+        return None, 'no mail to list'
 
     filtered_mails, mail_idx_key_map = sort_filter_mails(
             mails_to_show, do_find_ancestors_from_cache, mails_filter,
@@ -573,7 +574,7 @@ def mails_to_list_data(
         text = '\n'.join(runtime_profile_lines + stat_lines + lines)
         len_comments = len(runtime_profile_lines) + len(stat_lines)
     return MailsListData(text, len_comments, line_nr_to_mail_map,
-                         mail_idx_key_map)
+                         mail_idx_key_map), None
 
 def git_log_output_line_to_mail(line, mdir):
     fields = line.split()
@@ -913,10 +914,12 @@ def args_to_mails_list_data(args):
         return None, 'getting mails failed (%s)' % err
     runtime_profile = [['get_mails', time.time() - timestamp]]
 
-    list_data = mails_to_list_data(
+    list_data, err = mails_to_list_data(
             mails_to_show, args.do_find_ancestors_from_cache,
             MailListFilter(args), MailListDecorator(args), None,
             runtime_profile, args.stat_only, args.stat_authors)
+    if err is not None:
+        return None, err
     if args.source_type == ['msgid']:
         for line_nr, mail in list_data.line_nr_mail_map.items():
             # drop enclosing <>

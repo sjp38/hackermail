@@ -183,10 +183,12 @@ def format_noti_text(request, mails_to_noti):
 
     list_decorator = request.mail_list_decorator
 
-    list_data = hkml_list.mails_to_list_data(
+    list_data, err = hkml_list.mails_to_list_data(
             mails_to_noti, do_find_ancestors_from_cache=False, mails_filter=None,
             list_decorator=list_decorator, show_thread_of=None,
             runtime_profile=[], stat_only=False, stat_authors=False)
+    if err is not None:
+        return 'mails_to_list_data() fail (%s)' % err
     lines.append(list_data.text)
     noti_text = '\n'.join(lines)
     return noti_text

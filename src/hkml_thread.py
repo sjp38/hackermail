@@ -45,10 +45,13 @@ def thread_str(mail_id, dont_use_internet, show_url):
     list_decorator.cols = nr_cols_in_line
     list_decorator.show_runtime_profile = False
 
-    list_data = hkml_list.mails_to_list_data(
+    list_data, err = hkml_list.mails_to_list_data(
             mails_to_show, do_find_ancestors_from_cache=False, mails_filter=None,
             list_decorator=list_decorator, show_thread_of=mail_id,
             runtime_profile=[], stat_only=False, stat_authors=False)
+    if err is not None:
+        print('mails_to_list_data() fail (%s)' % err)
+        exit(1)
     return list_data
 
 def main(args):
