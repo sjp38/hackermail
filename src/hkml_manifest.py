@@ -3,6 +3,10 @@
 
 import argparse
 import json
+import os
+import shutil
+import subprocess
+import tempfile
 
 import _hkml
 
@@ -36,6 +40,29 @@ def pr_directory(directory, mlists, depth=0):
         else:
             print('%s%s: %s' % (indent, key, val))
 
+def fetch_lore():
+    '''Fetch lore manifest and use it'''
+        # Get the current working directory
+    original_dir = os.getcwd()
+    temp_dir = tempfile.mkdtemp(prefix='hkml_manifest_dir_')
+    os.chdir(temp_dir)
+
+    err = subprocess.call(['wget', 'https://lore.kernel.org/manifest.js.gz'])
+    if err:
+        print('downloading lore manifest fail (%s); please cleanup %s' %
+              (err, temp_dir))
+        exit(1)
+    err = subprocess.call(['gzip', '-d', 'manifest.js.gz'])
+    if err:
+        print('gunzip fail (%s); please cleanup %s' % (err, temp_dir))
+        exit(1)
+    with open('manifest.js') as f:
+        manifest = json.load(f)
+    os.chdir(original_dir)
+    shutil.rmtree(temp_dir)
+    manifest['site'] = 'https://lore.kernel.org'
+    _hkml.update_manifest(manifest)
+
 def main(args):
     if args.action == 'list':
         if args.mailing_lists is True:
@@ -53,12 +80,16 @@ def main(args):
             manifest = json.load(f)
         manifest['site'] = args.site
         print(json.dumps(manifest))
+    elif args.action == 'fetch_lore':
+        fetch_lore()
 
 def set_argparser(parser):
     _hkml.set_manifest_option(parser)
-    parser.add_argument('action', metavar='<action>', nargs='?',
-            choices=['list', 'convert_public_inbox_manifest'], default='list',
-            help='action to do: list or convert_public_inbox_manifest')
+    parser.add_argument(
+            'action', metavar='<action>', nargs='?',
+            choices=['list', 'convert_public_inbox_manifest', 'fetch_lore'],
+            default='list',
+            help='action to do: list, fetch_lore or convert_public_inbox_manifest')
     parser.add_argument('--mlists', metavar='<mailing list name>', nargs='+',
             help='print manifest entries for specific mailing lists')
     parser.add_argument('--public_inbox_manifest', metavar='<file>',
