@@ -40,7 +40,7 @@ def pr_directory(directory, mlists, depth=0):
         else:
             print('%s%s: %s' % (indent, key, val))
 
-def fetch_lore():
+def fetch_lore(output_file=None):
     '''Fetch lore manifest and use it'''
         # Get the current working directory
     original_dir = os.getcwd()
@@ -61,7 +61,11 @@ def fetch_lore():
     os.chdir(original_dir)
     shutil.rmtree(temp_dir)
     manifest['site'] = 'https://lore.kernel.org'
-    _hkml.update_manifest(manifest)
+    if output_file is None:
+        _hkml.update_manifest(manifest)
+    else:
+        with open(output_file, 'w') as f:
+            json.dump(manifest, f, indent=4)
 
 def main(args):
     if args.action == 'list':
@@ -81,7 +85,7 @@ def main(args):
         manifest['site'] = args.site
         print(json.dumps(manifest))
     elif args.action == 'fetch_lore':
-        fetch_lore()
+        fetch_lore(args.fetch_lore_output)
 
 def set_argparser(parser):
     _hkml.set_manifest_option(parser)
@@ -98,3 +102,5 @@ def set_argparser(parser):
             help='site to fetch mail archives')
     parser.add_argument('--mailing_lists', action='store_true',
                         help='list only names of mailine lists')
+    parser.add_argument('--fetch_lore_output', metavar='<file>',
+                        help='store fetched lore manifest to given file')
