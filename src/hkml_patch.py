@@ -28,7 +28,7 @@ def check_patches(checker, patch_files, patch_mails, rm_patches):
         if os.path.isfile(checkpatch):
             checker = checkpatch
         else:
-            return '<cheker> is not given; checkpatch.pl is also not found'
+            return '<checker> is not given; checkpatch.pl is also not found'
 
     complained_patches = []
     for idx, patch_file in enumerate(patch_files):
