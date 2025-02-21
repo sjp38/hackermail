@@ -19,3 +19,4 @@
 - Investigate why 'hkml list linux-mm --from Torvalds --body mglru --since
   2023-01-01' cannot find
   https://lore.kernel.org/linux-mm/CAHk-=wjWJgWzOf9MCuiE0oDsF6cCCn7KKDc_xDN6Q3kWNEHKLQ@mail.gmail.com/
+- support merge-based patches applying
