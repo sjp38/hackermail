@@ -354,6 +354,10 @@ def make_cover_letter_commit(subject):
 def main(args):
     if args.action == 'format':
         return hkml_patch_format.main(args)
+    elif args.action == 'recipients':
+        return list_recipients(args.patch_files)
+    elif args.action == 'commit_cv':
+        return make_cover_letter_commit(args.subject)
 
     if args.action == 'check':
         if is_files_argument(args.patch):
@@ -368,10 +372,6 @@ def main(args):
             return 1
         else:
             args.mail = args.patch[0]
-    elif args.action == 'recipients':
-        return list_recipients(args.patch_files)
-    elif args.action == 'commit_cv':
-        return make_cover_letter_commit(args.subject)
 
     mail, err = user_pointed_mail(args.mail)
     if err is not None:
