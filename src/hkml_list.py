@@ -584,6 +584,14 @@ def git_log_output_line_to_mail(line, mdir):
     subject = line[subject_offset:]
     return _hkml.Mail.from_gitlog(fields[0], mdir, fields[1], subject)
 
+def warn_old_epochs(mails, since, oldest_epoch):
+    if oldest_epoch == 0:
+        return
+    if since is None:
+        return
+    if len(mails) == 0 or mails[-1].date - since > datetime.timedelta(months=1):
+        print('you might need to fetch old epochs')
+
 def get_mails_from_git(mail_list, since, until,
                        min_nr_mails, max_nr_mails, commits_range=None):
     lines = []
@@ -632,6 +640,7 @@ def get_mails_from_git(mail_list, since, until,
             if mail is None or mail.mbox == '':
                 continue
             mails.append(mail)
+    warn_old_epochs(mails, since, _hkml.get_epoch_from_git_path(mdirs[-1]))
     return mails, None
 
 def infer_source_type(source, is_pisearch):
