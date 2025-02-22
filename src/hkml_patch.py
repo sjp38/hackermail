@@ -69,6 +69,7 @@ def git_cherrypick_merge(patch_files, repo):
     cv_mail = _hkml.read_mbox_file(patch_files[0])[0]
     cv_merge_msg = '\n'.join([
         'Merge patch series \'%s\'' % cv_mail.subject, '',
+        'Below is the cover letter of the series', '',
         cv_mail.get_field('body')])
     final_commit = subprocess.check_output(
             git_cmd + ['rev-parse', 'HEAD']).decode().strip()
