@@ -705,7 +705,7 @@ def fetch_get_mails_from_git(fetch, source, since, until, min_nr_mails,
             "No mail has fetched from '%s'." % source,
             "You _might_ need to run 'hkml manifest fetch_lore'."]))
 
-    return mails
+    return mails, None
 
 def get_thread_mails_from_web(msgid):
     if msgid.startswith('<') and msgid.endswith('>'):
@@ -780,9 +780,11 @@ def get_mails(source, fetch, since, until,
             return None, 'failed: %s for %s' % (err, source)
         return mails, None
 
-    mails = fetch_get_mails_from_git(
+    mails, err = fetch_get_mails_from_git(
             fetch, source, since, until, min_nr_mails, max_nr_mails,
             commits_range)
+    if err is not None:
+        return None, 'failed: %s for %s' % (err ,source)
 
     mails.reverse()
     return mails, None
