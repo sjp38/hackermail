@@ -115,9 +115,9 @@ def git_cherrypick_merge(patch_files, cv_mail, repo):
     subprocess.call(git_cmd + ['commit', '--amend', '-m', cv_merge_msg])
     return None
 
-def apply_patches(patch_mails, patch_files, first_patch_is_cv, repo):
+def apply_patches(patch_mails, patch_files, repo):
     err = None
-    if first_patch_is_cv:
+    if len(patch_mails) > 0 and is_cover_letter(patch_mails[0]):
         print('How should I apply the cover letter?')
         print()
         print('1: add to first patch\'s commit message')
@@ -274,16 +274,11 @@ def check_apply_or_export(mail, args):
     if err is not None:
         return 'writing patch files failed (%s)' % err
 
-    first_patch_is_cv = False
-    if len(patch_mails) > 0:
-        first_patch_is_cv = is_cover_letter(patch_mails[0])
-
     if args.action == 'check':
         return check_patches(
                 args.checker, patch_files, patch_mails, rm_patches=True)
     elif args.action == 'apply':
-        return apply_patches(patch_mails, patch_files, first_patch_is_cv,
-                             args.repo)
+        return apply_patches(patch_mails, patch_files, args.repo)
     elif args.action == 'export':
         move_patches(patch_files, args.export_dir)
         return None
