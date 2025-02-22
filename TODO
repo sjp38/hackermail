@@ -17,3 +17,4 @@
 - Let interactive mails selection and menu for slected mails
 - Support patch handling of non-public mails
 - Clone and fetch old epoch git for searching if needed
+- Make print() logs not hidden by interactive viewer
