@@ -268,7 +268,6 @@ def write_patch_mails(patch_mails):
     return files, None
 
 def check_apply_or_export(mail, args):
-    err_to_return = None
     patch_mails = get_patch_mails(mail, args.dont_add_cv)
     patch_files, err = write_patch_mails(patch_mails)
     if err is not None:
