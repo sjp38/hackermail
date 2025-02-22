@@ -52,13 +52,54 @@ def check_patches(checker, patch_files, patch_mails, rm_patches):
         rm_tmp_patch_dir(patch_files)
     return None
 
-def apply_patches(patch_files, first_patch_is_cv, repo):
-    for idx, patch_file in enumerate(patch_files):
-        if idx == 0 and first_patch_is_cv:
-            continue
+def git_am(patch_files, repo):
+    for patch_file in patch_files:
         rc = subprocess.call(['git', '-C', repo, 'am', patch_file])
         if rc != 0:
             return 'applying patch (%s) failed' % patch_file
+    return None
+
+def git_cherrypick_merge(patch_files, repo):
+    git_cmd = ['git', '-C', repo]
+    head_commit = subprocess.check_output(
+            git_cmd + ['rev-parse', 'HEAD']).decode().strip()
+    err = git_am(patch_files[1:], repo)
+    if err is not None:
+        return err
+    cv_mail = _hkml.read_mbox_file(patch_files[0])[0]
+    cv_merge_msg = '\n'.join([
+        'Merge patch series \'%s\'' % cv_mail.subject, '',
+        cv_mail.get_field('body')])
+    final_commit = subprocess.check_output(
+            git_cmd + ['rev-parse', 'HEAD']).decode().strip()
+    subprocess.call(git_cmd + ['reset', '--hard', head_commit])
+    subprocess.call(git_cmd + ['merge', '--no-ff', '--no-edit', final_commit])
+    subprocess.call(git_cmd + ['commit', '--amend', '-m', cv_merge_msg])
+    return None
+
+def apply_patches(patch_files, first_patch_is_cv, repo):
+    err = None
+    if first_patch_is_cv:
+        print('How should I apply the cover letter?')
+        print()
+        print('1: ignore')
+        print('2: add merge commit for that')
+        print()
+        answer = input('Enter the number, please (ignore by default): ')
+        try:
+            answer = int(answer)
+        except:
+            pass
+        if not answer in [1, 2]:
+            answer = 1
+        if answer == 1:
+            err = git_am(patch_files[1:], repo)
+        else:
+            err = git_cherrypick_merge(patch_files, repo)
+    else:
+        err = git_am(patch_files, repo)
+    if err is not None:
+        return err
     # cleanup tempoeral patches only when success, to let investigation easy
     rm_tmp_patch_dir(patch_files)
     return None
