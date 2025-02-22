@@ -12,6 +12,24 @@ import hkml_list
 import hkml_open
 import hkml_patch_format
 
+def find_mail_from_thread(thread, msgid):
+    if thread.get_field('message-id') == msgid:
+        return thread
+    if thread.replies is None:
+        return None
+    for reply in thread.replies:
+        found_mail = find_mail_from_thread(reply, msgid)
+        if found_mail is not None:
+            return found_mail
+
+def get_mail_with_replies(msgid):
+    mails = _hkml_list_cache.last_listed_mails()
+    threads = hkml_list.threads_of(mails)
+    for thread_root_mail in threads:
+        mail_with_replies = find_mail_from_thread(thread_root_mail, msgid)
+        if mail_with_replies is not None:
+            return mail_with_replies
+
 def user_pointed_mail(mail_identifier):
     if mail_identifier.isdigit():
         mail = _hkml_list_cache.get_mail(int(mail_identifier))
@@ -216,24 +234,6 @@ def get_patch_mails(mail, dont_add_cv):
         print('Adding the cover letter on the first patch.')
         patch_mails[1].add_cv(mail, len(patch_mails) - 1)
     return patch_mails
-
-def find_mail_from_thread(thread, msgid):
-    if thread.get_field('message-id') == msgid:
-        return thread
-    if thread.replies is None:
-        return None
-    for reply in thread.replies:
-        found_mail = find_mail_from_thread(reply, msgid)
-        if found_mail is not None:
-            return found_mail
-
-def get_mail_with_replies(msgid):
-    mails = _hkml_list_cache.last_listed_mails()
-    threads = hkml_list.threads_of(mails)
-    for thread_root_mail in threads:
-        mail_with_replies = find_mail_from_thread(thread_root_mail, msgid)
-        if mail_with_replies is not None:
-            return mail_with_replies
 
 def write_patch_mails(patch_mails):
     if len(patch_mails) > 9999:
