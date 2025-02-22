@@ -12,6 +12,21 @@ import hkml_list
 import hkml_open
 import hkml_patch_format
 
+def user_pointed_mail(mail_identifier):
+    if mail_identifier.isdigit():
+        mail = _hkml_list_cache.get_mail(int(mail_identifier))
+        if mail is None:
+            return None, 'cache search fail'
+        return mail, None
+    elif mail_identifier == 'clipboard':
+        mails, err = _hkml.read_mails_from_clipboard()
+        if err != None:
+            return None, 'reading mails in clipboard failed: %s' % err
+        if len(mails) != 1:
+            return None, 'multiple mails in clipboard'
+        return mails[0], None
+    return None, 'unsupported <mail> (%s)' % mail_identifier
+
 def rm_tmp_patch_dir(patch_files):
     dirname = os.path.dirname(patch_files[-1])
     for patch_file in patch_files:
@@ -358,19 +373,10 @@ def main(args):
     elif args.action == 'commit_cv':
         return make_cover_letter_commit(args.subject)
 
-    if args.mail.isdigit():
-        mail = _hkml_list_cache.get_mail(int(args.mail))
-    elif args.mail == 'clipboard':
-        mails, err = _hkml.read_mails_from_clipboard()
-        if err != None:
-            print('reading mails in clipboard failed: %s' % err)
-            exit(1)
-        if len(mails) != 1:
-            print('multiple mails in clipboard')
-            exit(1)
-        mail = mails[0]
-    else:
-        print('unsupported <mail> (%s)' % args.mail)
+    mail, err = user_pointed_mail(args.mail)
+    if err is not None:
+        print(err)
+        exit(1)
 
     mail = get_mail_with_replies(mail.get_field('message-id'))
     if mail is None:
