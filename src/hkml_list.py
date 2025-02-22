@@ -589,8 +589,7 @@ def get_mails_from_git(mail_list, since, until,
     lines = []
     mdirs = _hkml.mail_list_data_paths(mail_list)
     if not mdirs:
-        print("Mailing list '%s' in manifest not found." % mail_list)
-        exit(1)
+        return None, "Mailing list '%s' in manifest not found." % mail_list
 
     mails = []
     for mdir in mdirs:
@@ -633,7 +632,7 @@ def get_mails_from_git(mail_list, since, until,
             if mail is None or mail.mbox == '':
                 continue
             mails.append(mail)
-    return mails
+    return mails, None
 
 def infer_source_type(source, is_pisearch):
     '''Return source type and error string'''
@@ -696,8 +695,10 @@ def fetch_get_mails_from_git(fetch, source, since, until, min_nr_mails,
     if fetch:
         hkml_fetch.fetch_mail([source], True, 1)
 
-    mails = get_mails_from_git(source, since, until, min_nr_mails,
-                               max_nr_mails, commits_range)
+    mails, err = get_mails_from_git(source, since, until, min_nr_mails,
+                                    max_nr_mails, commits_range)
+    if err is not None:
+        return None, err
 
     if (len(mails) == 0 and _hkml.is_for_lore_kernel_org() and
         datetime.datetime.now() - until < datetime.timedelta(minutes=5)):
