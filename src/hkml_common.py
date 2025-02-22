@@ -82,3 +82,10 @@ def add_date_arg(parser, option_name, help_msg):
     parser.add_argument(
             option_name, metavar='<date token>', nargs='+',
             help=help_msg)
+
+def cmd_available(cmd):
+    try:
+        subprocess.check_output(['which', cmd], stderr=subprocess.DEVNULL)
+        return True
+    except:
+        return False
