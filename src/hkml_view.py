@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: GPL-2.0
 
 import curses
+import datetime
 import os
 import subprocess
 import sys
@@ -659,5 +660,6 @@ def view_text(text):
     view(text, None, 'text')
 
 def log(msg):
+    msg = '%s: %s' % (datetime.datetime.now(), msg)
     with open('.hkml_log', 'a') as f:
         f.write('%s\n' % msg)
