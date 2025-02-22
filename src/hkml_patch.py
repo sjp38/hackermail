@@ -115,9 +115,12 @@ def git_cherrypick_merge(patch_files, cv_mail, repo):
     subprocess.call(git_cmd + ['commit', '--amend', '-m', cv_merge_msg])
     return None
 
-def apply_patches(patch_mails, patch_files, repo):
+def apply_patches(patch_mails, repo):
     err = None
-    if len(patch_mails) > 0 and is_cover_letter(patch_mails[0]):
+
+    has_cv = len(patch_mails) > 0 and is_cover_letter(patch_mails[0])
+    do_merge = False
+    if has_cv:
         print('How should I apply the cover letter?')
         print()
         print('1: add to first patch\'s commit message')
@@ -132,15 +135,19 @@ def apply_patches(patch_mails, patch_files, repo):
             answer = 1
         if answer == 1:
             patch_mails[1].add_cv(patch_mails[0], len(patch_mails) - 1)
-            rm_tmp_patch_dir(patch_files)
-            patch_files, err = write_patch_mails(patch_mails)
-            if err is not None:
-                return 'writing patch fiels failed (%s)' % err
+        else:
+            do_merge = True
+
+    patch_files, err = write_patch_mails(patch_mails)
+    if err is not None:
+        return 'writing patch files failed (%s)' % err
+    if do_merge:
+        err = git_cherrypick_merge(patch_files, patch_mails[0], repo)
+    else:
+        if has_cv:
             err = git_am(patch_files[1:], repo)
         else:
-            err = git_cherrypick_merge(patch_files, patch_mails[0], repo)
-    else:
-        err = git_am(patch_files, repo)
+            err = git_am(patch_files, repo)
     if err is not None:
         return err
     # cleanup tempoeral patches only when success, to let investigation easy
@@ -269,6 +276,9 @@ def write_patch_mails(patch_mails):
 
 def check_apply_or_export(mail, args):
     patch_mails = get_patch_mails(mail, args.dont_add_cv)
+    if args.action == 'apply':
+        return apply_patches(patch_mails, args.repo)
+
     patch_files, err = write_patch_mails(patch_mails)
     if err is not None:
         return 'writing patch files failed (%s)' % err
@@ -276,8 +286,6 @@ def check_apply_or_export(mail, args):
     if args.action == 'check':
         return check_patches(
                 args.checker, patch_files, patch_mails, rm_patches=True)
-    elif args.action == 'apply':
-        return apply_patches(patch_mails, patch_files, args.repo)
     elif args.action == 'export':
         move_patches(patch_files, args.export_dir)
         return None
