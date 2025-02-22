@@ -670,9 +670,7 @@ def get_mails_from_pisearch(mailing_list, query_str):
     query_str = query_str.replace(' ', '+')
     query_url = '%s/%s/?q=%s&x=A' % (pi_url, mailing_list, query_str)
     _, query_output = tempfile.mkstemp(prefix='hkml_pisearch_atom-')
-    try:
-        subprocess.check_output(['which', 'curl'], stderr=subprocess.DEVNULL)
-    except:
+    if not hkml_common.cmd_available('curl'):
         print('"which curl" fails')
         return []
 

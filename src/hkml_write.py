@@ -9,6 +9,7 @@ import tempfile
 
 import _hkml
 import _hkml_list_cache
+import hkml_common
 import hkml_list
 import hkml_open
 import hkml_send
@@ -124,13 +125,8 @@ def ask_editor(default_editor):
         choices = []
     for editor in ['vim', 'nvim', 'emacs', 'nano']:
         if not editor in choices:
-            try:
-                subprocess.check_output(['which', editor],
-                                        stderr = subprocess.DEVNULL)
+            if hkml_common.cmd_available(editor):
                 choices.append(editor)
-            except:
-                # subprocess.check_output threw an error.
-                pass
     if choices == []:
         print('please install vim, nvim, emacs or nano and retry')
         exit(1)

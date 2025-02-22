@@ -8,6 +8,7 @@ import subprocess
 import _hkml
 import _hkml_list_cache
 import hkml_cache
+import hkml_common
 import hkml_list
 import hkml_open
 import hkml_view
@@ -137,24 +138,14 @@ def menu_selections_for_url(line):
     for word in line.split():
         if not word.startswith('http://') and not word.startswith('https://'):
             continue
-        try:
-            subprocess.check_output(
-                    ['which', 'lynx'], stderr=subprocess.DEVNULL)
+        if hkml_common.cmd_available('lynx'):
             cmd = 'lynx %s' % word
             selections.append(hkml_view.CliSelection(
                 cmd, handle_fn=menu_exec_web, data=cmd))
-        except:
-            # lynx not installed.
-            pass
-        try:
-            subprocess.check_output(
-                    ['which', 'w3m'], stderr=subprocess.DEVNULL)
+        if hkml_common.cmd_available('w3m'):
             cmd = 'w3m %s' % word
             selections.append(hkml_view.CliSelection(
                 cmd, handle_fn=menu_exec_web, data=cmd))
-        except:
-            # w3m not installed.
-            pass
     return selections
 
 def menu_selections_for_files(line):
