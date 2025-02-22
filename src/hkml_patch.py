@@ -59,26 +59,25 @@ def git_am(patch_files, repo):
             return 'applying patch (%s) failed' % patch_file
     return None
 
-def git_cherrypick_merge(patch_files, repo):
+def git_cherrypick_merge(patch_files, cv_mail, repo):
     git_cmd = ['git', '-C', repo]
     head_commit = subprocess.check_output(
             git_cmd + ['rev-parse', 'HEAD']).decode().strip()
     err = git_am(patch_files[1:], repo)
     if err is not None:
         return err
-    cv_mail = _hkml.read_mbox_file(patch_files[0])[0]
-    cv_merge_msg = '\n'.join([
-        'Merge patch series \'%s\'' % cv_mail.subject, '',
-        'Below is the cover letter of the series', '',
-        cv_mail.get_field('body')])
     final_commit = subprocess.check_output(
             git_cmd + ['rev-parse', 'HEAD']).decode().strip()
     subprocess.call(git_cmd + ['reset', '--hard', head_commit])
     subprocess.call(git_cmd + ['merge', '--no-ff', '--no-edit', final_commit])
+    cv_merge_msg = '\n'.join([
+        'Merge patch series \'%s\'' % cv_mail.subject, '',
+        'Below is the cover letter of the series', '',
+        cv_mail.get_field('body')])
     subprocess.call(git_cmd + ['commit', '--amend', '-m', cv_merge_msg])
     return None
 
-def apply_patches(patch_files, first_patch_is_cv, repo):
+def apply_patches(patch_mails, patch_files, first_patch_is_cv, repo):
     err = None
     if first_patch_is_cv:
         print('How should I apply the cover letter?')
@@ -96,7 +95,7 @@ def apply_patches(patch_files, first_patch_is_cv, repo):
         if answer == 1:
             err = git_am(patch_files[1:], repo)
         else:
-            err = git_cherrypick_merge(patch_files, repo)
+            err = git_cherrypick_merge(patch_files, patch_mails[0], repo)
     else:
         err = git_am(patch_files, repo)
     if err is not None:
@@ -258,7 +257,8 @@ def apply_action_to_mails(mail, args):
         return check_patches(
                 args.checker, patch_files, patch_mails, rm_patches=True)
     elif args.action == 'apply':
-        return apply_patches(patch_files, first_patch_is_cv, args.repo)
+        return apply_patches(patch_mails, patch_files, first_patch_is_cv,
+                             args.repo)
     elif args.action == 'export':
         move_patches(patch_files, args.export_dir)
         return None
