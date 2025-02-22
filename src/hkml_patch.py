@@ -17,15 +17,20 @@ def user_pointed_mail(mail_identifier):
         mail = _hkml_list_cache.get_mail(int(mail_identifier))
         if mail is None:
             return None, 'cache search fail'
-        return mail, None
     elif mail_identifier == 'clipboard':
         mails, err = _hkml.read_mails_from_clipboard()
         if err != None:
             return None, 'reading mails in clipboard failed: %s' % err
         if len(mails) != 1:
             return None, 'multiple mails in clipboard'
-        return mails[0], None
-    return None, 'unsupported <mail> (%s)' % mail_identifier
+        mail = mails[0]
+    else:
+        return None, 'unsupported <mail> (%s)' % mail_identifier
+
+    mail = get_mail_with_replies(mail.get_field('message-id'))
+    if mail is None:
+        return None, 'get replies of the mail fail'
+    return mail, None
 
 def rm_tmp_patch_dir(patch_files):
     dirname = os.path.dirname(patch_files[-1])
@@ -376,11 +381,6 @@ def main(args):
     mail, err = user_pointed_mail(args.mail)
     if err is not None:
         print(err)
-        exit(1)
-
-    mail = get_mail_with_replies(mail.get_field('message-id'))
-    if mail is None:
-        print('cannot find the mail')
         exit(1)
 
     err = check_apply_or_export(mail, args)
