@@ -670,25 +670,22 @@ def get_mails_from_pisearch(mailing_list, query_str):
     query_url = '%s/%s/?q=%s&x=A' % (pi_url, mailing_list, query_str)
     _, query_output = tempfile.mkstemp(prefix='hkml_pisearch_atom-')
     if not hkml_common.cmd_available('curl'):
-        print('"which curl" fails')
-        return []
+        return None, '"which curl" fails'
 
     if subprocess.call(['curl', query_url, '-o', query_output],
                        stderr=subprocess.DEVNULL) != 0:
-        print('fetching query result from %s failed' % query_url)
-        return []
+        return None, 'fetching query result from %s failed' % query_url
     try:
         root = ET.parse(query_output).getroot()
     except:
-        print('parsing query result of %s at %s failed' %
-              (query_url, query_output))
-        return []
+        return None, 'parsing query result of %s at %s failed' % (
+                query_url, query_output)
     os.remove(query_output)
     entries = [node for node in root if pisearch_tag(node) == 'entry']
     mails = []
     for entry in entries:
         mails.append(_hkml.Mail(atom_entry=entry, atom_ml=mailing_list))
-    return mails
+    return mails, None
 
 def fetch_get_mails_from_git(fetch, source, since, until, min_nr_mails,
                              max_nr_mails, commits_range):
@@ -773,7 +770,7 @@ def get_mails(source, fetch, since, until,
         return hkml_tag.mails_of_tag(source), None
 
     if pisearch:
-        return get_mails_from_pisearch(source, pisearch), None
+        return get_mails_from_pisearch(source, pisearch)
 
     if source_type == 'msgid':
         mails, err = get_thread_mails_from_web(source)
