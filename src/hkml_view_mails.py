@@ -252,7 +252,7 @@ def do_check_patch(data, answer, selection):
 def do_apply_patch(data, answer, selection):
     mail = data
     err = hkml_patch.apply_action_to_mails(mail, argparse.Namespace(
-        hkml_dir=None, command='patch', dont_add_cv='ask', action='apply',
+        hkml_dir=None, command='patch', dont_add_cv=True, action='apply',
         repo='./'))
     if err is not None:
         hkml_view.cli_any_input('applying action failed (%s)' % err)

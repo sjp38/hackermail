@@ -82,7 +82,7 @@ def apply_patches(patch_mails, patch_files, first_patch_is_cv, repo):
     if first_patch_is_cv:
         print('How should I apply the cover letter?')
         print()
-        print('1: ignore')
+        print('1: add to first patch\'s commit message')
         print('2: add merge commit for that')
         print()
         answer = input('Enter the number, please (ignore by default): ')
@@ -93,6 +93,11 @@ def apply_patches(patch_mails, patch_files, first_patch_is_cv, repo):
         if not answer in [1, 2]:
             answer = 1
         if answer == 1:
+            patch_mails[1].add_cv(patch_mails[0], len(patch_mails) - 1)
+            rm_tmp_patch_dir(patch_files)
+            patch_files, err = write_patch_mails(patch_mails)
+            if err is not None:
+                return 'writing patch fiels failed (%s)' % err
             err = git_am(patch_files[1:], repo)
         else:
             err = git_cherrypick_merge(patch_files, patch_mails[0], repo)
