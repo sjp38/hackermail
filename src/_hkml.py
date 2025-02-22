@@ -510,7 +510,7 @@ def get_manifest():
         exit(1)
     return __manifest
 
-def __get_epoch_from_git_path(git_path):
+def get_epoch_from_git_path(git_path):
     # git_path is, e.g., '.../0.git'
     return int(os.path.basename(git_path).split('.git')[0])
 
@@ -527,7 +527,7 @@ def mail_list_repo_paths(mail_list, manifest=None):
     for path in manifest:
         if path.startswith('/%s/' % mail_list):
             paths.append(path)
-    return sorted(paths, key=__get_epoch_from_git_path, reverse=True)
+    return sorted(paths, key=get_epoch_from_git_path, reverse=True)
 
 def mail_list_data_paths(mail_list, manifest=None):
     '''Returns git trees in this machine for the given mailing lists.
@@ -542,7 +542,7 @@ def mail_list_data_paths(mail_list, manifest=None):
     mdir_paths = []
     for path in repo_paths:
         mdir_paths.append(os.path.join(get_hkml_dir(), 'archives' + path))
-    return sorted(mdir_paths, key=__get_epoch_from_git_path, reverse=True)
+    return sorted(mdir_paths, key=get_epoch_from_git_path, reverse=True)
 
 def is_valid_mail_list(name):
     for mail_list_git_path in get_manifest().keys():
