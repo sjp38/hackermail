@@ -243,7 +243,7 @@ def manage_tags_of_mail(slist, mail):
 
 def do_check_patch(data, answer, selection):
     mail = data
-    err = hkml_patch.apply_action_to_mails(mail, argparse.Namespace(
+    err = hkml_patch.check_apply_or_export(mail, argparse.Namespace(
         hkml_dir=None, command='patch', dont_add_cv='ask', action='check',
         checker=None))
     if err is not None:
@@ -251,7 +251,7 @@ def do_check_patch(data, answer, selection):
 
 def do_apply_patch(data, answer, selection):
     mail = data
-    err = hkml_patch.apply_action_to_mails(mail, argparse.Namespace(
+    err = hkml_patch.check_apply_or_export(mail, argparse.Namespace(
         hkml_dir=None, command='patch', dont_add_cv=True, action='apply',
         repo='./'))
     if err is not None:
@@ -269,7 +269,7 @@ def do_export_patch(data, answer, selection):
         return
 
     mail = data
-    err = hkml_patch.apply_action_to_mails(mail, argparse.Namespace(
+    err = hkml_patch.check_apply_or_export(mail, argparse.Namespace(
         hkml_dir=None, command='patch', dont_add_cv='ask', action='export',
         repo='./', export_dir=export_dir))
     if err is not None:

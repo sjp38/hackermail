@@ -262,7 +262,7 @@ def write_patch_mails(patch_mails):
         files.append(file_name)
     return files, None
 
-def apply_action_to_mails(mail, args):
+def check_apply_or_export(mail, args):
     err_to_return = None
     patch_mails = get_patch_mails(mail, args.dont_add_cv)
     patch_files, err = write_patch_mails(patch_mails)
@@ -383,7 +383,7 @@ def main(args):
         print('cannot find the mail')
         exit(1)
 
-    err = apply_action_to_mails(mail, args)
+    err = check_apply_or_export(mail, args)
     if err is not None:
         print(err)
         exit(1)
