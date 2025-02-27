@@ -68,11 +68,23 @@ def edit_signature(signature_idx):
     signatures[signature_idx] = signature
     write_signatures_file(signatures)
 
+def number_suffix(n):
+    if n % 100 in (11, 12, 13):
+        return 'th'
+    elif n % 10 == 1:
+        return 'st'
+    elif n % 10 == 2:
+        return 'nd'
+    elif n % 10 == 3:
+        return 'rd'
+    else:
+        return 'th'
+
 def main(args):
     if args.action == 'list':
         signatures = read_signatures_file()
         for idx, signature in enumerate(signatures):
-            print('%d-th signature' % idx)
+            print('%d%s signature' % (idx, number_suffix(idx)))
             print('```')
             print(signature)
             print('```')
