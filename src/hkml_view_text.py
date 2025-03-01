@@ -263,19 +263,6 @@ def menu_manage_tags(data, answer, selection):
     # todo: handle err is not None case
     hkml_view_mails.manage_tags_of_mail(slist, mail)
 
-def handle_patches(c, slist):
-    if slist.parent_list is not None:
-        slist = slist.parent_list
-    mail, err = get_showing_mail(slist)
-    # tood: handle err is not None case
-    hkml_view.shell_mode_start(slist)
-    if hasattr(slist, 'mails'):
-        mails_list = slist.mails
-    else:
-        mails_list = [mail]
-    hkml_view_mails.handle_patches_of_mail(mail, mails_list=mails_list)
-    hkml_view.shell_mode_end(slist)
-
 def menu_handle_patches(data, answer, selection):
     slist, selections = data
     mail, err = get_showing_mail(slist)
