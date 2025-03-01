@@ -367,7 +367,7 @@ def do_export(data, answer, selection):
         return 'file unselected'
     hkml_export.main(argparse.Namespace(
         hkml_dir=None, command='export', export_file=file_name,
-        range=export_range))
+        range=export_range, human_readasble=False))
     print()
 
 def export_mails(c, slist):
