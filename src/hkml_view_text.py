@@ -15,6 +15,14 @@ import hkml_view
 import hkml_view_mails
 import hkml_write
 
+class TextViewData:
+    mail = None
+    mails_list = None
+
+    def __init__(self, mail, mails_list):
+        self.mail = mail
+        self.mails_list = mails_list
+
 def menu_exec_git(data, answer, selection):
     slist, selections = data
     hkml_view.shell_mode_end(slist)
