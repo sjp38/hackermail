@@ -318,8 +318,7 @@ def show_text_viewer_menu(c, slist):
     hkml_view.shell_mode_end(slist)
 
 def get_text_viewer_handlers(data):
-    if type(data) is _hkml.Mail or (
-            type(data) is TextViewData and data.mail is not None):
+    if data is not None and data.mail is not None:
         handlers = [
                 hkml_view.InputHandler(['r'], reply_mail, 'reply'),
                 hkml_view.InputHandler(['f'], forward_mail, 'forward'),
