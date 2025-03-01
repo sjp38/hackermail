@@ -164,7 +164,10 @@ def move_patches(patch_files, dest_dir):
             shutil.move(patch_file, os.path.join(dest_dir, basename))
         os.rmdir(saved_dir)
         saved_dir = dest_dir
-    print('\npatch files are saved at \'%s\'\n' % saved_dir)
+    print('\npatch files are saved at \'%s\' with below names:' % saved_dir)
+    for patch_file in patch_files:
+        print('- %s' % os.path.basename(patch_file))
+    print()
 
 def get_patch_index(mail):
     tag_end_idx = mail.subject.find(']')
