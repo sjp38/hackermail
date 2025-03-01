@@ -189,8 +189,8 @@ def reply_mail(c, slist):
     # maybe called from tui/cli menu
     if slist.parent_list is not None:
         slist = slist.parent_list
-    mail = slist.data
-    if mail is None or type(mail) is not _hkml.Mail:
+    mail, err = get_showing_mail(slist)
+    if err is not None:
         slist.toast('parent is not a mail?')
         return
 
@@ -198,7 +198,8 @@ def reply_mail(c, slist):
 
 def menu_reply_mail(data, answer, selection):
     slist, selections = data
-    mail = slist.data
+    mail, err = get_showing_mail(slist)
+    # todo: handle err is not None case
     hkml_view.shell_mode_end(slist)
     hkml_view_mails.reply_mail(slist, mail)
     hkml_view.shell_mode_start(slist)
@@ -207,8 +208,8 @@ def forward_mail(c, slist):
     # maybe called from tui/cli menu
     if slist.parent_list is not None:
         slist = slist.parent_list
-    mail = slist.data
-    if mail is None or type(mail) is not _hkml.Mail:
+    mail, err = get_showing_mail(slist)
+    if err is not None:
         slist.toast('parent is not a mail?')
         return
 
@@ -216,7 +217,8 @@ def forward_mail(c, slist):
 
 def menu_forward_mail(data, answer, selection):
     slist, selections = data
-    mail = slist.data
+    mail, err = get_showing_mail(slist)
+    # todo: handle err is not None case
     hkml_view.shell_mode_end(slist)
     hkml_view_mails.forward_mail(slist, mail)
     hkml_view.shell_mode_start(slist)
@@ -225,15 +227,16 @@ def write_draft_mail(c, slist):
     # maybe called from tui/cli menu
     if slist.parent_list is not None:
         slist = slist.parent_list
-    mail = slist.data
-    if mail is None or type(mail) is not _hkml.Mail:
+    mail, err = get_showing_mail(slist)
+    if err is not None:
         slist.toast('parent is not a mail?')
         return
     hkml_view_mails.write_mail_draft(slist, mail)
 
 def menu_write_draft(data, answer, selection):
     slist, selections = data
-    mail = slist.data
+    mail, err = get_showing_mail(slist)
+    # todo: handle err is not None case
     hkml_view.shell_mode_end(slist)
     hkml_view_mails.write_mail_draft(slist, mail)
     hkml_view.shell_mode_start(slist)
@@ -242,21 +245,23 @@ def manage_tags(c, slist):
     # maybe called from tui/cli menu
     if slist.parent_list is not None:
         slist = slist.parent_list
-    mail = slist.data
-    if mail is None or type(mail) is not _hkml.Mail:
+    mail, err = get_showing_mail(slist)
+    if err is not None:
         slist.toast('parent is not a mail?')
         return
     hkml_view_mails.manage_tags_of_mail(slist, mail)
 
 def menu_manage_tags(data, answer, selection):
     slist, selections = data
-    mail = slist.data
+    mail, err = get_showing_mail(slist)
+    # todo: handle err is not None case
     hkml_view_mails.manage_tags_of_mail(slist, mail)
 
 def handle_patches(c, slist):
     if slist.parent_list is not None:
         slist = slist.parent_list
-    mail = slist.data
+    mail, err = get_showing_mail(slist)
+    # tood: handle err is not None case
     hkml_view.shell_mode_start(slist)
     if hasattr(slist, 'mails'):
         mails_list = slist.mails
@@ -267,7 +272,8 @@ def handle_patches(c, slist):
 
 def menu_handle_patches(data, answer, selection):
     slist, selections = data
-    mail = slist.data
+    mail, err = get_showing_mail(slist)
+    # todo: handle err is not None case
     if hasattr(slist, 'mails'):
         mails_list = slist.mails
     else:
