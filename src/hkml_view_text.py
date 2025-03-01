@@ -299,6 +299,9 @@ def menu_wrap_text(data, answer, selection):
     else:
         slist.wrap_text()
 
+def is_showing_mail(slist):
+    return type(slist.data) is _hkml.Mail
+
 def menu_selections(slist):
     line = slist.lines[slist.focus_row]
 
@@ -307,7 +310,7 @@ def menu_selections(slist):
     selections += menu_selections_for_url(line)
     selections += menu_selections_for_files(line)
 
-    if type(slist.data) is _hkml.Mail:
+    if is_showing_mail(slist):
         selections += menu_selections_for_mail()
 
     if slist.wrapped_text():
