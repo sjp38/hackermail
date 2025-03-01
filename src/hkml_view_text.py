@@ -180,9 +180,8 @@ def menu_selections_for_files(line):
     return selections
 
 def is_showing_mail(slist):
-    if type(slist.data) is TextViewData:
-        return slist.data.mail is not None
-    return type(slist.data) is _hkml.Mail
+    # slist.data should be TextViewData
+    return slist.data.mail is not None
 
 def get_showing_mail(slist):
     # slist.data should be TextViewData
