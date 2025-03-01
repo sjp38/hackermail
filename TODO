@@ -18,5 +18,3 @@
 - Clone and fetch old epoch git for searching if needed
 - Make print() logs not hidden by interactive viewer
 - Support 'patch format' of topic-branches
-- Let exporting in condensed, easy-to-read format
-  - So tht chatbots can understand

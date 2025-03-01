@@ -1,7 +1,8 @@
 This file contains major changes in each version since v1.0.0
 
 v1.3.1
-- hkml patch apply: support merge-based patchset handling workflow
+- hkml patch apply: support merge-based patchset handling workflow.
+- Support exporting mails in valid but human/chatbot-friendly mbox format.
 
 v1.3.0
 - hkml patch format: review patch subjects
