@@ -57,7 +57,8 @@ def open_focused_mail(c, slist):
         cursor_position = None
 
     text_view_list = hkml_view_text.show_text_viewer(
-            slist.screen, lines, data=mail, cursor_position=cursor_position)
+            slist.screen, lines, data=mail, cursor_position=cursor_position,
+            mails=get_mails(slist))
     cursor_position_cache[msgid] = [text_view_list.focus_row,
                                     text_view_list.focus_col]
 
