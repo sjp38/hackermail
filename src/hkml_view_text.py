@@ -267,11 +267,7 @@ def menu_handle_patches(data, answer, selection):
     slist, selections = data
     mail, err = get_showing_mail(slist)
     # todo: handle err is not None case
-    if hasattr(slist, 'mails'):
-        mails_list = slist.mails
-    else:
-        mails_list = [mail]
-    hkml_view_mails.handle_patches_of_mail(mail, list_mails=mails_list)
+    hkml_view_mails.handle_patches_of_mail(mail, slist.data.mails_list)
 
 def menu_selections_for_mail():
     return [
