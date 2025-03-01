@@ -185,11 +185,11 @@ def is_showing_mail(slist):
     return type(slist.data) is _hkml.Mail
 
 def get_showing_mail(slist):
-    if not is_showing_mail(slist):
-        return None, 'parent is not a mail?'
-    if type(slist.data) is TextViewData:
-        return slist.data.mail, None
-    return slist.data, None
+    # slist.data should be TextViewData
+    mail = slist.data.mail
+    if mail is None:
+        return None, 'not showing mail?'
+    return mail, None
 
 def reply_mail(c, slist):
     # maybe called from tui/cli menu
