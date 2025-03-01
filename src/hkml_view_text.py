@@ -399,14 +399,12 @@ def hunk_lines(text_lines):
         idx += hunk_len + 1
     return indices
 
-def show_text_viewer(screen, text_lines, data=None, cursor_position=None,
-                     mails=None):
+def show_text_viewer(screen, text_lines, data=None, cursor_position=None):
     slist = hkml_view.ScrollableList(
             screen, text_lines, get_text_viewer_handlers(data))
     if data is None:
         data = TextViewData(mail=None, mails_list=[])
     slist.data = data
-    slist.mails = mails
     slist.hunk_lines = hunk_lines(text_lines)
     slist.color_callback = text_color_callback
     if cursor_position is not None:
