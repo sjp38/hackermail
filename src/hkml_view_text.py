@@ -407,6 +407,8 @@ def show_text_viewer(screen, text_lines, data=None, cursor_position=None,
                      mails=None):
     slist = hkml_view.ScrollableList(
             screen, text_lines, get_text_viewer_handlers(data))
+    if data is None:
+        data = TextViewData(mail=None, mails_list=[])
     slist.data = data
     slist.mails = mails
     slist.hunk_lines = hunk_lines(text_lines)
