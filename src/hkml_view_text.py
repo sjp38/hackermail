@@ -179,11 +179,13 @@ def menu_selections_for_files(line):
                 handle_fn=menu_open_file_editor, data=word))
     return selections
 
+def is_showing_mail(slist):
+    return type(slist.data) is _hkml.Mail
+
 def get_showing_mail(slist):
-    mail = slist.data
-    if mail is None or type(mail) is not _hkml.Mail:
+    if not is_showing_mail(slist):
         return None, 'parent is not a mail?'
-    return mail, None
+    return slist.data, None
 
 def reply_mail(c, slist):
     # maybe called from tui/cli menu
@@ -298,9 +300,6 @@ def menu_wrap_text(data, answer, selection):
         slist.unwrap_text()
     else:
         slist.wrap_text()
-
-def is_showing_mail(slist):
-    return type(slist.data) is _hkml.Mail
 
 def menu_selections(slist):
     line = slist.lines[slist.focus_row]
