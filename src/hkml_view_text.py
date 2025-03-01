@@ -244,13 +244,21 @@ def handle_patches(c, slist):
         slist = slist.parent_list
     mail = slist.data
     hkml_view.shell_mode_start(slist)
-    hkml_view_mails.handle_patches_of_mail(mail)
+    if hasattr(slist, 'mails'):
+        mails_list = slist.mails
+    else:
+        mails_list = [mail]
+    hkml_view_mails.handle_patches_of_mail(mail, mails_list=mails_list)
     hkml_view.shell_mode_end(slist)
 
 def menu_handle_patches(data, answer, selection):
     slist, selections = data
     mail = slist.data
-    hkml_view_mails.handle_patches_of_mail(mail)
+    if hasattr(slist, 'mails'):
+        mails_list = slist.mails
+    else:
+        mails_list = [mail]
+    hkml_view_mails.handle_patches_of_mail(mail, list_mails=mails_list)
 
 def menu_selections_for_mail():
     return [
