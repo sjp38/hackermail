@@ -362,16 +362,20 @@ def do_export(data, answer, selection):
     else:
         export_range = None
 
+    answer = input('may I export those in human/chatbot-readable form? [y/N] ')
+    human_readable = answer.lower() == 'y'
+
     file_name = hkml_view.receive_file_path(for_read=False)
     if file_name is None:
         return 'file unselected'
     mails = get_mails(slist)
+
     if export_range != None:
         filtered = [m for m in mails
                     if m.pridx >= export_range[0] and
                     m.pridx < export_range[1]]
         mails = filtered
-    hkml_export.export_mails(mails, file_name)
+    hkml_export.export_mails(mails, file_name, human_readable=human_readable)
     print()
 
 def export_mails(c, slist):
