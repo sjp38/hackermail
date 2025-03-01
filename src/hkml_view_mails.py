@@ -365,9 +365,13 @@ def do_export(data, answer, selection):
     file_name = hkml_view.receive_file_path(for_read=False)
     if file_name is None:
         return 'file unselected'
-    hkml_export.main(argparse.Namespace(
-        hkml_dir=None, command='export', export_file=file_name,
-        range=export_range, human_readasble=False))
+    mails = get_mails(slist)
+    if export_range != None:
+        filtered = [m for m in mails
+                    if m.pridx >= export_range[0] and
+                    m.pridx < export_range[1]]
+        mails = filtered
+    hkml_export.export_mails(mails, file_name)
     print()
 
 def export_mails(c, slist):
