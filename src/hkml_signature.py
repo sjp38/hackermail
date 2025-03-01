@@ -116,3 +116,7 @@ def set_argparser(parser):
     parser_remove.add_argument(
             'signature_idx', metavar='<index>', type=int,
             help='index of the signature from the "list" output')
+    parser.epilog = ' '.join([
+        'If any signature exists,',
+        'hkml will add those on mail drafts with instructions.',
+        ])
