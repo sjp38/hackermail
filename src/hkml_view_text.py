@@ -179,6 +179,12 @@ def menu_selections_for_files(line):
                 handle_fn=menu_open_file_editor, data=word))
     return selections
 
+def get_showing_mail(slist):
+    mail = slist.data
+    if mail is None or type(mail) is not _hkml.Mail:
+        return None, 'parent is not a mail?'
+    return mail, None
+
 def reply_mail(c, slist):
     # maybe called from tui/cli menu
     if slist.parent_list is not None:
