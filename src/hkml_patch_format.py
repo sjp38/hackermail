@@ -155,13 +155,9 @@ def fillup_cv(patch_file, subject, content):
     with open(patch_file, 'w') as f:
         f.write(cv_content)
 
-def add_base_commit_as_cv(patch_file, base_commit):
-    answer = input('\nMay I add the base commit to the coverletter? [Y/n] ')
-    if answer.lower() == 'n':
-        return
-
+def fillup_cv_from_commit(patch_file, commit):
     cv_content = subprocess.check_output(
-            ['git', 'log', '-1', '--pretty=%b', base_commit]).decode().strip()
+            ['git', 'log', '-1', '--pretty=%b', commit]).decode().strip()
     # paragraphs
     cv_pars = cv_content.split('\n\n')
     if len(cv_pars) < 2:
@@ -177,6 +173,13 @@ def add_base_commit_as_cv(patch_file, base_commit):
     content = '\n\n'.join(body_pars)
 
     fillup_cv(patch_file, subject, content)
+
+def add_base_commit_as_cv(patch_file, base_commit):
+    answer = input('\nMay I add the base commit to the coverletter? [Y/n] ')
+    if answer.lower() == 'n':
+        return
+
+    fillup_cv_from_commit(patch_file, base_commit)
 
 def fillup_cv_from_file(patch_file, cv_file):
     with open(cv_file, 'r') as f:
