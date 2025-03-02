@@ -248,7 +248,7 @@ def convert_commit_subjects_to_ids(commits_range_txt):
 def format_patches(args, on_linux_tree):
     commits_range = convert_commit_subjects_to_ids(args.commits)
     commit_ids = [hash for hash in subprocess.check_output(
-        ['git', 'log', '--pretty=%h', commits_range]
+        ['git', 'log', '--pretty=%H', commits_range]
         ).decode().strip().split('\n') if hash != '']
     if len(commit_ids) == 0:
         return None, 'no commit to format patch'
