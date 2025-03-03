@@ -105,45 +105,6 @@ def format_mbox(subject, in_reply_to, to, cc, body, from_, draft_mail,
                 lines.append('\n%s\n%s' % (marker_line, f.read()))
     return '\n'.join(lines)
 
-def handle_user_edit_mistakes(tmp_path):
-    with open(tmp_path, 'r') as f:
-        written_mail = f.read()
-    pars = written_mail.split('\n\n')
-    header = pars[0]
-    header_lines = []
-    for line in header.split('\n'):
-        if line in [
-                'To: /* write recipients here and REMOVE this comment */',
-                'Cc: /* wrtite cc recipients here and REMOVE this comment */']:
-            continue
-        header_lines.append(line)
-    header = '\n'.join(header_lines)
-
-    # Seems silly, but we have to re-join the split body, then turn them
-    # into individual lines again. This preserves all empty lines.
-    body = '\n\n'.join(pars[1:]).split('\n')
-    body_lines = []
-    idx = 0
-    while idx < len(body):
-        if len(body) - idx >= SIGNATURE_WARNING_LEN and \
-                body[idx:idx + SIGNATURE_WARNING_LEN] == SIGNATURE_WARNING[1:]:
-
-            # If the warning's newline was also included, remove it as well
-            if idx > 0 and body[idx-1] == '':
-                body_lines.pop()
-            idx += SIGNATURE_WARNING_LEN
-            continue
-
-        line = body[idx]
-        if line != '/* write your message here (keep the above blank line) */':
-            body_lines.append(line)
-        idx += 1
-    body = '\n'.join(body_lines)
-
-    written_mail = '\n\n'.join([header] + [body])
-    with open(tmp_path, 'w') as f:
-        f.write(written_mail)
-
 def ask_editor(default_editor):
     if default_editor is not None:
         choices = [default_editor]
@@ -194,8 +155,6 @@ def write_send_mail(draft_mail, subject, in_reply_to, to, cc, body, attach,
     with open(tmp_path, 'w') as f:
         f.write(mbox)
     open_editor(tmp_path)
-
-    handle_user_edit_mistakes(tmp_path)
 
     orig_draft_subject = None
     if draft_mail:

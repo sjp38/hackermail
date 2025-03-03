@@ -8,6 +8,7 @@ import subprocess
 
 import _hkml
 import hkml_tag
+import hkml_write
 
 def draft_or_sent_mail(draft_file, msgid):
     with open(draft_file, 'r') as f:
@@ -42,8 +43,51 @@ def draft_or_sent_mail(draft_file, msgid):
     draft_mbox_str = '\n'.join(fake_header + [draft_content])
     return _hkml.Mail(mbox=draft_mbox_str)
 
+def handle_user_edit_mistakes(tmp_path):
+    with open(tmp_path, 'r') as f:
+        written_mail = f.read()
+    pars = written_mail.split('\n\n')
+    header = pars[0]
+    header_lines = []
+    for line in header.split('\n'):
+        if line in [
+                'To: /* write recipients here and REMOVE this comment */',
+                'Cc: /* wrtite cc recipients here and REMOVE this comment */']:
+            continue
+        header_lines.append(line)
+    header = '\n'.join(header_lines)
+
+    # Seems silly, but we have to re-join the split body, then turn them
+    # into individual lines again. This preserves all empty lines.
+    body = '\n\n'.join(pars[1:]).split('\n')
+    body_lines = []
+    idx = 0
+    while idx < len(body):
+        # A user might delete the newline on top of the signature, so just check
+        # for the contents of the comment block.
+        if len(body) - idx >= hkml_write.SIGNATURE_WARNING_LEN and \
+                body[idx:idx + hkml_write.SIGNATURE_WARNING_LEN] == \
+                hkml_write.SIGNATURE_WARNING[1:]:
+
+            # If the warning's newline was not touched, remove it as well
+            if idx > 0 and body[idx-1] == '':
+                body_lines.pop()
+            idx += hkml_write.SIGNATURE_WARNING_LEN
+            continue
+
+        line = body[idx]
+        if line != '/* write your message here (keep the above blank line) */':
+            body_lines.append(line)
+        idx += 1
+    body = '\n'.join(body_lines)
+
+    written_mail = '\n\n'.join([header] + [body])
+    with open(tmp_path, 'w') as f:
+        f.write(written_mail)
+
 def send_mail(mboxfile, get_confirm, erase_mbox, orig_draft_subject=None):
     do_send = True
+    handle_user_edit_mistakes(mboxfile)
     if get_confirm:
         with open(mboxfile, 'r') as f:
             print(f.read())
