@@ -15,6 +15,16 @@ import hkml_open
 import hkml_send
 import hkml_signature
 
+SIGNATURE_WARNING = ['',
+    '/*',
+    ' * !THE FOLLOWING COMMENT WAS AUTOMATICALLY ADDED BY HKML',
+    ' * below are signatures added by "hkml".',
+    ' * edit signatures below, or use "hkml signature".',
+    ' * If you leave this block untouched, then hkml will',
+    ' * automatically ignore the block before sending.',
+    ' */',]
+SIGNATURE_WARNING_LEN = len(SIGNATURE_WARNING) - 1 # first line is blank
+
 def git_sendemail_valid_recipients(recipients):
     """each line should be less than 998 char"""
     if not recipients:
@@ -83,13 +93,7 @@ def format_mbox(subject, in_reply_to, to, cc, body, from_, draft_mail,
 
     signatures = hkml_signature.read_signatures_file()
     if len(signatures) > 0:
-        lines += [
-                '',
-                '/*',
-                ' * !REMOVE THIS COMMENT BLOCK BEFORE SENDING THIS MAIL!',
-                ' * below are signatures added by "hkml".',
-                ' * edit signatures below, or use "hkml signature".',
-                ' */',]
+        lines += SIGNATURE_WARNING
     for signature in signatures:
         lines.append('')
         lines.append(signature)
@@ -114,7 +118,29 @@ def handle_user_edit_mistakes(tmp_path):
             continue
         header_lines.append(line)
     header = '\n'.join(header_lines)
-    written_mail = '\n\n'.join([header] + pars[1:])
+
+    # Seems silly, but we have to re-join the split body, then turn them
+    # into individual lines again. This preserves all empty lines.
+    body = '\n\n'.join(pars[1:]).split('\n')
+    body_lines = []
+    idx = 0
+    while idx < len(body):
+        if len(body) - idx >= SIGNATURE_WARNING_LEN and \
+                body[idx:idx + SIGNATURE_WARNING_LEN] == SIGNATURE_WARNING[1:]:
+
+            # If the warning's newline was also included, remove it as well
+            if idx > 0 and body[idx-1] == '':
+                body_lines.pop()
+            idx += SIGNATURE_WARNING_LEN
+            continue
+
+        line = body[idx]
+        if line != '/* write your message here (keep the above blank line) */':
+            body_lines.append(line)
+        idx += 1
+    body = '\n'.join(body_lines)
+
+    written_mail = '\n\n'.join([header] + [body])
     with open(tmp_path, 'w') as f:
         f.write(written_mail)
 
