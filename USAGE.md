@@ -37,7 +37,7 @@ lists manifest.
 Working Directory
 -----------------
 
-Working directory is a directory to save the fetched mails and hanckermail's
+Working directory is a directory to save the fetched mails and hackermail's
 metadata.  You may think this as something similar to `.git` directory of git.
 
 You can explicitly set the path to the directory using `HKML_DIR` environment
@@ -103,7 +103,7 @@ Listing Mails
 
 Users can list mails of specific mailing list on the manifest file via `list`
 sub-command.  By default, it lists the downloaded mails of the mailing list
-that sent within last three days.  Users can let the command to do dowloading
+that sent within last three days.  Users can let the command to do downloading
 of the mails together via `--fetch` option.  The sent time range of the mails
 to list can be adjusted using `--since` and `--until` options.
 
@@ -292,7 +292,7 @@ this screen shows below options.
   outputs from `git show` or `git log` of the commit ids.  The outputs are
   shown as general text.
 - If the focused line contains public-inbox mail links (e.g.,
-  https://lore.kernel.org/example-messgae-id@org), the menu shows itesm for
+  https://lore.kernel.org/example-messgae-id@org), the menu shows items for
   opening the mail or listing the thread of the mail.  The text screen and
   mails list screen are used for opening the mail and listing the thread
   options, respectively.
@@ -356,7 +356,7 @@ remote storage using `sync` command.  Currently supported data includes
 - mails tagging information (created via `hkml tag`).
 
 The command backs up and synchronizes the data using remote `git` repository.
-Users therefore need to first create a `git` repository that accespts pushing
+Users therefore need to first create a `git` repository that accepts pushing
 commits from the `hkml`-running machine.  The backup repo could be on the local
 storage, a private server, or public git hosting services like `Gitlab` or
 `GitHub`.  Then, the user could do the synchronization by running `hkml sync`.
@@ -423,7 +423,7 @@ subscribing to the mailing list.  It works with sub-sub commands, `add`,
 The command line options for specifying what mails to filtered and how those
 should be displayed are very similar to that of `list` command.
 
-It provides the monitoring results via the termina with some execution logs by
+It provides the monitoring results via the terminal with some execution logs by
 default, but users can asks it to send the new findings via sending emails to
 specific addresses, or writing to specific files.
 
@@ -588,7 +588,7 @@ $ hkml tag add 5 tag_example damon_patch not_yet_merged
 `hkml tag list`
 ---------------
 
-Users can show generated tags and how many mails of the tag exsits, using `hkml
+Users can show generated tags and how many mails of the tag exists, using `hkml
 tag list` command like below:
 
 ```
@@ -702,7 +702,7 @@ client.
 Patches Management
 ==================
 
-For mails of patches, `hkml patch` command is supported.  Using the comamnd,
+For mails of patches, `hkml patch` command is supported.  Using the command,
 users can check the patches, apply the patches on top of their local source
 tree, and export the patches as normal files.  For the three purpose, it
 provides sub-commands, `check`, `apply`, and `export`.
@@ -771,7 +771,7 @@ patches to local source tree.  The command assumes current working directory is
 the local source tree.  If not, the user can set the path to the tree via
 `--repo` option.
 
-For example, below applies the patche series that `hkml patch check` example
+For example, below applies the patch series that `hkml patch check` example
 was used for.
 
 ```
@@ -815,7 +815,7 @@ patch file for mail '[PATCH 2/9] Docs/mm/damon/design: clarify regions merging o
 Cover Letter Purpose Bogus Commit
 ---------------------------------
 
-Managing multiple or long changes that should be split into multipl patchsets
+Managing multiple or long changes that should be split into multiple patchsets
 is not simple.  One way to do that is having a special bogus commit for each
 patchset.  The bogus commit has a subject that easy to identify from the commit
 log, and contains the cover letter as the commit message's body.
