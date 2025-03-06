@@ -18,3 +18,4 @@
 - Clone and fetch old epoch git for searching if needed
 - Make print() logs not hidden by interactive viewer
 - Support 'patch format' of topic-branches
+- Respect add patch.msgid link adding rejection for patch-apply
