@@ -97,6 +97,13 @@ def git_am(patch_files, repo):
             return 'applying patch (%s) failed' % patch_file
     return None
 
+def add_noff_merge_commit(base_commit, message, git_cmd=['git']):
+    final_commit = subprocess.check_output(
+            git_cmd + ['rev-parse', 'HEAD']).decode().strip()
+    subprocess.call(git_cmd + ['reset', '--hard', base_commit])
+    subprocess.call(git_cmd + ['merge', '--no-ff', '--no-edit', final_commit])
+    subprocess.call(git_cmd + ['commit', '--amend', '-s', '-m', message])
+
 def git_cherrypick_merge(patch_files, cv_mail, repo):
     git_cmd = ['git', '-C', repo]
     head_commit = subprocess.check_output(
@@ -104,15 +111,12 @@ def git_cherrypick_merge(patch_files, cv_mail, repo):
     err = git_am(patch_files[1:], repo)
     if err is not None:
         return err
-    final_commit = subprocess.check_output(
-            git_cmd + ['rev-parse', 'HEAD']).decode().strip()
-    subprocess.call(git_cmd + ['reset', '--hard', head_commit])
-    subprocess.call(git_cmd + ['merge', '--no-ff', '--no-edit', final_commit])
+
     cv_merge_msg = '\n'.join([
         'Merge patch series \'%s\'' % cv_mail.subject, '',
         'Below is the cover letter of the series', '',
         cv_mail.get_field('body')])
-    subprocess.call(git_cmd + ['commit', '--amend', '-m', cv_merge_msg])
+    add_noff_merge_commit(head_commit, cv_merge_msg, git_cmd)
     return None
 
 def apply_patches(patch_mails, repo):
