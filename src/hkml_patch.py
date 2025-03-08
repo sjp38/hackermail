@@ -399,6 +399,9 @@ def main(args):
     elif args.action == 'recipients':
         return list_recipients(args.patch_files)
     elif args.action == 'commit_cv':
+        if args.as_merge is not None:
+            return add_noff_merge_commit(
+                    args.as_merge, args.subject, git_cmd=['git'])
         return make_cover_letter_commit(args.subject)
 
     if args.action == 'check':
@@ -479,3 +482,5 @@ def set_argparser(parser):
             'commit_cv', help='make a commit of cover letter message')
     parser_cv_commit.add_argument('subject', metavar='<subject>',
                                   help='subject of the cover letter commit')
+    parser_cv_commit.add_argument('--as_merge', metavar='<base commit>',
+                                  help='make it as a no-ff merge commit')
