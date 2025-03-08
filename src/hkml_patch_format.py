@@ -174,12 +174,49 @@ def fillup_cv_from_commit(patch_file, commit):
 
     fillup_cv(patch_file, subject, content)
 
-def add_base_commit_as_cv(patch_file, base_commit):
-    answer = input('\nMay I add the base commit to the coverletter? [Y/n] ')
-    if answer.lower() == 'n':
+def find_topic_merge_commit(base_commit, last_commit):
+    hashes_lines = subprocess.check_output(
+            ['git', 'log', '-900', '--pretty=%H %P']
+            ).decode().strip().split('\n')
+    for hashes in [l.split() for l in hashes_lines]:
+        if len(hashes) != 3:
+            continue
+        if hashes[1] != base_commit or hashes[2] != last_commit:
+            continue
+        return hashes[0]
+    return None
+
+def add_base_or_merge_commit_as_cv(patch_file, base_commit, commit_ids):
+    merge_commit = find_topic_merge_commit(base_commit, commit_ids[0])
+    if merge_commit is None:
+        answer = input(
+                '\nMay I add the base commit to the coverletter? [Y/n] ')
+        if answer.lower() == 'n':
+            return
+
+        fillup_cv_from_commit(patch_file, base_commit)
         return
 
-    fillup_cv_from_commit(patch_file, base_commit)
+    base_commit_title = subprocess.check_output(
+            ['git', 'log', '-1', '--pretty=%s', base_commit]).decode().strip()
+    merge_commit_title = subprocess.check_output(
+        ['git', 'log', '-1', '--pretty=%s', merge_commit]).decode().strip()
+
+    print('\nMay I add below as the coverletter?')
+    print()
+    print('1. Message of the baseline commit (%s) # default' % base_commit_title)
+    print('2. Message of the merge commit (%s)' % merge_commit_title)
+    print('3. No, do noting for the coverletter')
+    print()
+    answer = input('Select: ')
+    selections = [base_commit, merge_commit, None]
+    try:
+        cv_commit = selections[int(answer) - 1]
+    except:
+        cv_commit = base_commit
+    if cv_commit is None:
+        return
+    fillup_cv_from_commit(patch_file, cv_commit)
 
 def fillup_cv_from_file(patch_file, cv_file):
     with open(cv_file, 'r') as f:
@@ -279,7 +316,8 @@ def format_patches(args, on_linux_tree):
 
     if add_cv:
         if args.cv is None:
-            add_base_commit_as_cv(patch_files[0], base_commit)
+            add_base_or_merge_commit_as_cv(
+                    patch_files[0], base_commit, commit_ids)
         else:
             fillup_cv_from_file(patch_files[0], args.cv)
     return patch_files, None
