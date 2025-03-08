@@ -123,10 +123,10 @@ def apply_patches(patch_mails, repo):
     if has_cv:
         print('How should I apply the cover letter?')
         print()
-        print('1: add to first patch\'s commit message')
+        print('1: add to first patch\'s commit message # default')
         print('2: add merge commit for that')
         print()
-        answer = input('Enter the number, please (ignore by default): ')
+        answer = input('Enter the number: ')
         try:
             answer = int(answer)
         except:
