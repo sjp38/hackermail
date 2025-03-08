@@ -200,6 +200,30 @@ def find_add_tags(patch_mail, mail_to_check):
 def is_cover_letter(mail):
     return mail.series is not None and mail.series[0] == 0
 
+def get_link_tag_domain():
+    if not _hkml.is_for_lore_kernel_org():
+        return None
+    site = _hkml.get_manifest()['site']
+    print()
+    print(' '.join([
+        'Should we add Link: tag to the patch?',
+        'If so, what domain to use?']))
+    print()
+    print('1. Yes.  Use https://patch.msgid.link (default)')
+    print('2. Yes.  Use %s' % site)
+    print('3. No.  Don\'t add Link: tag')
+    answer = input('Select: ')
+    try:
+        answer = int(answer)
+    except:
+        answer = 1
+    if answer == 1:
+        return 'https://patch.msgid.link'
+    elif answer == 2:
+        return site
+    else:
+        return None
+
 def get_patch_mails(mail, dont_add_cv):
     patch_mails = [mail]
     is_cv = is_cover_letter(mail)
@@ -213,21 +237,14 @@ def get_patch_mails(mail, dont_add_cv):
 
         patch_mails += [r for r in mail.replies
                        if 'patch' in r.subject_tags]
-    use_patch_msgid_link = False
-    if _hkml.is_for_lore_kernel_org():
-        answer = input('use patch.msgid.link domain for patch origin? [Y/n] ')
-        use_patch_msgid_link = answer.lower() != 'n'
-
+    link_domain = get_link_tag_domain()
     for patch_mail in patch_mails:
-        msgid = patch_mail.get_field('message-id')
-        if msgid.startswith('<') and msgid.endswith('>'):
-            msgid = msgid[1:-1]
-        if use_patch_msgid_link is True:
-            url = 'https://patch.msgid.link/%s' % msgid
-        else:
-            site = _hkml.get_manifest()['site']
-            url = '%s/%s' % (site, msgid)
-        patch_mail.add_tag('Link: %s' % url)
+        if link_domain is not None:
+            msgid = patch_mail.get_field('message-id')
+            if msgid.startswith('<') and msgid.endswith('>'):
+                msgid = msgid[1:-1]
+            url = '%s/%s' % (link_domain, msgid)
+            patch_mail.add_tag('Link: %s' % url)
         if patch_mail.replies is None:
             continue
         if is_cover_letter(patch_mail):
