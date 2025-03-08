@@ -1061,3 +1061,46 @@ May I send the patches?  If you say yes, I will do below
 You can manually review and modify the patch files before answering the next question.
 Do it? [y/N] n
 ```
+
+Cover Letter Management Git Workflows
+-------------------------------------
+
+There are multiple ways to manage cover letters on git repo as a commit.  hkml
+supports some of such workflows including below.
+
+### Cover Letter as a Baseline Commit
+
+In this workflow, developers create an empty or meaningless change commit, on
+top of the real baseline of their changes.  Then, they manage the cover letter
+content as the commit message of the baseline commit.  The subject of the
+commit usually has special marker prefix or suffix to be easy to be found from
+commit log.  For example, below commit log history can be imagined.
+
+    $ git log --pretty="%s"
+    feature A development change 3
+    feature A development change 2
+    feature A development change 1
+    ==== feature A development ====
+    [...]
+
+`apply`, `format`, and `commit_cv` sub-commands of `hkml patch` support this
+worklfow.
+
+### Cover Letter as a Merge Commit
+
+In this workflow, developers create a non-fast-forward fake merge commit that
+points the last commit of their work and the baseline as its parent.  Then,
+they put the cover letter content as the commit message of the merge commit.
+For example, below commit log history can be imagined.
+
+    $ git log --pretty="%s" --graph
+    *   Merge "feature Y development"
+    |\
+    | * feature Y developemnt change 2
+    | * feature Y development change 1
+    |/
+    * Merge "feature X development"
+    [...]
+
+`apply`, `format`, and `commit_cv` sub-commands of `hkml patch` support this
+worklfow.
