@@ -124,19 +124,25 @@ def apply_patches(patch_mails, repo):
         print('How should I apply the cover letter?')
         print()
         print('1: add to first patch\'s commit message  # default')
-        print('2: add merge commit for that')
-        print('3: Ignore it.')
+        print('2: add as a bogus baseline commit')
+        print('3: add as a merge commit')
+        print('4: Ignore it.')
         print()
         answer = input('Enter the number: ')
         try:
             answer = int(answer)
         except:
             pass
-        if not answer in [1, 2, 3]:
+        if not answer in [1, 2, 3, 4]:
             answer = 1
         if answer == 1:
             patch_mails[1].add_cv(patch_mails[0], len(patch_mails) - 1)
         elif answer == 2:
+            cv_mail = patch_mails[0]
+            subject = '==== %s ====' % cv_mail.subject
+            content = '%s\n\n%s' % (cv_mail.subject, cv_mail.get_field('body'))
+            make_cover_letter_commit(subject, content)
+        elif answer == 3:
             do_merge = True
 
     patch_files, err = write_patch_mails(patch_mails)
