@@ -817,70 +817,22 @@ Cover Letter Purpose Bogus Commit
 
 Managing multiple or long changes that should be split into multiple patchsets
 is not simple.  One way to do that is having a special bogus commit for each
-patchset.  The bogus commit has a subject that easy to identify from the commit
-log, and contains the cover letter as the commit message's body.
+patchset.  Refer to [below section](#cover-letter-management-git-workflow) for
+detailed explanation of two such workflows that `hkml` supports.  `hkml patch
+commit_cv` helps making such bogus commit.
 
-`hkml patch commit_cv` helps making such bogus commit.  It receives a message
-describing the bogus commit,  Then, it makes a file having `hkml_cv_bogus_`
-prefix under `hkml_cv_bogus` directory and commit it on the repo.  The received
-message is used as the commit message of the commit.
+By default, it creates the bogus commit [as a baseline
+commit](#cover-letter-as-a-baseline-commit).  It receives a message describing
+the bogus commit,  Then, it makes a file having `hkml_cv_bogus_` prefix under
+`hkml_cv_bogus` directory and commit it on the repo.  The received message is
+used as the commit message of the commit.
 
-Users can use the commit as a baseline of the commits for the patchset, and a
-place put the cover letter of the patchset.
-
-```
-$ echo "==== start of project a ====
->
-> hkml_patch: changes for project a
->
-> This patch series introduces changes for project a that
-> constructed with five patches.  ... To be updated later." > msg
-$ hkml patch commit_cv "$(cat msg)"
-[damon/next 9cb9ed9818f0] ==== start of project a ====
- 1 file changed, 0 insertions(+), 0 deletions(-)
- create mode 100644 hkml_cv_bogus/hkml_cv_bogus_81ss5z1v
-damian@damian:~/linux$ git show
-commit 9cb9ed9818f0d7b22ea5f83ac24870a2387be3df (HEAD -> damon/next)
-Author: SeongJae Park <sj@kernel.org>
-Date:   Sat Jan 18 10:37:46 2025 -0800
-
-    ==== start of project a ====
-
-    hkml_patch: changes for project a
-
-    This patch series introduces changes for project a that
-    constructed with five patches.  ... To be updated later.
-
-    Signed-off-by: SeongJae Park <sj@kernel.org>
-
-diff --git a/hkml_cv_bogus/hkml_cv_bogus_81ss5z1v b/hkml_cv_bogus/hkml_cv_bogus_81ss5z1v
-new file mode 100644
-index 000000000000..e69de29bb2d1
-```
+It also supports creating te bogus commit
+[as a merge commit](#cover-letter-as-a-merge-commit).  For this use case, users
+should pass the baseline commit of the change via `--as_merge` option.
 
 [`hkml patch format`](#formatting-patches) expects bogus commit usage, and
-automatically make cover letter with the bogus commit.  For example,
-
-```
-5a8e5f603265 (HEAD) hkml_patch: project a change 2
-49e539afea7b hkml_patch: project a change 1
-9cb9ed9818f0 ==== start of project a ====
-[...]
-$ hkml patch format HEAD~2..
-[...]
-May I add the base commit to the coverletter? [Y/n] y
-Ok, I will do below to the coverletter
-- replace "*** SUBJECT HERE ***" with
-
-    hkml_patch: changes for project a
-
-- replace "*** BLURB HERE ***" with
-
-    This patch series introduces changes for project a that
-    constructed with five patches.  ... To be updated later.
-
-looks good? [Y/n]
-```
+automatically make cover letter with the bogus commit when user asks.
 
 Formatting Patches
 ------------------
