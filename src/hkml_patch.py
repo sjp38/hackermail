@@ -368,7 +368,7 @@ def is_files_argument(arg):
             return False
     return True
 
-def make_cover_letter_commit(subject):
+def make_cover_letter_commit(subject, content=None):
     bogus_dir = 'hkml_cv_bogus'
     if not os.path.isdir(bogus_dir):
         os.mkdir(bogus_dir)
@@ -377,7 +377,10 @@ def make_cover_letter_commit(subject):
     if err:
         print('git add failed')
         return -1
-    return subprocess.call(['git', 'commit', '-s', '-m', subject])
+    message = subject
+    if content is not None:
+        message = '%s\n\n%s' % (message, content)
+    return subprocess.call(['git', 'commit', '-s', '-m', message])
 
 def main(args):
     if args.action == 'format':
