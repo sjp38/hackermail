@@ -344,7 +344,10 @@ class ScrollableList:
             elif x == curses.KEY_RIGHT:
                 c = 'key_right'
             else:
-                c = chr(x)
+                try:
+                    c = chr(x)
+                except:
+                    continue
             break_loop = False
             for input_handler in self.input_handlers:
                 err = input_handler.handle(c, self)
