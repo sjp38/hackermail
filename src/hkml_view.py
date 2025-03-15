@@ -653,12 +653,15 @@ def view(text, data, view_type):
     if slist is not None:
         print('\n'.join(slist.last_drawn))
 
+# called from hkml_list
 def gen_view_mails_list(list_args):
     view('', list_args, 'gen_mails_list')
 
+# called from hkml_open
 def view_mail(text, mail):
     view(text, mail, 'mail')
 
+# called from hkml_open
 def view_text(text):
     view(text, None, 'text')
 
