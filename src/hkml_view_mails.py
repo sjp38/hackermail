@@ -645,6 +645,7 @@ class MailsViewData:
     display_rule = None
     collapsed_mails = None
     last_cursor_position = None
+    display_effects = None      # cache display effect per line
 
     def __init__(self, list_data, list_args, display_rule):
         self.list_data = list_data
@@ -652,6 +653,7 @@ class MailsViewData:
         self.display_rule = display_rule
         self.collapsed_mails = {}
         self.last_cursor_position = {}
+        self.display_effects = {}
 
 def menu_refresh_mails(mail_slist, answer, selection):
     mail, slist = mail_slist
@@ -799,14 +801,21 @@ def after_input_handle_callback(slist):
         _hkml_list_cache.set_item('thread_output', list_data)
 
 def mails_display_effect_callback(slist, line_idx):
+    display_effects_cache = slist.data.display_effects
+    if line_idx in display_effects_cache:
+        return display_effects_cache[line_idx]
+
     if slist.data.display_rule is None:
         return slist.effect_normal
     mail = mail_of_row(slist, line_idx)
     if mail is None:
+        display_effects_cache[line_idx] = slist.effect_normal
         return slist.effect_normal
     mail_display_effect = slist.data.display_rule
     if mail_display_effect.eligible(mail):
+        display_effects_cache[line_idx] = mail_display_effect.effect
         return mail_display_effect.effect
+    display_effects_cache[line_idx] = slist.effect_normal
     return slist.effect_normal
 
 def show_mails_list(screen, mails_view_data):
