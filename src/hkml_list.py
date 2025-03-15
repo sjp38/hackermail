@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: GPL-2.0
 
-import argparse
 import copy
 import datetime
 import json
@@ -19,9 +18,7 @@ import hkml_common
 import hkml_fetch
 import hkml_open
 import hkml_tag
-import hkml_thread
 import hkml_view
-import hkml_view_mails
 
 def args_to_lists_cache_key(args):
     dict_ = copy.deepcopy(args.__dict__)
