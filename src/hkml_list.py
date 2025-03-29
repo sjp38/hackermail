@@ -689,6 +689,7 @@ def get_mails_from_pisearch(mailing_list, query_str):
     if not hkml_common.cmd_available('curl'):
         return None, '"which curl" fails'
 
+    _hkml.delay_public_inbox_query()
     if subprocess.call(['curl', query_url, '-o', query_output],
                        stderr=subprocess.DEVNULL) != 0:
         return None, 'fetching query result from %s failed' % query_url
@@ -729,6 +730,7 @@ def get_thread_mails_from_web(msgid):
     tmp_path = tempfile.mkdtemp(prefix='hkml_thread_')
     pi_url = _hkml.get_manifest()['site']
     down_url = '%s/all/%s/t.mbox.gz' % (pi_url, msgid)
+    _hkml.delay_public_inbox_query()
     if subprocess.call(['wget', down_url, '--directory-prefix=%s' % tmp_path],
                        stderr=subprocess.DEVNULL) != 0:
         return None, 'downloading mbox failed'

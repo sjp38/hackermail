@@ -246,8 +246,7 @@ class Mail:
             pi_url = get_manifest()['site']
             # mail.msgid is having '<' and '>' pre/suffix
             mbox_url = '%s/all/%s/raw' % (pi_url, msgid[1:-1])
-            # don't overload the public inbox server
-            time.sleep(0.3)
+            delay_public_inbox_query()
             try:
                 self.mbox = subprocess.check_output(
                         ['curl', mbox_url], stderr=subprocess.DEVNULL).decode(
