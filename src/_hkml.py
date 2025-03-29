@@ -46,6 +46,19 @@ def delay_public_inbox_query():
             exit(1)
     time.sleep(0.3)
 
+def fetch_mbox_from_public_inbox(msgid):
+    delay_public_inbox_query()
+    pi_url = get_manifest()['site']
+    if msgid[0] == '<' and msgid[-1] == '>':
+        msgid = msgid[1:-1]
+    mbox_url = '%s/all/%s/raw' % (pi_url, msgid)
+    try:
+        return subprocess.check_output(
+                ['curl', mbox_url], stderr=subprocess.DEVNULL).decode(
+                        errors='ignore'), None
+    except Exception as e:
+        return None, '%s' % e
+
 class Mail:
     gitid = None
     gitdir = None
@@ -257,16 +270,9 @@ class Mail:
             if mbox is not None:
                 self.mbox = mbox
                 return
-            pi_url = get_manifest()['site']
-            # mail.msgid is having '<' and '>' pre/suffix
-            mbox_url = '%s/all/%s/raw' % (pi_url, msgid[1:-1])
-            delay_public_inbox_query()
-            try:
-                self.mbox = subprocess.check_output(
-                        ['curl', mbox_url], stderr=subprocess.DEVNULL).decode(
-                                errors='ignore')
-            except:
-                print('cannot get mbox from public-inbox server')
+            mbox, err = fetch_mbox_from_public_inbox(msgid)
+            if err is not None:
+                print('cannot get mbox from public-inbox server (%s)' % err)
                 self.mbox = ''
             return
         print('cannot get mbox')
