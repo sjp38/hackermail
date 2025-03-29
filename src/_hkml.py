@@ -33,8 +33,17 @@ def atom_tag(node):
         return node.tag
     return node.tag[len(prefix):]
 
+nr_public_inbox_queries = 0
 def delay_public_inbox_query():
     '''Delay public inbox server query, to avoid overloading the server.'''
+    global nr_public_inbox_queries
+    nr_public_inbox_queries += 1
+    if nr_public_inbox_queries > 0 and nr_public_inbox_queries % 10 == 0:
+        answer = input('you queried public inbox %d times.  Is it sane? [y/N] '
+                       % nr_public_inbox_queries)
+        if answer.lower() != 'y':
+            print('exit')
+            exit(1)
     time.sleep(0.3)
 
 class Mail:
