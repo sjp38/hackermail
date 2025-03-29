@@ -392,6 +392,30 @@ def get_filtered_mails(mails, ls_range, mails_filter):
         filtered_mails.append(mail)
     return filtered_mails
 
+class RuntimeProfile:
+    start_time = None
+    end_time = None
+    runtime = None
+
+    def __init__(self):
+        self.start_time = time.time()
+
+    def done(self):
+        self.end_time = time.time()
+        self.runtime = self.end_time - self.start_time
+
+class RuntimeProfiles:
+    profiles = None # category name to RuntimeProfile dict
+
+    def __init__(self):
+        self.profiles = {}
+
+    def start(self, category):
+        self.profiles[category] = RuntimeProfile()
+
+    def end(self, category):
+        self.profiles[category].done()
+
 def sort_filter_mails(mails_to_show, do_find_ancestors_from_cache,
                       mails_filter, list_decorator, show_thread_of,
                       runtime_profile, print_progress):
