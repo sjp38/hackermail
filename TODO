@@ -16,8 +16,5 @@
   - Or, just remove the unnecessary mail index for non --stdout case?
 - Let interactive mails selection and menu for slected mails
 - Clone and fetch old epoch git for searching if needed
-- Make print() logs not hidden by interactive viewer
-- Fix ' hkml list all --pisearch "d:1.minute.ago.."' crash
 - Make hidden context menu easier to find
 - Rate-limit lore traffic
-- Show listing progress more interactively
