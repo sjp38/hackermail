@@ -19,3 +19,4 @@
 - Make print() logs not hidden by interactive viewer
 - Fix ' hkml list all --pisearch "d:1.minute.ago.."' crash
 - Make hidden context menu easier to find
+- Rate-limit lore traffic
