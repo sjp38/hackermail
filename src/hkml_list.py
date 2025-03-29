@@ -539,14 +539,14 @@ def format_stat_lines(mails_to_show, filtered_mails, stat_authors):
     return stat_lines
 
 def format_runtime_profile_lines(runtime_profile, show_always, timestamp,
-                                 print_progress):
+                                 runtime_profiles):
     runtime_profile_lines = []
     total_profiled_time = sum([profile[1] for profile in runtime_profile])
     if not show_always and total_profiled_time < 3:
         return []
     runtime_profile.append(['etc', time.time() - timestamp])
-    if print_progress:
-        print('etc works done (%s)' % runtime_profile[-1][1])
+    if runtime_profiles is not None:
+        runtime_profiles.end('etc')
     runtime_profile_lines = ['# runtime profile']
     for key, value in runtime_profile:
         runtime_profile_lines.append('# %s: %s' % (key, value))
@@ -596,8 +596,8 @@ def mails_to_list_data(
             list_decorator, show_thread_of, runtime_profile, runtime_profiles)
 
     timestamp = time.time()
-    if print_progress:
-        print('do etc work...')
+    if runtime_profiles is not None:
+        runtime_profiles.start('etc')
 
     lines, line_nr_to_mail_map = fmt_mails_text(
             filtered_mails, list_decorator, mails_to_collapse={})
@@ -609,7 +609,7 @@ def mails_to_list_data(
 
     runtime_profile_lines = format_runtime_profile_lines(
             runtime_profile, list_decorator.runtime_profile, timestamp,
-            print_progress)
+            runtime_profiles)
 
     if stat_only:
         text = '\n'.join(stat_lines)
