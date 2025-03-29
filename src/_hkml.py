@@ -246,7 +246,8 @@ class Mail:
             time.sleep(0.3)
             try:
                 self.mbox = subprocess.check_output(
-                        ['curl', mbox_url], stderr=subprocess.DEVNULL).decode()
+                        ['curl', mbox_url], stderr=subprocess.DEVNULL).decode(
+                                errors='ignore')
             except:
                 print('cannot get mbox from public-inbox server')
                 self.mbox = ''
