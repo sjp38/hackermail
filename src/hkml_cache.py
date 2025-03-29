@@ -128,6 +128,16 @@ def get_mail(gitid=None, gitdir=None, key=None):
 
     return None
 
+def skip_overwrite(mail, cache, key):
+    cached_kvpair = cache[key]
+    mail_kvpair = mail.to_kvpairs()
+    for mkey in mail_kvpair.keys():
+        if not mkey in cached_kvpair:
+            return False
+        if mail_kvpair[mkey] != cached_kvpair[mkey]:
+            return False
+    return True
+
 def set_mail(mail, overwrite=False):
     global need_file_update
 
@@ -150,6 +160,10 @@ def set_mail(mail, overwrite=False):
         for archived_cache in archived_caches:
             if key in archived_cache:
                 return
+    else:
+        if skip_overwrite(mail, cache, key):
+            return
+
     cache[key] = mail.to_kvpairs()
     need_file_update = True
 
