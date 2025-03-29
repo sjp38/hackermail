@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: GPL-2.0
 
+import argparse
 import copy
 import datetime
 import json
@@ -952,7 +953,20 @@ def args_to_mails_list_data(args):
 
     return list_data, None
 
+def print_options_for(category):
+    parser = argparse.ArgumentParser(add_help=False)
+    if category == 'filtering':
+        add_mails_filter_arguments(parser)
+    elif category == 'decoration':
+        add_decoration_arguments(parser)
+    help_msg = parser.format_help()
+    usage_msg, options_msg = help_msg.split('\n\n')
+    print('\n'.join(options_msg.split('\n')[1:]))
+
 def main(args):
+    if args.options_for is not None:
+        print_options_for(args.options_for)
+        return
     if args.read_dates:
         err = validate_set_source_type(args)
         if err is not None:
@@ -1075,3 +1089,5 @@ def set_argparser(parser=None):
                         help='use \'less\' for output paging')
     parser.add_argument('--read_dates', action='store_true',
                         help='print last dates that read the list')
+    parser.add_argument('--options_for', choices=['filtering', 'decoration'],
+                        help='show help messages of options for given purpose')
