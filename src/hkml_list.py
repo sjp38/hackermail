@@ -967,9 +967,9 @@ def args_to_mails_list_data(args):
         except OSError as e:
             pass
 
-    print_progress = using_hkml_view(args)
-    if print_progress:
-        print('get mails...')
+    runtime_profiles = RuntimeProfiles(using_hkml_view(args))
+    runtime_profiles.start('get_mails')
+
     timestamp = time.time()
     runtime_profile = []
     mails_to_show, err = get_mails_from_multiple_sources(
@@ -979,13 +979,13 @@ def args_to_mails_list_data(args):
     if err is not None:
         return None, 'getting mails failed (%s)' % err
     runtime_profile = [['get_mails', time.time() - timestamp]]
-    if print_progress:
-        print('get mails done (%s)' % runtime_profile[0][1])
+    runtime_profiles.end('get_mails')
 
     list_data, err = mails_to_list_data(
             mails_to_show, args.do_find_ancestors_from_cache,
             MailListFilter(args), MailListDecorator(args), None,
-            runtime_profile, args.stat_only, args.stat_authors, print_progress)
+            runtime_profile, args.stat_only, args.stat_authors,
+            using_hkml_view(args))
     if err is not None:
         return None, err
     if args.source_type == ['msgid']:
