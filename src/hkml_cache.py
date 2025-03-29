@@ -145,7 +145,7 @@ def set_mail(mail, overwrite=False):
     else:
         key = msgid
     if overwrite is False:
-        if key in cache and overwrite:
+        if key in cache:
             return
         for archived_cache in archived_caches:
             if key in archived_cache:
