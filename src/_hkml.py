@@ -133,6 +133,7 @@ class Mail:
                 self.__fields['in-reply-to'] = link[http_prefix_len:-1]
         if not 'in-reply-to' in self.__fields:
             self.__fields['in-reply-to'] = None
+            self.__fields['in-reply-to-msgid'] = None
         else:
             # some mail puts infomration in addition to message id on in-reply-to
             # header.  E.g., 87ikvefswp.fsf@yhuang6-desk2.ccr.corp.intel.com
