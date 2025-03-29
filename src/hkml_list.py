@@ -963,6 +963,9 @@ def print_options_for(category):
     usage_msg, options_msg = help_msg.split('\n\n')
     print('\n'.join(options_msg.split('\n')[1:]))
 
+def using_hkml_view(args):
+    return not args.stdout and not args.use_less
+
 def main(args):
     if args.options_for is not None:
         print_options_for(args.options_for)
@@ -979,7 +982,7 @@ def main(args):
                   (idx, last_date, datetime.datetime.now() - last_date))
         return 0
 
-    if not args.stdout and not args.use_less:
+    if using_hkml_view(args):
         return hkml_view.gen_view_mails_list(args)
     list_data, err = args_to_mails_list_data(args)
     if err is not None:
