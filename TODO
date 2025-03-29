@@ -20,3 +20,4 @@
 - Fix ' hkml list all --pisearch "d:1.minute.ago.."' crash
 - Make hidden context menu easier to find
 - Rate-limit lore traffic
+- Show listing progress more interactively
