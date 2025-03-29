@@ -134,6 +134,12 @@ def get_mail(gitid=None, gitdir=None, key=None):
         return _hkml.Mail(kvpairs=kvpairs)
     return None
 
+def get_mbox(gitid=None, gitdir=None, key=None):
+    kvpairs = get_kvpairs(gitid, gitdir, key)
+    if 'mbox' in kvpairs:
+        return kvpairs['mbox']
+    return None
+
 def skip_overwrite(mail, cache, key):
     cached_kvpair = cache[key]
     mail_kvpair = mail.to_kvpairs()
