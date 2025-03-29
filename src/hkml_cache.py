@@ -143,7 +143,7 @@ def set_mail(mail, overwrite=False):
             cache['msgid_key_map'] = {}
         cache['msgid_key_map'][msgid] = key
     else:
-        key = mail.get_field('message-id')
+        key = msgid
     if overwrite is False:
         if key in cache and overwrite:
             return
