@@ -253,6 +253,10 @@ class Mail:
             return
         if 'message-id' in self.__fields:
             msgid = self.__fields['message-id']
+            mbox = hkml_cache.get_mbox(key=msgid)
+            if mbox is not None:
+                self.mbox = mbox
+                return
             pi_url = get_manifest()['site']
             # mail.msgid is having '<' and '>' pre/suffix
             mbox_url = '%s/all/%s/raw' % (pi_url, msgid[1:-1])
