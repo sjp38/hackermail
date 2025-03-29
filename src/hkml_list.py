@@ -673,6 +673,11 @@ def get_mails_from_atom(atom_file, mailing_list):
     try:
         root = ET.parse(atom_file).getroot()
     except Exception as e:
+        # no results found case atom cannot be parsed for some unknown reason.
+        with open(atom_file, 'r') as f:
+            content = f.read()
+        if content.find('[No results found]') != -1:
+            return [], None
         return None, 'parsing atom file at %s failed (%s)' % (atom_file, e)
     entries = [node for node in root if pisearch_tag(node) == 'entry']
     mails = []
