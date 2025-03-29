@@ -96,36 +96,42 @@ def load_one_more_archived_cache():
         archived_caches.append(json.load(f))
     return True
 
-def __get_mail(key, cache):
+def __get_kvpairs(key, cache):
     if not key in cache:
         # msgid_key_map has introduced from v1.1.6
         if 'msgid_key_map' in cache and key in cache['msgid_key_map']:
             key = cache['msgid_key_map'][key]
     if not key in cache:
         return None
-    return _hkml.Mail(kvpairs=cache[key])
+    return cache[key]
 
-def get_mail(gitid=None, gitdir=None, key=None):
+def get_kvpairs(gitid=None, gitdir=None, key=None):
     global archived_caches
 
     if key is None:
         key = get_cache_key(gitid, gitdir)
 
     cache = get_active_mails_cache()
-    mail = __get_mail(key, cache)
-    if mail is not None:
-        return mail
+    kvpairs = __get_kvpairs(key, cache)
+    if kvpairs is not None:
+        return kvpairs
 
     for cache in archived_caches:
-        mail = __get_mail(key, cache)
-        if mail is not None:
-            return mail
+        kvpairs = __get_kvpairs(key, cache)
+        if kvpairs is not None:
+            return kvpairs
 
     while load_one_more_archived_cache() == True:
-        mail = __get_mail(key, archived_caches[-1])
-        if mail is not None:
-            return mail
+        kvpairs = __get_kvpairs(key, archived_caches[-1])
+        if kvpairs is not None:
+            return kvpairs
 
+    return None
+
+def get_mail(gitid=None, gitdir=None, key=None):
+    kvpairs = get_kvpairs(gitid, gitdir, key)
+    if kvpairs is not None:
+        return _hkml.Mail(kvpairs=kvpairs)
     return None
 
 def skip_overwrite(mail, cache, key):
