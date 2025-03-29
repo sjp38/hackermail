@@ -669,6 +669,17 @@ def pisearch_tag(node):
         return ''
     return node.tag[len(prefix):]
 
+def get_mails_from_atom(atom_file, mailing_list):
+    try:
+        root = ET.parse(atom_file).getroot()
+    except Exception as e:
+        return None, 'parsing atom file at %s failed (%s)' % (atom_file, e)
+    entries = [node for node in root if pisearch_tag(node) == 'entry']
+    mails = []
+    for entry in entries:
+        mails.append(_hkml.Mail(atom_entry=entry, atom_ml=mailing_list))
+    return mails, None
+
 def get_mails_from_pisearch(mailing_list, query_str):
     '''Get mails from public inbox search query'''
     pi_url = _hkml.get_manifest()['site']
@@ -681,17 +692,11 @@ def get_mails_from_pisearch(mailing_list, query_str):
     if subprocess.call(['curl', query_url, '-o', query_output],
                        stderr=subprocess.DEVNULL) != 0:
         return None, 'fetching query result from %s failed' % query_url
-    try:
-        root = ET.parse(query_output).getroot()
-    except:
-        return None, 'parsing query result of %s at %s failed' % (
-                query_url, query_output)
+    mails, err = get_mails_from_atom(query_output, mailing_list)
+    if err is not None:
+        return None, 'parsing query (%s) output failed (%s)' % (query_url, err)
     os.remove(query_output)
-    entries = [node for node in root if pisearch_tag(node) == 'entry']
-    mails = []
-    for entry in entries:
-        mails.append(_hkml.Mail(atom_entry=entry, atom_ml=mailing_list))
-    return mails, None
+    return mails, err
 
 def fetch_get_mails_from_git(fetch, source, since, until, min_nr_mails,
                              max_nr_mails, commits_range):
