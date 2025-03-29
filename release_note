@@ -3,6 +3,7 @@ This file contains major changes in each version since v1.0.0
 v1.3.3
 - hkml list: improve --pisearch reliability
 - improve public inbox traffic control
+- hkml list: implement --options_for for concise help message for specific purpose
 
 v1.3.2
 - hkml patch: allow not adding Link: tag
