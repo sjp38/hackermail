@@ -394,7 +394,10 @@ def get_filtered_mails(mails, ls_range, mails_filter):
 
 def sort_filter_mails(mails_to_show, do_find_ancestors_from_cache,
                       mails_filter, list_decorator, show_thread_of,
-                      runtime_profile):
+                      runtime_profile, print_progress):
+
+    if print_progress:
+        print('extract threads...')
 
     timestamp = time.time()
     threads = threads_of(mails_to_show, do_find_ancestors_from_cache)
@@ -413,6 +416,9 @@ def sort_filter_mails(mails_to_show, do_find_ancestors_from_cache,
                              else 0)
 
     runtime_profile.append(['threads_extract', time.time() - timestamp])
+    if print_progress:
+        print('extracting threads done (%s)' % runtime_profile[-1][1])
+        print('set indices...')
 
     by_pr_idx = []
     timestamp = time.time()
@@ -420,6 +426,9 @@ def sort_filter_mails(mails_to_show, do_find_ancestors_from_cache,
     for mail in threads:
         set_index(mail, by_pr_idx, 0, mail_idx_key_map)
     runtime_profile.append(['set_index', time.time() - timestamp])
+    if print_progress:
+        print('setting indices done (%s)' % runtime_profile[-1][1])
+        print('filter mails...')
 
     timestamp = time.time()
     # Show all by default
@@ -438,6 +447,8 @@ def sort_filter_mails(mails_to_show, do_find_ancestors_from_cache,
     filtered_mails = get_filtered_mails(by_pr_idx, ls_range, mails_filter)
 
     runtime_profile.append(['filtering', time.time() - timestamp])
+    if print_progress:
+        print('mails filtering done (%s)' % runtime_profile[-1][1])
     return filtered_mails, mail_idx_key_map
 
 def child_of_collapsed(mail, mails_to_collapse):
@@ -543,14 +554,14 @@ class MailsListData:
 def mails_to_list_data(
         mails_to_show, do_find_ancestors_from_cache, mails_filter,
         list_decorator, show_thread_of, runtime_profile, stat_only,
-        stat_authors):
+        stat_authors, print_progress=False):
     '''Return MailsListData and an error'''
     if len(mails_to_show) == 0:
         return None, 'no mail to list'
 
     filtered_mails, mail_idx_key_map = sort_filter_mails(
             mails_to_show, do_find_ancestors_from_cache, mails_filter,
-            list_decorator, show_thread_of, runtime_profile)
+            list_decorator, show_thread_of, runtime_profile, print_progress)
 
     timestamp = time.time()
 
@@ -938,7 +949,7 @@ def args_to_mails_list_data(args):
     list_data, err = mails_to_list_data(
             mails_to_show, args.do_find_ancestors_from_cache,
             MailListFilter(args), MailListDecorator(args), None,
-            runtime_profile, args.stat_only, args.stat_authors)
+            runtime_profile, args.stat_only, args.stat_authors, print_progress)
     if err is not None:
         return None, err
     if args.source_type == ['msgid']:
