@@ -33,6 +33,10 @@ def atom_tag(node):
         return node.tag
     return node.tag[len(prefix):]
 
+def delay_public_inbox_query():
+    '''Delay public inbox server query, to avoid overloading the server.'''
+    time.sleep(0.3)
+
 class Mail:
     gitid = None
     gitdir = None
