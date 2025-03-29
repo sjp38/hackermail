@@ -288,7 +288,11 @@ class Mail:
                         if len(val.split()) >= 1:
                             val = val.split()[0]
                     decoded_header = email.header.decode_header(val)
-                    val = str(email.header.make_header(decoded_header))
+                    try:
+                        val = str(email.header.make_header(decoded_header))
+                    except UnicodeDecodeError:
+                        # just forgive...
+                        pass
                     # handle multiple to: and cc: lines
                     if key in ['to', 'cc'] and key in parsed:
                         parsed[key] += ', %s' % val
