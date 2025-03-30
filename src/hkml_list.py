@@ -415,12 +415,12 @@ class RuntimeProfiles:
     def start(self, category):
         self.profiles[category] = RuntimeProfile()
         if self.print_progress:
-            print('%s start' % category)
+            print('# %s start' % category)
 
     def end(self, category):
         self.profiles[category].done()
         if self.print_progress:
-            print('%s done (%s)' % (category, self.profiles[category].runtime))
+            print('# %s done (%s)' % (category, self.profiles[category].runtime))
 
 def sort_filter_mails(mails_to_show, do_find_ancestors_from_cache,
                       mails_filter, list_decorator, show_thread_of,
