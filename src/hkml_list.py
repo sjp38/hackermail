@@ -751,6 +751,11 @@ def get_mails_from_pisearch(mailing_list, query_str):
     os.remove(query_output)
     return mails, err
 
+def manifest_might_be_outdated(mails, until):
+    if len(mails) > 0 or not _hkml.is_for_lore_kernel_org():
+        return False
+    return datetime.datetime.now() - until < datetime.timedelta(minutes=5)
+
 def fetch_get_mails_from_git(fetch, source, since, until, min_nr_mails,
                              max_nr_mails, commits_range):
     if fetch:
@@ -761,8 +766,7 @@ def fetch_get_mails_from_git(fetch, source, since, until, min_nr_mails,
     if err is not None:
         return None, err
 
-    if (len(mails) == 0 and _hkml.is_for_lore_kernel_org() and
-        datetime.datetime.now() - until < datetime.timedelta(minutes=5)):
+    if manifest_might_be_outdated(mails, until):
         print(' '.join([
             "No mail has fetched from '%s'." % source,
             "You _might_ need to run 'hkml manifest fetch_lore'."]))
