@@ -754,6 +754,9 @@ def get_mails_from_pisearch(mailing_list, query_str):
 def manifest_might_be_outdated(mails, until):
     if len(mails) > 0 or not _hkml.is_for_lore_kernel_org():
         return False
+    # hkml_monitor calls get_mails() with None until
+    if until is None:
+        return False
     return datetime.datetime.now() - until < datetime.timedelta(minutes=5)
 
 def fetch_get_mails_from_git(fetch, source, since, until, min_nr_mails,
