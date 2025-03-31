@@ -21,3 +21,5 @@
 - Handle suggest_dim_old() error
   - Avoid crash from last_dates[answer] out-of-index.
   - Provide a better explanation about the errors.
+- Make mailis list cache key more robust.
+  - Make it independent of newly added command line options.
