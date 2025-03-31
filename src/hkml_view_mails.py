@@ -262,7 +262,7 @@ def do_apply_patch(data, answer, selection):
 
 def do_export_patch(data, answer, selection):
     export_dir, err = hkml_view.CliQuestion(
-            'Enter directory to export patch files').ask_input()
+            'Enter relative directory to export patch files').ask_input()
     if err == 'canceled':
         return
     if not os.path.exists(export_dir):
