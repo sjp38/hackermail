@@ -28,6 +28,7 @@ def args_to_lists_cache_key(args):
     dict_['stdout'] = False
     dict_['dim_old'] = None
     dict_['read_dates'] = False
+    del dict_['options_for']
 
     return json.dumps(dict_, sort_keys=True)
 
