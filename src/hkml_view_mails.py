@@ -588,13 +588,16 @@ def suggest_dim_old(key):
         return answer_fields
     if answer.lower() == 'n':
         return None
+    if len(last_dates) == 0:
+        return None
     try:
-        answer = int(answer)
+        the_date  = last_dates[int(answer)]
     except:
-        if answer == '' and len(last_dates) == 0:
+        if answer == '':
+            the_date = last_dates[-1]
+        else:
             return None
-        answer = -1
-    return [last_dates[answer].strftime('%Y-%m-%d %H:%M')]
+    return [the_date.strftime('%Y-%m-%d %H:%M')]
 
 def menu_dim_old_mails(mail_slist, answer, selection):
     mail, slist = mail_slist
