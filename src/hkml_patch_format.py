@@ -112,7 +112,9 @@ def add_patches_recipients(patch_files, to, cc, first_patch_is_cv,
         for idx, recipient in enumerate(total_cc):
             print('%d. %s' % (idx, recipient))
         answer = input(
-                'Shall I set one of above as To: for all mails? [N/index] ')
+                'Shall I set one of above as To: for all mails? [N/index/q] ')
+        if answer == 'q':
+            return 'user request quit'
         try:
             to = [total_cc[int(answer)]]
         except:
@@ -343,7 +345,9 @@ def review_patches(on_linux_tree, patch_files):
     if on_linux_tree and os.path.exists('./scripts/checkpatch.pl'):
         print('\ncheckpatch.pl found.  shall I run it?')
         print('(hint: you can do this manually via \'hkml patch check\')')
-        answer = input('[Y/n] ')
+        answer = input('[Y/n/q] ')
+        if answer.lower() == 'q':
+            return True
         if answer.lower() != 'n':
             hkml_patch.check_patches(
                     './scripts/checkpatch.pl', patch_files, None,
@@ -352,7 +356,9 @@ def review_patches(on_linux_tree, patch_files):
                 return True
 
     print('\nwould you review subjects of formatted patches?')
-    answer = input('[Y/n] ')
+    answer = input('[Y/n/q] ')
+    if answer.lower() == 'q':
+        return True
     if answer.lower() != 'n':
         print('below are the subjects')
         for patch_file in patch_files:
@@ -363,7 +369,9 @@ def review_patches(on_linux_tree, patch_files):
 
     print('\nwould you review recipients of formatted patches?')
     print('(hint: you can do this manually via \'hkml patch recipients\')')
-    answer = input('[Y/n] ')
+    answer = input('[Y/n/q] ')
+    if answer.lower() == 'q':
+        return True
     if answer.lower() != 'n':
         hkml_patch.list_recipients(patch_files)
     if not ok_to_continue(patch_files):
