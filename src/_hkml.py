@@ -220,8 +220,7 @@ class Mail:
         if len(self.patch_tags) > 0:
             for idx, line in enumerate(lines):
                 if line == '---':
-                    for t in self.patch_tags:
-                        lines.insert(idx, t)
+                    lines.insert(idx, '\n'.join(self.patch_tags))
                     break
         return '\n'.join(lines)
 
