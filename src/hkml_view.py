@@ -399,6 +399,8 @@ def shell_mode_start(slist_or_screen):
     curses.reset_shell_mode()
 
 def shell_mode_end(slist_or_screen):
+    print('\nGonna erase outputs on screen and enter curses mode.')
+    input('Press "Enter" if ready.')
     if type(slist_or_screen) == ScrollableList:
         screen = slist_or_screen.screen
     else:
