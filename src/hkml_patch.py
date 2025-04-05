@@ -235,6 +235,11 @@ def get_link_tag_domain():
     else:
         return None
 
+def add_cc_tags(patch_mail):
+    for recipient in recipients_of(patch_mail, 'cc'):
+        if len(recipient.split()) > 1:
+            patch_mail.add_patch_tag('Cc: %s' % recipient)
+
 def get_patch_mails(mail, dont_add_cv):
     patch_mails = [mail]
     is_cv = is_cover_letter(mail)
@@ -262,6 +267,7 @@ def get_patch_mails(mail, dont_add_cv):
             continue
         for reply in patch_mail.replies:
             find_add_tags(patch_mail, reply)
+        add_cc_tags(patch_mail)
         user_name = subprocess.check_output(
                 ['git', 'config', 'user.name']).decode().strip()
         user_email = subprocess.check_output(
