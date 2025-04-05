@@ -19,3 +19,8 @@
 - Make hidden context menu easier to find
 - Rate-limit lore traffic
 - Ask 'hkml patch format' tagging patches as sent-patches or drafts-patches.
+- Support commits <-> patches queue conversion
+  - 'patch format --series' creates 'series' file together
+     - 'series' file contains name of patches in order, and baseline commit
+  - 'patch apply' should be able to receive the 'series' file and assemble tree back
+- Support tagging patch series easier
