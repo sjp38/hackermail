@@ -23,7 +23,5 @@
   - Provide a better explanation about the errors.
 - Make mailis list cache key more robust.
   - Make it independent of newly added command line options.
-- Ensure shell mode outputs are not silently ignored
-  - Ask user confirm on shell_mode_end()?
 - Ask 'hkml patch format' tagging patches as sent-patches or drafts-patches.
 - hkml patch format Add an option for adding Cc: tag to patch bodies

@@ -1,5 +1,8 @@
 This file contains major changes in each version since v1.0.0
 
+v1.3.4
+- ensure terminal outputs have time to read before starting curses mode
+
 v1.3.3
 - hkml list: improve --pisearch reliability
 - hkml list: implement --options_for for concise help message for specific purpose
