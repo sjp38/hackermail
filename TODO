@@ -18,6 +18,4 @@
 - Clone and fetch old epoch git for searching if needed
 - Make hidden context menu easier to find
 - Rate-limit lore traffic
-- Make mailis list cache key more robust.
-  - Make it independent of newly added command line options.
 - Ask 'hkml patch format' tagging patches as sent-patches or drafts-patches.
