@@ -9,12 +9,16 @@ import _hkml
 Synchronize personal files in .hkm/ via user-specified git repo.
 '''
 
-def files_to_sync():
-    return ['manifest', 'monitor_requests', 'tags']
+def files_to_sync(hkml_dir):
+    files = ['manifest', 'monitor_requests', 'tags']
+    for filename in os.listdir(hkml_dir):
+        if filename.startswith('tags_'):
+            files.append(filename)
+    return files
 
 def commit_changes(hkml_dir):
     git_cmd = ['git', '-C', hkml_dir]
-    for file in files_to_sync():
+    for file in files_to_sync(hkml_dir):
         file_path = os.path.join(hkml_dir, file)
         if os.path.isfile(file_path):
             if subprocess.call(git_cmd + ['add', file]) != 0:
