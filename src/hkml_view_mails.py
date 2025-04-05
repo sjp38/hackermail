@@ -851,7 +851,6 @@ def generate_mails_view_data(args):
     else:
         display_effect_rule = mk_dim_old_rule(max_date)
     mails_view_data = MailsViewData(list_data, args, display_effect_rule)
-    hkml_view.cli_any_input('mails view data is ready')
     return mails_view_data, err
 
 def gen_show_mails_list(screen, list_args):
