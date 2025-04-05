@@ -76,7 +76,7 @@ class CliQuestion:
 
         answer = input('%s (enter \'\' to cancel): ' % self.prompt)
         if answer == '':
-            cli_any_input('Canceled.')
+            print('Canceled.')
             return None, None, 'canceled'
 
         selection = None
@@ -86,7 +86,7 @@ class CliQuestion:
                 selection = selections[int(answer) - 1]
                 selection_handle_fn = selection.handle_fn
             except:
-                cli_any_input('Wrong input.')
+                print('Wrong input.')
                 return None, None, 'wrong input'
 
         if selection_handle_fn is not None:
@@ -98,7 +98,7 @@ class CliQuestion:
                 return None, None, 'handler return err (%s)' % err
 
         if notify_completion:
-            cli_any_input('Done.')
+            print('Done.')
         return answer, selection, None
 
     '''
