@@ -250,7 +250,7 @@ def do_check_patch(data, answer, selection):
         hkml_dir=None, command='patch', dont_add_cv='ask', action='check',
         checker=None))
     if err is not None:
-        hkml_view.cli_any_input('applying action failed (%s)' % err)
+        print('applying action failed (%s)' % err)
 
 def do_apply_patch(data, answer, selection):
     mail = data
@@ -258,7 +258,7 @@ def do_apply_patch(data, answer, selection):
         hkml_dir=None, command='patch', dont_add_cv=True, action='apply',
         repo='./'))
     if err is not None:
-        hkml_view.cli_any_input('applying action failed (%s)' % err)
+        print('applying action failed (%s)' % err)
 
 def do_export_patch(data, answer, selection):
     export_dir, err = hkml_view.CliQuestion(
@@ -276,15 +276,14 @@ def do_export_patch(data, answer, selection):
         hkml_dir=None, command='patch', dont_add_cv='ask', action='export',
         repo='./', export_dir=export_dir))
     if err is not None:
-        hkml_view.cli_any_input('applying action failed (%s)' % err)
+        print('applying action failed (%s)' % err)
 
 def handle_patches_of_mail(mail, list_mails=None):
     msgid = mail.get_field('message-id')
     if list_mails is None:
         list_mails, err = hkml_list.get_thread_mails_from_web(msgid)
         if err is not None:
-            hkml_view.cli_any_input('get_thread_mails_from_web() failed (%s)' %
-                                    err)
+            print('get_thread_mails_from_web() failed (%s)' % err)
             return
     threads = hkml_list.threads_of(list_mails)
     mail_with_replies = None
@@ -294,7 +293,7 @@ def handle_patches_of_mail(mail, list_mails=None):
         if mail_with_replies is not None:
             break
     if mail_with_replies is None:
-        hkml_view.cli_any_input('getting mail with replies failed.')
+        print('getting mail with replies failed.')
         return
     mail = mail_with_replies
 
@@ -352,12 +351,12 @@ def do_export(data, answer, selection):
             export_range = [int(x) for x in answer.split()]
             if len(export_range) != 2:
                 err = 'wrong number of inputs.'
-                hkml_view.cli_any_input(err)
+                print(err)
                 return err
             export_range[1] += 1    # export receives half-open range
         except:
             err = 'wrong input.'
-            hkml_view.cli_any_input(err)
+            print(err)
             return err
     else:
         export_range = None
@@ -467,7 +466,7 @@ class MailDisplayEffect:
         else:
             self.min_date, err = hkml_common.parse_date(answer)
             if err is not None:
-                hkml_view.cli_any_input(err)
+                print(err)
                 return
         prompt = ' '.join(['Maximum date.',
                            hkml_common.date_format_description(),
@@ -481,7 +480,7 @@ class MailDisplayEffect:
         else:
             self.max_date, err = hkml_common.parse_date(answer)
             if err is not None:
-                hkml_view.cli_any_input(err)
+                print(err)
                 return
 
     def __init__(self, interactive, old_effect=None):
@@ -606,7 +605,7 @@ def menu_dim_old_mails(mail_slist, answer, selection):
         return
     max_date, err = hkml_common.parse_date_arg(max_date_str)
     if err is not None:
-        hkml_view.cli_any_input(err)
+        print(err)
         return
 
     slist.data.display_rule = mk_dim_old_rule(max_date)
@@ -665,8 +664,8 @@ def menu_refresh_mails(mail_slist, answer, selection):
 
     mails_view_data, err = generate_mails_view_data(gen_args)
     if err is not None:
-        return hkml_view.cli_any_input(
-                'Generating mails list again failed (%s).' % err)
+        print('Generating mails list again failed (%s).' % err)
+        return
     list_data = mails_view_data.list_data
     hkml_view.shell_mode_end(slist)
     slist.data = mails_view_data
@@ -858,8 +857,8 @@ def gen_show_mails_list(screen, list_args):
 
     mails_view_data, err = generate_mails_view_data(list_args)
     if err is not None:
-        return hkml_view.cli_any_input(
-                'Failed mails list generating (%s).' % err)
+        print('Failed mails list generating (%s).' % err)
+        return
     hkml_view.shell_mode_end(screen)
 
     return show_mails_list(screen, mails_view_data)
