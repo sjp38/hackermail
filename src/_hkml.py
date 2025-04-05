@@ -70,7 +70,7 @@ class Mail:
     mbox = None
     replies = None
     parent_mail = None
-    tags = None # Reviewed-by: like tags
+    patch_tags = None # Reviewed-by: like tags
     cv_text = None  # integrated cover letter on first patch
     additional_to = None
     additional_cc = None
@@ -156,7 +156,7 @@ class Mail:
     def __init__(self, mbox=None, kvpairs=None, atom_entry=None, atom_ml=None):
         self.replies = []
         self.subject_tags = []
-        self.tags = []
+        self.patch_tags = []
         self.additional_to = []
         self.additional_cc = []
 
@@ -244,11 +244,11 @@ class Mail:
             lines = []
             if self.cv_text is not None:
                 lines.append(self.cv_text)
-            if len(self.tags) > 0:
+            if len(self.patch_tags) > 0:
                 lines += self.__fields[tag].split('\n')
                 for idx, line in enumerate(lines):
                     if line == '---':
-                        for t in self.tags:
+                        for t in self.patch_tags:
                             lines.insert(idx, t)
                         break
                 return '\n'.join(lines)
@@ -352,7 +352,7 @@ class Mail:
         self.__fields = parsed
 
     def add_tag(self, tag):
-        if tag in self.tags:
+        if tag in self.patch_tags:
             return None
         body = self.get_field('body')
         if body is None:
@@ -369,7 +369,7 @@ class Mail:
             break
         if not can_add_tag:
             return 'cannot find line to add the tag'
-        self.tags.append(tag)
+        self.patch_tags.append(tag)
 
     def add_recipients(self, to_cc, recipients):
         if to_cc == 'to':
