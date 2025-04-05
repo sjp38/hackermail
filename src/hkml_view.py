@@ -442,12 +442,13 @@ def focus_set(c, slist):
             try:
                 answer = min(int(answer), len(slist.lines) - 1)
             except Exception as e:
-                print('wrong answer')
                 return 'wrong answer'
         slist.focus_row = answer
         return None
 
-    question.ask_input(slist, handle_fn=handle_fn)
+    _, err = question.ask_input(slist, handle_fn=handle_fn)
+    if err is not None:
+        print(err)
     shell_mode_end(slist)
 
 def ask_highlight_enabling(slist):
