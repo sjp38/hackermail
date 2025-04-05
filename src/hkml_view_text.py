@@ -246,16 +246,6 @@ def menu_write_draft(data, answer, selection):
     hkml_view_mails.write_mail_draft(slist, mail)
     hkml_view.shell_mode_start(slist)
 
-def manage_tags(c, slist):
-    # maybe called from tui/cli menu
-    if slist.parent_list is not None:
-        slist = slist.parent_list
-    mail, err = get_showing_mail(slist)
-    if err is not None:
-        slist.toast('parent is not a mail?')
-        return
-    hkml_view_mails.manage_tags_of_mail(slist, mail)
-
 def menu_manage_tags(data, answer, selection):
     slist, selections = data
     mail, err = get_showing_mail(slist)
