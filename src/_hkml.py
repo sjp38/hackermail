@@ -351,7 +351,7 @@ class Mail:
 
         self.__fields = parsed
 
-    def add_tag(self, tag):
+    def add_patch_tag(self, tag):
         if tag in self.patch_tags:
             return None
         body = self.get_field('body')

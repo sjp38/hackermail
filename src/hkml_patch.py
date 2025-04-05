@@ -200,7 +200,7 @@ def find_add_tags(patch_mail, mail_to_check):
             print('    %s' % line)
             answer = input('add the tag to the patch? [Y/n] ')
             if answer.lower() != 'n':
-                err = patch_mail.add_tag(line)
+                err = patch_mail.add_patch_tag(line)
                 if err is not None:
                     print(err)
     if mail_to_check.replies is None:
@@ -255,7 +255,7 @@ def get_patch_mails(mail, dont_add_cv):
             if msgid.startswith('<') and msgid.endswith('>'):
                 msgid = msgid[1:-1]
             url = '%s/%s' % (link_domain, msgid)
-            patch_mail.add_tag('Link: %s' % url)
+            patch_mail.add_patch_tag('Link: %s' % url)
         if patch_mail.replies is None:
             continue
         if is_cover_letter(patch_mail):
@@ -266,7 +266,7 @@ def get_patch_mails(mail, dont_add_cv):
                 ['git', 'config', 'user.name']).decode().strip()
         user_email = subprocess.check_output(
                 ['git', 'config', 'user.email']).decode().strip()
-        patch_mail.add_tag('Signed-off-by: %s <%s>' % (user_name, user_email))
+        patch_mail.add_patch_tag('Signed-off-by: %s <%s>' % (user_name, user_email))
     patch_mails.sort(key=lambda m: get_patch_index(m))
     if is_cv and dont_add_cv is False:
         print('Given mail seems the cover letter of the patchset.')
