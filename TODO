@@ -24,3 +24,4 @@
      - 'series' file contains name of patches in order, and baseline commit
   - 'patch apply' should be able to receive the 'series' file and assemble tree back
 - Support tagging patch series easier
+- Support max size of tags file
