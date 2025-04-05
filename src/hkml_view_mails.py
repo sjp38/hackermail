@@ -589,6 +589,7 @@ def suggest_dim_old(key):
     if answer.lower() == 'n':
         return None
     if len(last_dates) == 0:
+        print('The input is not a valid date.  Do not dim_old')
         return None
     try:
         the_date  = last_dates[int(answer)]
@@ -596,6 +597,7 @@ def suggest_dim_old(key):
         if answer == '':
             the_date = last_dates[-1]
         else:
+            print('Wrong input.  Do not dim_old')
             return None
     return [the_date.strftime('%Y-%m-%d %H:%M')]
 
