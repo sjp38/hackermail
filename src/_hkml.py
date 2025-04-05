@@ -211,6 +211,21 @@ class Mail:
         # hkml_open.mail_display_str()
         self.__fields[field_name.lower()] = value
 
+    def get_body_field(self):
+        field_name = 'body'
+        lines = []
+        if self.cv_text is not None:
+            lines.append(self.cv_text)
+        if len(self.patch_tags) > 0:
+            lines += self.__fields[field_name].split('\n')
+            for idx, line in enumerate(lines):
+                if line == '---':
+                    for t in self.patch_tags:
+                        lines.insert(idx, t)
+                    break
+            return '\n'.join(lines)
+        return self.__fields[field_name]
+
     def get_field(self, field_name):
         field_name = field_name.lower()
         # this might set from git log
@@ -241,17 +256,7 @@ class Mail:
         if not field_name in self.__fields:
             return None
         if field_name == 'body':
-            lines = []
-            if self.cv_text is not None:
-                lines.append(self.cv_text)
-            if len(self.patch_tags) > 0:
-                lines += self.__fields[field_name].split('\n')
-                for idx, line in enumerate(lines):
-                    if line == '---':
-                        for t in self.patch_tags:
-                            lines.insert(idx, t)
-                        break
-                return '\n'.join(lines)
+            return self.get_body_field()
 
         return self.__fields[field_name]
 
