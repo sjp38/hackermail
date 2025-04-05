@@ -39,14 +39,6 @@ class CliSelection:
         self.data = data
 
 '''
-For letting user show the output before showing others, e.g., returning to
-previous ScrollableList screen.
-'''
-def cli_any_input(prompt):
-    print('%s\n\nPress enter to return' % prompt)
-    sys.stdin.read(1)
-
-'''
 question that will be provided to the user, in shell mode.
 ask_input() and ask_selection() are the methods that user will really use.
 '''
@@ -94,7 +86,6 @@ class CliQuestion:
         elif handle_fn is not None:
             err = handle_fn(data, answer)
             if err:
-                # handle_fn() must notified the error.  Do not cli_any_input()
                 return None, None, err
 
         if notify_completion:
