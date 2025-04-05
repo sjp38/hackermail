@@ -222,7 +222,6 @@ def do_remove_tags(data, answer, selection):
 def manage_tags_of_mail(slist, mail):
     msgid = mail.get_field('message-id')
     tags_map = hkml_tag.read_tags_file()
-    hkml_view.shell_mode_start(slist)
 
     if msgid in tags_map:
         tags = tags_map[msgid]['tags']
@@ -242,7 +241,6 @@ def manage_tags_of_mail(slist, mail):
                 hkml_view.CliSelection('Add tags', handle_fn=do_add_tags),
                 hkml_view.CliSelection('Remove tags',
                                        handle_fn=do_remove_tags)])
-    hkml_view.shell_mode_end(slist)
 
 def do_check_patch(data, answer, selection):
     mail = data
@@ -635,9 +633,7 @@ def menu_write_draft(mail_slist, answer, selection):
 
 def menu_manage_tags(mail_slist, answer, selection):
     mail, slist = mail_slist
-    hkml_view.shell_mode_end(slist)
     manage_tags_of_mail(slist, mail)
-    hkml_view.shell_mode_start(slist)
 
 def menu_handle_patches(mail_slist, answer, selection):
     mail, slist = mail_slist
