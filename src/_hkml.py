@@ -205,47 +205,47 @@ class Mail:
                 'msgid': self.get_field('message-id'),
                 'mbox': self.mbox}
 
-    def set_field(self, tag, value):
+    def set_field(self, field_name, value):
         # note that this doesn't update mbox field.  To format te mail
         # correctly, user should use get_field() for each field, like
         # hkml_open.mail_display_str()
-        self.__fields[tag.lower()] = value
+        self.__fields[field_name.lower()] = value
 
-    def get_field(self, tag):
-        tag = tag.lower()
+    def get_field(self, field_name):
+        field_name = field_name.lower()
         # this might set from git log
-        if tag == 'subject' and self.subject:
+        if field_name == 'subject' and self.subject:
             return self.subject
 
-        if tag == 'local-date' and self.date:
+        if field_name == 'local-date' and self.date:
             return '%s' % self.date
 
-        if not tag in self.__fields:
+        if not field_name in self.__fields:
             self.__parse_mbox()
 
-        if tag == 'cc' and len(self.additional_cc) > 0:
-            if not tag in self.__fields:
+        if field_name == 'cc' and len(self.additional_cc) > 0:
+            if not field_name in self.__fields:
                 initial_cc = []
             else:
-                initial_cc = self.__fields[tag]
+                initial_cc = self.__fields[field_name]
                 initial_cc = [r.strip() for r in initial_cc.split(',')]
             return ', '.join(initial_cc + self.additional_cc)
-        if tag == 'to' and len(self.additional_to) > 0:
-            if not tag in self.__fields:
+        if field_name == 'to' and len(self.additional_to) > 0:
+            if not field_name in self.__fields:
                 initial_to = []
             else:
-                initial_to = self.__fields[tag]
+                initial_to = self.__fields[field_name]
                 initial_to = [r.strip() for r in initial_to.split(',')]
             return ', '.join(initial_to + self.additional_to)
 
-        if not tag in self.__fields:
+        if not field_name in self.__fields:
             return None
-        if tag == 'body':
+        if field_name == 'body':
             lines = []
             if self.cv_text is not None:
                 lines.append(self.cv_text)
             if len(self.patch_tags) > 0:
-                lines += self.__fields[tag].split('\n')
+                lines += self.__fields[field_name].split('\n')
                 for idx, line in enumerate(lines):
                     if line == '---':
                         for t in self.patch_tags:
@@ -253,7 +253,7 @@ class Mail:
                         break
                 return '\n'.join(lines)
 
-        return self.__fields[tag]
+        return self.__fields[field_name]
 
     def set_mbox(self):
         if self.gitdir is not None and self.gitid is not None:
