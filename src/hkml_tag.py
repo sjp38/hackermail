@@ -27,9 +27,20 @@ def read_tags_file():
     with open(tag_file_path(), 'r') as f:
         return json.load(f)
 
+max_tags_file_size = 10 * 1024 * 1024   # 10 MiB
+
 def write_tags_file(tags, sync_after):
-    with open(tag_file_path(), 'w') as f:
+    active_tag_file = tag_file_path()
+    with open(active_tag_file, 'w') as f:
         json.dump(tags, f, indent=4)
+
+    stat = os.stat(active_tag_file)
+    if stat.st_size >= max_tags_file_size:
+        backup_name = '%s_%s' % (
+                active_tag_file, datetime.datetime.now().strftime(
+                    '%Y-%m-%d-%H-%M-%S'))
+        os.rename(active_tag_file, backup_name)
+
     if hkml_sync.syncup_ready() and sync_after is True:
         hkml_sync.syncup(_hkml.get_hkml_dir(), remote=None)
 
