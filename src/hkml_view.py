@@ -95,7 +95,7 @@ class CliQuestion:
             err = handle_fn(data, answer)
             if err:
                 # handle_fn() must notified the error.  Do not cli_any_input()
-                return None, None, 'handler return err (%s)' % err
+                return None, None, err
 
         if notify_completion:
             print('Done.')
