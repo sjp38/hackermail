@@ -548,7 +548,7 @@ def mk_dim_old_rule(max_date):
     return effect_rule
 
 def build_suggest_dim_old_prompt(last_dates):
-    lines = ['Dim mails older than user-input date.', '']
+    lines = ['']
     now_time = datetime.datetime.now().astimezone()
     lines.append('Dates you generated old versions of the list are:')
     if len(last_dates) == 0:
