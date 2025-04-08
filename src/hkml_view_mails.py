@@ -550,15 +550,15 @@ def mk_dim_old_rule(max_date):
 def build_suggest_dim_old_prompt(last_dates):
     lines = ['']
     now_time = datetime.datetime.now().astimezone()
-    lines.append('Dates you generated old versions of the list are:')
     if len(last_dates) == 0:
-        lines += ['not exist', '',
-                  'May I dim mails older than a date?',
+        lines += [
+                  'May I dim mails on the list that are older than a date?',
                   "- Enter the date to dim mails older than it (%s)." %
                   hkml_common.date_format_description(),
                   "- Or, enter 'n' if you don't want to dim any mail.",
                   ]
     else:
+        lines.append('Dates you generated old versions of the list are:')
         for idx, last_date in enumerate(last_dates):
             lines.append(' %2d. %s (%s before)' %
                   (idx, last_date, now_time - last_date))
