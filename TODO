@@ -25,3 +25,4 @@
   - 'patch apply' should be able to receive the 'series' file and assemble tree back
 - Support tagging patch series easier
 - Support max size of tags file
+- Suggest 'wrap text' by default, if there are lines longer than the screen
