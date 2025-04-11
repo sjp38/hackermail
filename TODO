@@ -26,3 +26,5 @@
 - Support tagging patch series easier
 - Support max size of tags file
 - Suggest 'wrap text' by default, if there are lines longer than the screen
+- Fix ignored error from wrong mailing list
+  - 'hkml lsit foo' should show the error instead of just returning to the shell
