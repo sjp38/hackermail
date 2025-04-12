@@ -44,6 +44,16 @@ def write_tags_file(tags, sync_after):
     if hkml_sync.syncup_ready() and sync_after is True:
         hkml_sync.syncup(_hkml.get_hkml_dir(), remote=None)
 
+class TagChange:
+    mail = None
+    add = None
+    remove = None
+
+    def __init__(self, mail, add=False, remove=False):
+        self.mail = mail
+        self.add = add
+        self.remove = remove
+
 def mails_of_tag(tag):
     tags_map = read_tags_file()
     mails = []
