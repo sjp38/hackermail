@@ -1,5 +1,9 @@
 This file contains major changes in each version since v1.0.0
 
+v1.3.5
+- suggest wrapping text if there are lines that longer than the screen
+  (except mails list screen)
+
 v1.3.4
 - ensure terminal outputs have time to read before starting curses mode
 - add Cc: tags to downloaded patch files
