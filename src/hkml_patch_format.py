@@ -78,6 +78,19 @@ def handle_special_recipients(recipients):
             handled.append(r)
     return handled, None
 
+def get_patch_tag_cc(patch_file):
+    cc_list = []
+    with open(patch_file, 'r') as f:
+        txt = f.read()
+    pars = txt.split('---')
+    if len(pars) < 2:
+        return cc_list
+    tags_par = pars[0].split('\n\n')[-1]
+    for line in tags_par.split('\n'):
+        if line.startswith('Cc: '):
+            cc_list.append(' '.join(line.split()[1:]))
+    return cc_list
+
 def add_patches_recipients(patch_files, to, cc, first_patch_is_cv,
                            on_linux_tree):
     to, err = handle_special_recipients(to)
@@ -101,7 +114,9 @@ def add_patches_recipients(patch_files, to, cc, first_patch_is_cv,
             total_cc += linux_cc
         else:
             linux_cc = []
-        patch_cc = sorted(list(set(cc + linux_cc)))
+        patch_tag_cc = get_patch_tag_cc(patch_file)
+        total_cc += patch_tag_cc
+        patch_cc = sorted(list(set(cc + linux_cc + patch_tag_cc)))
         cc_for_patches[patch_file] = patch_cc
     if first_patch_is_cv:
         total_cc = sorted(list(set(total_cc)))
