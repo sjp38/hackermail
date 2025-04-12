@@ -184,8 +184,9 @@ def tag_exists(tagname):
     return tagname in get_tag_nr_mails()
 
 def list_tags():
-    for tag, nr_mails in get_tag_nr_mails().items():
-        print('%s: %d mails' % (tag, nr_mails))
+    tag_nr_mails = get_tag_nr_mails()
+    for tag in sorted(tag_nr_mails.keys()):
+        print('%s: %d mails' % (tag, tag_nr_mails[tag]))
 
 def main(args):
     if args.action == 'add':
