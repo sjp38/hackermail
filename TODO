@@ -25,4 +25,3 @@
   - 'patch apply' should be able to receive the 'series' file and assemble tree back
 - Support tagging patch series easier
 - Support max size of tags file
-- hkml patch format: Add Cc on patches to coverletter
