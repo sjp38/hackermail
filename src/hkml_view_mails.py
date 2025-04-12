@@ -859,7 +859,9 @@ def gen_show_mails_list(screen, list_args):
     mails_view_data, err = generate_mails_view_data(list_args)
     if err is not None:
         print('Failed mails list generating (%s).' % err)
-        return
     hkml_view.shell_mode_end(screen)
+
+    if err is not None:
+        return
 
     return show_mails_list(screen, mails_view_data)
