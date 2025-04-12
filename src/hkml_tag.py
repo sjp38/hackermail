@@ -22,24 +22,35 @@ def tag_file_path():
     return os.path.join(_hkml.get_hkml_dir(), 'tags')
 
 def read_tags_file():
-    if not os.path.isfile(tag_file_path()):
-        return {}
-    with open(tag_file_path(), 'r') as f:
-        return json.load(f)
+    tags_map = {}
+    for filename in os.listdir(_hkml.get_hkml_dir()):
+        if not filename.startswith('tags'):
+            continue
+        with open(os.path.join(_hkml.get_hkml_dir(), filename), 'r') as f:
+            for k, v in json.load(f).items():
+                tags_map[k] = v
+    return tags_map
 
-max_tags_file_size = 10 * 1024 * 1024   # 10 MiB
+def write_tags_single_file(tags_map, file_idx):
+    if file_idx is not None:
+        suffix = '_%d' % file_idx
+    else:
+        suffix = ''
+    file_path = os.path.join(_hkml.get_hkml_dir(), 'tags%s' % suffix)
+    with open(file_path, 'w') as f:
+        json.dump(tags_map, f, indent=4, sort_keys=True)
 
-def write_tags_file(tags, sync_after):
-    active_tag_file = tag_file_path()
-    with open(active_tag_file, 'w') as f:
-        json.dump(tags, f, indent=4)
-
-    stat = os.stat(active_tag_file)
-    if stat.st_size >= max_tags_file_size:
-        backup_name = '%s_%s' % (
-                active_tag_file, datetime.datetime.now().strftime(
-                    '%Y-%m-%d-%H-%M-%S'))
-        os.rename(active_tag_file, backup_name)
+def write_tags_file(tags_map, sync_after):
+    max_mails_per_file = 100
+    tags_map_to_write = {}
+    file_idx = 0
+    for msgid in sorted(tags_map.keys()):
+        tags_map_to_write[msgid] = tags_map[msgid]
+        if len(tags_map_to_write) == max_mails_per_file:
+            write_tags_single_file(tags_map_to_write, file_idx)
+            tags_map_to_write = {}
+            file_idx += 1
+    write_tags_single_file(tags_map_to_write, None)
 
     if hkml_sync.syncup_ready() and sync_after is True:
         hkml_sync.syncup(_hkml.get_hkml_dir(), remote=None)
