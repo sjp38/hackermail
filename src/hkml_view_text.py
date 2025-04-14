@@ -403,8 +403,8 @@ def show_text_viewer(screen, text_lines, data=None, cursor_position=None):
             'There are lines that longer than the screen\'s width.',
             'May I wrap those?',
             'You can [un]wrap later from the menu (\'m\' key).'
-            '[Y/n] ']))
-        if answer.lower() != 'n':
+            '[y/N] ']))
+        if answer.lower() == 'y':
             slist.wrap_text()
             print('Ok, wrapped the lines')
         else:
