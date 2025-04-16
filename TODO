@@ -25,3 +25,4 @@
   - 'patch apply' should be able to receive the 'series' file and assemble tree back
 - Support tagging patch series easier
 - Support max size of tags file
+- Don't add Cc for author when exporting patches
