@@ -1,8 +1,6 @@
 This file contains major changes in each version since v1.0.0
 
 v1.3.5
-- suggest wrapping text if there are lines that longer than the screen
-  (except mails list screen)
 - hkml patch format: add Cc: on patch commit messages to CV recipients
 
 v1.3.4
