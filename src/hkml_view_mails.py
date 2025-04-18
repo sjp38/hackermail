@@ -592,7 +592,7 @@ def suggest_dim_old(key):
     try:
         the_date  = last_dates[int(answer)]
     except:
-        if answer == '':
+        if answer in ['', 'y']:
             the_date = last_dates[-1]
         else:
             print('Wrong input.  Do not dim_old')
