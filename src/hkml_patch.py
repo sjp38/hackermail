@@ -237,8 +237,11 @@ def get_link_tag_domain():
 
 def add_cc_tags(patch_mail):
     for recipient in recipients_of(patch_mail, 'cc'):
+        if recipient == patch_mail.get_field('from'):
+            continue
         if len(recipient.split()) > 1:
-            patch_mail.add_patch_tag('Cc: %s' % recipient)
+            continue
+        patch_mail.add_patch_tag('Cc: %s' % recipient)
 
 def get_patch_mails(mail, dont_add_cv):
     patch_mails = [mail]
