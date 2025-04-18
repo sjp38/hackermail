@@ -597,7 +597,9 @@ def suggest_dim_old(key):
         else:
             print('Wrong input.  Do not dim_old')
             return None
-    return [the_date.strftime('%Y-%m-%d %H:%M')]
+    date_str = the_date.strftime('%Y-%m-%d %H:%M')
+    print('\nThe list will dim mails older than %s' % date_str)
+    return [date_str]
 
 def menu_dim_old_mails(mail_slist, answer, selection):
     mail, slist = mail_slist
