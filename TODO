@@ -24,3 +24,7 @@
      - 'series' file contains name of patches in order, and baseline commit
   - 'patch apply' should be able to receive the 'series' file and assemble tree back
 - Support tagging patch series easier
+- Let mails cache reading delay explainable
+  - E.g., when cached list output is used and --dim_old is set, dim handler
+    reads mail's sent date, and it makes delay if mail cache is big.  Same for
+    first mail read.  This makes user experience bad.  Think about improvement.
