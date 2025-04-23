@@ -28,3 +28,5 @@
   - E.g., when cached list output is used and --dim_old is set, dim handler
     reads mail's sent date, and it makes delay if mail cache is big.  Same for
     first mail read.  This makes user experience bad.  Think about improvement.
+- Fix diff coloring for
+  https://lore.kernel.org/20250423123042.59082-1-lorenzo.stoakes@oracle.com
