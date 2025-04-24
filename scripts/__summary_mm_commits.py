@@ -31,11 +31,13 @@ expected inputs are for example:
 class MmCommits:
     date = None
     action = None
+    from_to = None
     patch_title = None
 
-    def __init__(self, date, action, patch_title):
+    def __init__(self, date, action, from_to, patch_title):
         self.date = date
         self.action = action
+        self.from_to = from_to
         self.patch_title = patch_title
 
 def parse_mails(msg):
@@ -67,10 +69,12 @@ def parse_mails(msg):
         patch = tokens[1].split('.patch')[0]
         action = ' '.join(tokens[2:6])
         if tag == '+' and action.startswith('added to '):
-            added.append(MmCommits(date, 'added', patch))
+            dst_tree = tokens[4]
+            added.append(MmCommits(date, 'added', dst_tree, patch))
             actions['added'] = True
-        if action == 'removed from ':
-            removed.append(MmCommits(date, tag, patch))
+        if action.startswith('removed from '):
+            src_tree = tokens[4]
+            removed.append(MmCommits(date, tag, src_tree, patch))
             actions[tag] = True
     return added, removed, actions
 
@@ -79,7 +83,7 @@ def __pr_parsed_changes(added, removed, actions):
     print('-------------')
     print()
     for commit in added:
-        print(commit.patch_title)
+        print('%s (%s)' % (commit.patch_title, commit.from_to))
 
     print()
     print('removed patches')
@@ -88,7 +92,8 @@ def __pr_parsed_changes(added, removed, actions):
     for action in actions:
         commits = [x for x in removed if x.action == action]
         for commit in commits:
-            print('%s %s' % (commit.action, commit.patch_title))
+            print('%s %s (%s)' %
+                  (commit.action, commit.patch_title, commit.from_to))
 
     print()
     print('%d added, %d removed' % (len(added), len(removed)))
