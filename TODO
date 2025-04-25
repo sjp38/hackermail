@@ -30,3 +30,4 @@
     first mail read.  This makes user experience bad.  Think about improvement.
 - Fix diff coloring for
   https://lore.kernel.org/20250423123042.59082-1-lorenzo.stoakes@oracle.com
+- Suggest wrapping text if the longest line is longer than 3x of screen width?
