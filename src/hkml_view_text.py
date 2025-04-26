@@ -346,7 +346,7 @@ def hunk_length(lines, orig_content, new_content):
             orig_content -= 1
         elif line.startswith('+'):
             new_content -= 1
-        elif line.startswith(' '):
+        elif line.startswith(' ') or line == '':
             orig_content -= 1
             new_content -= 1
         else:
