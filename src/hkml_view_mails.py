@@ -629,16 +629,19 @@ def menu_forward_mail(mail_slist, answer, selection):
 
 def menu_write_draft(mail_slist, answer, selection):
     mail, slist = mail_slist
+    mail = selection.data
     hkml_view.shell_mode_end(slist)
     write_mail_draft(slist, mail)
     hkml_view.shell_mode_start(slist)
 
 def menu_manage_tags(mail_slist, answer, selection):
     mail, slist = mail_slist
+    mail = selection.data
     manage_tags_of_mail(slist, mail)
 
 def menu_handle_patches(mail_slist, answer, selection):
     mail, slist = mail_slist
+    mail = selection.data
     handle_patches_of_mail(mail, get_mails(slist))
 
 class MailsViewData:
@@ -763,11 +766,13 @@ def show_mails_list_menu(c, slist):
                 hkml_view.CliSelection(
                     'forward', handle_fn=menu_forward_mail),
                 hkml_view.CliSelection(
-                    'continue draft writing', handle_fn=menu_write_draft),
+                    'continue draft writing', handle_fn=menu_write_draft,
+                    data=mail),
                 hkml_view.CliSelection(
-                    'manage tags', handle_fn=menu_manage_tags),
+                    'manage tags', handle_fn=menu_manage_tags, data=mail),
                 hkml_view.CliSelection(
-                    'handle as patches', handle_fn=menu_handle_patches),
+                    'handle as patches', handle_fn=menu_handle_patches,
+                    data=mail),
                 hkml_view.CliSelection(
                     'refresh', handle_fn=menu_refresh_mails),
                 hkml_view.CliSelection(
