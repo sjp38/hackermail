@@ -287,11 +287,7 @@ def menu_save_content_as(data, answer, selection):
 
 def menu_open_content_with(data, answer, selection):
     slist, selections = data
-    fd, tmp_path = tempfile.mkstemp(prefix='hkml_tmp_content_')
-    with open(tmp_path, 'w') as f:
-        f.write('\n'.join(slist.lines))
-    err = hkml_write.open_editor(tmp_path, 'content')
-    os.remove(tmp_path)
+    err = hkml_view.open_content_with('\n'.join(slist.lines))
     if err is not None:
         print(err)
 
