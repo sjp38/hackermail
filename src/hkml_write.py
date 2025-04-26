@@ -139,7 +139,7 @@ def open_editor(file_path, target_desc='mail'):
 
     print('I will open a text editor for the %s.' % target_desc)
     if subprocess.call([editor, file_path]) != 0:
-        print('The editor exit with an error.' % target_desc)
+        print('The editor for %s exit with an error.' % target_desc)
         exit(1)
 
 def write_send_mail(draft_mail, subject, in_reply_to, to, cc, body, attach,
