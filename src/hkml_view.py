@@ -13,6 +13,7 @@ import _hkml
 import hkml_list
 import hkml_view_mails
 import hkml_view_text
+import hkml_write
 
 '''
 Curses-based TUI viewer for hkml list/open outputs.
@@ -591,6 +592,14 @@ def save_as(content):
             data=content, selections=[
                 CliSelection('text file', txt_handle_fn),
                 CliSelection('clipboard', clipboard_handle_fn)])
+
+def open_content_with(content):
+    fd, tmp_path = tempfile.mkstemp(prefix='hkml_tmp_content_')
+    with open(tmp_path, 'w') as f:
+        f.write(content)
+    err = hkml_write.open_editor(tmp_path, 'content')
+    os.remove(tmp_path)
+    return err
 
 def __view(stdscr, text_to_show, data, view_type):
     global focus_color
