@@ -277,6 +277,10 @@ def menu_wrap_text(data, answer, selection):
     else:
         slist.wrap_text()
 
+def menu_save_content_as(data, answer, selection):
+    slist, selections = data
+    hkml_view.save_as('\n'.join(slist.lines))
+
 def menu_selections(slist):
     line = slist.lines[slist.focus_row]
 
@@ -295,6 +299,10 @@ def menu_selections(slist):
     selections.append(
             hkml_view.CliSelection(menu_text, handle_fn=menu_wrap_text,
                                    data=slist))
+    selections.append(
+            hkml_view.CliSelection(
+                text='save screen content to ...',
+                handle_fn=menu_save_content_as, data=slist))
 
     return selections
 
