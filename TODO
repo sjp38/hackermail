@@ -28,4 +28,3 @@
   - E.g., when cached list output is used and --dim_old is set, dim handler
     reads mail's sent date, and it makes delay if mail cache is big.  Same for
     first mail read.  This makes user experience bad.  Think about improvement.
-- Suggest wrapping text if the longest line is longer than 3x of screen width?
