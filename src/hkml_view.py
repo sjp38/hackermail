@@ -592,15 +592,6 @@ def save_as(content):
                 CliSelection('text file', txt_handle_fn),
                 CliSelection('clipboard', clipboard_handle_fn)])
 
-def handle_save_content_menu_selection(c, slist):
-    shell_mode_start(slist)
-    save_as('\n'.join(slist.parent_list.lines))
-    shell_mode_end(slist)
-
-save_parent_content_menu_item_handler = [
-        '- save parent screen content as ...',
-        handle_save_content_menu_selection]
-
 def __view(stdscr, text_to_show, data, view_type):
     global focus_color
     global normal_color
