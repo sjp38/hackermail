@@ -393,20 +393,17 @@ def export_mails(c, slist):
                 notify_completion=True)
     hkml_view.shell_mode_end(slist)
 
-def menu_open_mail(mail_slist, answer, selection):
-    mail, slist = mail_slist
+def menu_open_mail(slist, answer, selection):
     hkml_view.shell_mode_end(slist)
     open_focused_mail(None, slist)
     hkml_view.shell_mode_start(slist)
 
-def menu_list_thread(mail_slist, answer, selection):
-    mail, slist = mail_slist
+def menu_list_thread(slist, answer, selection):
     hkml_view.shell_mode_end(slist)
     list_thread_of_focused_mail(None, slist)
     hkml_view.shell_mode_start(slist)
 
-def menu_collapse_expand(mail_slist, answer, selection):
-    mail, slist = mail_slist
+def menu_collapse_expand(slist, answer, selection):
     if focused_mail_idx(slist) in slist.data.collapsed_mails:
         hkml_view.shell_mode_end(slist)
         expand_focused_thread(None, slist)
@@ -521,10 +518,9 @@ class MailDisplayEffect:
             return
         self.interactive_setup_dates()
 
-def menu_effect_mails(mail_slist, answer, selection):
+def menu_effect_mails(slist, answer, selection):
     print('Apply a display effect to specific mails.')
     print()
-    mail, slist = mail_slist
     print('current display effect:')
     print('%s' % slist.data.display_rule)
     print()
@@ -601,8 +597,7 @@ def suggest_dim_old(key):
     print('\nThe list will dim mails older than %s' % date_str)
     return [date_str]
 
-def menu_dim_old_mails(mail_slist, answer, selection):
-    mail, slist = mail_slist
+def menu_dim_old_mails(slist, answer, selection):
     gen_args = slist.data.list_args
     key = hkml_list.args_to_lists_cache_key(gen_args)
     max_date_str = suggest_dim_old(key)
@@ -615,32 +610,27 @@ def menu_dim_old_mails(mail_slist, answer, selection):
 
     slist.data.display_rule = mk_dim_old_rule(max_date)
 
-def menu_reply_mail(mail_slist, answer, selection):
-    mail, slist = mail_slist
+def menu_reply_mail(slist, answer, selection):
     hkml_view.shell_mode_end(slist)
     reply_focused_mail(None, slist)
     hkml_view.shell_mode_start(slist)
 
-def menu_forward_mail(mail_slist, answer, selection):
-    mail, slist = mail_slist
+def menu_forward_mail(slist, answer, selection):
     hkml_view.shell_mode_end(slist)
     forward_focused_mail(None, slist)
     hkml_view.shell_mode_start(slist)
 
-def menu_write_draft(mail_slist, answer, selection):
-    mail, slist = mail_slist
+def menu_write_draft(slist, answer, selection):
     mail = selection.data
     hkml_view.shell_mode_end(slist)
     write_mail_draft(slist, mail)
     hkml_view.shell_mode_start(slist)
 
-def menu_manage_tags(mail_slist, answer, selection):
-    mail, slist = mail_slist
+def menu_manage_tags(slist, answer, selection):
     mail = selection.data
     manage_tags_of_mail(slist, mail)
 
-def menu_handle_patches(mail_slist, answer, selection):
-    mail, slist = mail_slist
+def menu_handle_patches(slist, answer, selection):
     mail = selection.data
     handle_patches_of_mail(mail, get_mails(slist))
 
@@ -660,8 +650,7 @@ class MailsViewData:
         self.last_cursor_position = {}
         self.display_effects = {}
 
-def menu_refresh_mails(mail_slist, answer, selection):
-    mail, slist = mail_slist
+def menu_refresh_mails(slist, answer, selection):
     gen_args = slist.data.list_args
     if type(gen_args) is argparse.Namespace and gen_args.fetch is False:
         answer = input('"--fetch" is unset.  Set it? [Y/n] ')
@@ -679,8 +668,7 @@ def menu_refresh_mails(mail_slist, answer, selection):
     slist.screen.clear()
     hkml_view.shell_mode_start(slist)
 
-def menu_search(mail_slist, answer, selection):
-    _, slist = mail_slist
+def menu_search(slist, answer, selection):
     answer, err = hkml_view.CliQuestion(
             desc='Search mails having keywords',
             prompt='Enter keywords').ask_input()
@@ -706,8 +694,7 @@ def menu_search(mail_slist, answer, selection):
         hkml_view.ask_highlight_enabling(slist)
         slist.search_keyword = None
 
-def menu_new_list(mail_slist, answer, selection):
-    mail, slist = mail_slist
+def menu_new_list(slist, answer, selection):
     answer, err = hkml_view.CliQuestion(
             desc='Open new list with different arguments',
             prompt=' '.join([
@@ -724,18 +711,15 @@ def menu_new_list(mail_slist, answer, selection):
         return
     gen_show_mails_list(slist.screen, args)
 
-def menu_export_mails(mail_slist, answer, selection):
-    mail, slist = mail_slist
+def menu_export_mails(slist, answer, selection):
     hkml_view.shell_mode_end(slist)
     export_mails(None, slist)
     hkml_view.shell_mode_start(slist)
 
-def menu_save_as(mail_slist, answer, selection):
-    mail, slist = mail_slist
+def menu_save_as(slist, answer, selection):
     hkml_view.save_as('\n'.join(slist.lines))
 
-def menu_open_content_with(mail_slist, answer, selection):
-    mail, slist = mail_slist
+def menu_open_content_with(slist, answer, selection):
     err = hkml_view.open_content_with('\n'.join(slist.lines))
     if err is not None:
         print(err)
@@ -750,7 +734,7 @@ def show_mails_list_menu(c, slist):
             prompt='Enter menu item number')
     hkml_view.shell_mode_start(slist)
     q.ask_selection(
-            data=[mail, slist],
+            data=slist,
             selections=[
                 hkml_view.CliSelection('open', handle_fn=menu_open_mail),
                 hkml_view.CliSelection(
