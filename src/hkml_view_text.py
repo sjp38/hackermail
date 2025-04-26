@@ -24,8 +24,7 @@ class TextViewData:
         self.mail = mail
         self.mails_list = mails_list
 
-def menu_exec_git(data, answer, selection):
-    slist, selections = data
+def menu_exec_git(slist, answer, selection):
     hkml_view.shell_mode_end(slist)
     git_cmd = selection.data
     words = git_cmd.split()
@@ -38,16 +37,14 @@ def menu_exec_git(data, answer, selection):
     show_text_viewer(slist.screen, output)
     hkml_view.shell_mode_start(slist)
 
-def menu_hkml_thread(data, answer, selection):
-    slist, selections = data
+def menu_hkml_thread(slist, answer, selection):
     hkml_view.shell_mode_end(slist)
     msgid = selection.data
     args = hkml_view_mails.hkml_list_args_for_msgid(msgid)
     hkml_view_mails.gen_show_mails_list(slist.screen, args)
     hkml_view.shell_mode_start(slist)
 
-def menu_hkml_open(data, answer, selection):
-    slist, selections = data
+def menu_hkml_open(slist, answer, selection):
     hkml_view.shell_mode_end(slist)
     msgid = selection.data
     args = hkml_view_mails.hkml_list_args_for_msgid(msgid)
@@ -64,8 +61,7 @@ def menu_hkml_open(data, answer, selection):
             break
     hkml_view.shell_mode_start(slist)
 
-def menu_open_file(data, answer, selection):
-    slist, selections = data
+def menu_open_file(slist, answer, selection):
     hkml_view.shell_mode_end(slist)
     file_path = selection.data
     with open(file_path, 'r') as f:
@@ -73,8 +69,7 @@ def menu_open_file(data, answer, selection):
     show_text_viewer(slist.screen, lines)
     hkml_view.shell_mode_start(slist)
 
-def menu_open_file_editor(data, answer, selection):
-    slist, selections = data
+def menu_open_file_editor(slist, answer, selection):
     file_path = selection.data
     err = hkml_write.open_editor(file_path, 'file')
     if err is not None:
@@ -139,7 +134,7 @@ def menu_selections_for_msgid(line):
             'hkml open %s' % msgid, handle_fn=menu_hkml_open, data=msgid))
     return selections
 
-def menu_exec_web(data, answer, selection):
+def menu_exec_web(slist, answer, selection):
     cmd = selection.data
     subprocess.call(cmd.split())
 
@@ -205,8 +200,7 @@ def reply_mail(c, slist):
 
     hkml_view_mails.reply_mail(slist, mail)
 
-def menu_reply_mail(data, answer, selection):
-    slist, selections = data
+def menu_reply_mail(slist, answer, selection):
     mail, err = get_showing_mail(slist)
     # todo: handle err is not None case
     hkml_view.shell_mode_end(slist)
@@ -224,8 +218,7 @@ def forward_mail(c, slist):
 
     hkml_view_mails.forward_mail(slist, mail)
 
-def menu_forward_mail(data, answer, selection):
-    slist, selections = data
+def menu_forward_mail(slist, answer, selection):
     mail, err = get_showing_mail(slist)
     # todo: handle err is not None case
     hkml_view.shell_mode_end(slist)
@@ -242,22 +235,19 @@ def write_draft_mail(c, slist):
         return
     hkml_view_mails.write_mail_draft(slist, mail)
 
-def menu_write_draft(data, answer, selection):
-    slist, selections = data
+def menu_write_draft(slist, answer, selection):
     mail, err = get_showing_mail(slist)
     # todo: handle err is not None case
     hkml_view.shell_mode_end(slist)
     hkml_view_mails.write_mail_draft(slist, mail)
     hkml_view.shell_mode_start(slist)
 
-def menu_manage_tags(data, answer, selection):
-    slist, selections = data
+def menu_manage_tags(slist, answer, selection):
     mail, err = get_showing_mail(slist)
     # todo: handle err is not None case
     hkml_view_mails.manage_tags_of_mail(slist, mail)
 
-def menu_handle_patches(data, answer, selection):
-    slist, selections = data
+def menu_handle_patches(slist, answer, selection):
     mail, err = get_showing_mail(slist)
     # todo: handle err is not None case
     hkml_view_mails.handle_patches_of_mail(mail, slist.data.mails_list)
@@ -274,19 +264,16 @@ def menu_selections_for_mail():
                 'handle as patches', handle_fn=menu_handle_patches),
             ]
 
-def menu_wrap_text(data, answer, selection):
-    slist, selections = data
+def menu_wrap_text(slist, answer, selection):
     if slist.wrapped_text():
         slist.unwrap_text()
     else:
         slist.wrap_text()
 
-def menu_save_content_as(data, answer, selection):
-    slist, selections = data
+def menu_save_content_as(slist, answer, selection):
     hkml_view.save_as('\n'.join(slist.lines))
 
-def menu_open_content_with(data, answer, selection):
-    slist, selections = data
+def menu_open_content_with(slist, answer, selection):
     err = hkml_view.open_content_with('\n'.join(slist.lines))
     if err is not None:
         print(err)
@@ -326,7 +313,7 @@ def show_text_viewer_menu(c, slist):
             desc='selected line: %s' % slist.lines[slist.focus_row],
             prompt='Enter menu item number')
     selections = menu_selections(slist)
-    q.ask_selection(data=[slist, selections], selections=selections)
+    q.ask_selection(data=slist, selections=selections)
     hkml_view.shell_mode_end(slist)
 
 def get_text_viewer_handlers(data):
