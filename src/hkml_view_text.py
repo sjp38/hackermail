@@ -397,10 +397,10 @@ def show_text_viewer(screen, text_lines, data=None, cursor_position=None):
     slist.color_callback = text_color_callback
     if cursor_position is not None:
         slist.focus_row, slist.focus_col = cursor_position
-    if slist.can_wrap_text() and not slist.wrapped_text():
+    if slist.better_wrap_text() and not slist.wrapped_text():
         hkml_view.shell_mode_start(slist)
         answer = input(' '.join([
-            'There are lines that longer than the screen\'s width.',
+            'There are lines that may better to be wrapped (too long).',
             'May I wrap those?',
             'You can [un]wrap later from the menu (\'m\' key).'
             '[y/N] ']))
