@@ -731,6 +731,12 @@ def menu_save_as(mail_slist, answer, selection):
     mail, slist = mail_slist
     hkml_view.save_as('\n'.join(slist.lines))
 
+def menu_open_content_with(mail_slist, answer, selection):
+    mail, slist = mail_slist
+    err = hkml_view.open_content_with('\n'.join(slist.lines))
+    if err is not None:
+        print(err)
+
 def show_mails_list_menu(c, slist):
     mail = get_focused_mail(slist)
     if mail is None:
@@ -772,6 +778,9 @@ def show_mails_list_menu(c, slist):
                     'export as an mbox file', handle_fn=menu_export_mails),
                 hkml_view.CliSelection(
                     'save screen content to ...', handle_fn=menu_save_as),
+                hkml_view.CliSelection(
+                    'open screen content with ...',
+                    handle_fn=menu_open_content_with),
                 ])
     hkml_view.shell_mode_end(slist)
 
