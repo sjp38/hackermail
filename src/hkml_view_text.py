@@ -4,6 +4,7 @@
 
 import os
 import subprocess
+import tempfile
 
 import _hkml
 import _hkml_list_cache
@@ -284,6 +285,16 @@ def menu_save_content_as(data, answer, selection):
     slist, selections = data
     hkml_view.save_as('\n'.join(slist.lines))
 
+def menu_open_content_with(data, answer, selection):
+    slist, selections = data
+    fd, tmp_path = tempfile.mkstemp(prefix='hkml_tmp_content_')
+    with open(tmp_path, 'w') as f:
+        f.write('\n'.join(slist.lines))
+    err = hkml_write.open_editor(tmp_path, 'content')
+    os.remove(tmp_path)
+    if err is not None:
+        print(err)
+
 def menu_selections(slist):
     line = slist.lines[slist.focus_row]
 
@@ -306,6 +317,10 @@ def menu_selections(slist):
             hkml_view.CliSelection(
                 text='save screen content to ...',
                 handle_fn=menu_save_content_as, data=slist))
+    selections.append(
+            hkml_view.CliSelection(
+                text='open screen content with ...',
+                handle_fn=menu_open_content_with, data=slist))
 
     return selections
 
