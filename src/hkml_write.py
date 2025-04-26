@@ -139,8 +139,8 @@ def open_editor(file_path, target_desc='mail'):
 
     print('I will open a text editor for the %s.' % target_desc)
     if subprocess.call([editor, file_path]) != 0:
-        print('The editor for %s exit with an error.' % target_desc)
-        exit(1)
+        return 'The editor for %s exit with an error.' % target_desc
+    return None
 
 def write_send_mail(draft_mail, subject, in_reply_to, to, cc, body, attach,
                     format_only):
@@ -154,7 +154,10 @@ def write_send_mail(draft_mail, subject, in_reply_to, to, cc, body, attach,
     fd, tmp_path = tempfile.mkstemp(prefix='hkml_mail_')
     with open(tmp_path, 'w') as f:
         f.write(mbox)
-    open_editor(tmp_path)
+    err = open_editor(tmp_path)
+    if err is not None:
+        print(err)
+        exit(1)
 
     orig_draft_subject = None
     if draft_mail:

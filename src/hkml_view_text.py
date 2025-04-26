@@ -75,7 +75,10 @@ def menu_open_file(data, answer, selection):
 def menu_open_file_editor(data, answer, selection):
     slist, selections = data
     file_path = selection.data
-    hkml_write.open_editor(file_path, 'file')
+    err = hkml_write.open_editor(file_path, 'file')
+    if err is not None:
+        print(err)
+        exit(1)
 
 def is_git_hash(word):
     if len(word) < 10:

@@ -44,7 +44,10 @@ def reply(mail, attach_files, format_only):
     fd, reply_tmp_path = tempfile.mkstemp(prefix='hkml_reply_')
     with open(reply_tmp_path, 'w') as f:
         f.write(reply_mbox_str)
-    hkml_write.open_editor(reply_tmp_path)
+    err = hkml_write.open_editor(reply_tmp_path)
+    if err is not None:
+        print(err)
+        exit(1)
     hkml_send.send_mail(reply_tmp_path, get_confirm=True, erase_mbox=True,
                         orig_draft_subject=None)
 
