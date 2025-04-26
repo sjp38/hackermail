@@ -376,7 +376,7 @@ class ScrollableList:
 
     def better_wrap_text(self):
         _, scr_cols = self.screen.getmaxyx()
-        return self.longest_line_len > scr_cols
+        return self.longest_line_len > scr_cols * 2
 
     def wrapped_text(self):
         return self.unwrapped_lines is not None
