@@ -2,6 +2,7 @@ This file contains major changes in each version since v1.0.0
 
 v1.3.5
 - hkml patch format: add Cc: on patch commit messages to CV recipients
+- suggest wrapping text if longest line is >2x of screen width
 
 v1.3.4
 - ensure terminal outputs have time to read before starting curses mode
