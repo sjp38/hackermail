@@ -771,7 +771,7 @@ def show_mails_list_menu(c, slist):
                 hkml_view.CliSelection(
                     'export as an mbox file', handle_fn=menu_export_mails),
                 hkml_view.CliSelection(
-                    'save screen content as ...', handle_fn=menu_save_as),
+                    'save screen content to ...', handle_fn=menu_save_as),
                 ])
     hkml_view.shell_mode_end(slist)
 
