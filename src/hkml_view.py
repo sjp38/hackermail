@@ -321,12 +321,6 @@ def focus_up_half_page(c, slist):
 def focus_set(c, slist):
     shell_mode_start(slist)
 
-    question = _hkml_cli.Question(
-            desc='\n'.join([
-                'Move focus to arbitrary line', '',
-                'point line by \'start\', \'end\', or the line number']),
-            prompt='Enter line to focus')
-
     def handle_fn(data, answer):
         slist = data
         if answer == 'start':
@@ -341,7 +335,13 @@ def focus_set(c, slist):
         slist.focus_row = answer
         return None
 
-    _, err = question.ask_input(slist, handle_fn=handle_fn)
+    _, err = _hkml_cli.ask_input(
+            desc='\n'.join([
+                'Move focus to arbitrary line', '',
+                'point line by \'start\', \'end\', or the line number']),
+            prompt='Enter line to focus',
+            handler_data=slist,
+            handle_fn=handle_fn)
     if err is not None:
         print(err)
     shell_mode_end(slist)
@@ -365,12 +365,12 @@ def search_keyword(c, slist):
                      'Enabled' if slist.enable_highlight else 'Disabled')
     print(prompt)
 
-    question = _hkml_cli.Question('Enter a new keyword to search')
-
     def handle_fn(slist, answer):
         slist.search_keyword = answer
 
-    _, error = question.ask_input(slist, handle_fn=handle_fn)
+    _, error = _hkml_cli.ask_input(
+            prompt='Enter a new keyword to search',
+            handler_data=slist, handle_fn=handle_fn)
 
     if error == 'canceled':
         shell_mode_end(slist)
@@ -453,14 +453,15 @@ def receive_file_path(for_read):
         answers.append(answer)
 
     while True:
-        q = _hkml_cli.Question(
+        _, err = _hkml_cli.ask_input(
                 desc='\n'.join([
                     'Enter ',
                     '1. the path to the file, or',
                     '2. a directory (e.g., "./") to list files under it.',
                     ]),
-                prompt='')
-        _, err = q.ask_input([answers, for_read], handle_fn)
+                prompt='',
+                handler_data=[answers, for_read],
+                handle_fn=handle_fn)
         if err == 'canceled':
             return None
         if len(answers) != 1:
@@ -468,7 +469,6 @@ def receive_file_path(for_read):
         return answers[0]
 
 def save_as(content):
-    q = _hkml_cli.Question(desc='Save the content to', prompt='Enter selection')
     def txt_handle_fn(data, answer, selection):
         content = data
         file_path = receive_file_path(for_read=False)
@@ -487,8 +487,9 @@ def save_as(content):
         if rc != 0:
             return 'saving in clipboard failed'
 
-    q.ask_selection(
-            data=content, selections=[
+    _hkml_cli.ask_selection(
+            desc='Save the content to', prompt='Enter selection',
+            handler_common_data=content, selections=[
                 _hkml_cli.Selection('text file', txt_handle_fn),
                 _hkml_cli.Selection('clipboard', clipboard_handle_fn)])
 
