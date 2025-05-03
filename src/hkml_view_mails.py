@@ -769,6 +769,10 @@ def menu_search(slist, answer, selection):
                     text='Patches not having Reviewed-by:',
                     handle_fn=menu_search_reviewed_by,
                     data=False),
+                _hkml_cli.Selection(
+                    text='Patches having Reviewed-by:',
+                    handle_fn=menu_search_reviewed_by,
+                    data=True),
                 ])
     if err is not None:
         print(err)
