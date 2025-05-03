@@ -308,7 +308,7 @@ def handle_patches_of_mail(mail, list_mails=None):
                     'apply patch[es]', handle_fn=do_apply_patch),
                 _hkml_cli.Selection(
                     'export patch[es]', handle_fn=do_export_patch)],
-            notify_completion=True)
+            )
 
 def __set_prdepth(mail, depth):
     mail.prdepth = depth
@@ -391,7 +391,7 @@ def export_mails(c, slist):
                     handle_fn=do_export),
                 _hkml_cli.Selection(
                     'Export all mails of the list', handle_fn=do_export)],
-                notify_completion=True)
+                )
     hkml_view.shell_mode_end(slist)
 
 def menu_open_mail(slist, answer, selection):
