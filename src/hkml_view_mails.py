@@ -699,6 +699,10 @@ def menu_search_mail_body_keywords(handler_common_data, user_input, selection):
     if len(searched_lines) > 0:
         hkml_view.ask_highlight_enabling(slist)
         slist.search_keyword = None
+        print(
+            "\nMails on %d lines are searched." % len(searched_lines),
+            "Press 'n' and 'N' to move the cursor to",
+            "the next or the previous searched line.")
 
 def menu_search(slist, answer, selection):
     _, _, err = _hkml_cli.ask_selection(
