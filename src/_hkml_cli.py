@@ -100,3 +100,27 @@ class Question:
             self.prompt = 'Enter the item number'
         return self.ask(data, selections, None, notify_completion)
 
+def ask_input(desc=None, prompt=None, handler_data=None,
+              handle_fn=None):
+    '''
+    Prints 'desc', a blank line, and 'prompt'.  Then, wait for user input.  For
+    given input, 'handle_fn' is called with 'handler_data' and the user input.
+
+    Returns user's input to the question and an error.
+    '''
+    return Question(desc=desc, prompt=prompt).ask_input(
+            data=handler_data, handle_fn=handle_fn)
+
+def ask_selection(desc=None, selections=None, prompt=None,
+                  handler_common_data=None):
+    '''
+    Prints 'desc', a blank line, 'selections', and 'prompt'.  Then, wait for
+    user selection.  For given user input, 'handle_fn' of the selected
+    'Selection' object is called with 'handler_common_data', the user input and
+    the selected 'Selection' object.  Note that each 'Selection' object can
+    have its own data for slection-specific one.
+
+    Returns user's input to the question, the 'Selection' object, and an error.
+    '''
+    return Question(desc=desc, prompt=prompt).ask_selection(
+            selections=selections, data=handler_common_data)
