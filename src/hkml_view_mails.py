@@ -260,8 +260,8 @@ def do_apply_patch(data, answer, selection):
         print('applying action failed (%s)' % err)
 
 def do_export_patch(data, answer, selection):
-    export_dir, err = _hkml_cli.Question(
-            'Enter relative directory to export patch files').ask_input()
+    export_dir, err = _hkml_cli.ask_input(
+            prompt='Enter relative directory to export patch files')
     if err == 'canceled':
         return
     if not os.path.exists(export_dir):
@@ -453,8 +453,7 @@ class MailDisplayEffect:
         prompt = ' '.join(['Minimum date.',
                            hkml_common.date_format_description(),
                            '"min" keyword is also supported.'])
-        q = _hkml_cli.Question(prompt=prompt)
-        answer, err = q.ask_input()
+        answer, err = _hkml_cli.ask_input(prompt=prompt)
         if err is not None:
             return
         if answer == 'min':
@@ -467,8 +466,7 @@ class MailDisplayEffect:
         prompt = ' '.join(['Maximum date.',
                            hkml_common.date_format_description(),
                            '"max" keyword is also supported.'])
-        q = _hkml_cli.Question(prompt=prompt)
-        answer, err = q.ask_input()
+        answer, err = _hkml_cli.ask_input(prompt=prompt)
         if err is not None:
             return
         if answer == 'max':
@@ -679,9 +677,9 @@ def menu_refresh_mails(slist, answer, selection):
     hkml_view.shell_mode_start(slist)
 
 def menu_search(slist, answer, selection):
-    answer, err = _hkml_cli.Question(
+    answer, err = _hkml_cli.ask_input(
             desc='Search mails having keywords',
-            prompt='Enter keywords').ask_input()
+            prompt='Enter keywords')
     if err is not None:
         return
     keywords = answer.split()
@@ -705,11 +703,11 @@ def menu_search(slist, answer, selection):
         slist.search_keyword = None
 
 def menu_new_list(slist, answer, selection):
-    answer, err = _hkml_cli.Question(
+    answer, err = _hkml_cli.ask_input(
             desc='Open new list with different arguments',
             prompt=' '.join([
                 "Enter 'hml list' command line arguments",
-                'for the new list'])).ask_input()
+                'for the new list']))
     if err is not None:
         return
     parser = argparse.ArgumentParser()
