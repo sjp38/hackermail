@@ -10,6 +10,7 @@ import tempfile
 import time
 
 import _hkml
+import _hkml_cli
 import hkml_list
 import hkml_view_mails
 import hkml_view_text
@@ -422,7 +423,7 @@ def focus_up_half_page(c, slist):
 def focus_set(c, slist):
     shell_mode_start(slist)
 
-    question = CliQuestion(
+    question = _hkml_cli.Question(
             desc='\n'.join([
                 'Move focus to arbitrary line', '',
                 'point line by \'start\', \'end\', or the line number']),
@@ -466,7 +467,7 @@ def search_keyword(c, slist):
                      'Enabled' if slist.enable_highlight else 'Disabled')
     print(prompt)
 
-    question = CliQuestion('Enter a new keyword to search')
+    question = _hkml_cli.Question('Enter a new keyword to search')
 
     def handle_fn(slist, answer):
         slist.search_keyword = answer
@@ -554,7 +555,7 @@ def receive_file_path(for_read):
         answers.append(answer)
 
     while True:
-        q = CliQuestion(
+        q = _hkml_cli.Question(
                 desc='\n'.join([
                     'Enter ',
                     '1. the path to the file, or',
@@ -569,7 +570,7 @@ def receive_file_path(for_read):
         return answers[0]
 
 def save_as(content):
-    q = CliQuestion(desc='Save the content to', prompt='Enter selection')
+    q = _hkml_cli.Question(desc='Save the content to', prompt='Enter selection')
     def txt_handle_fn(data, answer, selection):
         content = data
         file_path = receive_file_path(for_read=False)
@@ -590,8 +591,8 @@ def save_as(content):
 
     q.ask_selection(
             data=content, selections=[
-                CliSelection('text file', txt_handle_fn),
-                CliSelection('clipboard', clipboard_handle_fn)])
+                _hkml_cli.Selection('text file', txt_handle_fn),
+                _hkml_cli.Selection('clipboard', clipboard_handle_fn)])
 
 def open_content_with(content):
     fd, tmp_path = tempfile.mkstemp(prefix='hkml_tmp_content_')
