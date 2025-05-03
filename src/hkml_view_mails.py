@@ -704,6 +704,58 @@ def menu_search_mail_body_keywords(handler_common_data, user_input, selection):
             "Press 'n' and 'N' to move the cursor to",
             "the next or the previous searched line.")
 
+def reviewed_by_replies(replies):
+    if replies is None or len(replies) == 0:
+        return False
+    for mail in replies:
+        for line in mail.get_field('body').split('\n'):
+            if line.startswith('Reviewed-by:'):
+                return True
+        return reviewed_by_replies(mail.replies)
+
+def is_reviewed(mail):
+    body = mail.get_field('body')
+    pars = body.split('\n---\n')
+    if len(pars) < 2:
+        return False, '--- line not found'
+    tags_par = pars[0].split('\n\n')[-1]
+    for tag in tags_par.split('\n'):
+        if tag.startswith('Reviewed-by:'):
+            return True, None
+
+    return reviewed_by_replies(mail.replies), None
+
+def menu_search_incomplete_reviews(handler_common_data, user_input, selection):
+    slist = handler_common_data
+
+    list_mails = get_mails(slist)
+    # ensure replies are set
+    hkml_list.threads_of(list_mails)
+
+    searched_lines = []
+    last_mail = None
+    for row in range(0, len(slist.lines)):
+        mail = mail_of_row(slist, row)
+        if mail is None or mail == last_mail:
+            continue
+        if not 'patch' in mail.subject_tags:
+            continue
+        if hkml_patch.is_cover_letter(mail):
+            continue
+        reviewed, err = is_reviewed(mail)
+        if err is not None:
+            continue
+        if not reviewed:
+            searched_lines.append(row)
+    slist.set_searched_lines(searched_lines)
+    if len(searched_lines) > 0:
+        hkml_view.ask_highlight_enabling(slist)
+        slist.search_keyword = None
+        print(
+            "\nMails on %d lines are searched." % len(searched_lines),
+            "Press 'n' and 'N' to move the cursor to",
+            "the next or the previous searched line.")
+
 def menu_search(slist, answer, selection):
     _, _, err = _hkml_cli.ask_selection(
             desc='Select search category',
@@ -711,7 +763,10 @@ def menu_search(slist, answer, selection):
             selections=[
                 _hkml_cli.Selection(
                     text='Search mails having keywords',
-                    handle_fn=menu_search_mail_body_keywords)
+                    handle_fn=menu_search_mail_body_keywords),
+                _hkml_cli.Selection(
+                    text='Patches not having Reviewed-by:',
+                    handle_fn=menu_search_incomplete_reviews),
                 ])
     if err is not None:
         print(err)
