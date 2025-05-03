@@ -310,11 +310,11 @@ def menu_selections(slist):
 
 def show_text_viewer_menu(c, slist):
     hkml_view.shell_mode_start(slist)
-    q = _hkml_cli.Question(
+    _hkml_cli.ask_selection(
             desc='selected line: %s' % slist.lines[slist.focus_row],
-            prompt='Enter menu item number')
-    selections = menu_selections(slist)
-    q.ask_selection(data=slist, selections=selections)
+            prompt='Enter menu item number',
+            handler_common_data=slist,
+            selections=menu_selections(slist))
     hkml_view.shell_mode_end(slist)
 
 def get_text_viewer_handlers(data):
