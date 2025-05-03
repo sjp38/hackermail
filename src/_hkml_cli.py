@@ -5,10 +5,10 @@ object for CliQuestion.ask_selection()
 'text' is displayed to the user with the selection question.
 'handle_fn' of user-selected one is called if it is not None.  The function
     receives user-set CliQuestion.data, user-entered input (number), and the
-    selected CliSelection object.
+    selected Selection object.
 'data' can save any selection-specific data.
 '''
-class CliSelection:
+class Selection:
     text = None
     handle_fn = None    # function receiving question data, answer, selection
     data = None         # for carrying selection-specific data
@@ -87,13 +87,13 @@ class CliQuestion:
         return answer, err
 
     '''
-    Ask user to select on of CliSelection objects.  If the selected
-    CliSelection has handle_fn field set, it is invoked.
+    Ask user to select on of Selection objects.  If the selected
+    Selection has handle_fn field set, it is invoked.
 
     Should be invoked in shell mode (show shell_mode_start() and
     shell_mode_end()).
 
-    Returns user's input to the question, selected CliSelection, and error.
+    Returns user's input to the question, selected Selection, and error.
     '''
     def ask_selection(self, selections, data=None, notify_completion=False):
         if self.prompt is None:
