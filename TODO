@@ -28,5 +28,3 @@
   - E.g., when cached list output is used and --dim_old is set, dim handler
     reads mail's sent date, and it makes delay if mail cache is big.  Same for
     first mail read.  This makes user experience bad.  Think about improvement.
-- Filtring mails that need attention
-  - patch mails that not received any Reviewed-by: so far, for example.
