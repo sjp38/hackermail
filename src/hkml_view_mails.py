@@ -5,6 +5,7 @@ import curses
 import datetime
 import os
 
+import _hkml_cli
 import _hkml_list_cache
 import hkml_cache
 import hkml_common
@@ -234,12 +235,12 @@ def manage_tags_of_mail(slist, mail):
         msg_lines.append('the mail has below tags:')
         for tag in tags:
             msg_lines.append('- %s' % tag)
-    q = hkml_view.CliQuestion(desc='\n'.join(msg_lines), prompt='Select')
+    q = _hkml_cli.Question(desc='\n'.join(msg_lines), prompt='Select')
     q.ask_selection(
             data=[mail, tags],
             selections=[
-                hkml_view.CliSelection('Add tags', handle_fn=do_add_tags),
-                hkml_view.CliSelection('Remove tags',
+                _hkml_cli.Selection('Add tags', handle_fn=do_add_tags),
+                _hkml_cli.Selection('Remove tags',
                                        handle_fn=do_remove_tags)])
 
 def do_check_patch(data, answer, selection):
@@ -259,7 +260,7 @@ def do_apply_patch(data, answer, selection):
         print('applying action failed (%s)' % err)
 
 def do_export_patch(data, answer, selection):
-    export_dir, err = hkml_view.CliQuestion(
+    export_dir, err = _hkml_cli.Question(
             'Enter relative directory to export patch files').ask_input()
     if err == 'canceled':
         return
@@ -295,17 +296,17 @@ def handle_patches_of_mail(mail, list_mails=None):
         return
     mail = mail_with_replies
 
-    q = hkml_view.CliQuestion(
+    q = _hkml_cli.Question(
             desc='Handle the mail (\'%s\') as patch[es].' % mail.subject,
             prompt='Enter the item number')
     q.ask_selection(
             data=mail,
             selections=[
-                hkml_view.CliSelection(
+                _hkml_cli.Selection(
                     'check patch[es]', handle_fn=do_check_patch),
-                hkml_view.CliSelection(
+                _hkml_cli.Selection(
                     'apply patch[es]', handle_fn=do_apply_patch),
-                hkml_view.CliSelection(
+                _hkml_cli.Selection(
                     'export patch[es]', handle_fn=do_export_patch)],
             notify_completion=True)
 
@@ -379,16 +380,16 @@ def export_mails(c, slist):
     idx = focused_mail_idx(slist)
     hkml_view.shell_mode_start(slist)
 
-    q = hkml_view.CliQuestion(desc='Focused mail: %d' % idx)
+    q = _hkml_cli.Question(desc='Focused mail: %d' % idx)
     q.ask_selection(
             data=[slist, idx],
             selections=[
-                hkml_view.CliSelection(
+                _hkml_cli.Selection(
                     'Export only focused mail', handle_fn=do_export),
-                hkml_view.CliSelection(
+                _hkml_cli.Selection(
                     'Export a range of mails of the list',
                     handle_fn=do_export),
-                hkml_view.CliSelection(
+                _hkml_cli.Selection(
                     'Export all mails of the list', handle_fn=do_export)],
                 notify_completion=True)
     hkml_view.shell_mode_end(slist)
@@ -452,7 +453,7 @@ class MailDisplayEffect:
         prompt = ' '.join(['Minimum date.',
                            hkml_common.date_format_description(),
                            '"min" keyword is also supported.'])
-        q = hkml_view.CliQuestion(prompt=prompt)
+        q = _hkml_cli.Question(prompt=prompt)
         answer, err = q.ask_input()
         if err is not None:
             return
@@ -466,7 +467,7 @@ class MailDisplayEffect:
         prompt = ' '.join(['Maximum date.',
                            hkml_common.date_format_description(),
                            '"max" keyword is also supported.'])
-        q = hkml_view.CliQuestion(prompt=prompt)
+        q = _hkml_cli.Question(prompt=prompt)
         answer, err = q.ask_input()
         if err is not None:
             return
@@ -481,7 +482,7 @@ class MailDisplayEffect:
     def __init__(self, interactive, old_effect=None):
         if interactive is False:
             return
-        q = hkml_view.CliQuestion(
+        q = _hkml_cli.Question(
                 desc='Select the display effect to apply.', prompt=None)
 
         def handle_selection(data, answer, selection):
@@ -489,25 +490,25 @@ class MailDisplayEffect:
             rule.effect = selections[int(answer) - 1].data
 
         selections=[
-                hkml_view.CliSelection(
+                _hkml_cli.Selection(
                     text='Normal', handle_fn=handle_selection,
                     data=hkml_view.ScrollableList.effect_normal),
-                hkml_view.CliSelection(
+                _hkml_cli.Selection(
                     text='Dim', handle_fn=handle_selection,
                     data=hkml_view.ScrollableList.effect_dim),
-                hkml_view.CliSelection(
+                _hkml_cli.Selection(
                     text='Bold', handle_fn=handle_selection,
                     data=hkml_view.ScrollableList.effect_bold),
-                hkml_view.CliSelection(
+                _hkml_cli.Selection(
                     text='Italic', handle_fn=handle_selection,
                     data=hkml_view.ScrollableList.effect_italic),
-                hkml_view.CliSelection(
+                _hkml_cli.Selection(
                     text='Blink', handle_fn=handle_selection,
                     data=hkml_view.ScrollableList.effect_blink),
-                hkml_view.CliSelection(
+                _hkml_cli.Selection(
                     text='Reverse', handle_fn=handle_selection,
                     data=hkml_view.ScrollableList.effect_reverse),
-                hkml_view.CliSelection(
+                _hkml_cli.Selection(
                     text='Underline', handle_fn=handle_selection,
                     data=hkml_view.ScrollableList.effect_underline),
                 ]
@@ -678,7 +679,7 @@ def menu_refresh_mails(slist, answer, selection):
     hkml_view.shell_mode_start(slist)
 
 def menu_search(slist, answer, selection):
-    answer, err = hkml_view.CliQuestion(
+    answer, err = _hkml_cli.Question(
             desc='Search mails having keywords',
             prompt='Enter keywords').ask_input()
     if err is not None:
@@ -704,7 +705,7 @@ def menu_search(slist, answer, selection):
         slist.search_keyword = None
 
 def menu_new_list(slist, answer, selection):
-    answer, err = hkml_view.CliQuestion(
+    answer, err = _hkml_cli.Question(
             desc='Open new list with different arguments',
             prompt=' '.join([
                 "Enter 'hml list' command line arguments",
@@ -740,45 +741,45 @@ def show_mails_list_menu(c, slist):
     else:
         menu_desc = 'selected mail: %s' % mail.subject
 
-    q = hkml_view.CliQuestion(
+    q = _hkml_cli.Question(
             desc=menu_desc,
             prompt='Enter menu item number')
     hkml_view.shell_mode_start(slist)
     q.ask_selection(
             data=slist,
             selections=[
-                hkml_view.CliSelection('open', handle_fn=menu_open_mail),
-                hkml_view.CliSelection(
+                _hkml_cli.Selection('open', handle_fn=menu_open_mail),
+                _hkml_cli.Selection(
                     'list complete thread', handle_fn=menu_list_thread),
-                hkml_view.CliSelection(
+                _hkml_cli.Selection(
                     'collapse/expand focused thread',
                     handle_fn=menu_collapse_expand),
-                hkml_view.CliSelection(
+                _hkml_cli.Selection(
                     'dim old mails', handle_fn=menu_dim_old_mails),
-                hkml_view.CliSelection(
+                _hkml_cli.Selection(
                     'set display effects', handle_fn=menu_effect_mails),
-                hkml_view.CliSelection('reply', handle_fn=menu_reply_mail),
-                hkml_view.CliSelection(
+                _hkml_cli.Selection('reply', handle_fn=menu_reply_mail),
+                _hkml_cli.Selection(
                     'forward', handle_fn=menu_forward_mail),
-                hkml_view.CliSelection(
+                _hkml_cli.Selection(
                     'continue draft writing', handle_fn=menu_write_draft,
                     data=mail),
-                hkml_view.CliSelection(
+                _hkml_cli.Selection(
                     'manage tags', handle_fn=menu_manage_tags, data=mail),
-                hkml_view.CliSelection(
+                _hkml_cli.Selection(
                     'handle as patches', handle_fn=menu_handle_patches,
                     data=mail),
-                hkml_view.CliSelection(
+                _hkml_cli.Selection(
                     'refresh', handle_fn=menu_refresh_mails),
-                hkml_view.CliSelection(
+                _hkml_cli.Selection(
                     'search mails', handle_fn=menu_search),
-                hkml_view.CliSelection(
+                _hkml_cli.Selection(
                     'open new list', handle_fn=menu_new_list),
-                hkml_view.CliSelection(
+                _hkml_cli.Selection(
                     'export as an mbox file', handle_fn=menu_export_mails),
-                hkml_view.CliSelection(
+                _hkml_cli.Selection(
                     'save screen content to ...', handle_fn=menu_save_as),
-                hkml_view.CliSelection(
+                _hkml_cli.Selection(
                     'open screen content with ...',
                     handle_fn=menu_open_content_with),
                 ])
