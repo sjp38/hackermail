@@ -70,7 +70,7 @@ class Mail:
     mbox = None
     replies = None
     parent_mail = None
-    patch_tags = None # Reviewed-by: like tags
+    collected_patch_tags = None # Reviewed-by: like tags
     cv_text = None  # integrated cover letter on first patch
     additional_to = None
     additional_cc = None
@@ -156,7 +156,7 @@ class Mail:
     def __init__(self, mbox=None, kvpairs=None, atom_entry=None, atom_ml=None):
         self.replies = []
         self.subject_tags = []
-        self.patch_tags = []
+        self.collected_patch_tags = []
         self.additional_to = []
         self.additional_cc = []
 
@@ -217,10 +217,10 @@ class Mail:
         if self.cv_text is not None:
             lines.append(self.cv_text)
         lines += self.__fields[field_name].split('\n')
-        if len(self.patch_tags) > 0:
+        if len(self.collected_patch_tags) > 0:
             for idx, line in enumerate(lines):
                 if line == '---':
-                    lines.insert(idx, '\n'.join(self.patch_tags))
+                    lines.insert(idx, '\n'.join(self.collected_patch_tags))
                     break
         return '\n'.join(lines)
 
@@ -355,7 +355,7 @@ class Mail:
         self.__fields = parsed
 
     def add_patch_tag(self, tag):
-        if tag in self.patch_tags:
+        if tag in self.collected_patch_tags:
             return None
         body = self.get_field('body')
         if body is None:
@@ -372,7 +372,7 @@ class Mail:
             break
         if not can_add_tag:
             return 'cannot find line to add the tag'
-        self.patch_tags.append(tag)
+        self.collected_patch_tags.append(tag)
 
     def add_recipients(self, to_cc, recipients):
         if to_cc == 'to':
