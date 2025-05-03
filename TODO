@@ -30,3 +30,4 @@
     first mail read.  This makes user experience bad.  Think about improvement.
 - Filtring mails that need attention
   - patch mails that not received any Reviewed-by: so far, for example.
+- Let menu open on mails list even if a mail is not selected.
