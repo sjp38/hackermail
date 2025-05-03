@@ -30,6 +30,7 @@ def args_to_lists_cache_key(args):
     dict_['read_dates'] = False
 
     keys = list(dict_.keys())
+    # remove keys that not really affect resulting list.
     for k in keys:
         if not k in {'hkml_dir', 'directory', 'command', 'manifest', 'sources',
                      'source_type', 'since', 'until', 'nr_mails',
