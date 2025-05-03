@@ -727,10 +727,12 @@ def menu_open_content_with(slist, answer, selection):
 def show_mails_list_menu(c, slist):
     mail = get_focused_mail(slist)
     if mail is None:
-        return
+        menu_desc = 'selected mail: none'
+    else:
+        menu_desc = 'selected mail: %s' % mail.subject
 
     q = hkml_view.CliQuestion(
-            desc='selected mail: %s' % mail.subject,
+            desc=menu_desc,
             prompt='Enter menu item number')
     hkml_view.shell_mode_start(slist)
     q.ask_selection(
