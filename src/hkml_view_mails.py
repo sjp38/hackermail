@@ -673,9 +673,10 @@ def menu_refresh_mails(slist, answer, selection):
     slist.screen.clear()
     hkml_view.shell_mode_start(slist)
 
-def menu_search(slist, answer, selection):
+def menu_search_mail_body_keywords(handler_common_data, user_input, selection):
+    slist = handler_common_data
+    answer = user_input
     answer, err = _hkml_cli.ask_input(
-            desc='Search mails having keywords',
             prompt='Enter keywords')
     if err is not None:
         return
@@ -698,6 +699,18 @@ def menu_search(slist, answer, selection):
     if len(searched_lines) > 0:
         hkml_view.ask_highlight_enabling(slist)
         slist.search_keyword = None
+
+def menu_search(slist, answer, selection):
+    _, _, err = _hkml_cli.ask_selection(
+            desc='Select search category',
+            handler_common_data=slist,
+            selections=[
+                _hkml_cli.Selection(
+                    text='Search mails having keywords',
+                    handle_fn=menu_search_mail_body_keywords)
+                ])
+    if err is not None:
+        print(err)
 
 def menu_new_list(slist, answer, selection):
     answer, err = _hkml_cli.ask_input(
