@@ -1,10 +1,10 @@
 # SPDX-License-Identifier: GPL-2.0
 
 '''
-object for CliQuestion.ask_selection()
+object for Question.ask_selection()
 'text' is displayed to the user with the selection question.
 'handle_fn' of user-selected one is called if it is not None.  The function
-    receives user-set CliQuestion.data, user-entered input (number), and the
+    receives user-set Question.data, user-entered input (number), and the
     selected Selection object.
 'data' can save any selection-specific data.
 '''
@@ -22,7 +22,7 @@ class Selection:
 question that will be provided to the user, in shell mode.
 ask_input() and ask_selection() are the methods that user will really use.
 '''
-class CliQuestion:
+class Question:
     description = None
     prompt = None
 
@@ -31,7 +31,7 @@ class CliQuestion:
         self.prompt = prompt
 
     '''
-    internal method.  Shouldn't be called directly from CliQuestion user.
+    internal method.  Shouldn't be called directly from Question user.
     '''
     def ask(self, data, selections, handle_fn, notify_completion):
         # return answer, selection, and error
