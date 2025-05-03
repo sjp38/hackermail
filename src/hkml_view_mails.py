@@ -622,16 +622,25 @@ def menu_forward_mail(slist, answer, selection):
 
 def menu_write_draft(slist, answer, selection):
     mail = selection.data
+    if mail is not None:
+        print('no mail is selected')
+        return
     hkml_view.shell_mode_end(slist)
     write_mail_draft(slist, mail)
     hkml_view.shell_mode_start(slist)
 
 def menu_manage_tags(slist, answer, selection):
     mail = selection.data
+    if mail is not None:
+        print('no mail is selected')
+        return
     manage_tags_of_mail(slist, mail)
 
 def menu_handle_patches(slist, answer, selection):
     mail = selection.data
+    if mail is None:
+        print('no mail is selected')
+        return
     handle_patches_of_mail(mail, get_mails(slist))
 
 class MailsViewData:
