@@ -725,8 +725,9 @@ def is_reviewed(mail):
 
     return reviewed_by_replies(mail.replies), None
 
-def menu_search_incomplete_reviews(handler_common_data, user_input, selection):
+def menu_search_reviewed_by(handler_common_data, user_input, selection):
     slist = handler_common_data
+    search_reviewed = selection.data
 
     list_mails = get_mails(slist)
     # ensure replies are set
@@ -745,7 +746,7 @@ def menu_search_incomplete_reviews(handler_common_data, user_input, selection):
         reviewed, err = is_reviewed(mail)
         if err is not None:
             continue
-        if not reviewed:
+        if reviewed == search_reviewed:
             searched_lines.append(row)
     slist.set_searched_lines(searched_lines)
     if len(searched_lines) > 0:
@@ -766,7 +767,8 @@ def menu_search(slist, answer, selection):
                     handle_fn=menu_search_mail_body_keywords),
                 _hkml_cli.Selection(
                     text='Patches not having Reviewed-by:',
-                    handle_fn=menu_search_incomplete_reviews),
+                    handle_fn=menu_search_reviewed_by,
+                    data=False),
                 ])
     if err is not None:
         print(err)
