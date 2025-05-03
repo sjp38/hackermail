@@ -673,6 +673,16 @@ def menu_refresh_mails(slist, answer, selection):
     slist.screen.clear()
     hkml_view.shell_mode_start(slist)
 
+def handle_searched_lines(slist, searched_lines):
+    slist.set_searched_lines(searched_lines)
+    if len(searched_lines) > 0:
+        hkml_view.ask_highlight_enabling(slist)
+        slist.search_keyword = None
+        print(
+            "\nMails on %d lines are searched." % len(searched_lines),
+            "Press 'n' and 'N' to move the cursor to",
+            "the next or the previous searched line.")
+
 def menu_search_mail_body_keywords(handler_common_data, user_input, selection):
     slist = handler_common_data
     answer = user_input
@@ -695,14 +705,7 @@ def menu_search_mail_body_keywords(handler_common_data, user_input, selection):
                 continue
         if searched:
             searched_lines. append(row)
-    slist.set_searched_lines(searched_lines)
-    if len(searched_lines) > 0:
-        hkml_view.ask_highlight_enabling(slist)
-        slist.search_keyword = None
-        print(
-            "\nMails on %d lines are searched." % len(searched_lines),
-            "Press 'n' and 'N' to move the cursor to",
-            "the next or the previous searched line.")
+    handle_searched_lines(slist, searched_lines)
 
 def reviewed_by_replies(replies):
     if replies is None or len(replies) == 0:
@@ -748,14 +751,7 @@ def menu_search_reviewed_by(handler_common_data, user_input, selection):
             continue
         if reviewed == search_reviewed:
             searched_lines.append(row)
-    slist.set_searched_lines(searched_lines)
-    if len(searched_lines) > 0:
-        hkml_view.ask_highlight_enabling(slist)
-        slist.search_keyword = None
-        print(
-            "\nMails on %d lines are searched." % len(searched_lines),
-            "Press 'n' and 'N' to move the cursor to",
-            "the next or the previous searched line.")
+    handle_searched_lines(slist, searched_lines)
 
 def menu_search(slist, answer, selection):
     _, _, err = _hkml_cli.ask_selection(
