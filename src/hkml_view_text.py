@@ -7,6 +7,7 @@ import subprocess
 import tempfile
 
 import _hkml
+import _hkml_cli
 import _hkml_list_cache
 import hkml_cache
 import hkml_common
@@ -95,13 +96,13 @@ def menu_selections_for_commit(line):
         log_five_cmd = 'git log -n 5 %s' % word
         log_oneline_cmd = 'git log --oneline -n 64 %s' % word
         selections.append(
-                hkml_view.CliSelection(
+                _hkml_cli.Selection(
                     show_cmd, handle_fn=menu_exec_git, data=show_cmd))
         selections.append(
-                hkml_view.CliSelection(
+                _hkml_cli.Selection(
                     log_five_cmd, handle_fn=menu_exec_git, data=log_five_cmd))
         selections.append(
-                hkml_view.CliSelection(
+                _hkml_cli.Selection(
                     log_oneline_cmd, handle_fn=menu_exec_git,
                     data=log_oneline_cmd))
     return selections
@@ -128,9 +129,9 @@ def menu_selections_for_msgid(line):
         msgid = get_msgid_from_public_inbox_link(word)
         if msgid is None:
             continue
-        selections.append(hkml_view.CliSelection(
+        selections.append(_hkml_cli.Selection(
             'hkml thread %s' % msgid, handle_fn=menu_hkml_thread, data=msgid))
-        selections.append(hkml_view.CliSelection(
+        selections.append(_hkml_cli.Selection(
             'hkml open %s' % msgid, handle_fn=menu_hkml_open, data=msgid))
     return selections
 
@@ -147,11 +148,11 @@ def menu_selections_for_url(line):
             continue
         if hkml_common.cmd_available('lynx'):
             cmd = 'lynx %s' % word
-            selections.append(hkml_view.CliSelection(
+            selections.append(_hkml_cli.Selection(
                 cmd, handle_fn=menu_exec_web, data=cmd))
         if hkml_common.cmd_available('w3m'):
             cmd = 'w3m %s' % word
-            selections.append(hkml_view.CliSelection(
+            selections.append(_hkml_cli.Selection(
                 cmd, handle_fn=menu_exec_web, data=cmd))
     return selections
 
@@ -170,10 +171,10 @@ def menu_selections_for_files(line):
             word = word[2:]
         if not word in found_files and os.path.isfile(word):
             found_files[word] = True
-            selections.append(hkml_view.CliSelection(
+            selections.append(_hkml_cli.Selection(
                 text='hkml open file %s' % word, handle_fn=menu_open_file,
                 data=word))
-            selections.append(hkml_view.CliSelection(
+            selections.append(_hkml_cli.Selection(
                 text='open %s with a text editor' % word,
                 handle_fn=menu_open_file_editor, data=word))
     return selections
@@ -254,13 +255,13 @@ def menu_handle_patches(slist, answer, selection):
 
 def menu_selections_for_mail():
     return [
-            hkml_view.CliSelection('reply', handle_fn=menu_reply_mail),
-            hkml_view.CliSelection('forward', handle_fn=menu_forward_mail),
-            hkml_view.CliSelection(
+            _hkml_cli.Selection('reply', handle_fn=menu_reply_mail),
+            _hkml_cli.Selection('forward', handle_fn=menu_forward_mail),
+            _hkml_cli.Selection(
                 'continue draft writing', handle_fn=menu_write_draft),
-            hkml_view.CliSelection('manage tags',
+            _hkml_cli.Selection('manage tags',
                                    handle_fn=menu_manage_tags),
-            hkml_view.CliSelection(
+            _hkml_cli.Selection(
                 'handle as patches', handle_fn=menu_handle_patches),
             ]
 
@@ -294,14 +295,14 @@ def menu_selections(slist):
     else:
         menu_text = 'wrap text'
     selections.append(
-            hkml_view.CliSelection(menu_text, handle_fn=menu_wrap_text,
+            _hkml_cli.Selection(menu_text, handle_fn=menu_wrap_text,
                                    data=slist))
     selections.append(
-            hkml_view.CliSelection(
+            _hkml_cli.Selection(
                 text='save screen content to ...',
                 handle_fn=menu_save_content_as, data=slist))
     selections.append(
-            hkml_view.CliSelection(
+            _hkml_cli.Selection(
                 text='open screen content with ...',
                 handle_fn=menu_open_content_with, data=slist))
 
@@ -309,7 +310,7 @@ def menu_selections(slist):
 
 def show_text_viewer_menu(c, slist):
     hkml_view.shell_mode_start(slist)
-    q = hkml_view.CliQuestion(
+    q = _hkml_cli.Question(
             desc='selected line: %s' % slist.lines[slist.focus_row],
             prompt='Enter menu item number')
     selections = menu_selections(slist)
