@@ -235,9 +235,8 @@ def manage_tags_of_mail(slist, mail):
         msg_lines.append('the mail has below tags:')
         for tag in tags:
             msg_lines.append('- %s' % tag)
-    q = _hkml_cli.Question(desc='\n'.join(msg_lines), prompt='Select')
-    q.ask_selection(
-            data=[mail, tags],
+    _hkml_cli.ask_selection(desc='\n'.join(msg_lines), prompt='Select',
+            handler_common_data=[mail, tags],
             selections=[
                 _hkml_cli.Selection('Add tags', handle_fn=do_add_tags),
                 _hkml_cli.Selection('Remove tags',
@@ -296,11 +295,10 @@ def handle_patches_of_mail(mail, list_mails=None):
         return
     mail = mail_with_replies
 
-    q = _hkml_cli.Question(
+    _hkml_cli.ask_selection(
             desc='Handle the mail (\'%s\') as patch[es].' % mail.subject,
-            prompt='Enter the item number')
-    q.ask_selection(
-            data=mail,
+            prompt='Enter the item number',
+            handler_common_data=mail,
             selections=[
                 _hkml_cli.Selection(
                     'check patch[es]', handle_fn=do_check_patch),
@@ -380,9 +378,9 @@ def export_mails(c, slist):
     idx = focused_mail_idx(slist)
     hkml_view.shell_mode_start(slist)
 
-    q = _hkml_cli.Question(desc='Focused mail: %d' % idx)
-    q.ask_selection(
-            data=[slist, idx],
+    q = _hkml_cli.ask_selection(
+            desc='Focused mail: %d' % idx,
+            handler_common_data=[slist, idx],
             selections=[
                 _hkml_cli.Selection(
                     'Export only focused mail', handle_fn=do_export),
@@ -390,8 +388,8 @@ def export_mails(c, slist):
                     'Export a range of mails of the list',
                     handle_fn=do_export),
                 _hkml_cli.Selection(
-                    'Export all mails of the list', handle_fn=do_export)],
-                )
+                    'Export all mails of the list', handle_fn=do_export)
+                ])
     hkml_view.shell_mode_end(slist)
 
 def menu_open_mail(slist, answer, selection):
@@ -480,38 +478,37 @@ class MailDisplayEffect:
     def __init__(self, interactive, old_effect=None):
         if interactive is False:
             return
-        q = _hkml_cli.Question(
-                desc='Select the display effect to apply.', prompt=None)
 
         def handle_selection(data, answer, selection):
             rule, selections = data
             rule.effect = selections[int(answer) - 1].data
 
-        selections=[
-                _hkml_cli.Selection(
-                    text='Normal', handle_fn=handle_selection,
-                    data=hkml_view.ScrollableList.effect_normal),
-                _hkml_cli.Selection(
-                    text='Dim', handle_fn=handle_selection,
-                    data=hkml_view.ScrollableList.effect_dim),
-                _hkml_cli.Selection(
-                    text='Bold', handle_fn=handle_selection,
-                    data=hkml_view.ScrollableList.effect_bold),
-                _hkml_cli.Selection(
-                    text='Italic', handle_fn=handle_selection,
-                    data=hkml_view.ScrollableList.effect_italic),
-                _hkml_cli.Selection(
-                    text='Blink', handle_fn=handle_selection,
-                    data=hkml_view.ScrollableList.effect_blink),
-                _hkml_cli.Selection(
-                    text='Reverse', handle_fn=handle_selection,
-                    data=hkml_view.ScrollableList.effect_reverse),
-                _hkml_cli.Selection(
-                    text='Underline', handle_fn=handle_selection,
-                    data=hkml_view.ScrollableList.effect_underline),
-                ]
-        _, selection, err = q.ask_selection(
-                data=[self, selections], selections=selections)
+        _, selection, err = _hkml_cli.ask_selection(
+                desc='Select the display effect to apply.', prompt=None,
+                selections=[
+                    _hkml_cli.Selection(
+                        text='Normal', handle_fn=handle_selection,
+                        data=hkml_view.ScrollableList.effect_normal),
+                    _hkml_cli.Selection(
+                        text='Dim', handle_fn=handle_selection,
+                        data=hkml_view.ScrollableList.effect_dim),
+                    _hkml_cli.Selection(
+                        text='Bold', handle_fn=handle_selection,
+                        data=hkml_view.ScrollableList.effect_bold),
+                    _hkml_cli.Selection(
+                        text='Italic', handle_fn=handle_selection,
+                        data=hkml_view.ScrollableList.effect_italic),
+                    _hkml_cli.Selection(
+                        text='Blink', handle_fn=handle_selection,
+                        data=hkml_view.ScrollableList.effect_blink),
+                    _hkml_cli.Selection(
+                        text='Reverse', handle_fn=handle_selection,
+                        data=hkml_view.ScrollableList.effect_reverse),
+                    _hkml_cli.Selection(
+                        text='Underline', handle_fn=handle_selection,
+                        data=hkml_view.ScrollableList.effect_underline),
+                    ],
+                handler_common_data=[self, selections])
         if err is not None:
             self.effect = old_effect
             return
@@ -739,12 +736,11 @@ def show_mails_list_menu(c, slist):
     else:
         menu_desc = 'selected mail: %s' % mail.subject
 
-    q = _hkml_cli.Question(
-            desc=menu_desc,
-            prompt='Enter menu item number')
     hkml_view.shell_mode_start(slist)
-    q.ask_selection(
-            data=slist,
+    _hkml_cli.ask_selection(
+            desc=menu_desc,
+            prompt='Enter menu item number',
+            handler_common_data=slist,
             selections=[
                 _hkml_cli.Selection('open', handle_fn=menu_open_mail),
                 _hkml_cli.Selection(
