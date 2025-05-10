@@ -86,6 +86,7 @@ class ScrollableList:
     screen = None
     lines = None
     unwrapped_lines = None
+    bottom_lines = None
     focus_row = None
     focus_col = None
     input_handlers = None
@@ -170,7 +171,11 @@ class ScrollableList:
             # don't scroll right if it will not show something more
             draw_start_col = max_horizon_scroll_len
 
-        for row in range(scr_rows - 1):
+        nr_rows_for_lines = scr_rows - 1
+        if self.bottom_lines is not None:
+            nr_rows_for_lines -= len(self.bottom_lines)
+
+        for row in range(nr_rows_for_lines):
             line_idx = start_row + row
             if line_idx >= len(self.lines):
                 break
@@ -211,6 +216,11 @@ class ScrollableList:
             self.last_drawn += [''] * (scr_rows - 1  - len(self.lines))
 
         orig_line = self.lines[self.focus_row]
+        if self.bottom_lines is not None:
+            for idx, line in enumerate(self.bottom_lines):
+                self.screen.addstr(
+                        scr_rows - 1 - len(self.bottom_lines) + idx, 0,
+                        '%s' % line)
         self.screen.addstr(scr_rows - 1, 0,
                            '# focus: %d/%d row, %d/%d cols' % (
                                self.focus_row, len(self.lines), self.focus_col,
