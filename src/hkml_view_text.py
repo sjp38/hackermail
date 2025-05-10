@@ -397,6 +397,30 @@ def hunk_lines(text_lines):
         idx += hunk_len + 1
     return indices
 
+def mail_depth(line):
+    depth = 0
+    for c in line:
+        if not c in ['>', ' ']:
+            break
+        if c == '>':
+            depth += 1
+    return depth
+
+def parse_mail_contexts(text_lines):
+    '''
+    Support something like
+    '> On Fri,  2 May 2025 08:49:49 -0700 SeongJae Park <sj@kernel.org> wrote:'
+    '''
+    contexts = {}   # key: depth (int), value: context line (strting)
+    for idx, line in enumerate(lines):
+        if not line.endswith('wrote:'):
+            continue
+        depth = mail_depth(line) + 1
+        if depth in contexts:
+            continue
+        contexts[depth] = line
+    return contexts
+
 def show_text_viewer(screen, text_lines, data=None, cursor_position=None):
     slist = hkml_view.ScrollableList(
             screen, text_lines, get_text_viewer_handlers(data))
@@ -423,6 +447,9 @@ def show_text_viewer(screen, text_lines, data=None, cursor_position=None):
         else:
             print('Ok, kept those as is')
         hkml_view.shell_mode_end(slist)
+
+    if is_showing_mail(slist):
+        slist.data.mail_contexts = parse_mail_contexts(text_lines)
 
     slist.draw()
     return slist
