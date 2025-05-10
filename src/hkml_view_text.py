@@ -407,10 +407,13 @@ def show_text_viewer(screen, text_lines, data=None, cursor_position=None):
     slist.color_callback = text_color_callback
     if cursor_position is not None:
         slist.focus_row, slist.focus_col = cursor_position
-    if slist.better_wrap_text() and not slist.wrapped_text():
+
+    better_wrap, longest_columns = slist.better_wrap_text()
+    if better_wrap is True and not slist.wrapped_text():
         hkml_view.shell_mode_start(slist)
         answer = input(' '.join([
-            'There are lines that may better to be wrapped (too long).',
+            'There are lines that may better to be wrapped (%d columns).' %
+            longest_columns,
             'May I wrap those?',
             'You can [un]wrap later from the menu (\'m\' key).'
             '[y/N] ']))
