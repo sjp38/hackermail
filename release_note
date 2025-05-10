@@ -2,6 +2,7 @@ This file contains major changes in each version since v1.0.0
 
 v1.3.7
 - Show mail context of current line at the bottom of the screen
+- Add menu for jumping context to different depth context of the mail
 
 v1.3.6
 - hkml list: extend 'search mails' menu for 'Reviewed-by:'
