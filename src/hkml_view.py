@@ -53,14 +53,16 @@ def tabs_to_spaces(line, spaces_per_tab):
         idx += nr_spaces
     return ''.join(chrs)
 
+def get_prefix(line):
+    if line[:2] in ['> ', '+ ', '- ']:
+        return line[:2]
+    return ''
+
 def wrap_line(line, cols):
     if len(line) < cols:
         return [line]
-    if line[:2] in ['> ', '+ ', '- ']:
-        prefix = line[:2]
-        line = line[2:]
-    else:
-        prefix = ''
+    prefix = get_prefix(line)
+    line = line[len(prefix):]
     last_space = None
     for idx, c in enumerate(line):
         if c.isspace():
