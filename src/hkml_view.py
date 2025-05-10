@@ -56,7 +56,13 @@ def tabs_to_spaces(line, spaces_per_tab):
 def get_prefix(line):
     if line[:2] in ['> ', '+ ', '- ']:
         return line[:2]
-    return ''
+    prefix_chrs = []
+    for c in line:
+        if c in ['>', ' ']:
+            prefix_chrs.append(c)
+        else:
+            break
+    return ''.join(prefix_chrs)
 
 def wrap_line(line, cols):
     if len(line) < cols:
