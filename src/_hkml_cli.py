@@ -50,7 +50,7 @@ class Question:
         if default_selection is None:
             prompt = '%s (enter \'\' to cancel): ' % self.prompt
         else:
-            prompt = '%s (enter \'\' for \'%s\'): ' % (
+            prompt = '%s (enter \'\' for \'%s\', \'cancel\' to cancel): ' % (
                     self.prompt, default_selection.text)
 
         answer = input(prompt)
@@ -61,6 +61,10 @@ class Question:
             else:
                 print('The default (%s) selected.' % default_selection.text) 
                 return '', default_selection, None
+
+        if answer == 'cancel' and default_selection is not None:
+            print('Canceled.')
+            return None, None, 'canceled'
 
         selection = None
         selection_handle_fn = None
