@@ -28,8 +28,6 @@
   - E.g., when cached list output is used and --dim_old is set, dim handler
     reads mail's sent date, and it makes delay if mail cache is big.  Same for
     first mail read.  This makes user experience bad.  Think about improvement.
-- Improve text wrapping: it is not wrapping last word at the boundary, e.g.,
-  20250506130925568unpXQ7vLOEaRX4iDWSow2@zte.com.cn
 - Let adding quick note on viewer
   - The notes should be automatically added on reply draft.
 - Let easier browsing on long mail
