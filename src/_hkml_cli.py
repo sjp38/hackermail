@@ -35,7 +35,7 @@ class Question:
     '''
     def ask(self, data, selections, handle_fn, notify_completion):
         # return answer, selection, and error
-        lines = []
+        lines = ['']
         if self.description is not None:
             lines.append(self.description)
             lines.append('')
