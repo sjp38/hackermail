@@ -206,13 +206,11 @@ def do_add_tags(data, answer, selection):
 
 def do_remove_tags(data, answer, selection):
     mail, tags = data
-    prompt = ' '.join(
-            ['Enter tags to remove, separted by white spaces',
-             '(enter \'cancel_tag\' to cancel): '])
-    tags_to_remove = input(prompt).split()
-    if 'cancel_tag' in tags_to_remove:
-        _ = input('Canceled.  Press enter to return')
-        return 'canceled'
+    tags_to_remove, err = _hkml_cli.ask_input(
+            prompt='Enter tags to remove, separated by white spaces')
+    if err is not None:
+        return err
+    tags_to_remove = tags_to_remove.split()
     for tag in tags_to_remove:
         if not tag in tags:
             print('the mail is not tagged as %s' % tag)
