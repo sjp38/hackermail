@@ -433,14 +433,23 @@ def mail_depth(line):
             depth += 1
     return depth
 
+def is_context_line(line):
+    # e.g., "On Fri,  2 May 2025 08:49:49 -0700 SeongJae Park <sj@kernel.org> wrote:"
+    if line.endswith('wrote:'):
+        return True
+    # e.g., "* SeongJae Park <sj@kernel.org> [250509 01:47]:"
+    # todo: maybe need more test...?
+    if line.endswith(']:'):
+        return True
+    return False
+
 def parse_mail_contexts(text_lines):
     '''
-    Support something like
-    '> On Fri,  2 May 2025 08:49:49 -0700 SeongJae Park <sj@kernel.org> wrote:'
+    Parse which depth origin lines are sent by who, when.
     '''
     contexts = {}   # key: depth (int), value: context line (strting)
     for idx, line in enumerate(text_lines):
-        if not line.endswith('wrote:'):
+        if not is_context_line(line):
             continue
         depth = mail_depth(line) + 1
         if depth in contexts:
