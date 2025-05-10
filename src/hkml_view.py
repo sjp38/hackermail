@@ -99,6 +99,7 @@ class ScrollableList:
     parent_list = None
     display_effect_callback = None
     color_callback = None
+    draw_callback = None
     enable_highlight = None
 
     # constants for display_effect_callback return values
@@ -192,6 +193,9 @@ class ScrollableList:
                 color_attrib = self.display_effect_callback(self, line_idx)
             else:
                 color_attrib = curses.A_NORMAL
+
+            if self.draw_callback:
+                self.draw_callback(self)
 
             if line_idx in self.searched_lines and self.enable_highlight:
                 self.screen.addstr(row, 0, line, highlight_color | color_attrib)
