@@ -618,7 +618,7 @@ def menu_forward_mail(slist, answer, selection):
 
 def menu_write_draft(slist, answer, selection):
     mail = selection.data
-    if mail is not None:
+    if mail is None:
         print('no mail is selected')
         return
     hkml_view.shell_mode_end(slist)
@@ -627,7 +627,7 @@ def menu_write_draft(slist, answer, selection):
 
 def menu_manage_tags(slist, answer, selection):
     mail = selection.data
-    if mail is not None:
+    if mail is None:
         print('no mail is selected')
         return
     manage_tags_of_mail(slist, mail)
