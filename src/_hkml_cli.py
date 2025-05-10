@@ -33,7 +33,8 @@ class Question:
     '''
     internal method.  Shouldn't be called directly from Question user.
     '''
-    def ask(self, data, selections, handle_fn, notify_completion):
+    def ask(self, data, selections, handle_fn, notify_completion,
+            default_selection=None):
         # return answer, selection, and error
         lines = ['']
         if self.description is not None:
@@ -46,10 +47,20 @@ class Question:
         if len(lines) > 0:
             print('\n'.join(lines))
 
-        answer = input('%s (enter \'\' to cancel): ' % self.prompt)
+        if default_selection is None:
+            prompt = '%s (enter \'\' to cancel): ' % self.prompt
+        else:
+            prompt = '%s (enter \'\' for \'%s\'): ' % (
+                    self.prompt, default_selection.text)
+
+        answer = input(prompt)
         if answer == '':
-            print('Canceled.')
-            return None, None, 'canceled'
+            if default_selection is None:
+                print('Canceled.')
+                return None, None, 'canceled'
+            else:
+                print('The default (%s) selected.' % default_selection.text) 
+                return '', default_selection, None
 
         selection = None
         selection_handle_fn = None
@@ -95,10 +106,12 @@ class Question:
 
     Returns user's input to the question, selected Selection, and error.
     '''
-    def ask_selection(self, selections, data=None, notify_completion=False):
+    def ask_selection(self, selections, data=None, notify_completion=False,
+                      default_selection=None):
         if self.prompt is None:
             self.prompt = 'Enter the item number'
-        return self.ask(data, selections, None, notify_completion)
+        return self.ask(data, selections, None, notify_completion,
+                        default_selection)
 
 def ask_input(desc=None, prompt=None, handler_data=None,
               handle_fn=None):
@@ -112,7 +125,7 @@ def ask_input(desc=None, prompt=None, handler_data=None,
             data=handler_data, handle_fn=handle_fn)
 
 def ask_selection(desc=None, selections=None, prompt=None,
-                  handler_common_data=None):
+                  handler_common_data=None, default_selection=None):
     '''
     Prints 'desc', a blank line, 'selections', and 'prompt'.  Then, wait for
     user selection.  For given user input, 'handle_fn' of the selected
@@ -123,4 +136,5 @@ def ask_selection(desc=None, selections=None, prompt=None,
     Returns user's input to the question, the 'Selection' object, and an error.
     '''
     return Question(desc=desc, prompt=prompt).ask_selection(
-            selections=selections, data=handler_common_data)
+            selections=selections, data=handler_common_data,
+            default_selection=default_selection)
