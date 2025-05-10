@@ -412,7 +412,7 @@ def parse_mail_contexts(text_lines):
     '> On Fri,  2 May 2025 08:49:49 -0700 SeongJae Park <sj@kernel.org> wrote:'
     '''
     contexts = {}   # key: depth (int), value: context line (strting)
-    for idx, line in enumerate(lines):
+    for idx, line in enumerate(text_lines):
         if not line.endswith('wrote:'):
             continue
         depth = mail_depth(line) + 1
@@ -420,6 +420,20 @@ def parse_mail_contexts(text_lines):
             continue
         contexts[depth] = line
     return contexts
+
+def mail_draw_callback(slist):
+    focused_line = slist.lines[slist.focus_row]
+    depth = mail_depth(focused_line)
+    if depth == 0:
+        slist.bottom_lines = None
+        return
+
+    text_view_data = slist.data
+    if not depth in text_view_data.mail_contexts:
+        context = 'unknown'
+    else:
+        context = text_view_data.mail_contexts[depth]
+    slist.bottom_lines = ['# context: %s' % context]
 
 def show_text_viewer(screen, text_lines, data=None, cursor_position=None):
     slist = hkml_view.ScrollableList(
@@ -450,6 +464,7 @@ def show_text_viewer(screen, text_lines, data=None, cursor_position=None):
 
     if is_showing_mail(slist):
         slist.data.mail_contexts = parse_mail_contexts(text_lines)
+        slist.draw_callback = mail_draw_callback
 
     slist.draw()
     return slist
