@@ -411,12 +411,12 @@ def show_text_viewer(screen, text_lines, data=None, cursor_position=None):
     better_wrap, longest_columns = slist.better_wrap_text()
     if better_wrap is True and not slist.wrapped_text():
         hkml_view.shell_mode_start(slist)
-        answer = input(' '.join([
+        answer = input('\n'.join([
             'There are lines that may better to be wrapped (%d columns).' %
             longest_columns,
             'May I wrap those?',
-            'You can [un]wrap later from the menu (\'m\' key).'
-            '[y/N] ']))
+            'You can [un]wrap later from the menu (\'m\' key).',
+            'Answer: [y/N] ']))
         if answer.lower() == 'y':
             slist.wrap_text()
             print('Ok, wrapped the lines')
