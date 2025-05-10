@@ -253,6 +253,30 @@ def menu_handle_patches(slist, answer, selection):
     # todo: handle err is not None case
     hkml_view_mails.handle_patches_of_mail(mail, slist.data.mails_list)
 
+def menu_jump(slist, answer, selection):
+    selections = [
+        _hkml_cli.Selection('beginning of next different depth'),
+        _hkml_cli.Selection('end of previous different depth')]
+
+    answer, selection, err = _hkml_cli.ask_selection(
+            desc='Select where to jump.', selections=selections)
+    current_depth = mail_depth(slist.lines[slist.focus_row])
+
+    if selection == selections[0]:
+        for row_idx in range(slist.focus_row + 1, len(slist.lines)):
+            line = slist.lines[row_idx]
+            if mail_depth(line) != current_depth:
+                slist.focus_row = row_idx
+                return
+        return
+    elif selection == selections[1]:
+        for row_idx in range(slist.focus_row - 1, -1, -1):
+            line = slist.lines[row_idx]
+            if mail_depth(line) != current_depth:
+                slist.focus_row = row_idx
+                return
+        return
+
 def menu_selections_for_mail():
     return [
             _hkml_cli.Selection('reply', handle_fn=menu_reply_mail),
@@ -263,6 +287,8 @@ def menu_selections_for_mail():
                                    handle_fn=menu_manage_tags),
             _hkml_cli.Selection(
                 'handle as patches', handle_fn=menu_handle_patches),
+            _hkml_cli.Selection(
+                'jump cursor to ...', handle_fn=menu_jump),
             ]
 
 def menu_wrap_text(slist, answer, selection):
