@@ -32,3 +32,5 @@
   - The notes should be automatically added on reply draft.
 - Let easier browsing on long mail
   - Let lines folding?
+- When applying patch, 'Signed-off-by:' of the user is added to the commit with
+  a blank line.  Investigate and fix.
