@@ -82,6 +82,7 @@ def mail_display_str(mail, head_columns=None, valid_mbox=False,
             else:
                 lines.append('%s: %s' % (head, value))
     lines.append('\n%s' % mail.get_field('body'))
+    lines.append('') # Extra line for context
     return '\n'.join(lines)
 
 def last_open_mail_idx():
