@@ -34,7 +34,11 @@
   - Let lines folding?
 - When applying patch, 'Signed-off-by:' of the user is added to the commit with
   a blank line.  Investigate and fix.
-- Revisit 26bc13daf852 ("hkml_open: Add extra line for context")
-  - It might better to do that on hkml_view_text under a condition, or improve
-    cursor handling of ScrollableList.
+- Context improvements
+  - Revisit 26bc13daf852 ("hkml_open: Add extra line for context")
+    - It might better to do that on hkml_view_text under a condition, or
+      improve cursor handling of ScrollableList.
+  - Show context for original content, too.
+  - Get context from real thread hierarchy and use the context line as a
+    fallback.
 - Show patch mails to review for the user, based on MAINTAINERS
