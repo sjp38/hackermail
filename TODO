@@ -37,3 +37,4 @@
 - Revisit 26bc13daf852 ("hkml_open: Add extra line for context")
   - It might better to do that on hkml_view_text under a condition, or improve
     cursor handling of ScrollableList.
+- Show patch mails to review for the user, based on MAINTAINERS
