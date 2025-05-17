@@ -680,6 +680,8 @@ def handle_searched_lines(slist, searched_lines):
             "\nMails on %d lines are searched." % len(searched_lines),
             "Press 'n' and 'N' to move the cursor to",
             "the next or the previous searched line.")
+    else:
+        print('No mail for the search is found.')
 
 def menu_search_mail_body_keywords(handler_common_data, user_input, selection):
     slist = handler_common_data
