@@ -46,6 +46,8 @@ def main(args):
         err = hkml_manifest.fetch_lore()
         if err:
             print(err)
+            os.rmdir('.hkm/archives')
+            os.rmdir('.hkml')
             exit(1)
     else:
         if not os.path.isfile(args.manifest):
