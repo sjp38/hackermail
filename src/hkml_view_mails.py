@@ -3,6 +3,7 @@
 import argparse
 import curses
 import datetime
+import fnmatch
 import os
 
 import _hkml_cli
@@ -786,10 +787,20 @@ def files_touched_by(patch_mail):
             touched_files.append(fields[3][2:])
     return set(touched_files)
 
+def maintainer_file_pattern_matching(filepath, pattern):
+    # * cannot be recursive
+    if pattern[-1] == '*':
+        if len(filepath.split('/')) != len(pattern.split('/')):
+            return False
+    if os.path.isdir(pattern) and fnmatch.fnmatch(filepath, '%s/*' % pattern):
+        return True
+    return fnmatch.fnmatch(filepath, pattern)
+
 def patch_is_touching(patch_mail, files_for_reviewer):
     for touched_file in files_touched_by(patch_mail):
-        if touched_file in files_for_reviewer:
-            return True
+        for file_pattern in files_for_reviewer:
+            if maintainer_file_pattern_matching(touched_file, file_pattern):
+                return True
     return False
 
 def menu_search_for_reviewer(handler_common_data, user_input, selection):
