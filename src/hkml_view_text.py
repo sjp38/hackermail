@@ -457,6 +457,17 @@ def parse_mail_contexts(text_lines):
         contexts[depth] = line
     return contexts
 
+def set_mail_contexts(slist):
+    contexts = parse_mail_contexts(slist.lines)
+    mail = slist.data.mail
+    depth = 1
+    while mail.parent_mail is not None:
+        mail = mail.parent_mail
+        contexts[depth] = 'On %s %s wrote' % (
+                mail.get_field('date'), mail.get_field('from'))
+        depth += 1
+    slist.data.mail_contexts = contexts
+
 def mail_draw_callback(slist):
     focused_line = slist.lines[slist.focus_row]
     depth = mail_depth(focused_line)
@@ -499,7 +510,7 @@ def show_text_viewer(screen, text_lines, data=None, cursor_position=None):
         hkml_view.shell_mode_end(slist)
 
     if is_showing_mail(slist):
-        slist.data.mail_contexts = parse_mail_contexts(text_lines)
+        set_mail_contexts(slist)
         slist.draw_callback = mail_draw_callback
 
     slist.draw()
