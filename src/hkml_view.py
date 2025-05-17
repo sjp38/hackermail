@@ -159,8 +159,16 @@ class ScrollableList:
         self.last_drawn = []
         self.screen.erase()
         scr_rows, scr_cols = self.screen.getmaxyx()
+        # try to let focused row displayed at middle of the screen
         start_row = max(int(self.focus_row - scr_rows / 2), 0)
-        start_row = min(start_row, len(self.lines) - scr_rows + 1)
+
+        # avoid blank lines at the bottom
+        # plus one for the last line (focus and help message)
+        min_start_row = len(self.lines) - scr_rows + 1
+        if self.bottom_lines:
+            min_start_row += len(self.bottom_lines)
+        start_row = min(start_row, min_start_row)
+
         start_row = max(start_row, 0)
 
         if 10 < scr_cols and scr_cols < 30:
