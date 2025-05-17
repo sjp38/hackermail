@@ -753,12 +753,51 @@ def menu_search_reviewed_by(handler_common_data, user_input, selection):
             searched_lines.append(row)
     handle_searched_lines(slist, searched_lines)
 
-def patch_is_for_reviewer(patch_mail, reviewer):
+def get_files_for_reviewer(reviewer, maintainers_file_content):
+    pars = maintainers_file_content.split('\n\n')
+
+    files_for_reviewer = []
+    for par in pars:
+        section_for_reviewer = False
+        m_r_check_started = False
+        for line in par.split('\n'):
+            fields = line.split()
+            if len(fields) < 2:
+                continue
+            if fields[0] in ['M:', 'R:']:
+                m_r_check_stared = True
+                if ' '.join(fields[1:]) == reviewer:
+                    section_for_reviewer = True
+                continue
+            if m_r_check_started is True and section_for_reviewer is False:
+                break
+            if section_for_reviewer is True and fields[0] == 'F:':
+                files_for_reviewer.append(fields[1])
+    return files_for_reviewer
+
+def patch_is_touching(patch_mail, files_for_reviewer):
     '''
     Find if patch_mail is touching files for given reviewer.
     The reviewer-file information is parsed from MAINTAINERS file.
     Should be called only if MAINTAINERS file exists.
     '''
+    body_lines = patch_mail.get_field('body').split('\n')
+    after_three_dashes = None
+    for idx, line in enumerate(body_lines):
+        if line.strip() == '---':
+            after_three_dashes = '\n'.join(body_lines[idx+1:])
+            break
+    if after_three_dashes is None:
+        print('%s need double check' % patch_mail.subject)
+        return False
+    stat_par = after_three_dashes.split('\n\n')[0]
+    for stat_line in stat_par.split('\n'):
+        # TODO: support F: semantics for directories and wildcards
+        fields = stat_line.split()
+        if len(fields) < 1:
+            continue
+        if stat_line.split()[0] in files_for_reviewer:
+            return True
     return False
 
 def menu_search_for_reviewer(handler_common_data, user_input, selection):
@@ -769,6 +808,11 @@ def menu_search_for_reviewer(handler_common_data, user_input, selection):
             'e.g., Foo Bar <foo@bar.com>')
     if err is not None:
         return
+    with open('MAINTAINERS', 'r') as f:
+        maintainers_file_content = f.read()
+
+    files_for_reviewer = get_files_for_reviewer(
+            reviewer, maintainers_file_content)
 
     list_mails = get_mails(slist)
     hkml_list.threads_of(list_mails)
@@ -780,7 +824,9 @@ def menu_search_for_reviewer(handler_common_data, user_input, selection):
             continue
         if not 'patch' in mail.subject_tags:
             continue
-        if patch_is_for_reviewer(mail, reviewer):
+        if hkml_patch.is_cover_letter(mail):
+            continue
+        if patch_is_touching(mail, files_for_reviewer):
             searched_lines.append(row)
     handle_searched_lines(slist, searched_lines)
 
