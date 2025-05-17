@@ -3,6 +3,7 @@ This file contains major changes in each version since v1.0.0
 v1.3.8
 - Show mail context of current line for current mail's original line, too
 - Enhance readability of the context line
+- hkml list: extend 'search mails' menu for MAINTAINERS-listed reviewers
 
 v1.3.7
 - Show mail context of current line at the bottom of the screen
