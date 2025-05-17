@@ -775,28 +775,20 @@ def get_files_for_reviewer(reviewer, maintainers_file_content):
                 files_for_reviewer.append(fields[1])
     return files_for_reviewer
 
+def files_touched_by(patch_mail):
+    touched_files = []
+    for idx, line in enumerate(patch_mail.get_field('body').split('\n')):
+        # parse diff lines that look like, e.g.
+        # diff --git a/mm/swap.h b/mm/swap.h
+        fields = line.split()
+        if len(fields) == 4 and fields[:2] == ['diff', '--git']:
+            touched_files.append(fields[2][2:])
+            touched_files.append(fields[3][2:])
+    return set(touched_files)
+
 def patch_is_touching(patch_mail, files_for_reviewer):
-    '''
-    Find if patch_mail is touching files for given reviewer.
-    The reviewer-file information is parsed from MAINTAINERS file.
-    Should be called only if MAINTAINERS file exists.
-    '''
-    body_lines = patch_mail.get_field('body').split('\n')
-    after_three_dashes = None
-    for idx, line in enumerate(body_lines):
-        if line.strip() == '---':
-            after_three_dashes = '\n'.join(body_lines[idx+1:])
-            break
-    if after_three_dashes is None:
-        print('%s need double check' % patch_mail.subject)
-        return False
-    stat_par = after_three_dashes.split('\n\n')[0]
-    for stat_line in stat_par.split('\n'):
-        # TODO: support F: semantics for directories and wildcards
-        fields = stat_line.split()
-        if len(fields) < 1:
-            continue
-        if stat_line.split()[0] in files_for_reviewer:
+    for touched_file in files_touched_by(patch_mail):
+        if touched_file in files_for_reviewer:
             return True
     return False
 
