@@ -41,7 +41,10 @@ def pr_directory(directory, mlists, depth=0):
             print('%s%s: %s' % (indent, key, val))
 
 def fetch_lore(output_file=None):
-    '''Fetch lore manifest and use it'''
+    '''
+    Fetch lore manifest and use it.
+    Returns an error string or None if no error happened.
+    '''
         # Get the current working directory
     original_dir = os.getcwd()
     temp_dir = tempfile.mkdtemp(prefix='hkml_manifest_dir_')
@@ -49,13 +52,11 @@ def fetch_lore(output_file=None):
 
     err = subprocess.call(['wget', 'https://lore.kernel.org/manifest.js.gz'])
     if err:
-        print('downloading lore manifest fail (%s); please cleanup %s' %
-              (err, temp_dir))
-        exit(1)
+        return 'downloading lore manifest fail (%s); please cleanup %s' % (
+                err, temp_dir)
     err = subprocess.call(['gzip', '-d', 'manifest.js.gz'])
     if err:
-        print('gunzip fail (%s); please cleanup %s' % (err, temp_dir))
-        exit(1)
+        return 'gunzip fail (%s); please cleanup %s' % (err, temp_dir)
     with open('manifest.js') as f:
         manifest = json.load(f)
     os.chdir(original_dir)
@@ -66,10 +67,14 @@ def fetch_lore(output_file=None):
     else:
         with open(output_file, 'w') as f:
             json.dump(manifest, f, indent=4)
+    return None
 
 def main(args):
     if args.action == 'fetch_lore':
-        fetch_lore(args.fetch_lore_output)
+        err = fetch_lore(args.fetch_lore_output)
+        if err:
+            print(err)
+            exit(1)
         return
 
     manifest = args.manifest
@@ -91,7 +96,10 @@ def main(args):
         manifest['site'] = args.site
         print(json.dumps(manifest))
     elif args.action == 'fetch_lore':
-        fetch_lore(args.fetch_lore_output)
+        err = fetch_lore(args.fetch_lore_output)
+        if err is not None:
+            print(err)
+            exit(1)
 
 def set_argparser(parser):
     _hkml.set_manifest_option(parser)

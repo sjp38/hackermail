@@ -43,7 +43,10 @@ def main(args):
             os.rmdir('.hkm/archives')
             os.rmdir('.hkml')
             exit(1)
-        hkml_manifest.fetch_lore()
+        err = hkml_manifest.fetch_lore()
+        if err:
+            print(err)
+            exit(1)
     else:
         if not os.path.isfile(args.manifest):
             print('--manifest (%s) not found' % args.manifest)
