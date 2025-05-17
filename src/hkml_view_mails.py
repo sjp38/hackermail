@@ -751,23 +751,59 @@ def menu_search_reviewed_by(handler_common_data, user_input, selection):
             searched_lines.append(row)
     handle_searched_lines(slist, searched_lines)
 
+def patch_is_for_reviewer(patch_mail, reviewer):
+    '''
+    Find if patch_mail is touching files for given reviewer.
+    The reviewer-file information is parsed from MAINTAINERS file.
+    Should be called only if MAINTAINERS file exists.
+    '''
+    return False
+
+def menu_search_for_reviewer(handler_common_data, user_input, selection):
+    slist = handler_common_data
+    reviewer, err = _hkml_cli.ask_input(
+            prompt='Enter the M: or R: identifier '
+            'of the reviewer to search mails for.\n'
+            'e.g., Foo Bar <foo@bar.com>')
+    if err is not None:
+        return
+
+    list_mails = get_mails(slist)
+    hkml_list.threads_of(list_mails)
+
+    searched_lines = []
+    for row in range(0, len(slist.lines)):
+        mail = mail_of_row(slist, row)
+        if mail is None:
+            continue
+        if not 'patch' in mail.subject_tags:
+            continue
+        if patch_is_for_reviewer(mail, reviewer):
+            searched_lines.append(row)
+    handle_searched_lines(slist, searched_lines)
+
 def menu_search(slist, answer, selection):
+    selections = [
+            _hkml_cli.Selection(
+                text='Search mails having keywords',
+                handle_fn=menu_search_mail_body_keywords),
+            _hkml_cli.Selection(
+                text='Patches not having Reviewed-by:',
+                handle_fn=menu_search_reviewed_by,
+                data=False),
+            _hkml_cli.Selection(
+                text='Patches having Reviewed-by:',
+                handle_fn=menu_search_reviewed_by,
+                data=True),
+            ]
+    if os.path.isfile('MAINTAINERS'):
+        selections.append(
+                _hkml_cli.Selection(
+                    text='Patches for a reviewer (or maintainer)',
+                    handle_fn=menu_search_for_reviewer))
     _, _, err = _hkml_cli.ask_selection(
-            desc='Select search category',
-            handler_common_data=slist,
-            selections=[
-                _hkml_cli.Selection(
-                    text='Search mails having keywords',
-                    handle_fn=menu_search_mail_body_keywords),
-                _hkml_cli.Selection(
-                    text='Patches not having Reviewed-by:',
-                    handle_fn=menu_search_reviewed_by,
-                    data=False),
-                _hkml_cli.Selection(
-                    text='Patches having Reviewed-by:',
-                    handle_fn=menu_search_reviewed_by,
-                    data=True),
-                ])
+            desc='Select search category', handler_common_data=slist,
+            selections=selections)
     if err is not None:
         print(err)
 
