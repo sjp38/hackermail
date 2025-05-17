@@ -34,4 +34,3 @@
   - Let lines folding?
 - When applying patch, 'Signed-off-by:' of the user is added to the commit with
   a blank line.  Investigate and fix.
-- Show patch mails to review for the user, based on MAINTAINERS

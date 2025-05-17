@@ -4,6 +4,7 @@ v1.3.8
 - Show mail context of current line for current mail's original line, too
 - Enhance readability of the context line
 - hkml list: extend 'search mails' menu for MAINTAINERS-listed reviewers
+  - Kudos to Lorenzo Stoakes for idea
 
 v1.3.7
 - Show mail context of current line at the bottom of the screen
@@ -12,6 +13,7 @@ v1.3.7
 v1.3.6
 - hkml list: extend 'search mails' menu for 'Reviewed-by:'
   - search patch mails received or not yet received the tag
+  - Kudos to Boris Burkov for idea
 - hkml list: let menu open without selected mails
 
 v1.3.5
