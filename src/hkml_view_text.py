@@ -473,9 +473,6 @@ def set_mail_contexts(slist):
 def mail_draw_callback(slist):
     focused_line = slist.lines[slist.focus_row]
     depth = mail_depth(focused_line)
-    if depth == 0:
-        slist.bottom_lines = ['# context: original']
-        return
 
     text_view_data = slist.data
     if not depth in text_view_data.mail_contexts:
