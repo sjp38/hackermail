@@ -461,7 +461,7 @@ def mail_draw_callback(slist):
     focused_line = slist.lines[slist.focus_row]
     depth = mail_depth(focused_line)
     if depth == 0:
-        slist.bottom_lines = None
+        slist.bottom_lines = ['# context: original']
         return
 
     text_view_data = slist.data
