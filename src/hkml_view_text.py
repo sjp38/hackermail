@@ -461,12 +461,12 @@ def set_mail_contexts(slist):
     contexts = parse_mail_contexts(slist.lines)
     mail = slist.data.mail
     contexts[0] = 'On %s %s wrote' % (
-            mail.get_field('date'), mail.get_field('from'))
+            mail.get_field('local-date'), mail.get_field('from'))
     depth = 1
     while mail.parent_mail is not None:
         mail = mail.parent_mail
         contexts[depth] = 'On %s %s wrote' % (
-                mail.get_field('date'), mail.get_field('from'))
+                mail.get_field('local-date'), mail.get_field('from'))
         depth += 1
     slist.data.mail_contexts = contexts
 
