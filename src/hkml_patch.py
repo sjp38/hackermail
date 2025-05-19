@@ -165,14 +165,35 @@ def apply_patches(patch_mails, repo):
     rm_tmp_patch_dir(patch_files)
     return None
 
+def add_patch_suffix(basename, count):
+    patch_sections = basename.split('.')
+    suffix = '-' + str(count)
+    if len(patch_sections) < 2: # No file extension
+        return basename + suffix
+
+    patch_sections[-2] += suffix
+    return '.'.join(patch_sections)
+
 def move_patches(patch_files, dest_dir):
     if len(patch_files) == 0:
         print('no patch to export')
     saved_dir = os.path.dirname(patch_files[-1])
     if dest_dir is not None:
-        for patch_file in patch_files:
+        for idx, patch_file in enumerate(patch_files):
             basename = os.path.basename(patch_file)
-            shutil.move(patch_file, os.path.join(dest_dir, basename))
+            new_path = os.path.join(dest_dir, basename)
+
+            # Avoid overwriting existing patches; append -N to the end until
+            # the file path is unique
+            if (os.path.isfile(new_path)):
+                count = 1
+                while os.path.isfile(new_path):
+                    new_path = os.path.join(dest_dir,
+                                            add_patch_suffix(basename, count))
+                    count += 1
+            shutil.move(patch_file, new_path)
+            patch_files[idx] = new_path
+
         os.rmdir(saved_dir)
         saved_dir = dest_dir
     print('\npatch files are saved at \'%s\' with below names:' % saved_dir)
