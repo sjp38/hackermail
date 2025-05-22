@@ -37,3 +37,4 @@
 - Color the focused line on mails list?
 - Provide a better error message than traceback, for initial
   'hkml list damon --fetch' with suggested setup that fails manifest fetching.
+- From mails list, selecting "Display Effects" menu crashes.  Fix it.
