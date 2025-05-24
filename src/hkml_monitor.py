@@ -247,6 +247,9 @@ def start_monitoring(ignore_mails_before):
     monitor_interval_gcd = requests[0].monitor_interval
     for r in requests[1:]:
         monitor_interval_gcd = math.gcd(monitor_interval_gcd, r.monitor_interval)
+    if monitor_interval_gcd < 60:
+        print('<60 seconds monitoring interval is too short!')
+        return 1
 
     last_monitor_time = [None] * len(requests)
     last_monitored_mails = []
