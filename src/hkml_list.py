@@ -44,7 +44,7 @@ def args_to_lists_cache_key(args):
                      'ascend', 'hot', 'cols', 'url', 'hide_stat',
                      'runtime_profile', 'max_len_list', 'dim_old', 'fetch',
                      'ignore_cache', 'stdout', 'use_less', 'read_dates',
-                     'keywords_for', 'patches_for'}:
+                     'keywords_for', 'patches_for', 'keywords'}:
             del dict_[k]
 
     # --keywords_for was introduced after v1.3.8, with default value 'each'
@@ -53,6 +53,9 @@ def args_to_lists_cache_key(args):
     # --patches_for was introduced after v1.3.8, with default value None
     if dict_['patches_for'] is None:
         del dict_['patches_for']
+    # --keywords was introduced after v1.3.8, with default value None
+    if dict_['keywords'] is None:
+        del dict_['keywords']
 
     return json.dumps(dict_, sort_keys=True)
 
@@ -289,6 +292,30 @@ class MailListFilter:
         self.body_keywords = args.body_keywords
         self.keywords_for = args.keywords_for
         self.patches_for = args.patches_for
+        if args.keywords is not None:
+            for keywords in args.keywords:
+                field = keywords[0]
+                filter_keywords = keywords[1:]
+                if field == 'from':
+                    if self.from_keywords is None:
+                        self.from_keywords = []
+                    self.from_keywords.append(filter_keywords)
+                if field == 'from_to':
+                    if self.from_to_keywords is None:
+                        self.from_to_keywords = []
+                    self.from_keywords.append(filter_keywords)
+                if field == 'from_to_cc':
+                    if self.from_to_cc_keywords is None:
+                        self.from_to_cc_keywords = []
+                    self.from_keywords.append(filter_keywords)
+                if field == 'subject':
+                    if self.subject_keywords is None:
+                        self.subject_keywords = []
+                    self.from_keywords.append(filter_keywords)
+                if field == 'body':
+                    if self.body_keywords is None:
+                        self.body_keywords = []
+                    self.from_keywords.append(filter_keywords)
 
     def no_filter_set(self):
         return (not self.new_threads_only and not self.from_keywords and
@@ -1104,6 +1131,14 @@ def main(args):
               list_data.mail_idx_key_map)
 
 def add_mails_filter_arguments(parser):
+    parser.add_argument(
+            '--keywords', metavar='<word>', nargs='+', action='append',
+            help=' '.join([
+                'Keywords to filter-in mails for.',
+                'Format is: "<field> <keyword>...".',
+                '<field> can be "from", "from_to", "from_to_cc", "subject",',
+                'or "body".'
+                ]))
     parser.add_argument(
             '--from_keywords', '--from', metavar='<keyword>', nargs='+',
             action='append',
