@@ -1028,6 +1028,8 @@ def print_options_for(category):
         add_mails_filter_arguments(parser)
     elif category == 'decoration':
         add_decoration_arguments(parser)
+    elif category == 'advanced':
+        add_advanced_arguments(parser)
     help_msg = parser.format_help()
     usage_msg, options_msg = help_msg.split('\n\n')
     print('\n'.join(options_msg.split('\n')[1:]))
@@ -1167,5 +1169,6 @@ def set_argparser(parser=None):
 
     add_advanced_arguments(parser)
 
-    parser.add_argument('--options_for', choices=['filtering', 'decoration'],
+    parser.add_argument('--options_for',
+                        choices=['filtering', 'decoration', 'advanced'],
                         help='show help messages of options for given purpose')
