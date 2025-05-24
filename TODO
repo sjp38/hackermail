@@ -38,5 +38,4 @@
 - Periodic mails list refresh
   - May better to double confirm if this is what we really need, though.
     'hkml monitor' can be used for a similar purpose.
-- Export mail menu: disable double confirm of erasing screen
 - Let filtering for only original mail and keep the thread
