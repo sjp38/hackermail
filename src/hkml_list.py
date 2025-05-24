@@ -1029,7 +1029,7 @@ def print_options_for(category):
     elif category == 'decoration':
         add_decoration_arguments(parser)
     elif category == 'advanced':
-        add_advanced_arguments(parser)
+        add_advanced_arguments(parser, show_help=True)
     help_msg = parser.format_help()
     usage_msg, options_msg = help_msg.split('\n\n')
     print('\n'.join(options_msg.split('\n')[1:]))
@@ -1110,32 +1110,43 @@ def add_decoration_arguments(parser):
             '--max_len_list', metavar='<int>', type=int,
             help='max length of the list')
 
-def add_advanced_arguments(parser):
+def add_advanced_arguments(parser, show_help):
     parser.add_argument('--nr_mails', type=int, metavar='<int>',
-                        help='number of mails to list')
+                        help='number of mails to list'
+                        if show_help else argparse.SUPPRESS)
     parser.add_argument('--min_nr_mails', metavar='<int>', type=int,
                         default=50,
-                        help='minimum number of mails to list')
+                        help='minimum number of mails to list'
+                        if show_help else argparse.SUPPRESS)
     parser.add_argument('--max_nr_mails', metavar='<int>', type=int,
-                        help='maximum number of mails to list')
+                        help='maximum number of mails to list'
+                        if show_help else argparse.SUPPRESS)
     parser.add_argument('--dont_find_ancestors_from_cache',
                         action='store_false',
                         dest='do_find_ancestors_from_cache',
-                        help='find missing thread ancestors from cache')
+                        help='find missing thread ancestors from cache'
+                        if show_help else argparse.SUPPRESS)
     parser.add_argument('--pisearch', metavar='<query>',
-                        help='get mails via given public inbox search query')
+                        help='get mails via given public inbox search query'
+                        if show_help else argparse.SUPPRESS)
     parser.add_argument('--stat_only', action='store_true',
-                        help='print statistics only')
+                        help='print statistics only'
+                        if show_help else argparse.SUPPRESS)
     parser.add_argument('--stat_authors', action='store_true',
-                        help='print mail authors statistics')
+                        help='print mail authors statistics'
+                        if show_help else argparse.SUPPRESS)
     parser.add_argument('--ignore_cache', action='store_true',
-                        help='ignore cached previous list output')
+                        help='ignore cached previous list output'
+                        if show_help else argparse.SUPPRESS)
     parser.add_argument('--stdout', action='store_true',
-                        help='print to stdout instead of using the pager')
+                        help='print to stdout instead of using the pager'
+                        if show_help else argparse.SUPPRESS)
     parser.add_argument('--use_less', action='store_true',
-                        help='use \'less\' for output paging')
+                        help='use \'less\' for output paging'
+                        if show_help else argparse.SUPPRESS)
     parser.add_argument('--read_dates', action='store_true',
-                        help='print last dates that read the list')
+                        help='print last dates that read the list'
+                        if show_help else argparse.SUPPRESS)
     _hkml.set_manifest_option(parser)
 
 def set_argparser(parser=None):
@@ -1167,8 +1178,12 @@ def set_argparser(parser=None):
     # this option is handled by hkml_view_mails
     hkml_common.add_date_arg(parser, '--dim_old', 'dim mails older than this.')
 
-    add_advanced_arguments(parser)
+    add_advanced_arguments(parser, show_help=False)
 
     parser.add_argument('--options_for',
                         choices=['filtering', 'decoration', 'advanced'],
                         help='show help messages of options for given purpose')
+
+    parser.epilog += ' '.join([
+        '\nThere are advanced hidden options.',
+        'Use --options_for to show them.'])
