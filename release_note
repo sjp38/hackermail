@@ -1,5 +1,13 @@
 This file contains major changes in each version since v1.0.0
 
+v1.3.9
+- hkml list: implement '--keywords_for root' to apply keywords filtering to
+  threads root mails only.
+- hkml list: implement '--patches_for' to filter patch mails to review (didn't
+  receive Reviewed-by: yet), pick (received Reviewed-by:), or for specific
+  reviewer (touch files for the reviewer, according to MAINTAINERS).
+- hkml list: implement '--keywords' for replacing '*_keywords' options.
+
 v1.3.8
 - Show mail context of current line for current mail's original line, too
 - Enhance readability of the context line
