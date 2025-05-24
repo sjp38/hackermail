@@ -179,6 +179,44 @@ it cannot find the type of there are multiple possible types, the command will
 fail with an error message.  To avoid such failures, users can provide the type
 of the given source via `--source_type` option.
 
+Patches Filtering
+-----------------
+
+Note: this feature is experimental.
+
+Users can filter mails to list only patch mails of specific condition, using
+`--patches_for` option of `hkml list`.
+
+`--patches_for review` shows patch mails that not yet received any
+`Reviewed-by:` tag reply.
+
+`--patches_for pick` shows patch mails that received one or more `Reviewed-by:`
+tag replies.
+
+`--patches_for reviewer <reviewer>` shows patch mails that touching
+files that `<reviewer>` is maintaining or revieweing, following `MAINTAINERS`
+file of Linux kernel.  In this case, `hkml list` should be executed from a
+directory having `MAINTAINERS` file.   `<reviewer>` should be the maintainer or
+reviewer identity that written in the `MAINTAINERS` file.  For example, 
+
+    $ hkml list damon --patches_for reviewer "SeongJae Park <sj@kernel.org>" \
+                      --stdout --fetch
+    # stat for total mails
+    # 66 mails, 17 threads, 17 new threads
+    # 27 patches, 14 series
+    # oldest: 2025-04-08 00:55:53-07:00
+    # newest: 2025-05-24 09:29:10-07:00
+    #
+    # stat for filtered mails
+    # 2 mails, 2 threads, 2 new threads
+    # 2 patches, 2 series
+    # oldest: 2025-04-08 00:55:53-07:00
+    # newest: 2025-05-21 00:07:47-07:00
+    [03] [PATCH] mm/damon: make region calculations more precise (Enze Li, 2025/05/21
+         00:07)
+    [50] [RFC PATCH] mm/damon: add full LPAE support for memory monitoring above 4GB (Ze
+         Zuo, 2025/04/08 00:55)
+
 Public-inbox Search
 -------------------
 
