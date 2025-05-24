@@ -41,13 +41,13 @@ def main(args):
         if answer.lower() == 'n':
             print('Cannot proceed initialization')
             os.rmdir('.hkm/archives')
-            os.rmdir('.hkml')
+            os.rmdir('.hkm')
             exit(1)
         err = hkml_manifest.fetch_lore()
         if err:
             print(err)
             os.rmdir('.hkm/archives')
-            os.rmdir('.hkml')
+            os.rmdir('.hkm')
             exit(1)
     else:
         if not os.path.isfile(args.manifest):
