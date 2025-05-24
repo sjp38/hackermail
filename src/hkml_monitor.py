@@ -320,7 +320,7 @@ def set_add_arguments(parser):
             help='monitoring target mailing lists')
 
     hkml_list.add_mails_filter_arguments(parser)
-    hkml_list.add_decoration_arguments(parser)
+    hkml_list.add_decoration_arguments(parser, show_help=True)
 
     parser.add_argument(
             '--noti_mails', nargs='+', metavar='<email address>',

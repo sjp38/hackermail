@@ -1027,7 +1027,7 @@ def print_options_for(category):
     if category == 'filtering':
         add_mails_filter_arguments(parser)
     elif category == 'decoration':
-        add_decoration_arguments(parser)
+        add_decoration_arguments(parser, show_help=True)
     elif category == 'advanced':
         add_advanced_arguments(parser, show_help=True)
     help_msg = parser.format_help()
@@ -1087,28 +1087,36 @@ def add_mails_filter_arguments(parser):
             '--keywords_for', choices=['each', 'root'], default='each',
             help='keywords applying target mails')
 
-def add_decoration_arguments(parser):
+def add_decoration_arguments(parser, show_help):
     parser.add_argument('--collapse', '-c', action='store_true',
-                        help='collapse threads')
+                        help='collapse threads'
+                        if show_help else argparse.SUPPRESS)
     parser.add_argument(
             '--sort_threads_by', nargs='+', default=['last_date'],
             choices=['first_date', 'last_date', 'nr_replies', 'nr_comments'],
-            help='threads sort keys')
+            help='threads sort keys' if show_help else argparse.SUPPRESS)
     parser.add_argument('--ascend', action='store_true',
-                        help='sort threads in ascending order')
+                        help='sort threads in ascending order'
+                        if show_help else argparse.SUPPRESS)
     parser.add_argument(
             '--hot', action='store_true',
-            help='show threads having more comments and later updated first.')
+            help='show threads having more comments and later updated first.'
+            if show_help else argparse.SUPPRESS)
     parser.add_argument('--cols', metavar='<int>', type=int,
-                        help='number of columns for each line')
+                        help='number of columns for each line'
+                        if show_help else argparse.SUPPRESS)
     parser.add_argument('--url', action='store_true',
-                        help='print URLs of the mails')
+                        help='print URLs of the mails'
+                        if show_help else argparse.SUPPRESS)
     parser.add_argument('--hide_stat', action='store_true',
-                        help='hide stat of the mails')
+                        help='hide stat of the mails'
+                        if show_help else argparse.SUPPRESS)
     parser.add_argument('--runtime_profile', action='store_true',
-                        help='print runtime profiling result')
+                        help='print runtime profiling result'
+                        if show_help else argparse.SUPPRESS)
     parser.add_argument('--max_len_list', metavar='<int>', type=int,
-                        help='max length of the list')
+                        help='max length of the list'
+                        if show_help else argparse.SUPPRESS)
 
 def add_advanced_arguments(parser, show_help):
     parser.add_argument('--nr_mails', type=int, metavar='<int>',
@@ -1173,7 +1181,7 @@ def set_argparser(parser=None):
     hkml_common.add_date_arg(parser, '--until', 'show mails sent before this.')
 
     add_mails_filter_arguments(parser)
-    add_decoration_arguments(parser)
+    add_decoration_arguments(parser, show_help=False)
 
     # this option is handled by hkml_view_mails
     hkml_common.add_date_arg(parser, '--dim_old', 'dim mails older than this.')
