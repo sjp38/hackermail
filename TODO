@@ -35,8 +35,6 @@
 - When applying patch, 'Signed-off-by:' of the user is added to the commit with
   a blank line.  Investigate and fix.
 - Color the focused line on mails list?
-- Provide a better error message than traceback, for initial
-  'hkml list damon --fetch' with suggested setup that fails manifest fetching.
 - From mails list, selecting "Display Effects" menu crashes.  Fix it.
 - Periodic mails list refresh
   - May better to double confirm if this is what we really need, though.
