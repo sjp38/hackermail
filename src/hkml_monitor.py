@@ -266,6 +266,7 @@ def start_monitoring(ignore_mails_before):
         time.sleep(monitor_interval_gcd)
 
     os.remove(get_monitor_stop_file_path())
+    return 0
 
 def stop_monitoring():
     with open(get_monitor_stop_file_path(), 'w') as f:
@@ -306,7 +307,7 @@ def main(args):
                                     'or \'%Y-%m-%d %H:%M:%S\' format']))
                     exit(1)
 
-        start_monitoring(ignore_mails_before)
+        return start_monitoring(ignore_mails_before)
     elif args.action == 'stop':
         stop_monitoring()
 
