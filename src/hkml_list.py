@@ -18,8 +18,10 @@ import hkml_cache
 import hkml_common
 import hkml_fetch
 import hkml_open
+import hkml_patch
 import hkml_tag
 import hkml_view
+import hkml_view_mails
 
 def args_to_lists_cache_key(args):
     dict_ = copy.deepcopy(args.__dict__)
@@ -42,12 +44,15 @@ def args_to_lists_cache_key(args):
                      'ascend', 'hot', 'cols', 'url', 'hide_stat',
                      'runtime_profile', 'max_len_list', 'dim_old', 'fetch',
                      'ignore_cache', 'stdout', 'use_less', 'read_dates',
-                     'keywords_for'}:
+                     'keywords_for', 'patches_for'}:
             del dict_[k]
 
     # --keywords_for was introduced after v1.3.8, with default value 'each'
     if dict_['keywords_for'] == 'each':
         del dict_['keywords_for']
+    # --patches_for was introduced after v1.3.8, with default value None
+    if dict_['patches_for'] is None:
+        del dict_['patches_for']
 
     return json.dumps(dict_, sort_keys=True)
 
@@ -271,6 +276,7 @@ class MailListFilter:
     subject_keywords = None
     body_keywords = None
     keywords_for = None
+    patches_for = None
 
     def __init__(self, args):
         if args is None:
@@ -282,11 +288,13 @@ class MailListFilter:
         self.subject_keywords = args.subject_keywords
         self.body_keywords = args.body_keywords
         self.keywords_for = args.keywords_for
+        self.patches_for = args.patches_for
 
     def no_filter_set(self):
         return (not self.new_threads_only and not self.from_keywords and
             not self.from_to_keywords and not self.from_to_cc_keywords and
-            not self.subject_keywords and not self.body_keywords)
+            not self.subject_keywords and not self.body_keywords and
+            not self.patches_for)
 
     def mail_to_check_keywords(self, mail):
         if self.keywords_for == 'each':
@@ -314,6 +322,22 @@ class MailListFilter:
             return True
         return False
 
+    def should_filter_out_patches(self, mail):
+        if self.patches_for is None:
+            return False
+        if not 'patch' in mail.subject_tags:
+            return True
+        if self.patches_for in [['review'], ['pick']]:
+            if hkml_patch.is_cover_letter(mail):
+                return True
+            reviewed, err = hkml_view_mails.is_reviewed(mail)
+            if err is not None:
+                return False
+            filter_out_reviewed = self.patches_for == ['review']
+            return reviewed is not filter_out_reviewed
+        # TODO: implement reviewer
+        return False
+
     def should_filter_out(self, mail):
         if self.no_filter_set():
             return False
@@ -322,6 +346,9 @@ class MailListFilter:
             return True
 
         if self.should_filter_out_keywords(self.mail_to_check_keywords(mail)):
+            return True
+
+        if self.should_filter_out_patches(mail):
             return True
 
         return False
@@ -1086,6 +1113,14 @@ def add_mails_filter_arguments(parser):
     parser.add_argument(
             '--keywords_for', choices=['each', 'root'], default='each',
             help='keywords applying target mails')
+    parser.add_argument(
+            '--patches_for', metavar='<word>', nargs='+',
+            help=' '.join([
+                'Filter for patches.',
+                '"review" for patches not yet having Reviewed-by.',
+                '"pick" for patches having Reviewed-by.',
+                '"reviewer <reviewer>" for patches for specific reviewer.',
+                ]))
 
 def add_decoration_arguments(parser, show_help):
     parser.add_argument('--collapse', '-c', action='store_true',
