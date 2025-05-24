@@ -45,7 +45,8 @@ def main(args):
             exit(1)
         err = hkml_manifest.fetch_lore()
         if err:
-            print(err)
+            print('Fetching lore manifest failed (err).')
+            print('Please check if you have internet access to kernel.org.')
             os.rmdir('.hkm/archives')
             os.rmdir('.hkm')
             exit(1)
