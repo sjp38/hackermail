@@ -482,32 +482,32 @@ class MailDisplayEffect:
             rule, selections = data
             rule.effect = selections[int(answer) - 1].data
 
+        selections = [
+                _hkml_cli.Selection(
+                    text='Normal', handle_fn=handle_selection,
+                    data=hkml_view.ScrollableList.effect_normal),
+                _hkml_cli.Selection(
+                    text='Dim', handle_fn=handle_selection,
+                    data=hkml_view.ScrollableList.effect_dim),
+                _hkml_cli.Selection(
+                    text='Bold', handle_fn=handle_selection,
+                    data=hkml_view.ScrollableList.effect_bold),
+                _hkml_cli.Selection(
+                    text='Italic', handle_fn=handle_selection,
+                    data=hkml_view.ScrollableList.effect_italic),
+                _hkml_cli.Selection(
+                    text='Blink', handle_fn=handle_selection,
+                    data=hkml_view.ScrollableList.effect_blink),
+                _hkml_cli.Selection(
+                    text='Reverse', handle_fn=handle_selection,
+                    data=hkml_view.ScrollableList.effect_reverse),
+                _hkml_cli.Selection(
+                    text='Underline', handle_fn=handle_selection,
+                    data=hkml_view.ScrollableList.effect_underline),
+                ]
         _, selection, err = _hkml_cli.ask_selection(
                 desc='Select the display effect to apply.', prompt=None,
-                selections=[
-                    _hkml_cli.Selection(
-                        text='Normal', handle_fn=handle_selection,
-                        data=hkml_view.ScrollableList.effect_normal),
-                    _hkml_cli.Selection(
-                        text='Dim', handle_fn=handle_selection,
-                        data=hkml_view.ScrollableList.effect_dim),
-                    _hkml_cli.Selection(
-                        text='Bold', handle_fn=handle_selection,
-                        data=hkml_view.ScrollableList.effect_bold),
-                    _hkml_cli.Selection(
-                        text='Italic', handle_fn=handle_selection,
-                        data=hkml_view.ScrollableList.effect_italic),
-                    _hkml_cli.Selection(
-                        text='Blink', handle_fn=handle_selection,
-                        data=hkml_view.ScrollableList.effect_blink),
-                    _hkml_cli.Selection(
-                        text='Reverse', handle_fn=handle_selection,
-                        data=hkml_view.ScrollableList.effect_reverse),
-                    _hkml_cli.Selection(
-                        text='Underline', handle_fn=handle_selection,
-                        data=hkml_view.ScrollableList.effect_underline),
-                    ],
-                handler_common_data=[self, selections])
+                selections=selections, handler_common_data=[self, selections])
         if err is not None:
             self.effect = old_effect
             return
