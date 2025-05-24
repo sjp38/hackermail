@@ -1108,27 +1108,7 @@ def add_decoration_arguments(parser):
             '--max_len_list', metavar='<int>', type=int,
             help='max length of the list')
 
-def set_argparser(parser=None):
-    parser.description = 'list mails'
-    _hkml.set_manifest_option(parser)
-    # What mails to show
-    parser.add_argument('sources', metavar='<source of mails>', nargs='*',
-            help='  '.join([
-            'Source of mails to list.  Could be one of following types.',
-            '1) Name of a mailing list in the manifest file.',
-            '2) Message-Id of a mail in the thread to list.',
-            '3) Path to mbox file in the local filesyste.',
-            '4) Special keyword, \'clipboard\'.',
-            '\'clipboard\' means mbox string in the clipboard.',
-            '5) \'hkml tag\'-added tag.',
-            '6) If nothing is given, show last list output.',
-            ]))
-    parser.add_argument(
-            '--source_type', nargs='+',
-            choices=['mailing_list', 'msgid', 'mbox', 'clipboard', 'tag'],
-            help='type of sources')
-    hkml_common.add_date_arg(parser, '--since', 'show mails sent after this.')
-    hkml_common.add_date_arg(parser, '--until', 'show mails sent before this.')
+def add_advanced_arguments(parser):
     parser.add_argument('--nr_mails', type=int, metavar='<int>',
             help='number of mails to list')
     parser.add_argument('--min_nr_mails', metavar='<int>', type=int,
@@ -1146,16 +1126,6 @@ def set_argparser(parser=None):
                         help='print statistics only')
     parser.add_argument('--stat_authors', action='store_true',
                         help='print mail authors statistics')
-
-    add_mails_filter_arguments(parser)
-    add_decoration_arguments(parser)
-
-    # this option is handled by hkml_view_mails
-    hkml_common.add_date_arg(parser, '--dim_old', 'dim mails older than this.')
-
-    # misc
-    parser.add_argument('--fetch', action='store_true',
-            help='fetch mails before listing')
     parser.add_argument('--ignore_cache', action='store_true',
             help='ignore cached previous list output')
     parser.add_argument('--stdout', action='store_true',
@@ -1164,5 +1134,38 @@ def set_argparser(parser=None):
                         help='use \'less\' for output paging')
     parser.add_argument('--read_dates', action='store_true',
                         help='print last dates that read the list')
+    _hkml.set_manifest_option(parser)
+
+def set_argparser(parser=None):
+    parser.description = 'list mails'
+    # What mails to show
+    parser.add_argument('sources', metavar='<source of mails>', nargs='*',
+            help='  '.join([
+            'Source of mails to list.  Could be one of following types.',
+            '1) Name of a mailing list in the manifest file.',
+            '2) Message-Id of a mail in the thread to list.',
+            '3) Path to mbox file in the local filesyste.',
+            '4) Special keyword, \'clipboard\'.',
+            '\'clipboard\' means mbox string in the clipboard.',
+            '5) \'hkml tag\'-added tag.',
+            '6) If nothing is given, show last list output.',
+            ]))
+    parser.add_argument(
+            '--source_type', nargs='+',
+            choices=['mailing_list', 'msgid', 'mbox', 'clipboard', 'tag'],
+            help='type of sources')
+    parser.add_argument('--fetch', action='store_true',
+            help='fetch mails before listing')
+    hkml_common.add_date_arg(parser, '--since', 'show mails sent after this.')
+    hkml_common.add_date_arg(parser, '--until', 'show mails sent before this.')
+
+    add_mails_filter_arguments(parser)
+    add_decoration_arguments(parser)
+
+    # this option is handled by hkml_view_mails
+    hkml_common.add_date_arg(parser, '--dim_old', 'dim mails older than this.')
+
+    add_advanced_arguments(parser)
+
     parser.add_argument('--options_for', choices=['filtering', 'decoration'],
                         help='show help messages of options for given purpose')
