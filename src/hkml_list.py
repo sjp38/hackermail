@@ -1112,12 +1112,12 @@ def add_decoration_arguments(parser):
 
 def add_advanced_arguments(parser):
     parser.add_argument('--nr_mails', type=int, metavar='<int>',
-            help='number of mails to list')
+                        help='number of mails to list')
     parser.add_argument('--min_nr_mails', metavar='<int>', type=int,
-            default=50,
-            help='minimum number of mails to list')
+                        default=50,
+                        help='minimum number of mails to list')
     parser.add_argument('--max_nr_mails', metavar='<int>', type=int,
-            help='maximum number of mails to list')
+                        help='maximum number of mails to list')
     parser.add_argument('--dont_find_ancestors_from_cache',
                         action='store_false',
                         dest='do_find_ancestors_from_cache',
@@ -1129,9 +1129,9 @@ def add_advanced_arguments(parser):
     parser.add_argument('--stat_authors', action='store_true',
                         help='print mail authors statistics')
     parser.add_argument('--ignore_cache', action='store_true',
-            help='ignore cached previous list output')
+                        help='ignore cached previous list output')
     parser.add_argument('--stdout', action='store_true',
-            help='print to stdout instead of using the pager')
+                        help='print to stdout instead of using the pager')
     parser.add_argument('--use_less', action='store_true',
                         help='use \'less\' for output paging')
     parser.add_argument('--read_dates', action='store_true',
