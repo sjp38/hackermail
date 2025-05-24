@@ -41,8 +41,14 @@ def args_to_lists_cache_key(args):
                      'body_keywords', 'new', 'collapse', 'sort_threads_by',
                      'ascend', 'hot', 'cols', 'url', 'hide_stat',
                      'runtime_profile', 'max_len_list', 'dim_old', 'fetch',
-                     'ignore_cache', 'stdout', 'use_less', 'read_dates'}:
+                     'ignore_cache', 'stdout', 'use_less', 'read_dates',
+                     'keywords_for'}:
             del dict_[k]
+
+    # --keywords_for was introduced after v1.3.8, with default value 'each'
+    if dict_['keywords_for'] == 'each':
+        del dict_['keywords_for']
+
     return json.dumps(dict_, sort_keys=True)
 
 def map_idx_to_mail_cache_key(mail, mail_idx_key_map):
@@ -264,6 +270,7 @@ class MailListFilter:
     from_to_cc_keywords = None
     subject_keywords = None
     body_keywords = None
+    keywords_for = None
 
     def __init__(self, args):
         if args is None:
@@ -274,11 +281,20 @@ class MailListFilter:
         self.from_to_cc_keywords = args.from_to_cc_keywords
         self.subject_keywords = args.subject_keywords
         self.body_keywords = args.body_keywords
+        self.keywords_for = args.keywords_for
 
     def no_filter_set(self):
         return (not self.new_threads_only and not self.from_keywords and
             not self.from_to_keywords and not self.from_to_cc_keywords and
             not self.subject_keywords and not self.body_keywords)
+
+    def mail_to_check_keywords(self, mail):
+        if self.keywords_for == 'each':
+            return mail
+        elif self.keywords_for == 'root':
+            while mail.parent_mail is not None:
+                mail = mail.parent_mail
+            return mail
 
     def should_filter_out_keywords(self, mail):
         if not keywords_in(self.from_keywords, mail.get_field('from')):
@@ -304,7 +320,8 @@ class MailListFilter:
 
         if self.new_threads_only and mail.get_field('in-reply-to'):
             return True
-        if self.should_filter_out_keywords(mail):
+
+        if self.should_filter_out_keywords(self.mail_to_check_keywords(mail)):
             return True
 
         return False
@@ -1064,6 +1081,9 @@ def add_mails_filter_arguments(parser):
             help='list mails containing the keyword in their body')
     parser.add_argument('--new', '-n', action='store_true',
             help='list new threads only')
+    parser.add_argument(
+            '--keywords_for', choices=['each', 'root'], default='each',
+            help='keywords applying target mails')
 
 def add_decoration_arguments(parser):
     parser.add_argument('--collapse', '-c', action='store_true',
