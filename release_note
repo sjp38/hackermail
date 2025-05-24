@@ -7,6 +7,7 @@ v1.3.9
   receive Reviewed-by: yet), pick (received Reviewed-by:), or for specific
   reviewer (touch files for the reviewer, according to MAINTAINERS).
 - hkml list: implement '--keywords' for replacing '*_keywords' options.
+- hkml list: cleanup help message
 
 v1.3.8
 - Show mail context of current line for current mail's original line, too
