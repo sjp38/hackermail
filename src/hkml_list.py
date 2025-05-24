@@ -335,7 +335,21 @@ class MailListFilter:
                 return False
             filter_out_reviewed = self.patches_for == ['review']
             return reviewed is not filter_out_reviewed
-        # TODO: implement reviewer
+        if self.patches_for[0] == 'reviewer':
+            if not os.path.isfile('MAINTAINERS'):
+                print('MAINTAINERS file not found!!')
+                return False
+            with open('MAINTAINERS', 'r') as f:
+                maintainers_file_content = f.read()
+            reviewer = ' '.join(self.patches_for[1:])
+            files_for_reviewer = hkml_view_mails.get_files_for_reviewer(
+                    reviewer, maintainers_file_content)
+            if not 'patch' in mail.subject_tags:
+                return True
+            if hkml_patch.is_cover_letter(mail):
+                return True
+            if not hkml_view_mails.patch_is_touching(mail, files_for_reviewer):
+                return True
         return False
 
     def should_filter_out(self, mail):
