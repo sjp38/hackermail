@@ -1089,26 +1089,26 @@ def add_mails_filter_arguments(parser):
 
 def add_decoration_arguments(parser):
     parser.add_argument('--collapse', '-c', action='store_true',
-            help='collapse threads')
-    parser.add_argument('--sort_threads_by', nargs='+',
+                        help='collapse threads')
+    parser.add_argument(
+            '--sort_threads_by', nargs='+', default=['last_date'],
             choices=['first_date', 'last_date', 'nr_replies', 'nr_comments'],
-            default=['last_date'],
             help='threads sort keys')
     parser.add_argument('--ascend', action='store_true',
-            help='sort threads in ascending order')
-    parser.add_argument('--hot', action='store_true',
+                        help='sort threads in ascending order')
+    parser.add_argument(
+            '--hot', action='store_true',
             help='show threads having more comments and later updated first.')
     parser.add_argument('--cols', metavar='<int>', type=int,
-            help='number of columns for each line')
+                        help='number of columns for each line')
     parser.add_argument('--url', action='store_true',
-            help='print URLs of the mails')
+                        help='print URLs of the mails')
     parser.add_argument('--hide_stat', action='store_true',
-            help='hide stat of the mails')
+                        help='hide stat of the mails')
     parser.add_argument('--runtime_profile', action='store_true',
-            help='print runtime profiling result')
-    parser.add_argument(
-            '--max_len_list', metavar='<int>', type=int,
-            help='max length of the list')
+                        help='print runtime profiling result')
+    parser.add_argument('--max_len_list', metavar='<int>', type=int,
+                        help='max length of the list')
 
 def add_advanced_arguments(parser, show_help):
     parser.add_argument('--nr_mails', type=int, metavar='<int>',
