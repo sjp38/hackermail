@@ -326,31 +326,6 @@ class MailListFilter:
             setattr(self, key, value)
         return self
 
-def should_filter_out(mail, ls_range, new_threads_only,
-                      from_keywords, from_to_keywords,
-                      from_to_cc_keywords, subject_keywords, body_keywords):
-    if ls_range is not None and not mail.pridx:
-        return True
-    if new_threads_only and mail.get_field('in-reply-to'):
-        return True
-    if not keywords_in(from_keywords, mail.get_field('from')):
-        return True
-    if not keywords_in(
-            from_to_keywords,
-            '%s %s' % (mail.get_field('from'), mail.get_field('to'))):
-        return True
-    if not keywords_in(
-            from_to_cc_keywords,
-            '%s %s %s' % (mail.get_field('from'), mail.get_field('to'),
-                          mail.get_field('cc'))):
-        return True
-    if not keywords_in(subject_keywords, mail.subject):
-        return True
-    if not keywords_in(body_keywords, mail.get_field('body')):
-        return True
-
-    return False
-
 def format_stat(mails_to_show, stat_authors):
     nr_threads = 0
     nr_new_threads = 0
