@@ -375,7 +375,6 @@ def do_export(data, answer, selection):
 
 def export_mails(c, slist):
     idx = focused_mail_idx(slist)
-    hkml_view.shell_mode_start(slist)
 
     q = _hkml_cli.ask_selection(
             desc='Focused mail: %d' % idx,
@@ -389,7 +388,6 @@ def export_mails(c, slist):
                 _hkml_cli.Selection(
                     'Export all mails of the list', handle_fn=do_export)
                 ])
-    hkml_view.shell_mode_end(slist)
 
 def menu_open_mail(slist, answer, selection):
     hkml_view.shell_mode_end(slist)
@@ -876,9 +874,7 @@ def menu_new_list(slist, answer, selection):
     gen_show_mails_list(slist.screen, args)
 
 def menu_export_mails(slist, answer, selection):
-    hkml_view.shell_mode_end(slist)
     export_mails(None, slist)
-    hkml_view.shell_mode_start(slist)
 
 def menu_save_as(slist, answer, selection):
     hkml_view.save_as('\n'.join(slist.lines))
