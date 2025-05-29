@@ -141,6 +141,8 @@ def get_mbox(gitid=None, gitdir=None, key=None):
     return None
 
 def skip_overwrite(mail, cache, key):
+    if not key in cache:
+        return True
     cached_kvpair = cache[key]
     mail_kvpair = mail.to_kvpairs()
     for mkey in mail_kvpair.keys():
