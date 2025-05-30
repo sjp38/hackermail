@@ -39,3 +39,4 @@
   - May better to double confirm if this is what we really need, though.
     'hkml monitor' can be used for a similar purpose.
 - Support "-N days" input for date formats
+- --dim_old on interactive mode is not working (just silently not working)
