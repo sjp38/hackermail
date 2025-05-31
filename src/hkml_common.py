@@ -3,7 +3,32 @@
 import datetime
 import subprocess
 
+def parse_date_diff(date_str, now):
+    # format: {-,+}[0-9]+ {days,hours,minutes}
+    # e.g., -2 days, +3 days, +1 hours
+    fields = date_str.split()
+    if len(fields) != 2:
+        return None
+    nr, unit = fields
+    try:
+        nr = int(nr)
+    except:
+        return None
+    if not unit in ['days', 'hours', 'minutes']:
+        return None
+    if unit == 'days':
+        timedelta = datetime.timedelta(days=nr)
+    elif unit == 'hours':
+        timedelta = datetime.timedelta(hours=nr)
+    elif unit == 'minutes':
+        timedelta = datetime.timedelta(minutes=nr)
+    return now + timedelta
+
 def parse_date(date_str):
+    now = datetime.datetime.now().astimezone()
+    the_date = parse_date_diff(date_str, now)
+    if the_date is not None:
+        return the_date, None
     for s in ['-', ':', '/']:
         date_str = date_str.replace(s, ' ')
     fields = date_str.split()
