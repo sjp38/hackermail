@@ -526,9 +526,8 @@ def menu_effect_mails(slist, answer, selection):
     else:
         old_effect = None
 
-    slist.data.display_rule = MailDisplayEffect(
-            interactive=True, old_effect=old_effect)
-    slist.data.display_effects = {}
+    slist.data.update_display_rule(MailDisplayEffect(
+        interactive=True, old_effect=old_effect))
 
 def mk_dim_old_rule(max_date):
     effect_rule = MailDisplayEffect(interactive=False)
@@ -603,8 +602,7 @@ def menu_dim_old_mails(slist, answer, selection):
         return
     print('Dim-display mails older than %s' % max_date)
 
-    slist.data.display_rule = mk_dim_old_rule(max_date)
-    slist.data.display_effects = {}
+    slist.data.update_display_rule(mk_dim_old_rule(max_date))
 
 def menu_reply_mail(slist, answer, selection):
     hkml_view.shell_mode_end(slist)
@@ -653,6 +651,11 @@ class MailsViewData:
         self.display_rule = display_rule
         self.collapsed_mails = {}
         self.last_cursor_position = {}
+        self.display_effects = {}
+
+    def update_display_rule(rule):
+        self.display_rule = rule
+        # clear display decisions per line that made with old rule
         self.display_effects = {}
 
 def menu_refresh_mails(slist, answer, selection):
