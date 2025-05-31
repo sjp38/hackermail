@@ -40,3 +40,4 @@
     'hkml monitor' can be used for a similar purpose.
 - Support "-N days" input for date formats
 - --dim_old on interactive mode is not working (just silently not working)
+- Support --keywords_for whole_thread
