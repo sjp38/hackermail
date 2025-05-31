@@ -35,7 +35,6 @@ def parse_date(date_str):
     if not len(fields) in [5, 3, 2, 1]:
         return None, 'unexpected number of fields (%d)' % len(fields)
     if fields[0] == 'yesterday':
-        now = datetime.datetime.now().astimezone()
         yesterday = now - datetime.timedelta(1)
         fields = [yesterday.year, yesterday.month, yesterday.day] + fields[1:]
     try:
@@ -48,7 +47,6 @@ def parse_date(date_str):
         # 2: hour minute
         return None, 'only 5, 3, or 2 numbers are supported date input'
     if len(numbers) == 2:
-        now = datetime.datetime.now().astimezone()
         numbers = [now.year, now.month, now.day] + numbers
     try:
         return datetime.datetime(*numbers).astimezone(), None
