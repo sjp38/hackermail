@@ -331,7 +331,7 @@ class MailListFilter:
                 mail = mail.parent_mail
             return mail
 
-    def should_filter_out_keywords(self, mail):
+    def should_filter_out_keywords_one(self, mail):
         if not keywords_in(self.from_keywords, mail.get_field('from')):
             return True
         if not keywords_in(
@@ -348,6 +348,13 @@ class MailListFilter:
         if not keywords_in(self.body_keywords, mail.get_field('body')):
             return True
         return False
+
+    def should_filter_out_keywords(self, mails):
+        # if any mail is ok to filter in, filter in.
+        for mail in mails:
+            if not self.should_filter_out_keywords_one(mail):
+                return False
+        return True
 
     def should_filter_out_patches(self, mail):
         if self.patches_for is None:
@@ -386,7 +393,7 @@ class MailListFilter:
         if self.new_threads_only and mail.get_field('in-reply-to'):
             return True
 
-        if self.should_filter_out_keywords(self.mail_to_check_keywords(mail)):
+        if self.should_filter_out_keywords([self.mail_to_check_keywords(mail)]):
             return True
 
         if self.should_filter_out_patches(mail):
