@@ -528,6 +528,7 @@ def menu_effect_mails(slist, answer, selection):
 
     slist.data.display_rule = MailDisplayEffect(
             interactive=True, old_effect=old_effect)
+    slist.data.display_effects = {}
 
 def mk_dim_old_rule(max_date):
     effect_rule = MailDisplayEffect(interactive=False)
@@ -600,8 +601,10 @@ def menu_dim_old_mails(slist, answer, selection):
     if err is not None:
         print(err)
         return
+    print('Dim-display mails older than %s' % max_date)
 
     slist.data.display_rule = mk_dim_old_rule(max_date)
+    slist.data.display_effects = {}
 
 def menu_reply_mail(slist, answer, selection):
     hkml_view.shell_mode_end(slist)
