@@ -88,11 +88,12 @@ def parse_date_arg(tokens):
 
 def date_format_description():
     return ' '.join([
-        'Date arguments format is "YYYY MM DD HH MM" or "commit".',
-        '"-", "/", ":" on date input are treated as space.',
-        '"YYYY MM DD" or "HH MM" also supported.',
-        '\'yesterday\' can be used instead of "YYYY MM DD".',
-        'If a commit is given, its commit date will be used.',
+        'For date argument, following formats are supported/.',
+        'Relative date ({-,+}[0-9]+ {days,hours,minutes}), e.g., -3 days.',
+        'Explicit date ("YYYY MM DD", "YYYY MM DD HH MM", or "HH MM").',
+        '"-", "/", ":" on explicit daste input are treated as space.',
+        '\'yesterday\'.',
+        'Commit (the commit date), e.g., v6.14).'
         ])
 
 def add_date_arg(parser, option_name, help_msg):
