@@ -323,6 +323,11 @@ class MailListFilter:
             not self.subject_keywords and not self.body_keywords and
             not self.patches_for)
 
+    def thread_mails_from(self, mail, mails):
+        mails.append(mail)
+        for reply in mail.replies:
+            self.thread_mails_from(reply, mails)
+
     def mails_to_check_keywords(self, mail):
         if self.keywords_for == 'each':
             return [mail]
@@ -330,6 +335,12 @@ class MailListFilter:
             while mail.parent_mail is not None:
                 mail = mail.parent_mail
             return [mail]
+        elif self.keywords_for == 'thread':
+            while mail.parent_mail is not None:
+                mail = mail.parent_mail
+            mails = []
+            self.thread_mails_from(mail, mails)
+            return mails
 
     def should_filter_out_keywords_one(self, mail):
         if not keywords_in(self.from_keywords, mail.get_field('from')):
@@ -1167,7 +1178,8 @@ def add_mails_filter_arguments(parser):
     parser.add_argument('--new', '-n', action='store_true',
             help='list new threads only')
     parser.add_argument(
-            '--keywords_for', choices=['each', 'root'], default='each',
+            '--keywords_for', choices=['each', 'root', 'thread'],
+            default='each',
             help='keywords applying target mails')
     parser.add_argument(
             '--patches_for', metavar='<word>', nargs='+',
