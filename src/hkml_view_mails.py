@@ -732,6 +732,26 @@ def menu_search_mail_body_keywords(handler_common_data, user_input, selection):
             searched_lines. append(row)
     handle_searched_lines(slist, searched_lines)
 
+def menu_search_mail_from(handler_common_data, user_input, selection):
+    slist = handler_common_data
+
+    searched_lines = []
+    last_mail = None
+    for row in range(0, len(slist.lines)):
+        mail = mail_of_row(slist, row)
+        if mail is None or mail == last_mail:
+            continue
+        sender = mail.get_field('from')
+        searched = False
+        if slist.data.list_args.from_keywords is not None:
+            for keyword in slist.data.list_args.from_keywords:
+                if hkml_list.keywords_in(keyword, sender):
+                    searched = True
+                    continue
+            if searched:
+                searched_lines.append(row)
+    handle_searched_lines(slist, searched_lines)
+
 def reviewed_by_replies(replies):
     if replies is None or len(replies) == 0:
         return False
@@ -869,6 +889,10 @@ def menu_search(slist, answer, selection):
             _hkml_cli.Selection(
                 text='Patches having Reviewed-by:',
                 handle_fn=menu_search_reviewed_by,
+                data=True),
+            _hkml_cli.Selection(
+                text='Patches from Filtered by From:',
+                handle_fn=menu_search_mail_from,
                 data=True),
             ]
     if os.path.isfile('MAINTAINERS'):
