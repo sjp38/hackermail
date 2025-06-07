@@ -2,8 +2,9 @@ This file contains major changes in each version since v1.0.0
 
 v1.4.0
 - Support relative date format (e.g., -4 days)
-- Fix mails display effects menu on the interactive list
-- Support thread level filtering (--keywords_for thread)
+- hkml list: Support thread level filtering (--keywords_for thread)
+- hkml list: Fix mails display effects
+- hkml list: Support searching --from selected mails
 
 v1.3.9
 - hkml list: implement '--keywords_for root' to apply keywords filtering to
