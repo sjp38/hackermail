@@ -891,7 +891,7 @@ def menu_search(slist, answer, selection):
                 handle_fn=menu_search_reviewed_by,
                 data=True),
             _hkml_cli.Selection(
-                text='Patches from Filtered by From:',
+                text='Search mails matching --from:',
                 handle_fn=menu_search_mail_from,
                 data=True),
             ]
