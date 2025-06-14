@@ -4,11 +4,8 @@
 
 import os
 import subprocess
-import tempfile
 
-import _hkml
 import _hkml_cli
-import _hkml_list_cache
 import hkml_cache
 import hkml_common
 import hkml_list

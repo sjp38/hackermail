@@ -1,13 +1,11 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: GPL-2.0
 
-import argparse
 import os
 import subprocess
 
 import _hkml
 import _hkml_list_cache
-import hkml_list
 
 
 def fetch_mail(mail_lists, quiet=False, epochs=1):

@@ -3,8 +3,6 @@
 
 import argparse
 import os
-import subprocess
-import sys
 
 import _hkml
 import hkml_cache
@@ -13,7 +11,6 @@ import hkml_fetch
 import hkml_forward
 
 import hkml_init
-import hkml_interactive
 import hkml_list
 import hkml_manifest
 import hkml_monitor

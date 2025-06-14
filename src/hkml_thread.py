@@ -2,8 +2,6 @@
 # SPDX-License-Identifier: GPL-2.0
 
 import os
-import subprocess
-import tempfile
 
 import _hkml
 import _hkml_list_cache

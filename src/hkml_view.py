@@ -5,13 +5,10 @@ import curses
 import datetime
 import os
 import subprocess
-import sys
 import tempfile
 import time
 
-import _hkml
 import _hkml_cli
-import hkml_list
 import hkml_view_mails
 import hkml_view_text
 import hkml_write
