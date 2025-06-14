@@ -735,6 +735,42 @@ def warn_old_epochs(mails, since, oldest_epoch):
     if len(mails) == 0 or mails[-1].date - since > datetime.timedelta(months=1):
         print('you might need to fetch old epochs')
 
+def get_mails_gitlog_lines(mdir, since, until, min_nr_mails, max_nr_mails,
+                           commits_range):
+    lines = []
+    if not os.path.isdir(mdir):
+        return lines
+    base_cmd = ['git', '--git-dir=%s' % mdir, 'log',
+            '--date=iso-strict', '--pretty=%H %ad %s']
+    if commits_range is not None:
+        base_cmd += [commits_range]
+
+    cmd = base_cmd + []
+
+    if since is not None:
+        cmd += ['--since=%s' % since.strftime('%Y-%m-%d %H:%M:%S')]
+    if until:
+        cmd += ['--until=%s' % until.strftime('%Y-%m-%d %H:%M:%S')]
+    if max_nr_mails is not None:
+        cmd += ['-n', max_nr_mails]
+    try:
+        lines = _hkml.cmd_lines_output(cmd)
+    except:
+        # maybe commits_range is given, but the commit is not in this mdir
+        pass
+
+    if min_nr_mails is not None and len(lines) < min_nr_mails:
+        cmd = base_cmd + ['-n', '%d' % min_nr_mails]
+        if until:
+            cmd += ['--until=%s' % until]
+        try:
+            lines = _hkml.cmd_lines_output(cmd)
+        except:
+            # maybe commits_range is given, but the commit is not in this
+            # mdir
+            pass
+    return lines
+
 def get_mails_from_git(mail_list, since, until,
                        min_nr_mails, max_nr_mails, commits_range=None):
     lines = []
@@ -744,39 +780,8 @@ def get_mails_from_git(mail_list, since, until,
 
     mails = []
     for mdir in mdirs:
-        lines = []
-        if not os.path.isdir(mdir):
-            break
-        base_cmd = ['git', '--git-dir=%s' % mdir, 'log',
-                '--date=iso-strict', '--pretty=%H %ad %s']
-        if commits_range is not None:
-            base_cmd += [commits_range]
-
-        cmd = base_cmd + []
-
-        if since is not None:
-            cmd += ['--since=%s' % since.strftime('%Y-%m-%d %H:%M:%S')]
-        if until:
-            cmd += ['--until=%s' % until.strftime('%Y-%m-%d %H:%M:%S')]
-        if max_nr_mails is not None:
-            cmd += ['-n', max_nr_mails]
-        try:
-            lines = _hkml.cmd_lines_output(cmd)
-        except:
-            # maybe commits_range is given, but the commit is not in this mdir
-            pass
-
-        if min_nr_mails is not None and len(lines) < min_nr_mails:
-            cmd = base_cmd + ['-n', '%d' % min_nr_mails]
-            if until:
-                cmd += ['--until=%s' % until]
-            try:
-                lines = _hkml.cmd_lines_output(cmd)
-            except:
-                # maybe commits_range is given, but the commit is not in this
-                # mdir
-                pass
-
+        lines = get_mails_gitlog_lines(mdir, since, until, min_nr_mails,
+                                       max_nr_mails, commits_range)
         for line in lines:
             mail = git_log_output_line_to_mail(line, mdir)
             # mbox can be empty string if the commit is invalid one.
