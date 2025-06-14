@@ -735,6 +735,58 @@ def warn_old_epochs(mails, since, oldest_epoch):
     if len(mails) == 0 or mails[-1].date - since > datetime.timedelta(months=1):
         print('you might need to fetch old epochs')
 
+def gitlog_date_misordered(mdir, oldest_commit):
+    cmd = ['git', '--git-dir=%s' % mdir, 'log', '--date=iso-strict',
+           '--pretty=%H %ad %s', '%s^' % oldest_commit, '-2']
+    two_more_logs = _hkml.cmd_lines_output(cmd)
+    if len(two_more_logs) != 2:
+        return False
+    newer = datetime.datetime.fromisoformat(
+            two_more_logs[0].split()[1]).astimezone()
+    older = datetime.datetime.fromisoformat(
+            two_more_logs[1].split()[1]).astimezone()
+    return newer < older
+
+def handle_gitlog_date_misorders(
+        lines, mdir, since, commits_range, max_nr_mails):
+    if since is None:
+        return
+    if commits_range is not None:
+        return
+    if max_nr_mails is not None and len(lines) == max_nr_mails:
+        return
+    if len(lines) == 0:
+        return lines
+    oldest_fields = lines[-1].split()
+    oldest_commit = oldest_fields[0]
+    if not gitlog_date_misordered(mdir, oldest_commit):
+        return lines
+
+    print('# date misorder found...')
+
+    base_cmd = ['git', '--git-dir=%s' % mdir, 'log',
+            '--date=iso-strict', '--pretty=%H %ad %s']
+    while True:
+        more_logs = _hkml.cmd_lines_output(
+                base_cmd + ['%s^' % oldest_commit, '-300'])
+        if len(more_logs) == 0:
+            break
+        more_oldest_fields = more_logs[-1].split()
+        more_oldest_date = datetime.datetime.fromisoformat(
+                more_oldest_fields[1]).astimezone()
+        for line in more_logs:
+            the_fields = line.split()
+            the_date = datetime.datetime.fromisoformat(
+                    the_fields[1]).astimezone()
+            if the_date > since:
+                lines.append(line)
+        oldest_commit = more_oldest_fields[0]
+        oldest_date = datetime.datetime.fromisoformat(
+                more_oldest_fields[1]).astimezone()
+        if oldest_date < since and not gitlog_date_misordered(
+                mdir, oldest_commit):
+            break
+
 def get_mails_gitlog_lines(mdir, since, until, min_nr_mails, max_nr_mails,
                            commits_range):
     lines = []
@@ -769,6 +821,9 @@ def get_mails_gitlog_lines(mdir, since, until, min_nr_mails, max_nr_mails,
             # maybe commits_range is given, but the commit is not in this
             # mdir
             pass
+
+    handle_gitlog_date_misorders(
+            lines, mdir, since, commits_range, max_nr_mails)
     return lines
 
 def get_mails_from_git(mail_list, since, until,
