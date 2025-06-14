@@ -23,18 +23,10 @@
   - 'patch format --series' creates 'series' file together
      - 'series' file contains name of patches in order, and baseline commit
   - 'patch apply' should be able to receive the 'series' file and assemble tree back
-- Support tagging patch series easier
 - Let mails cache reading delay explainable
   - E.g., when cached list output is used and --dim_old is set, dim handler
     reads mail's sent date, and it makes delay if mail cache is big.  Same for
     first mail read.  This makes user experience bad.  Think about improvement.
 - Let adding quick note on viewer
   - The notes should be automatically added on reply draft.
-- Let easier browsing on long mail
-  - Let lines folding?
-- When applying patch, 'Signed-off-by:' of the user is added to the commit with
-  a blank line.  Investigate and fix.
 - Color the focused line on mails list?
-- Periodic mails list refresh
-  - May better to double confirm if this is what we really need, though.
-    'hkml monitor' can be used for a similar purpose.
