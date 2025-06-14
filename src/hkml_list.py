@@ -362,6 +362,8 @@ class MailListFilter:
 
     def should_filter_out_keywords(self, mails):
         # if any mail is ok to filter in, filter in.
+        if mails is None:
+            return True
         for mail in mails:
             if not self.should_filter_out_keywords_one(mail):
                 return False
