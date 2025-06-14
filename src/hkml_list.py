@@ -771,15 +771,13 @@ def handle_gitlog_date_misorders(
                 base_cmd + ['%s^' % oldest_commit, '-300'])
         if len(more_logs) == 0:
             break
-        more_oldest_fields = more_logs[-1].split()
-        more_oldest_date = datetime.datetime.fromisoformat(
-                more_oldest_fields[1]).astimezone()
         for line in more_logs:
             the_fields = line.split()
             the_date = datetime.datetime.fromisoformat(
                     the_fields[1]).astimezone()
             if the_date > since:
                 lines.append(line)
+        more_oldest_fields = more_logs[-1].split()
         oldest_commit = more_oldest_fields[0]
         oldest_date = datetime.datetime.fromisoformat(
                 more_oldest_fields[1]).astimezone()
