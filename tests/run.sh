@@ -7,13 +7,14 @@ python_binary="python3"
 
 if [ "$1" == "coverage" ]; then
 
-        if [ -z "$(which coverage 2>/dev/null)" ]; then
+	if ! python3 -m coverage help &> /dev/null
+	then
                 echo "coverage not found, install it with 'pip3 install coverage'" >&2
                 exit 1
         fi
 
-        coverage erase
-        python_binary="coverage run -a"
+        python3 -m coverage erase
+        python_binary="python3 -m coverage run -a"
 fi
 
 for test_file in "$bindir"/test_*.py
@@ -28,6 +29,6 @@ do
 done
 
 if [ "$1" == "coverage" ]; then
-        coverage xml
-        coverage report
+        python3 -m coverage xml
+        python3 -m coverage report
 fi
