@@ -8,3 +8,17 @@ considered the same as that of the linux kernel development process.
 
 [1] https://docs.kernel.org/process/index.html
 [2] https://docs.kernel.org/process/submitting-patches.html#sign-your-work-the-developer-s-certificate-of-origin
+
+Running tests and coverage
+==========================
+
+To run tests, execute the following command:
+    $ ./tests/run.sh
+
+To run tests with coverage gathering, you will need to install the `coverage` Python package:
+    $ pip3 install coverage
+
+Once installed, you can get coverage report by executing the following command:
+    $ ./tests/run.sh coverage
+
+CI prints the coverage report to stdout
