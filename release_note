@@ -2,6 +2,8 @@ This file contains major changes in each version since v1.0.0
 
 v1.4.1
 - Handle date-misordered public-inbox git logs
+- Add GitHub CI
+- Add test coverage infra to tests/run.sh
 
 v1.4.0
 - Support relative date format (e.g., -4 days)
