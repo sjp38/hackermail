@@ -9,7 +9,7 @@ if [ "$1" == "coverage" ]; then
 
 	if ! python3 -m coverage help &> /dev/null
 	then
-                echo "coverage not found, install it with 'pip3 install coverage'" >&2
+                echo "coverage not found, install it (e.g., 'pip3 install coverage')" >&2
                 exit 1
         fi
 
