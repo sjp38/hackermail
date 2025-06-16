@@ -1106,14 +1106,15 @@ def args_to_mails_list_data(args):
         for source in args.sources:
             _hkml_list_cache.invalidate_cached_outputs(source)
 
+    now = datetime.datetime.now().astimezone()
     if args.since is None:
-        since = datetime.datetime.now() - datetime.timedelta(days=3)
+        since = now - datetime.timedelta(days=3)
     else:
         since, err = hkml_common.parse_date_arg(args.since)
         if err is not None:
             return None, 'parsing --since fail (%s)' % err
     if args.until is None:
-        until = datetime.datetime.now() + datetime.timedelta(days=1)
+        until = now + datetime.timedelta(days=1)
     else:
         until, err = hkml_common.parse_date_arg(args.until)
         if err is not None:
