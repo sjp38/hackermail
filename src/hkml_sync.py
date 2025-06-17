@@ -38,7 +38,7 @@ def setup_git(hkml_dir, remote):
     git_cmd = ['git', '-C', hkml_dir]
     if subprocess.call(git_cmd + ['init']) != 0:
         print('git initializing failed')
-        eixt(1)
+        exit(1)
     if subprocess.call(
             git_cmd + ['remote', 'add', 'sync-target', remote]) != 0:
         print('adding remote failed')

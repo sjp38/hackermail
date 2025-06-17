@@ -24,7 +24,7 @@ def draft_or_sent_mail(draft_file, msgid):
     for line in header_lines:
         if line.startswith('Date: '):
             has_date = True
-        if line.startswith('Messagge-ID: '):
+        if line.startswith('Message-ID: '):
             has_msgid = True
         if line.startswith('From: '):
             has_from = True
@@ -52,7 +52,7 @@ def handle_user_edit_mistakes(tmp_path):
     for line in header.split('\n'):
         if line in [
                 'To: /* write recipients here and REMOVE this comment */',
-                'Cc: /* wrtite cc recipients here and REMOVE this comment */']:
+                'Cc: /* write cc recipients here and REMOVE this comment */']:
             continue
         header_lines.append(line)
     header = '\n'.join(header_lines)
