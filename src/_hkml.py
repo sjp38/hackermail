@@ -148,7 +148,7 @@ class Mail:
             self.__fields['in-reply-to'] = None
             self.__fields['in-reply-to-msgid'] = None
         else:
-            # some mail puts infomration in addition to message id on in-reply-to
+            # some mail puts information in addition to message id on in-reply-to
             # header.  E.g., 87ikvefswp.fsf@yhuang6-desk2.ccr.corp.intel.com
             self.__fields['in-reply-to-msgid'] = self.__fields[
                     'in-reply-to'].split()[0]
@@ -206,7 +206,7 @@ class Mail:
                 'mbox': self.mbox}
 
     def set_field(self, field_name, value):
-        # note that this doesn't update mbox field.  To format te mail
+        # note that this doesn't update mbox field.  To format the mail
         # correctly, user should use get_field() for each field, like
         # hkml_open.mail_display_str()
         self.__fields[field_name.lower()] = value
@@ -302,6 +302,7 @@ class Mail:
     def parse_mbox_header(self, parsed, mbox_lines):
         # todo: use mailbox.Message.items()
         in_header = True
+        key = None
         for idx, line in enumerate(mbox_lines):
             if in_header:
                 if line and line[0] in [' ', '\t'] and key:
@@ -346,7 +347,7 @@ class Mail:
             if tokens[-2:] == ['[thread', 'overview]']:
                 parsed['date'] = ' '.join(tokens[:-2])
 
-        # some mail puts infomration in addition to message id on in-reply-to
+        # some mail puts information in addition to message id on in-reply-to
         # header.  E.g., 87ikvefswp.fsf@yhuang6-desk2.ccr.corp.intel.com
         parsed['in-reply-to-msgid'] = None
         if 'in-reply-to' in parsed and parsed['in-reply-to']:

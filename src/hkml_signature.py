@@ -31,7 +31,7 @@ def add_signature():
         f.write('\n'.join([
             '',
             '# Please enter the signature you want to add.',
-            '# Lines starting with "#" will be ingored.']))
+            '# Lines starting with "#" will be ignored.']))
     err = hkml_write.open_editor(tmp_path, 'signature')
     if err is not None:
         print(err)
@@ -58,7 +58,7 @@ def edit_signature(signature_idx):
             signature,
             '',
             '# Please edit the signature above as you want.',
-            '# Lines starting with "#" will be ingored.']))
+            '# Lines starting with "#" will be ignored.']))
     hkml_write.open_editor(tmp_path, 'signature')
     with open(tmp_path, 'r') as f:
         lines = []

@@ -14,6 +14,10 @@ jobs:
         with:
           python-version: '3.x'
       - name: Install dependencies
-        run: pip install coverage
+        run: pip install coverage codespell flake8
+      - name: Check spelling
+        run: codespell src/
+      - name: Run linting
+        run: flake8 src/ --select=F821,E999 --show-source
       - name: Run tests
         run: ./tests/run.sh coverage
