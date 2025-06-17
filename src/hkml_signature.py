@@ -35,7 +35,7 @@ def add_signature():
     err = hkml_write.open_editor(tmp_path, 'signature')
     if err is not None:
         print(err)
-        eixt(1)
+        exit(1)
     with open(tmp_path, 'r') as f:
         lines = []
         for line in f:
