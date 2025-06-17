@@ -11,7 +11,7 @@ import _hkml
 
 # Cache is constructed with multiple files.
 # active cache: Contains most recently added cache entries.
-# archieved cache: Contains cache entries that added older than oldest one in
+# archived cache: Contains cache entries that added older than oldest one in
 # the active cache.
 #
 # Size of cache files are limited to about 100 MiB by default.

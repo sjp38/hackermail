@@ -10,6 +10,7 @@ src_dir = os.path.join(bindir, '..', 'src')
 sys.path.append(src_dir)
 
 import hkml_view_mails
+from unittest.mock import patch, MagicMock
 
 class TestHkmlViewText(unittest.TestCase):
     def test_get_files_for_reviewer(self):
@@ -50,6 +51,34 @@ F:	drivers/net/ethernet/dec/tulip/dmfe.c
                  'mm/damon/',
                  'samples/damon/',
                  'tools/testing/selftests/damon/'])
+
+    def test_do_export_arg_parsing_error(self):
+        mock_slist = MagicMock()
+
+        data = [mock_slist, 0]  # slist and idx
+        answer = "wrong input. Return to hkml"
+
+        with patch('hkml_view_mails.time.sleep') as mock_sleep, \
+             patch('hkml_view_mails.hkml_view.shell_mode_end'):
+
+            self.assertEqual(answer, hkml_view_mails.do_export(data, "wrong input", None))
+            mock_sleep.assert_called_once_with(1)
+
+    def test_update_display_rule(self):
+        mock_list_data = MagicMock()
+        mock_list_args = MagicMock()
+        mails_view_data = hkml_view_mails.MailsViewData(
+            mock_list_data, mock_list_args, display_rule=None)
+
+        mails_view_data.display_effects = {0: 'old_effect', 1: 'another_effect'}
+
+        new_rule = hkml_view_mails.MailDisplayEffect(interactive=False)
+        new_rule.effect = hkml_view_mails.hkml_view.ScrollableList.effect_dim
+
+        mails_view_data.update_display_rule(new_rule)
+
+        self.assertEqual(mails_view_data.display_rule, new_rule)
+        self.assertEqual(mails_view_data.display_effects, {})
 
 if __name__ == '__main__':
     unittest.main()

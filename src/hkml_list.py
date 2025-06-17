@@ -1230,11 +1230,11 @@ def add_mails_filter_arguments(parser):
     parser.add_argument(
             '--from_to_keywords', '--from_to', metavar='<keyword>', nargs='+',
             action='append', help=argparse.SUPPRESS)
-            # same to --from except chekcing to: fields together
+            # same to --from except checking to: fields together
     parser.add_argument(
             '--from_to_cc_keywords', '--from_to_cc', metavar='<keyword>',
             nargs='+', action='append', help=argparse.SUPPRESS)
-            # same to --from except chekcing to: and cc: fields together
+            # same to --from except checking to: and cc: fields together
     parser.add_argument('--subject_keywords', '--subject', metavar='<words>',
             type=str, nargs='+', action='append', help=argparse.SUPPRESS)
             # list mails containing the keyword in their subject
@@ -1334,7 +1334,7 @@ def set_argparser(parser=None):
             'Source of mails to list.  Could be one of following types.',
             '1) Name of a mailing list in the manifest file.',
             '2) Message-Id of a mail in the thread to list.',
-            '3) Path to mbox file in the local filesyste.',
+            '3) Path to mbox file in the local filesystem.',
             '4) Special keyword, \'clipboard\'.',
             '\'clipboard\' means mbox string in the clipboard.',
             '5) \'hkml tag\'-added tag.',

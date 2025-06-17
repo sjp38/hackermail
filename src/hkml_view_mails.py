@@ -5,6 +5,7 @@ import curses
 import datetime
 import fnmatch
 import os
+import time
 
 import _hkml_cli
 import _hkml_list_cache
@@ -265,7 +266,7 @@ def do_export_patch(data, answer, selection):
     if not os.path.exists(export_dir):
         os.makedirs(export_dir)
     elif not os.path.isdir(export_dir):
-        print('%s exisits, and not a directory' % export_dir)
+        print('%s exists, and not a directory' % export_dir)
         return
 
     mail = data
@@ -334,9 +335,11 @@ def do_export(data, answer, selection):
     try:
         answer = int(answer)
     except:
-        print('wrong input.  Return to hkml')
         time.sleep(1)
         hkml_view.shell_mode_end(slist)
+        err = 'wrong input. Return to hkml'
+        print(err)
+        return err
 
     if answer == 1:
         export_range = [idx, idx + 1]
@@ -557,7 +560,7 @@ def build_suggest_dim_old_prompt(last_dates):
                 last_dates[-1],
                 "- Enter 'y' or nothing if yes.",
                 "- Enter 'n' if you don't want to dim any mail.",
-                "- Enter an index on the above list to select te date of it.",
+                "- Enter an index on the above list to select the date of it.",
                 "- Or, enter custom date to dim mails older than it (%s)." %
                 hkml_common.date_format_description(),
                 ]
@@ -655,7 +658,7 @@ class MailsViewData:
         self.last_cursor_position = {}
         self.display_effects = {}
 
-    def update_display_rule(rule):
+    def update_display_rule(self, rule):
         self.display_rule = rule
         # clear display decisions per line that made with old rule
         self.display_effects = {}
