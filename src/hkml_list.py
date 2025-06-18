@@ -755,7 +755,7 @@ def handle_gitlog_date_misorders(
         return
     if max_nr_mails is not None and len(lines) == max_nr_mails:
         return
-    if len(lines) == 0:
+    if len(lines) == 0 or lines == ['']:
         return lines
     oldest_fields = lines[-1].split()
     oldest_commit = oldest_fields[0]
