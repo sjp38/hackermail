@@ -30,3 +30,4 @@
 - Let adding quick note on viewer
   - The notes should be automatically added on reply draft.
 - Color the focused line on mails list?
+- Don't add Cc: line for mailing list on applied patches.
