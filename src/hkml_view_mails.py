@@ -1014,6 +1014,12 @@ def after_input_handle_callback(slist):
 def mails_display_effect_callback(slist, line_idx):
     return slist.data.display_effect_for(line_idx, slist)
 
+def mails_quit_callback(slist):
+    mails_view_data = slist.data
+    cache_key = hkml_list.args_to_lists_cache_key(mails_view_data.list_args)
+    _hkml_list_cache.record_last_cursor_position(
+            cache_key, [slist.focus_row, slist.focus_col])
+
 def show_mails_list(screen, mails_view_data):
     list_data = mails_view_data.list_data
     display_rule = mails_view_data.display_rule
@@ -1024,6 +1030,7 @@ def show_mails_list(screen, mails_view_data):
     slist.data = mails_view_data
     slist.after_input_handle_callback = after_input_handle_callback
     slist.display_effect_callback = mails_display_effect_callback
+    slist.quit_callback = mails_quit_callback
     if list_data.len_comments is not None:
         slist.focus_row = min(list_data.len_comments, len(text_lines) - 1)
     slist.draw()
