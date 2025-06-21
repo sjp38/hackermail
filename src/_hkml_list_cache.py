@@ -9,6 +9,38 @@ import _hkml
 import hkml_cache
 
 '''
+A dict containing last position of cursors on cached lists.  Saved as file.
+
+Keys are the json string of the list command arguments.  Values are row/col
+indices of the cursor.
+'''
+last_cursor_positions = None
+
+def last_cursor_positions_file_path():
+    return os.path.join(_hkml.get_hkml_dir(), 'last_cursor_positions')
+
+def get_last_cursor_positions():
+    global last_cursor_positions
+
+    if last_cursor_positions is None:
+        if not os.path.isfile(last_cursor_positions_file_path()):
+            last_cursor_positions = {}
+        else:
+            with open(last_cursor_positions_file_path(), 'r') as f:
+                last_cursor_positions = json.load(f)
+    return last_cursor_positions
+
+def writeback_last_cursor_positions():
+    last_cursor_positions = get_last_cursor_positions()
+    with open(last_cursor_positions_file_path(), 'w') as f:
+        json.dump(last_cursor_positions, f, indent=4)
+
+def record_last_cursor_position(cache_key, position):
+    last_cursor_positions = get_last_cursor_positions()
+    last_cursor_positions[cache_key] = position
+    writeback_last_cursor_positions()
+
+'''
 A dict containing history of cache.  Saved as file.  Will be used for dim_old
 suggestion.  Keys are the json string of the list command argumetns.
 Values are a dict containing below key/values.
