@@ -1074,6 +1074,18 @@ def disable_ancestor_finding_for_tags(args):
             return
     args.do_find_ancestors_from_cache = False
 
+def use_cached_output(args):
+    for source_type in args.source_type:
+        if source_type != 'mailing_list':
+            return False
+    if args.ignore_cache is True:
+        return False
+    if args.sources == []:
+        return True
+    if args.fetch is True:
+        return False
+    return True
+
 def args_to_mails_list_data(args):
     # return MailsListData and error
     # if cached output is used, line_nr_to_mail_map and len_comments of the
@@ -1084,14 +1096,7 @@ def args_to_mails_list_data(args):
     disable_ancestor_finding_for_tags(args)
 
     lists_cache_key = args_to_lists_cache_key(args)
-    use_cached_output = True
-    for source_type in args.source_type:
-        if source_type != 'mailing_list':
-            use_cached_output = False
-            break
-    if args.ignore_cache is True:
-        use_cached_output = False
-    if use_cached_output and (args.fetch == False or args.sources == []):
+    if use_cached_output(args):
         if args.sources == []:
             to_show, mail_idx_key_map = _hkml_list_cache.get_last_list()
             if to_show is None:
