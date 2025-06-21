@@ -1033,6 +1033,13 @@ def show_mails_list(screen, mails_view_data):
     slist.quit_callback = mails_quit_callback
     if list_data.len_comments is not None:
         slist.focus_row = min(list_data.len_comments, len(text_lines) - 1)
+
+    if hkml_list.use_cached_output(list_args):
+        last_cursor_positions = _hkml_list_cache.get_last_cursor_positions()
+        cache_key = hkml_list.args_to_lists_cache_key(list_args)
+        if cache_key in last_cursor_positions:
+            slist.focus_row, slist.focus_col = last_cursor_positions[cache_key]
+
     slist.draw()
     return slist
 
