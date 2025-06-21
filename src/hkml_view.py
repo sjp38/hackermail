@@ -109,6 +109,7 @@ class ScrollableList:
     color_callback = None
     draw_callback = None
     enable_highlight = None
+    quit_callback = None
 
     # constants for display_effect_callback return values
     effect_normal = curses.A_NORMAL
@@ -272,6 +273,8 @@ class ScrollableList:
             break_loop = False
             for input_handler in self.input_handlers:
                 err = input_handler.handle(c, self)
+                if err == 'quit list' and self.quit_callback is not None:
+                    self.quit_callback(self)
                 if err:
                     break_loop = True
                     break
