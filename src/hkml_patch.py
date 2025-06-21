@@ -260,7 +260,9 @@ def add_cc_tags(patch_mail):
     for recipient in recipients_of(patch_mail, 'cc'):
         if recipient == patch_mail.get_field('from'):
             continue
-        if len(recipient.split()) > 1:
+        # add Cc: for formal recipients, e.g., having both name and email
+        # address, excluding mailing list.
+        if len(recipient.split()) == 1:
             continue
         patch_mail.add_patch_tag('Cc: %s' % recipient)
 
