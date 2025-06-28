@@ -2,6 +2,7 @@ This file contains major changes in each version since v1.0.0
 
 v1.4.2
 - Restore last cursor position of list if cached list is opened again
+- Add spelling and linter checks
 
 v1.4.1
 - Handle date-misordered public-inbox git logs
