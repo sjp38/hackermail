@@ -741,10 +741,8 @@ def gitlog_date_misordered(mdir, oldest_commit):
     two_more_logs = _hkml.cmd_lines_output(cmd)
     if len(two_more_logs) != 2:
         return False
-    newer = datetime.datetime.fromisoformat(
-            two_more_logs[0].split()[1]).astimezone()
-    older = datetime.datetime.fromisoformat(
-            two_more_logs[1].split()[1]).astimezone()
+    newer = hkml_common.parse_iso_date(two_more_logs[0].split()[1])
+    older = hkml_common.parse_iso_date(two_more_logs[1].split()[1])
     return newer < older
 
 def handle_gitlog_date_misorders(
