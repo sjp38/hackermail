@@ -14,6 +14,7 @@ import time
 import sys
 
 import hkml_cache
+import hkml_common
 import hkml_init
 import hkml_list
 
@@ -101,16 +102,7 @@ class Mail:
         self = cls()
         self.gitid = gitid
         self.gitdir = gitdir
-        try:
-            self.date = datetime.datetime.fromisoformat(date).astimezone()
-        except:
-            # maybe lower version of python.
-            # the input 'date' may have UTC offset with hour separator, like
-            # '+05:00', while strptime() '%z' expoects no such separator.  Make
-            # it compatible.
-            date = '%s%s' % (date[:-3], date[-2:])
-            self.date = datetime.datetime.strptime(
-                    date, '%Y-%m-%dT%H:%M:%S%z').astimezone()
+        self.date = hkml_common.parse_iso_date(date)
         self.subject = subject
         self.set_subject_tags_series()
         self.__fields = {}
