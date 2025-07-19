@@ -1,5 +1,8 @@
 This file contains major changes in each version since v1.0.0
 
+v1.4.3
+- Support old (<3.7) Python that does not provide datetime.fromisoformat()
+
 v1.4.2
 - Restore last cursor position of list if cached list is opened again
 - Add spelling and linter checks

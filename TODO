@@ -30,4 +30,3 @@
 - Let adding quick note on viewer
   - The notes should be automatically added on reply draft.
 - Color the focused line on mails list?
-- Support <3.7 python for fromisoformat().  Use the hack in from_gitlog()
