@@ -53,6 +53,18 @@ def parse_date(date_str):
     except Exception as e:
         return None, '%s' % e
 
+def parse_iso_date(date):
+    try:
+        return datetime.datetime.fromisoformat(date).astimezone()
+    except:
+        # maybe lower version of python.
+        # the input 'date' may have UTC offset with hour separator, like
+        # '+05:00', while strptime() '%z' expoects no such separator.  Make
+        # it compatible.
+        date = '%s%s' % (date[:-3], date[-2:])
+        return datetime.datetime.strptime(
+                date, '%Y-%m-%dT%H:%M:%S%z').astimezone()
+
 def commit_date(commit):
     try:
         text = subprocess.check_output(
