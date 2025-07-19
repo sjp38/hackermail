@@ -74,7 +74,7 @@ def commit_date(commit):
     except Exception as e:
         return None, 'git log %s fail (%s)' % (commit, e)
     try:
-        return datetime.datetime.fromisoformat(text).astimezone(), None
+        return parse_iso_date(text), None
     except Exception as e:
         return None, 'parsing date (%s) fail (%s)' % (text, e)
 
