@@ -738,7 +738,13 @@ def warn_old_epochs(mails, since, oldest_epoch):
 def gitlog_date_misordered(mdir, oldest_commit):
     cmd = ['git', '--git-dir=%s' % mdir, 'log', '--date=iso-strict',
            '--pretty=%H %ad %s', '%s^' % oldest_commit, '-2']
-    two_more_logs = _hkml.cmd_lines_output(cmd)
+    try:
+        two_more_logs = _hkml.cmd_lines_output(cmd)
+    except:
+        # Maybe oldest_commit is the last log of this epoch git.
+        # Better approach would be looking into the older epoch, but let's
+        # return False as workaround for now.
+        return False
     if len(two_more_logs) != 2:
         return False
     newer = hkml_common.parse_iso_date(two_more_logs[0].split()[1])
