@@ -100,7 +100,6 @@ class ScrollableList:
     input_handlers = None
     search_keyword = None
     searched_lines = None
-    last_drawn = None
     longest_line_len = None
     after_input_handle_callback = None
     data = None
@@ -157,7 +156,6 @@ class ScrollableList:
         self.searched_lines = []
 
     def __draw(self):
-        self.last_drawn = []
         self.screen.erase()
         scr_rows, scr_cols = self.screen.getmaxyx()
         # try to let focused row displayed at middle of the screen
@@ -230,11 +228,6 @@ class ScrollableList:
                     self.screen.addstr(row, search_from + idx, keyword,
                                        highlight_color | color_attrib)
                     search_from += len(keyword)
-
-
-            self.last_drawn.append(self.lines[line_idx])
-        if len(self.lines) < scr_rows - 1:
-            self.last_drawn += [''] * (scr_rows - 1  - len(self.lines))
 
         orig_line = self.lines[self.focus_row]
         if self.bottom_lines is not None:
@@ -582,9 +575,6 @@ def view(text, data, view_type):
             slist = e.args[1]
         else:
             raise e
-    # the view was well finished.
-    if slist is not None:
-        print('\n'.join(slist.last_drawn))
 
 # called from hkml_list
 def gen_view_mails_list(list_args):
