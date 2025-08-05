@@ -32,3 +32,5 @@
 - Color the focused line on mails list?
 - 'patch format': Warn if common mistakes are found
   - No 'PATCH' on subject_prefix.
+- Clear screen completely when quit
+  - If replying was used, the screen is not cleaned after quit.
