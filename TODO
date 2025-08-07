@@ -34,3 +34,5 @@
   - No 'PATCH' on subject_prefix.
 - Clear screen completely when quit
   - If replying was used, the screen is not cleaned after quit.
+- 'g' key for guide line: show/hide vertical and horizonal highlighting lines
+  meeting on the start of the mail subject.
