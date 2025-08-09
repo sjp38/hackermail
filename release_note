@@ -2,6 +2,9 @@ This file contains major changes in each version since v1.0.0
 
 v1.4.4
 - Do not draw last-drawn mails list on terminal again.
+- More shortcut keys.
+  - 'w' and 'b' for moving cursor to next and previous words, respectively.
+  - 'g' for highlight/unhighlight currently focused row and column.
 
 v1.4.3
 - Support old (<3.7) Python that does not provide datetime.fromisoformat()
