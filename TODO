@@ -29,6 +29,5 @@
     first mail read.  This makes user experience bad.  Think about improvement.
 - Let adding quick note on viewer
   - The notes should be automatically added on reply draft.
-- Color the focused line on mails list?
 - Clear screen completely when quit
   - If replying was used, the screen is not cleaned after quit.
