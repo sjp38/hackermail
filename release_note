@@ -5,6 +5,7 @@ v1.4.4
 - More shortcut keys.
   - 'w' and 'b' for moving cursor to next and previous words, respectively.
   - 'g' for highlight/unhighlight currently focused row and column.
+- hkml patch format: Warn if 'PATCH' is not in --subject_prefix.
 
 v1.4.3
 - Support old (<3.7) Python that does not provide datetime.fromisoformat()
