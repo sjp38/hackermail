@@ -456,6 +456,20 @@ def focus_right(c, slist):
     focus_col = min(slist.focus_col + 1, slist.longest_line_len - 1)
     slist.focus_col = max(focus_col, 0)
 
+def focus_next_word(c, slist):
+    passed_white_space = False
+    idx = slist.focus_col + 1
+    line = slist.lines[slist.focus_row]
+    for c in line[idx + 1:]:
+        idx += 1
+        if passed_white_space is False and c.strip() == '':
+            passed_white_space = True
+        if passed_white_space is True and c.strip() != '':
+            break
+    idx = max(idx, 0)
+    idx = min(idx, len(line) - 1)
+    slist.focus_col = idx
+
 def toggle_guide_line(c, slist):
     if slist.highlight_row_col is None:
         slist.highlight_row_col = [slist.focus_row, slist.focus_col]
@@ -485,6 +499,7 @@ def scrollable_list_default_handlers():
                          'focus the prev searched row'),
             InputHandler(['h', 'key_left'], focus_left, 'focus left'),
             InputHandler(['l', 'key_right'], focus_right, 'focus right'),
+            InputHandler(['w'], focus_next_word, 'focus next word'),
             InputHandler(['g'], toggle_guide_line, 'show/hide guide lines'),
             InputHandler(['q'], quit_list, 'quit current screen'),
             InputHandler(['Q'], quit_hkml, 'quit hkml'),
