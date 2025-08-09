@@ -18,7 +18,9 @@
 - Clone and fetch old epoch git for searching if needed
 - Make hidden context menu easier to find
 - Rate-limit lore traffic
+  - delay_public_inbox_query() is doing this, but maybe we can make it better?
 - Ask 'hkml patch format' tagging patches as sent-patches or drafts-patches.
+  - This might make tags file unnecessarily large.
 - Support commits <-> patches queue conversion
   - 'patch format --series' creates 'series' file together
      - 'series' file contains name of patches in order, and baseline commit
