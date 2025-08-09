@@ -227,12 +227,17 @@ class ScrollableList:
             else:
                 self.screen.addstr(row, 0, line, color | color_attrib)
 
-            if highlight_col is not None:
-                if len(line) <= highlight_col:
+            if highlight_col is not None and \
+                    draw_start_col <= highlight_col and \
+                    highlight_col < draw_start_col + scr_cols:
+
+                orig_line = self.lines[line_idx]
+                if len(orig_line) <= highlight_col:
                     highlight_chr = ' '
                 else:
-                    highlight_chr = line[highlight_col]
-                self.screen.addstr(row, highlight_col, highlight_chr,
+                    highlight_chr = orig_line[highlight_col]
+                self.screen.addstr(row, max(highlight_col - draw_start_col, 0),
+                                   highlight_chr,
                                    highlight_color | color_attrib)
 
             keyword = self.search_keyword
