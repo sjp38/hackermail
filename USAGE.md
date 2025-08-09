@@ -276,6 +276,12 @@ next/previous line containing the keyword.
 
 `h` and `l` keys scroll the screen left and right one column, respectively.
 
+`w` and `b` keys move the cursor to the next and the previous words,
+respectively.
+
+`g` key highlights and unhighlights (toggle) the row and the column of the
+current cursor.
+
 `q` key quits current screen.  `Q` key quits `hkml` at once.
 
 Mails List Screen
