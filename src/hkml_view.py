@@ -109,6 +109,7 @@ class ScrollableList:
     draw_callback = None
     enable_highlight = None
     quit_callback = None
+    highlight_row_col = None    # a list of row and column numbers to highlight
 
     # constants for display_effect_callback return values
     effect_normal = curses.A_NORMAL
@@ -191,6 +192,12 @@ class ScrollableList:
         if self.bottom_lines is not None:
             nr_rows_for_lines -= len(self.bottom_lines)
 
+        if self.highlight_row_col is not None:
+            highlight_row, highlight_col = self.highlight_row_col
+        else:
+            highlight_row = None
+            highlight_col = None
+
         for row in range(nr_rows_for_lines):
             line_idx = start_row + row
             if line_idx >= len(self.lines):
@@ -214,8 +221,19 @@ class ScrollableList:
 
             if line_idx in self.searched_lines and self.enable_highlight:
                 self.screen.addstr(row, 0, line, highlight_color | color_attrib)
+            elif line_idx == highlight_row:
+                self.screen.addstr(row, 0, line,
+                                   highlight_color | color_attrib)
             else:
                 self.screen.addstr(row, 0, line, color | color_attrib)
+
+            if highlight_col is not None:
+                if len(line) <= highlight_col:
+                    highlight_chr = ' '
+                else:
+                    highlight_chr = line[highlight_col]
+                self.screen.addstr(row, highlight_col, highlight_chr,
+                                   highlight_color | color_attrib)
 
             keyword = self.search_keyword
             if self.enable_highlight and keyword is not None and \
