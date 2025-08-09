@@ -456,6 +456,12 @@ def focus_right(c, slist):
     focus_col = min(slist.focus_col + 1, slist.longest_line_len - 1)
     slist.focus_col = max(focus_col, 0)
 
+def toggle_guide_line(c, slist):
+    if slist.highlight_row_col is None:
+        slist.highlight_row_col = [slist.focus_row, slist.focus_col]
+    else:
+        slist.highlight_row_col = None
+
 def quit_list(c, slist):
     return 'quit list'
 
@@ -479,6 +485,7 @@ def scrollable_list_default_handlers():
                          'focus the prev searched row'),
             InputHandler(['h', 'key_left'], focus_left, 'focus left'),
             InputHandler(['l', 'key_right'], focus_right, 'focus right'),
+            InputHandler(['g'], toggle_guide_line, 'show/hide guide lines'),
             InputHandler(['q'], quit_list, 'quit current screen'),
             InputHandler(['Q'], quit_hkml, 'quit hkml'),
             InputHandler(['?'], show_help_msg_list, 'show help message'),
