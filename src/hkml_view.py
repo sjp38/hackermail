@@ -470,6 +470,21 @@ def focus_next_word(c, slist):
     idx = min(idx, len(line) - 1)
     slist.focus_col = idx
 
+def focus_prev_word(c, slist):
+    line = slist.lines[slist.focus_row]
+    idx = slist.focus_col - 1
+    for idx in range(idx, -1, -1):
+        c = line[idx]
+        if c.strip() != '':
+            break
+
+    for idx in range(idx, -1, -1):
+        c = line[idx]
+        if c.strip() == '':
+            idx += 1
+            break
+    slist.focus_col = max(idx, 0)
+
 def toggle_guide_line(c, slist):
     if slist.highlight_row_col is None:
         slist.highlight_row_col = [slist.focus_row, slist.focus_col]
@@ -500,6 +515,7 @@ def scrollable_list_default_handlers():
             InputHandler(['h', 'key_left'], focus_left, 'focus left'),
             InputHandler(['l', 'key_right'], focus_right, 'focus right'),
             InputHandler(['w'], focus_next_word, 'focus next word'),
+            InputHandler(['b'], focus_prev_word, 'focus previous word'),
             InputHandler(['g'], toggle_guide_line, 'show/hide guide lines'),
             InputHandler(['q'], quit_list, 'quit current screen'),
             InputHandler(['Q'], quit_hkml, 'quit hkml'),
