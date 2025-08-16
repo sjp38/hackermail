@@ -399,7 +399,7 @@ def focus_set(c, slist):
             handle_fn=handle_fn)
     if err is not None:
         print(err)
-    shell_mode_end(slist)
+    shell_mode_end(slist, 'focus setting')
 
 def ask_highlight_enabling(slist):
     question = 'Would you like to enable search highlighting? [Y/n] '
@@ -428,13 +428,13 @@ def search_keyword(c, slist):
             handler_data=slist, handle_fn=handle_fn)
 
     if error == 'canceled':
-        shell_mode_end(slist)
+        shell_mode_end(slist, 'keyword searching')
         return
 
     ask_highlight_enabling(slist)
     slist.searched_lines = []
 
-    shell_mode_end(slist)
+    shell_mode_end(slist, 'keyword searching')
 
 def is_searched_line(slist, line_idx):
     if line_idx in slist.searched_lines:
