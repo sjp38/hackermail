@@ -393,17 +393,20 @@ def review_patches(on_linux_tree, patch_files):
         return True
     return False
 
+def ensure_intended_abnormal_subject_prefix(subject_prefix, reason):
+    print('WARN: --subject_prefix (%s) is not usual: %s' %
+          (subject_prefix, reason))
+    answer = input('Is this what you really intend? [y/N] ')
+    if not answer.lower() == 'y':
+        print('Ok, please start again with correct --subject_prefix')
+        exit(1)
+
 def ensure_valid_subject_prefix(subject_prefix):
     if subject_prefix is None:
         return
     if 'PATCH' in subject_prefix:
         return
-    print('WARN: no "PATCH" in --subject_prefix ("%s")' %
-          args.subject_prefix)
-    answer = input('Is this what you really intend? [y/N] ')
-    if not answer.lower() == 'y':
-        print('Ok, please start again with correct --subject_prefix')
-        exit(1)
+    ensure_intended_abnormal_subject_prefix(subject_prefix, 'no "PATCH"')
 
 def main(args):
     ensure_valid_subject_prefix(args.subject_prefix)
