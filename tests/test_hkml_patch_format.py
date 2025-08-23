@@ -22,6 +22,13 @@ class TestHkmlPatchFormat(unittest.TestCase):
         self.assert_is_valid_subject_prefix('PATCH v2', True)
         self.assert_is_valid_subject_prefix('PATCH v2 mm-unstable', True)
         self.assert_is_valid_subject_prefix('PATCH 6.12.y', True)
+        self.assert_is_valid_subject_prefix('PATCH 6.12.y v3', True)
+
+        self.assert_is_valid_subject_prefix('foo', False)
+        self.assert_is_valid_subject_prefix('RFC foo', False)
+        self.assert_is_valid_subject_prefix('foo v2', False)
+        self.assert_is_valid_subject_prefix('PATCH 6.12.y foo', False)
+        self.assert_is_valid_subject_prefix('PATCH v2 v4', False)
 
 if __name__ == '__main__':
     unittest.main()
