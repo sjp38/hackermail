@@ -623,14 +623,18 @@ def __view(stdscr, text_to_show, data, view_type):
         curses.init_pair(6, curses.COLOR_BLUE, curses.COLOR_BLACK)
     original_color = curses.color_pair(6)
 
+    rc = None
     if view_type in ['mail', 'text']:
-        return hkml_view_text.show_text_viewer(
+        rc = hkml_view_text.show_text_viewer(
                 stdscr, text_to_show.split('\n'))
     elif view_type == 'gen_mails_list':
-        return hkml_view_mails.gen_show_mails_list(
+        rc = hkml_view_mails.gen_show_mails_list(
                 stdscr, data)
     else:
         raise Exception('unknonw view : %s' % view_type)
+    stdscr.clear()
+    return rc
+
 
 def view(text, data, view_type):
     try:
