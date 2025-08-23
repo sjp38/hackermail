@@ -20,6 +20,9 @@ class TestHkmlPatchFormat(unittest.TestCase):
 
     def test_is_valid_subject_prefix(self):
         self.assert_is_valid_subject_prefix('RFC PATCH', True, None)
+        self.assert_is_valid_subject_prefix('PATCH v2', True, None)
+        self.assert_is_valid_subject_prefix('PATCH v2 mm-unstable', True, None)
+        self.assert_is_valid_subject_prefix('PATCH 6.12.y', True, None)
 
 if __name__ == '__main__':
     unittest.main()
