@@ -393,15 +393,20 @@ def review_patches(on_linux_tree, patch_files):
         return True
     return False
 
-def main(args):
-    if args.subject_prefix is not None and not 'PATCH' in args.subject_prefix:
-        print('WARN: no "PATCH" in --subject_prefix ("%s")' %
-              args.subject_prefix)
-        answer = input('Is this what you really intend? [y/N] ')
-        if not answer.lower() == 'y':
-            print('Ok, please start again with correct --subject_prefix')
-            exit(1)
+def ensure_valid_subject_prefix(subject_prefix):
+    if subject_prefix is None:
+        return
+    if 'PATCH' in subject_prefix:
+        return
+    print('WARN: no "PATCH" in --subject_prefix ("%s")' %
+          args.subject_prefix)
+    answer = input('Is this what you really intend? [y/N] ')
+    if not answer.lower() == 'y':
+        print('Ok, please start again with correct --subject_prefix')
+        exit(1)
 
+def main(args):
+    ensure_valid_subject_prefix(args.subject_prefix)
     on_linux_tree = is_linux_tree('./')
 
     patch_files, err = format_patches(args, on_linux_tree)
