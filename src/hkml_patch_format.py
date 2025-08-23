@@ -404,9 +404,26 @@ def ensure_intended_abnormal_subject_prefix(subject_prefix, reason):
 def ensure_valid_subject_prefix(subject_prefix):
     if subject_prefix is None:
         return
-    if 'PATCH' in subject_prefix:
-        return
-    ensure_intended_abnormal_subject_prefix(subject_prefix, 'no "PATCH"')
+    fields = subject_prefix.split()
+    if fields[0] == 'RFC':
+        fields = fields[1:]
+    if fields[0] != 'PATCH':
+        ensure_intended_abnormal_subject_prefix(
+                subject_prefix, 'First non-RFC field is not "PATCH"')
+    found_target_tree = False
+    found_version_nr = False
+    found_sequence = False
+    for field in fields[1:]:
+        if field.startswith('v') and field[1:].isdigit():
+            if found_version_nr:
+                ensure_valid_subject_prefix(
+                        subject_prefix, 'more than one version number')
+            found_version_nr = True
+            continue
+        if found_target_tree:
+            ensure_valid_subject_prefix(
+                    subject_prefix, 'more than one target tree')
+        found_target_tree = True
 
 def main(args):
     ensure_valid_subject_prefix(args.subject_prefix)
