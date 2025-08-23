@@ -401,29 +401,34 @@ def ensure_intended_abnormal_subject_prefix(subject_prefix, reason):
         print('Ok, please start again with correct --subject_prefix')
         exit(1)
 
-def ensure_valid_subject_prefix(subject_prefix):
+def is_valid_subject_prefix(subject_prefix):
+    # returns whether it is valid, and reason why it is not valid
     if subject_prefix is None:
-        return
+        return True, None
     fields = subject_prefix.split()
     if fields[0] == 'RFC':
         fields = fields[1:]
     if fields[0] != 'PATCH':
-        ensure_intended_abnormal_subject_prefix(
-                subject_prefix, 'First non-RFC field is not "PATCH"')
+        return False, 'First non-RFC field is not "PATCH"'
     found_target_tree = False
     found_version_nr = False
     found_sequence = False
     for field in fields[1:]:
         if field.startswith('v') and field[1:].isdigit():
             if found_version_nr:
-                ensure_valid_subject_prefix(
-                        subject_prefix, 'more than one version number')
+                return False, 'More than one version number (%s)' % field
             found_version_nr = True
             continue
         if found_target_tree:
-            ensure_valid_subject_prefix(
-                    subject_prefix, 'more than one target tree')
+            return False, 'More than one target tree (%s)' % field
         found_target_tree = True
+    return True, None
+
+def ensure_valid_subject_prefix(subject_prefix):
+    valid, invalid_reason = is_valid_subject_prefix(subject_prefix)
+    if valid:
+        return
+    ensure_intended_abnormal_subject_prefix(subject_prefix, invalid_reason)
 
 def main(args):
     ensure_valid_subject_prefix(args.subject_prefix)
