@@ -446,12 +446,34 @@ def parse_subject_prefix(subject_prefix):
         target_tree = field
     return None, is_rfc, version, sequence, target_tree
 
+def confirm_subject_prefix_intention(
+        prefix, is_rfc, version_nr, sequence, target_tree):
+    confirm_words = [
+            'Accordng to the subject prefix (%s), the patch is ' % prefix]
+    if is_rfc:
+        confirm_words.append('- for requesting comments (RFC)')
+    else:
+        confirm_words.append('- not for RFC but to be merged.')
+    if version_nr is None:
+        confirm_words.append('- the first version')
+    else:
+        confirm_words.append('- %s version' % version_nr)
+    if target_tree:
+        confirm_words.append('- target tree %s' % target_tree)
+    print('\n'.join(confirm_words))
+    answer = input('Is it correct?  Shall I continue? [Y/n] ')
+    if answer.lower() == 'n':
+        print('Ok, aborting.  Please start again with proper subject prefix')
+        exit(1)
+
 def ensure_valid_subject_prefix(subject_prefix):
     invalid_reason, is_rfc, version_nr, sequence, target_tree = \
             parse_subject_prefix(subject_prefix)
     if invalid_reason is not None:
         ensure_intended_abnormal_subject_prefix(subject_prefix, invalid_reason)
         return
+    confirm_subject_prefix_intention(
+        subject_prefix, is_rfc, version_nr, sequence, target_tree)
 
 def main(args):
     if args.subject_prefix is not None:
