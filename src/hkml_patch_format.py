@@ -471,7 +471,8 @@ def ensure_valid_subject_prefix(subject_prefix):
     ensure_intended_abnormal_subject_prefix(subject_prefix, invalid_reason)
 
 def main(args):
-    ensure_valid_subject_prefix(args.subject_prefix)
+    if args.subject_prefix is not None:
+        ensure_valid_subject_prefix(args.subject_prefix)
     on_linux_tree = is_linux_tree('./')
 
     patch_files, err = format_patches(args, on_linux_tree)
