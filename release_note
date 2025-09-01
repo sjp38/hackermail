@@ -1,5 +1,8 @@
 This file contains major changes in each version since v1.0.0
 
+v1.4.6
+- hkml ptch format: add valid --subject_prefix intention confirmation
+
 v1.4.5
 - hkml patch format: add more --subject_prefix input validation
 
