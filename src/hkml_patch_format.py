@@ -429,39 +429,29 @@ def parse_subject_prefix(subject_prefix):
             found_version_nr = True
             version = field
             continue
-        if found_target_tree:
-            return False, 'More than one target tree (%s)' % field
-        found_target_tree = True
-    return True, None
-
-def is_valid_subject_prefix(subject_prefix):
-    # returns whether it is valid, and reason why it is not valid
-    if subject_prefix is None:
-        return True, None
-    fields = subject_prefix.split()
-    if fields[0] == 'RFC':
-        fields = fields[1:]
-    if fields[0] != 'PATCH':
-        return False, 'First non-RFC field is not "PATCH"'
-    found_target_tree = False
-    found_version_nr = False
-    found_sequence = False
-    for field in fields[1:]:
-        if field.startswith('v') and field[1:].isdigit():
-            if found_version_nr:
-                return False, 'More than one version number (%s)' % field
-            found_version_nr = True
-            continue
         seq_field = field.split('/')
         if len(seq_field) == 2 and \
                 seq_field[0].isdigit() and seq_field[1].isdigit():
             if found_sequence:
-                return False, 'More than one patch sequence (%s)' % field
+                return 'More than one patch sequence (%s)' % field, None, \
+                        None, None, None
             found_sequence = True
+            sequence = field
             continue
+
         if found_target_tree:
-            return False, 'More than one target tree (%s)' % field
+            return 'More than one target tree (%s)' % field, None, None, \
+                    None, None
         found_target_tree = True
+        target_tree = field
+    return None, is_rfc, version, sequence, target_tree
+
+def is_valid_subject_prefix(subject_prefix):
+    # returns whether it is valid, and reason why it is not valid
+    invalid_reason, is_rfc, version_nr, sequence, target_tree = \
+            parse_subject_prefix(subject_prefix)
+    if invalid_reason is not None:
+        return False, invalid_reason
     return True, None
 
 def ensure_valid_subject_prefix(subject_prefix):
