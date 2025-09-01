@@ -38,10 +38,10 @@ class TestHkmlPatchFormat(unittest.TestCase):
     def assert_parse_subject_prefix(self, prefix, expect_success, expects):
         invalid_reason, is_rfc, version_nr, sequence, target_tree = \
                 hkml_patch_format.parse_subject_prefix(prefix)
-        if not expect_success:
+        if expect_success:
+            self.assertTrue(invalid_reason == None)
+        else:
             self.assertTrue(invalid_reason != None)
-            return
-        self.assertTrue(invalid_reason == None)
         self.assertEqual([is_rfc, version_nr, sequence, target_tree], expects)
 
     def test_parse_subject_prefix(self):
@@ -62,13 +62,16 @@ class TestHkmlPatchFormat(unittest.TestCase):
         self.assert_parse_subject_prefix('PATCH 6.12.y v3', True,
                                          [False, 'v3', None, '6.12.y'])
 
-        self.assert_parse_subject_prefix('foo', False, None)
-        self.assert_parse_subject_prefix('RFC foo', False, None)
-        self.assert_parse_subject_prefix('foo v2', False, None)
+        fail_expects = [None, None, None, None]
+        self.assert_parse_subject_prefix('foo', False, fail_expects)
+        self.assert_parse_subject_prefix('RFC foo', False, fail_expects)
+        self.assert_parse_subject_prefix('foo v2', False, fail_expects)
         # multiple sequence
-        self.assert_parse_subject_prefix('PATCH 03/12 04/12', False, None)
-        self.assert_parse_subject_prefix('PATCH 6.12.y foo', False, None)
-        self.assert_parse_subject_prefix('PATCH v2 v4', False, None)
+        self.assert_parse_subject_prefix('PATCH 03/12 04/12', False,
+                                         fail_expects)
+        self.assert_parse_subject_prefix('PATCH 6.12.y foo', False,
+                                         fail_expects)
+        self.assert_parse_subject_prefix('PATCH v2 v4', False, fail_expects)
 
 if __name__ == '__main__':
     unittest.main()
