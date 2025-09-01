@@ -455,10 +455,11 @@ def is_valid_subject_prefix(subject_prefix):
     return True, None
 
 def ensure_valid_subject_prefix(subject_prefix):
-    valid, invalid_reason = is_valid_subject_prefix(subject_prefix)
-    if valid:
+    invalid_reason, is_rfc, version_nr, sequence, target_tree = \
+            parse_subject_prefix(subject_prefix)
+    if invalid_reason is not None:
+        ensure_intended_abnormal_subject_prefix(subject_prefix, invalid_reason)
         return
-    ensure_intended_abnormal_subject_prefix(subject_prefix, invalid_reason)
 
 def main(args):
     if args.subject_prefix is not None:
