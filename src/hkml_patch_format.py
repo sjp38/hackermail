@@ -446,14 +446,6 @@ def parse_subject_prefix(subject_prefix):
         target_tree = field
     return None, is_rfc, version, sequence, target_tree
 
-def is_valid_subject_prefix(subject_prefix):
-    # returns whether it is valid, and reason why it is not valid
-    invalid_reason, is_rfc, version_nr, sequence, target_tree = \
-            parse_subject_prefix(subject_prefix)
-    if invalid_reason is not None:
-        return False, invalid_reason
-    return True, None
-
 def ensure_valid_subject_prefix(subject_prefix):
     invalid_reason, is_rfc, version_nr, sequence, target_tree = \
             parse_subject_prefix(subject_prefix)
