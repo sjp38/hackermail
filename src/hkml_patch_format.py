@@ -419,6 +419,13 @@ def is_valid_subject_prefix(subject_prefix):
                 return False, 'More than one version number (%s)' % field
             found_version_nr = True
             continue
+        seq_field = field.split('/')
+        if len(seq_field) == 2 and \
+                seq_field[0].isdigit() and seq_field[1].isdigit():
+            if found_sequence:
+                return False, 'More than one patch sequence (%s)' % field
+            found_sequence = True
+            continue
         if found_target_tree:
             return False, 'More than one target tree (%s)' % field
         found_target_tree = True
