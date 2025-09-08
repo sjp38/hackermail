@@ -33,5 +33,3 @@
   - The notes should be automatically added on reply draft.
 - Clear screen completely when quit
   - If replying was used, the screen is not cleaned after quit.
-- hkml patch format: Say what prefix means and ask a confirmation of the intent.
-  - e.g., This is an RFC of N-th version for XXX tree.
