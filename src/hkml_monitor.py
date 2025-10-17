@@ -295,15 +295,15 @@ def main(args):
                 print('failed removing the request')
     elif args.action == 'start':
         if args.since is None:
-            ignore_mails_before = datetime.datetime.now()
+            ignore_mails_before = datetime.datetime.now().astimezone()
         else:
             try:
                 ignore_mails_before = datetime.datetime.strptime(
-                        args.since, '%Y-%m-%d')
+                        args.since, '%Y-%m-%d').astimezone()
             except:
                 try:
                     ignore_mails_before = datetime.datetime.strptime(
-                            args.since, '%Y-%m-%d %H:%M:%S')
+                            args.since, '%Y-%m-%d %H:%M:%S').astimezone()
                 except:
                     print('parsing --since failed')
                     print(' '.join(['the argument should be in \'%Y-%m-%d\'',
