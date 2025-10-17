@@ -283,6 +283,7 @@ class MailListFilter:
 
     def __init__(self, args):
         if args is None:
+            self.keywords_for = 'each'
             return
         self.new_threads_only = args.new
         self.from_keywords = args.from_keywords
