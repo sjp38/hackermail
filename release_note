@@ -1,5 +1,9 @@
 This file contains major changes in each version since v1.0.0
 
+v1.4.7
+- fix hkml monitor's timezone unaware search time threshold
+- fix hkml monitor's --keywords_for unawareness
+
 v1.4.6
 - hkml ptch format: add valid --subject_prefix intention confirmation
 
