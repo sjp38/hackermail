@@ -342,6 +342,8 @@ class MailListFilter:
             mails = []
             self.thread_mails_from(mail, mails)
             return mails
+        raise Exception('MailListFilter.keywords_for is unexpected one: %s' %
+                        self.keywords_for)
 
     def should_filter_out_keywords_one(self, mail):
         if not keywords_in(self.from_keywords, mail.get_field('from')):
