@@ -9,6 +9,7 @@ import subprocess
 import tempfile
 
 import _hkml
+import hkml_common
 
 def need_to_print(key, depth, mlists):
     if depth > 0:
