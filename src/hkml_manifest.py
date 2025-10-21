@@ -46,6 +46,10 @@ def fetch_lore(output_file=None):
     Returns an error string or None if no error happened.
     '''
         # Get the current working directory
+    if not hkml_common.cmd_available('wget'):
+        return 'wget is unavailable'
+    if not hkml_common.cmd_available('gzip'):
+        return 'gzip is unavailable'
     original_dir = os.getcwd()
     temp_dir = tempfile.mkdtemp(prefix='hkml_manifest_dir_')
     os.chdir(temp_dir)
