@@ -10,6 +10,7 @@ import tempfile
 import time
 
 import _hkml
+import hkml_common
 import hkml_list
 
 class HkmlMonitorRequest:
@@ -297,18 +298,10 @@ def main(args):
         if args.since is None:
             ignore_mails_before = datetime.datetime.now().astimezone()
         else:
-            try:
-                ignore_mails_before = datetime.datetime.strptime(
-                        args.since, '%Y-%m-%d').astimezone()
-            except:
-                try:
-                    ignore_mails_before = datetime.datetime.strptime(
-                            args.since, '%Y-%m-%d %H:%M:%S').astimezone()
-                except:
-                    print('parsing --since failed')
-                    print(' '.join(['the argument should be in \'%Y-%m-%d\'',
-                                    'or \'%Y-%m-%d %H:%M:%S\' format']))
-                    exit(1)
+            ignore_mails_before, err = hkml_common.parse_date_arg(args.since)
+            if err is not None:
+                print('parsing --since failed (%s)' % err)
+                exit(1)
 
         return start_monitoring(ignore_mails_before)
     elif args.action == 'stop':
@@ -358,9 +351,9 @@ def set_argparser(parser):
 
     parser_start = subparsers.add_parser(
             'start', help='start monitoring')
-    parser_start.add_argument(
-            '--since', metavar='<%Y-%m-%d[ %H:%M:%S]>',
-            help='Ignore monitoring target mails that sent before this time')
+    hkml_common.add_date_arg(
+            parser_start, '--since',
+            'Ignore monitoring target mails that sent before this time')
 
     parser_stop = subparsers.add_parser(
             'stop', help='stop monitoring')
