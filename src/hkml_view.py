@@ -652,10 +652,6 @@ def view(text=None, data=None, view_type=None, draw_fn=None, fn_args=None):
         else:
             raise e
 
-# called from hkml_list
-def gen_view_mails_list(list_args):
-    view('', list_args, 'gen_mails_list')
-
 # called from hkml_open
 def view_mail(text, mail):
     view(text, mail, 'mail')
