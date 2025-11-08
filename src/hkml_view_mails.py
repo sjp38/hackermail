@@ -170,11 +170,7 @@ def refresh_list(slist):
     collapsed_mails = slist.data.collapsed_mails
 
     mails = get_mails(slist)
-    decorator = hkml_list.MailListDecorator(None)
-    decorator.collapse = False
-    decorator.show_url = False
-    _, cols = slist.screen.getmaxyx()
-    decorator.cols = int(cols * 0.9)
+    decorator = hkml_list.MailListDecorator(slist.data.list_args)
 
     lines, line_nr_mail_map = hkml_list.fmt_mails_text(
             mails, decorator, collapsed_mails)
