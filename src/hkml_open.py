@@ -112,7 +112,6 @@ def show_git_commit(commit, to_stdout, use_less, string_after_less):
         return 'git show failed'
 
 def handle_command_target(args):
-    print('...')
     cmd = args.target.split()[0]
     is_cmd = hkml_common.cmd_available(cmd)
     if not is_cmd:
