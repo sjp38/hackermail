@@ -934,7 +934,7 @@ def fetch_get_mails_from_git(fetch, source, since, until, min_nr_mails,
     if err is not None:
         return None, err
 
-    if manifest_might_be_outdated(mails, until):
+    if fetch is True and manifest_might_be_outdated(mails, until):
         print(' '.join([
             "No mail has fetched from '%s'." % source,
             "You _might_ need to run 'hkml manifest fetch_lore'."]))
