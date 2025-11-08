@@ -1215,7 +1215,8 @@ def main(args):
         return print_read_dates(args)
 
     if using_hkml_view(args):
-        return hkml_view.gen_view_mails_list(args)
+        return hkml_view.view(
+                draw_fn=hkml_view_mails.gen_show_mails_list, fn_args=args)
     list_data, err = args_to_mails_list_data(args)
     if err is not None:
         print(err)
