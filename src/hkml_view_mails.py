@@ -1048,24 +1048,27 @@ def show_mails_list(screen, mails_view_data):
     slist.draw()
     return slist
 
-def suggest_fetch(list_args, list_data):
+def should_fetch(list_args, list_data):
     if not hkml_list.use_cached_output(list_args):
-        return list_data, None
+        return False
     last_cursor_positions = _hkml_list_cache.get_last_cursor_positions()
     cache_key = hkml_list.args_to_lists_cache_key(list_args)
     if not cache_key in last_cursor_positions:
-        return list_data, None
+        return False
     last_cursor_position_row = last_cursor_positions[cache_key][0]
 
     # if the last list was fetched one, due to added (cached list) comment at
     # th begining, the position is one line upper than the real end.
     if last_cursor_position_row < len(list_data.mail_lines) - 2:
-        return list_data, None
-    if _hkml_cli.ask_yes_no(
+        return False
+    return _hkml_cli.ask_yes_no(
             'You quitted the list in the last time with putting ' \
             'the cursor at the nearly end of the list.  ' \
             'Maybe you finised reading it?  If so, ' \
-            'shall I generate mails list again with --fetch option?') == 'n':
+            'shall I generate mails list again with --fetch option?') == 'y'
+
+def suggest_fetch(list_args, list_data):
+    if not should_fetch(list_args, list_data):
         return list_data, None
     list_args.fetch = True
     return hkml_list.args_to_mails_list_data(list_args)
