@@ -39,3 +39,4 @@
 - Let synchronizing all state files including list outputs and list outputs
   history.
 - hkml open: pass mail object to hkml_view
+- hkml list: Suggest --fetch for initial call.
