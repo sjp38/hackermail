@@ -655,14 +655,6 @@ def view(text=None, data=None, view_type=None, draw_fn=None, fn_args=None):
         else:
             raise e
 
-# called from hkml_open
-def view_mail(text, mail):
-    view(text, mail, 'mail')
-
-# called from hkml_open
-def view_text(text):
-    view(text, None, 'text')
-
 def log(msg):
     msg = '%s: %s' % (datetime.datetime.now(), msg)
     with open('.hkml_log', 'a') as f:
