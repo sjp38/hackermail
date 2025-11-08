@@ -492,17 +492,14 @@ class ShowTextViewerArgs:
         self.text_view_data = text_view_data
         self.cursor_position = cursor_position
 
-def show_text_viewer(screen, text_lines='', text_view_data=None,
-                     cursor_position=None, args=None):
+def show_text_viewer(screen, args):
     '''
     This function can be passed to view() as draw_fn().
-    text_view_data is a TextViewData object or None.
     args is a ShowTextViewerArgs object.
     '''
-    if args is not None:
-        text_lines = args.text_lines
-        text_view_data = args.text_view_data
-        cursor_position = args.cursor_position
+    text_lines = args.text_lines
+    text_view_data = args.text_view_data
+    cursor_position = args.cursor_position
 
     slist = hkml_view.ScrollableList(
             screen, text_lines, get_text_viewer_handlers(text_view_data))
