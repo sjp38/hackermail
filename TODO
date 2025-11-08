@@ -33,9 +33,6 @@
   - The notes should be automatically added on reply draft.
 - Clear screen completely when quit
   - If replying was used, the screen is not cleaned after quit.
-- Fix --dim_old on collapsed list.
-  - --dim_old candidates are not listed.
-  - Doing dim_old manually using menu makes list expanded.
 - Simplify sent mail tagging question
   - Easy to switch to other window after answering only the first question
     (sync?).  Ask whole action at once (may I sync and tag as sent?)
