@@ -32,3 +32,14 @@ if [ "$1" == "coverage" ]; then
 	python3 -m coverage xml
 	python3 -m coverage report
 fi
+
+for script in codespell.sh flake8.sh
+do
+	if "$bindir/$script"
+	then
+		echo "PASS $script"
+	else
+		echo "FAIL $script"
+		exit 1
+	fi
+done
