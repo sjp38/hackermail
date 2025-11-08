@@ -628,7 +628,10 @@ def __view(stdscr, text_to_show, data, view_type, draw_fn, fn_args):
         rc = draw_fn(stdscr, fn_args)
     elif view_type in ['mail', 'text']:
         rc = hkml_view_text.show_text_viewer(
-                stdscr, text_to_show.split('\n'))
+                stdscr, args=hkml_view_text.ShowTextViewerArgs(
+                    text_lines=text_to_show.split('\n'),
+                    text_view_data=None,
+                    cursor_position=None))
     elif view_type == 'gen_mails_list':
         rc = hkml_view_mails.gen_show_mails_list(
                 stdscr, data)
