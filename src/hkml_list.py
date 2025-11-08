@@ -1193,25 +1193,26 @@ def print_options_for(category):
     usage_msg, options_msg = help_msg.split('\n\n')
     print('\n'.join(options_msg.split('\n')[1:]))
 
+def print_read_dates(args):
+    err = validate_set_source_type(args)
+    if err is not None:
+        print(err)
+        exit(1)
+    lists_cache_key = args_to_lists_cache_key(args)
+    last_dates = _hkml_list_cache.get_cache_creation_dates(lists_cache_key)
+    for idx, last_date in enumerate(last_dates):
+        print(' %2d. %s (%s before)' %
+              (idx, last_date,
+               datetime.datetime.now().astimezone() - last_date))
+
 def using_hkml_view(args):
     return not args.stdout and not args.use_less
 
 def main(args):
     if args.options_for is not None:
-        print_options_for(args.options_for)
-        return
+        return print_options_for(args.options_for)
     if args.read_dates:
-        err = validate_set_source_type(args)
-        if err is not None:
-            print(err)
-            exit(1)
-        lists_cache_key = args_to_lists_cache_key(args)
-        last_dates = _hkml_list_cache.get_cache_creation_dates(lists_cache_key)
-        for idx, last_date in enumerate(last_dates):
-            print(' %2d. %s (%s before)' %
-                  (idx, last_date,
-                   datetime.datetime.now().astimezone() - last_date))
-        return 0
+        return print_read_dates(args)
 
     if using_hkml_view(args):
         return hkml_view.gen_view_mails_list(args)
