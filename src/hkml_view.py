@@ -594,7 +594,7 @@ def open_content_with(content):
     os.remove(tmp_path)
     return err
 
-def __view(stdscr, text_to_show, data, view_type):
+def __view(stdscr, text_to_show, data, view_type, draw_fn, fn_args):
     global focus_color
     global normal_color
     global highlight_color
@@ -624,7 +624,9 @@ def __view(stdscr, text_to_show, data, view_type):
     original_color = curses.color_pair(6)
 
     rc = None
-    if view_type in ['mail', 'text']:
+    if draw_fn is not None:
+        rc = draw_fn(stdscr, fn_args)
+    elif view_type in ['mail', 'text']:
         rc = hkml_view_text.show_text_viewer(
                 stdscr, text_to_show.split('\n'))
     elif view_type == 'gen_mails_list':
@@ -636,9 +638,14 @@ def __view(stdscr, text_to_show, data, view_type):
     return rc
 
 
-def view(text, data, view_type):
+def view(text=None, data=None, view_type=None, draw_fn=None, fn_args=None):
+    '''
+    draw_fn is called from curses.wrapper main function.  It receives the
+    screen object and fn_args.  The function should be able to generate content
+    to show using the fn_args, and update the screen to show it.
+    '''
     try:
-        slist = curses.wrapper(__view, text, data, view_type)
+        slist = curses.wrapper(__view, text, data, view_type, draw_fn, fn_args)
     except Exception as e:
         if len(e.args) == 2 and e.args[0] == 'terminate hkml':
             slist = e.args[1]
