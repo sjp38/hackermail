@@ -10,6 +10,7 @@ import _hkml_list_cache
 import hkml_common
 import hkml_list
 import hkml_view
+import hkml_view_text
 
 def decorate_last_reference(text):
     lines = text.split('\n')
@@ -97,10 +98,10 @@ def show_text(text, to_stdout, use_less, string_after_less, data=None):
         if string_after_less is not None:
             print(string_after_less)
     else:
-        if type(data) == _hkml.Mail:
-            hkml_view.view_mail(text, data)
-        else:
-            hkml_view.view_text(text)
+        # todo: set text_view_data for type(data) is _hkml.Mail case
+        hkml_view.view(draw_fn=hkml_view_text.show_text_viewer,
+                       fn_args=hkml_view_text.ShowTextViewerArgs(
+                           text_lines = text.split('\n')))
 
 def show_git_commit(commit, to_stdout, use_less, string_after_less):
     try:
