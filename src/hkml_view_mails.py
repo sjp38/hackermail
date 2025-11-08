@@ -1021,6 +1021,8 @@ def mails_display_effect_callback(slist, line_idx):
 
 def mails_quit_callback(slist):
     mails_view_data = slist.data
+    if mails_view_data.list_args.no_output_cache:
+        return
     cache_key = hkml_list.args_to_lists_cache_key(mails_view_data.list_args)
     _hkml_list_cache.record_last_cursor_position(
             cache_key, [slist.focus_row, slist.focus_col])
