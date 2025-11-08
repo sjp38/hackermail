@@ -41,12 +41,15 @@ def args_to_lists_cache_key(args):
             'collapse', 'sort_threads_by', 'ascend', 'hot', 'cols', 'url',
             'hide_stat', 'runtime_profile', 'max_len_list', 'dim_old', 'fetch',
             'ignore_cache', 'stdout', 'use_less', 'read_dates', 'keywords_for',
-            'patches_for', 'keywords'}
+            'patches_for', 'keywords', 'alias'}
     # remove keys that not really affect resulting list.
     for k in keys:
         if not k in keys_affecting_list_output:
             del dict_[k]
 
+    # --alias was introduced after v1.4.6, with default value None
+    if dict_['alias'] is None:
+        del dict_['alias']
     # --keywords_for was introduced after v1.3.8, with default value 'each'
     if dict_['keywords_for'] == 'each':
         del dict_['keywords_for']
@@ -1300,6 +1303,9 @@ def add_decoration_arguments(parser, show_help):
                         if show_help else argparse.SUPPRESS)
 
 def add_advanced_arguments(parser, show_help):
+    parser.add_argument('--alias',
+                        help='give a caching alias to the resulting list'
+                        if show_help else argparse.SUPPRESS)
     parser.add_argument('--no_output_cache', action='store_true',
                         help='do not store list output to the cache'
                         if show_help else argparse.SUPPRESS)
