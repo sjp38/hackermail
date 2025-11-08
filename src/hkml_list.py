@@ -1181,8 +1181,7 @@ def args_to_mails_list_data(args):
                 break
 
     hkml_cache.writeback_mails()
-    if not args.no_output_cache:
-        _hkml_list_cache.set_item(lists_cache_key, list_data)
+    _hkml_list_cache.set_item(lists_cache_key, list_data)
 
     return list_data, None
 
@@ -1305,9 +1304,6 @@ def add_decoration_arguments(parser, show_help):
 def add_advanced_arguments(parser, show_help):
     parser.add_argument('--alias',
                         help='give a caching alias to the resulting list'
-                        if show_help else argparse.SUPPRESS)
-    parser.add_argument('--no_output_cache', action='store_true',
-                        help='do not store list output to the cache'
                         if show_help else argparse.SUPPRESS)
     parser.add_argument('--nr_mails', type=int, metavar='<int>',
                         help='number of mails to list'
