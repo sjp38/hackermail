@@ -481,15 +481,17 @@ def mail_draw_callback(slist):
         context = text_view_data.mail_contexts[depth]
     slist.bottom_lines = ['# context: %s' % context]
 
-def show_text_viewer(screen, text_lines, data=None, cursor_position=None):
+def show_text_viewer(screen, text_lines, text_view_data=None,
+                     cursor_position=None):
     '''
     This function can be passed to view() as draw_fn().
+    text_view_data is a TextViewData object or None.
     '''
     slist = hkml_view.ScrollableList(
-            screen, text_lines, get_text_viewer_handlers(data))
-    if data is None:
-        data = TextViewData(mail=None, mails_list=[])
-    slist.data = data
+            screen, text_lines, get_text_viewer_handlers(text_view_data))
+    if text_view_data is None:
+        text_view_data = TextViewData(mail=None, mails_list=[])
+    slist.data = text_view_data
     slist.hunk_lines = hunk_lines(text_lines)
     slist.color_callback = text_color_callback
     if cursor_position is not None:
