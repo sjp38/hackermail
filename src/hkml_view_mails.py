@@ -70,8 +70,10 @@ def open_focused_mail(c, slist):
                                     text_view_list.focus_col]
 
 def get_attach_files():
-    answer = input('Do you want to attach files to the mail? [y/N] ')
-    if answer.lower() != 'y':
+    answer = _hkml_cli.ask_yes_no(
+            question='Do you want to attach files to the mail?',
+            default_answer='n')
+    if answer == 'n':
         return []
     files = []
     while True:
@@ -82,8 +84,10 @@ def get_attach_files():
         files.append(file_path)
 
         print()
-        answer = input('Do you have more files to attach? [y/N] ')
-        if answer.lower() != 'y':
+        answer = _hkml_cli.ask_yes_no(
+                question='Do you have more files to attach?',
+                default_answer='n')
+        if answer != 'y':
             break
     return files
 
