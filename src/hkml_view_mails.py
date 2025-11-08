@@ -1052,7 +1052,8 @@ def should_fetch(list_args, list_data, err):
     if err == 'no mail to list' and list_args.fetch is False:
         return _hkml_cli.ask_yes_no(
                 'No mails to show.  ' \
-                'Shall I do this again with --fetch option?') == 'y'
+                        'Shall I fetch the mails from the internet and ' \
+                        'do listing again?') == 'y'
 
     if not hkml_list.use_cached_output(list_args):
         return False
@@ -1067,10 +1068,11 @@ def should_fetch(list_args, list_data, err):
     if last_cursor_position_row < len(list_data.mail_lines) - 2:
         return False
     return _hkml_cli.ask_yes_no(
-            'You quitted the list in the last time with putting ' \
+            'You previously closed the list after putting ' \
             'the cursor at the nearly end of the list.  ' \
             'Maybe you finised reading it?  If so, ' \
-            'shall I generate mails list again with --fetch option?') == 'y'
+            'shall I fetch the mails from the internet and ' \
+            'do listing again?') == 'y'
 
 def suggest_fetch(list_args, list_data, err):
     if not should_fetch(list_args, list_data, err):
