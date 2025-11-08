@@ -35,7 +35,7 @@ def menu_exec_git(slist, answer, selection):
     except Exception as e:
         output = ['failed: %s' % e, '',
                   'wrong commit id, or you are not on the git repo?']
-    show_text_viewer(slist.screen, output)
+    show_text_viewer(slist.screen, args=ShowTextViewerArgs(text_lines=output))
     hkml_view.shell_mode_start(slist)
 
 def menu_hkml_thread(slist, answer, selection):
@@ -58,7 +58,8 @@ def menu_hkml_open(slist, answer, selection):
         if mail.get_field('message-id') == msgid:
             _, cols = slist.screen.getmaxyx()
             lines = hkml_open.mail_display_str(mail, cols).split('\n')
-            show_text_viewer(slist.screen, lines)
+            show_text_viewer(slist.screen,
+                             args=ShowTextViewerArgs(text_lines=lines))
             break
     hkml_view.shell_mode_start(slist)
 
@@ -67,7 +68,7 @@ def menu_open_file(slist, answer, selection):
     file_path = selection.data
     with open(file_path, 'r') as f:
         lines = f.read().split('\n')
-    show_text_viewer(slist.screen, lines)
+    show_text_viewer(slist.screen, args=ShowTextViewerArgs(text_lines=lines))
     hkml_view.shell_mode_start(slist)
 
 def menu_open_file_editor(slist, answer, selection):
