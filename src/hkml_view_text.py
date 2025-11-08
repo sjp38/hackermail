@@ -481,6 +481,16 @@ def mail_draw_callback(slist):
         context = text_view_data.mail_contexts[depth]
     slist.bottom_lines = ['# context: %s' % context]
 
+class ShowTextViewerArgs:
+    text_lines = None
+    text_view_data = None   # TextViewData object
+    cursor_position = None
+
+    def __init__(self, text_lines, text_view_data=None, cursor_position=None):
+        self.text_lines = text_lines
+        self.text_view_data = text_view_data
+        self.cursor_position = cursor_position
+
 def show_text_viewer(screen, text_lines, text_view_data=None,
                      cursor_position=None):
     '''
