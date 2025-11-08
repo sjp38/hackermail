@@ -142,3 +142,34 @@ def ask_selection(desc=None, selections=None, prompt=None,
     return Question(desc=desc, prompt=prompt).ask_selection(
             selections=selections, data=handler_common_data,
             default_selection=default_selection)
+
+yes_answers = ['y', 'yes']
+no_answers = ['n', 'no']
+
+def ask_yes_no(question=None, default_answer=None):
+    if default_answer is None:
+        question += ' [y/n] '
+    elif default_answer == 'y':
+        question += ' [Y/n] '
+    elif default_answer == 'n':
+        question += ' [y/N] '
+    else:
+        raise Exception('wrong default_answer: %s' % default_answer)
+    while True:
+        answer = input(question).lower()
+        if default_answer == 'y':
+            if not answer in no_answers:
+                return 'y'
+            else:
+                return 'n'
+        elif default_answer == 'n':
+            if not answer in yes_answers:
+                return 'n'
+            else:
+                return 'y'
+        elif default_answer is None:
+            if answer in yes_answers:
+                return 'y'
+            elif answer in no_answers:
+                return 'n'
+            continue
