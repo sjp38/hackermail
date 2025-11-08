@@ -32,19 +32,19 @@ def args_to_lists_cache_key(args):
     dict_['read_dates'] = False
 
     keys = list(dict_.keys())
+    keys_affecting_list_output = {
+            'hkml_dir', 'directory', 'command', 'manifest', 'sources',
+            'source_type', 'since', 'until', 'nr_mails', 'min_nr_mails',
+            'max_nr_mails', 'do_find_ancestors_from_cache', 'pisearch',
+            'stat_only', 'stat_authors', 'from_keywords', 'from_to_keywords',
+            'from_to_cc_keywords', 'subject_keywords', 'body_keywords', 'new',
+            'collapse', 'sort_threads_by', 'ascend', 'hot', 'cols', 'url',
+            'hide_stat', 'runtime_profile', 'max_len_list', 'dim_old', 'fetch',
+            'ignore_cache', 'stdout', 'use_less', 'read_dates', 'keywords_for',
+            'patches_for', 'keywords'}
     # remove keys that not really affect resulting list.
     for k in keys:
-        if not k in {'hkml_dir', 'directory', 'command', 'manifest', 'sources',
-                     'source_type', 'since', 'until', 'nr_mails',
-                     'min_nr_mails', 'max_nr_mails',
-                     'do_find_ancestors_from_cache', 'pisearch', 'stat_only',
-                     'stat_authors', 'from_keywords', 'from_to_keywords',
-                     'from_to_cc_keywords', 'subject_keywords',
-                     'body_keywords', 'new', 'collapse', 'sort_threads_by',
-                     'ascend', 'hot', 'cols', 'url', 'hide_stat',
-                     'runtime_profile', 'max_len_list', 'dim_old', 'fetch',
-                     'ignore_cache', 'stdout', 'use_less', 'read_dates',
-                     'keywords_for', 'patches_for', 'keywords'}:
+        if not k in keys_affecting_list_output:
             del dict_[k]
 
     # --keywords_for was introduced after v1.3.8, with default value 'each'
