@@ -7,7 +7,7 @@ bindir=$(dirname "$0")
 # this file is at /tests/ of the repo
 src_dir="$bindir/../src/"
 
-if ! which codespell
+if ! which codespell &> /dev/null
 then
 	echo "codespell not found.  skip"
 	exit 0
