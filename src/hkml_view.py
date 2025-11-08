@@ -594,7 +594,7 @@ def open_content_with(content):
     os.remove(tmp_path)
     return err
 
-def __view(stdscr, text_to_show, data, view_type, draw_fn, fn_args):
+def __view(stdscr, draw_fn, fn_args):
     global focus_color
     global normal_color
     global highlight_color
@@ -623,20 +623,7 @@ def __view(stdscr, text_to_show, data, view_type, draw_fn, fn_args):
         curses.init_pair(6, curses.COLOR_BLUE, curses.COLOR_BLACK)
     original_color = curses.color_pair(6)
 
-    rc = None
-    if draw_fn is not None:
-        rc = draw_fn(stdscr, fn_args)
-    elif view_type in ['mail', 'text']:
-        rc = hkml_view_text.show_text_viewer(
-                stdscr, args=hkml_view_text.ShowTextViewerArgs(
-                    text_lines=text_to_show.split('\n'),
-                    text_view_data=None,
-                    cursor_position=None))
-    elif view_type == 'gen_mails_list':
-        rc = hkml_view_mails.gen_show_mails_list(
-                stdscr, data)
-    else:
-        raise Exception('unknonw view : %s' % view_type)
+    rc = draw_fn(stdscr, fn_args)
     stdscr.clear()
     return rc
 
@@ -648,7 +635,7 @@ def view(draw_fn=None, fn_args=None):
     to show using the fn_args, and update the screen to show it.
     '''
     try:
-        slist = curses.wrapper(__view, '', None, None, draw_fn, fn_args)
+        slist = curses.wrapper(__view, draw_fn, fn_args)
     except Exception as e:
         if len(e.args) == 2 and e.args[0] == 'terminate hkml':
             slist = e.args[1]
