@@ -49,3 +49,4 @@
     the cursor position.
   - If it was at the bottom of the list, consider the list is fully read, and
     suggest adding --fetch option.
+- hkml open: pass mail object to hkml_view
