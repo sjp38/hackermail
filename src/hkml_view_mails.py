@@ -1048,7 +1048,12 @@ def show_mails_list(screen, mails_view_data):
     slist.draw()
     return slist
 
-def should_fetch(list_args, list_data):
+def should_fetch(list_args, list_data, err):
+    if err == 'no mail to list' and list_args.fetch is False:
+        return _hkml_cli.ask_yes_no(
+                'No mails to show.  ' \
+                'Shall I do this again with --fetch option?') == 'y'
+
     if not hkml_list.use_cached_output(list_args):
         return False
     last_cursor_positions = _hkml_list_cache.get_last_cursor_positions()
@@ -1067,8 +1072,8 @@ def should_fetch(list_args, list_data):
             'Maybe you finised reading it?  If so, ' \
             'shall I generate mails list again with --fetch option?') == 'y'
 
-def suggest_fetch(list_args, list_data):
-    if not should_fetch(list_args, list_data):
+def suggest_fetch(list_args, list_data, err):
+    if not should_fetch(list_args, list_data, err):
         return list_data, None
     list_args.fetch = True
     return hkml_list.args_to_mails_list_data(list_args)
@@ -1076,9 +1081,7 @@ def suggest_fetch(list_args, list_data):
 def generate_mails_view_data(args):
     # returns MailsViewData and error
     list_data, err = hkml_list.args_to_mails_list_data(args)
-    if err is not None:
-        return None, err
-    list_data, err = suggest_fetch(args, list_data)
+    list_data, err = suggest_fetch(args, list_data, err)
     if err is not None:
         return None, err
 
