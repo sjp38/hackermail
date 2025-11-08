@@ -1067,6 +1067,9 @@ def generate_mails_view_data(args):
     return mails_view_data, err
 
 def gen_show_mails_list(screen, list_args):
+    '''
+    This function will be passed to hkml_view.view() as draw_fn.
+    '''
     hkml_view.shell_mode_start(screen)
 
     mails_view_data, err = generate_mails_view_data(list_args)

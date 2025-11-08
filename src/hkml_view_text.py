@@ -482,6 +482,9 @@ def mail_draw_callback(slist):
     slist.bottom_lines = ['# context: %s' % context]
 
 def show_text_viewer(screen, text_lines, data=None, cursor_position=None):
+    '''
+    This function can be passed to view() as draw_fn().
+    '''
     slist = hkml_view.ScrollableList(
             screen, text_lines, get_text_viewer_handlers(data))
     if data is None:
