@@ -1064,13 +1064,13 @@ def should_fetch(list_args, list_data, err):
     last_cursor_position_row = last_cursor_positions[cache_key][0]
 
     # if the last list was fetched one, due to added (cached list) comment at
-    # th begining, the position is one line upper than the real end.
+    # th beginning, the position is one line upper than the real end.
     if last_cursor_position_row < len(list_data.mail_lines) - 2:
         return False
     return _hkml_cli.ask_yes_no(
             'You previously closed the list after putting ' \
             'the cursor at the nearly end of the list.  ' \
-            'Maybe you finised reading it?  If so, ' \
+            'Maybe you finished reading it?  If so, ' \
             'shall I fetch the mails from the internet and ' \
             'do listing again?') == 'y'
 
