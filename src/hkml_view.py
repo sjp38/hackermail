@@ -641,14 +641,14 @@ def __view(stdscr, text_to_show, data, view_type, draw_fn, fn_args):
     return rc
 
 
-def view(text=None, data=None, view_type=None, draw_fn=None, fn_args=None):
+def view(draw_fn=None, fn_args=None):
     '''
     draw_fn is called from curses.wrapper main function.  It receives the
     screen object and fn_args.  The function should be able to generate content
     to show using the fn_args, and update the screen to show it.
     '''
     try:
-        slist = curses.wrapper(__view, text, data, view_type, draw_fn, fn_args)
+        slist = curses.wrapper(__view, '', None, None, draw_fn, fn_args)
     except Exception as e:
         if len(e.args) == 2 and e.args[0] == 'terminate hkml':
             slist = e.args[1]
