@@ -38,12 +38,4 @@
     (sync?).  Ask whole action at once (may I sync and tag as sent?)
 - Let synchronizing all state files including list outputs and list outputs
   history.
-- Add a suggestion for not doing --fetch
-  - When hkml list is executed, check the last cursor position on the cached
-    list output.
-  - If it was not at the bottom of the list, consider the list is
-    not yet fully read, and suggest reading the cached list output, restoring
-    the cursor position.
-  - If it was at the bottom of the list, consider the list is fully read, and
-    suggest adding --fetch option.
 - hkml open: pass mail object to hkml_view
