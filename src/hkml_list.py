@@ -1209,7 +1209,8 @@ def main(args):
         last_dates = _hkml_list_cache.get_cache_creation_dates(lists_cache_key)
         for idx, last_date in enumerate(last_dates):
             print(' %2d. %s (%s before)' %
-                  (idx, last_date, datetime.datetime.now() - last_date))
+                  (idx, last_date,
+                   datetime.datetime.now().astimezone() - last_date))
         return 0
 
     if using_hkml_view(args):
