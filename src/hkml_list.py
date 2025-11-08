@@ -921,7 +921,8 @@ def manifest_might_be_outdated(mails, until):
     # hkml_monitor calls get_mails() with None until
     if until is None:
         return False
-    return datetime.datetime.now() - until < datetime.timedelta(minutes=5)
+    return datetime.datetime.now().astimezone() - until \
+            < datetime.timedelta(minutes=5)
 
 def fetch_get_mails_from_git(fetch, source, since, until, min_nr_mails,
                              max_nr_mails, commits_range):
