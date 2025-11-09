@@ -1,8 +1,9 @@
 This file contains major changes in each version since v1.0.0
 
 v1.4.7
-- hkml list: Suggest --fetch if it seems the user finished the last cached
-  list.
+- hkml list: Suggest --fetch if the user likely finished the last cached list.
+- hkml list: Suggest --fetch if there is no mails to list.
+- hkml list: Suggest updating lore manifest if there is no mails to list.
 - hkml list: introduce --alias option for multiple sessions management.
 
 v1.4.6
