@@ -56,15 +56,10 @@ class Question:
                     self.prompt, default_selection.text)
 
         answer = input(prompt)
-        if answer == '':
-            if default_selection is None:
-                print('Canceled.')
-                return None, None, 'canceled'
-            else:
-                print('The default (%s) selected.' % default_selection.text) 
-                return '', default_selection, None
-
-        if answer == 'cancel' and default_selection is not None:
+        if answer == '' and default_selection is None:
+            print('Canceled.')
+            return None, None, 'canceled'
+        elif answer == 'cancel' and default_selection is not None:
             print('Canceled.')
             return None, None, 'canceled'
 
@@ -75,7 +70,11 @@ class Question:
                 selection = selections[int(answer) - 1]
                 selection_handle_fn = selection.handle_fn
             except:
-                print('Wrong input.')
+                print('Invalid input.')
+                if default_selection is not None:
+                    print('The default (%s) is selected.' %
+                          default_selection.text)
+                    return answer, default_selection, None
                 return None, None, 'wrong input'
 
         if selection_handle_fn is not None:
