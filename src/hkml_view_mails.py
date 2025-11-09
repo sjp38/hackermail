@@ -381,7 +381,7 @@ def do_export(data, answer, selection):
 def export_mails(c, slist):
     idx = focused_mail_idx(slist)
 
-    q = _hkml_cli.ask_selection(
+    _hkml_cli.ask_selection(
             desc='Focused mail: %d' % idx,
             handler_common_data=[slist, idx],
             selections=[
