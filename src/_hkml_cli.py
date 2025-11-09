@@ -137,7 +137,8 @@ def ask_input(desc=None, prompt=None, handler_data=None,
             data=handler_data, handle_fn=handle_fn)
 
 def ask_selection(desc=None, selections=None, prompt=None,
-                  handler_common_data=None, default_selection=None):
+                  handler_common_data=None, default_selection=None,
+                  allow_cancel=True):
     '''
     Prints 'desc', a blank line, 'selections', and 'prompt'.  Then, wait for
     user selection.  For given user input, 'handle_fn' of the selected
@@ -149,7 +150,7 @@ def ask_selection(desc=None, selections=None, prompt=None,
     '''
     return Question(desc=desc, prompt=prompt).ask_selection(
             selections=selections, data=handler_common_data,
-            default_selection=default_selection)
+            default_selection=default_selection, allow_cancel=allow_cancel)
 
 yes_answers = ['y', 'yes']
 no_answers = ['n', 'no']
