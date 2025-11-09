@@ -4,6 +4,7 @@ import os
 import subprocess
 
 import _hkml
+import _hkml_cli
 
 '''
 Synchronize personal files in .hkm/ via user-specified git repo.
@@ -54,6 +55,53 @@ def setup_git(hkml_dir, remote):
             print('checking remote out failed')
             exit(1)
 
+def git_rebase(hkml_dir):
+    '''
+    Returns
+    - 'success' if all is done well.
+    - 'quit' if the program need to quit.
+    - 'error' if something wrong happened.
+
+    This function interacts with user, so caller don't need to explain
+    something happened inside this function.
+    '''
+    git_cmd = ['git', '-C', hkml_dir]
+    if subprocess.call(git_cmd + ['rebase', 'sync-target/latest']) == 0:
+        return 'success'
+
+    selections=[
+            _hkml_cli.Selection('manually resolve the conflict'),
+            _hkml_cli.Selection('reset to the remote files'),
+            ],
+    answer, selection, err = _hkml_cli.ask_selection(
+            desc='Rebasing files for sync failed.  What to do?',
+            selections=selections,
+            default_selection=selections[0],
+            allow_cancel=False,
+            )
+    if err is not None:
+        # cannot error since cancel is not allowed and it has a
+        # default_selection.
+        raise Exception('BUG')
+
+    if selection == selections[0]:
+        print('Ok, I\'m quitting.  ' \
+                'Please resolve the git rebase conflict in .hkml/ and ' \
+                'push it to latest branch of sync-target remote.')
+        return 'quit'
+    elif selection == selections[1]:
+        if subprocess.call(git_cmd + ['rebase', '--abort']) != 0:
+            print('aborting rebase fail')
+            return 'error'
+        if subprocess.call(
+                git_cmd + ['reset', '--hard', 'sync-target/latest']) == 0:
+            print('resetting to the remote success')
+            return 'success'
+        print('resetting to the remote failed')
+        return 'error'
+    # this cannot happen
+    raise Exception('BUG')
+
 def syncup(hkml_dir, remote):
     git_cmd = ['git', '-C', hkml_dir]
 
@@ -70,9 +118,11 @@ def syncup(hkml_dir, remote):
     if subprocess.call(git_cmd + ['fetch', 'sync-target']) != 0:
         print('fetching remote failed')
         exit(1)
-    if subprocess.call(git_cmd + ['rebase', 'sync-target/latest']) != 0:
-        print('rebasing failed')
+    result = git_rebase(hkml_dir)
+    if result == 'error':
         exit(1)
+    elif result == 'quit':
+        exit(0)
 
     if subprocess.call(git_cmd + ['push', 'sync-target', 'HEAD:latest']) != 0:
         print('push failed')
