@@ -5,7 +5,6 @@
   - Support every feature with TUI
 - Deprecate TUI menu and related code
 - Give selection to tag removing menu
-- Update lore manifest automatically
 - Implement monitoring output pushing to git repo
 - Keep applying dimming for threads that opened from a list
   - e.g., if hkml list --dim_old 2024-11-16 and open complete thread of a mail
