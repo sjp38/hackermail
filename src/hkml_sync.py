@@ -11,7 +11,8 @@ Synchronize personal files in .hkm/ via user-specified git repo.
 '''
 
 def files_to_sync(hkml_dir):
-    files = ['manifest', 'monitor_requests', 'tags']
+    files = ['manifest', 'monitor_requests', 'tags', 'last_cursor_positions',
+             'list_output_cache', 'list_output_cache_history']
     for filename in os.listdir(hkml_dir):
         if filename.startswith('tags_'):
             files.append(filename)
