@@ -507,6 +507,15 @@ def get_hkml_dir():
         set_hkml_dir()
     return __hkml_dir
 
+def manifest_age():
+    '''
+    Returns time passed since the last modification of the manifest file.
+    '''
+    manifest_path = os.path.join(get_hkml_dir(), 'manifest')
+    timestamp = os.path.getmtime(manifest_path)
+    last_updte_date = datetime.datetime.fromtimestamp(timestamp).astimezone()
+    return datetime.datetime.now().astimezone() - last_updte_date
+
 def update_manifest(manifest_dict):
     hkml_dir = get_hkml_dir()
     manifest_path = os.path.join(get_hkml_dir(), 'manifest')
