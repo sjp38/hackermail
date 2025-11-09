@@ -32,7 +32,4 @@
   - The notes should be automatically added on reply draft.
 - Clear screen completely when quit
   - If replying was used, the screen is not cleaned after quit.
-- Simplify sent mail tagging question
-  - Easy to switch to other window after answering only the first question
-    (sync?).  Ask whole action at once (may I sync and tag as sent?)
 - hkml open: pass mail object to hkml_view
