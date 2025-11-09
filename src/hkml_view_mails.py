@@ -7,6 +7,7 @@ import fnmatch
 import os
 import time
 
+import _hkml
 import _hkml_cli
 import _hkml_list_cache
 import hkml_cache
@@ -14,6 +15,7 @@ import hkml_common
 import hkml_export
 import hkml_forward
 import hkml_list
+import hkml_manifest
 import hkml_open
 import hkml_patch
 import hkml_reply
@@ -1074,10 +1076,35 @@ def should_fetch(list_args, list_data, err):
             'shall I fetch the mails from the internet and ' \
             'do listing again?') == 'y'
 
+def should_update_manifest_and_retry(list_args, list_data, err):
+    if list_args.fetch is False:
+        return False
+    if err != 'no mail to list':
+        return False
+    # user might downloaded manifest just before it becomes outdated.
+    # maybe a better approach is showing the size of the git repo.
+    # do this for now...
+    manifest_age = _hkml.manifest_age()
+    if manifest_age <= datetime.timedelta(days=2):
+        return False
+    print('Got no mail to list, and the manifest is older than %d days.' %
+          manifest_age.days)
+    print('You _might_ need to update the manifest.')
+    if not _hkml.is_for_lore_kernel_org():
+        # but hkml cannot help this case on its own.
+        return False
+    return _hkml_cli.ask_yes_no(
+            'May I update the manifest and do listing again?') == 'y'
+
 def generate_mails_list_data(list_args):
     list_data, err = hkml_list.args_to_mails_list_data(list_args)
     if should_fetch(list_args, list_data, err):
         list_args.fetch = True
+        list_data, err = hkml_list.args_to_mails_list_data(list_args)
+    if should_update_manifest_and_retry(list_args, list_data, err):
+        err = hkml_manifest.fetch_lore()
+        if err is not None:
+            return None, 'updating lore fail (%s)' % err
         list_data, err = hkml_list.args_to_mails_list_data(list_args)
     return list_data, err
 
