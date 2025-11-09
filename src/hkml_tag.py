@@ -238,8 +238,6 @@ def set_argparser(parser):
 def handle_may_sent_mail(mail, sent, orig_draft_subject):
     '''Handle tags of a mail that may sent or not'''
 
-    sync_after = ask_sync_before_change()
-
     # suggest tagging the may or may not sent mail
     if sent:
         tag_name = 'sent'
@@ -249,6 +247,7 @@ def handle_may_sent_mail(mail, sent, orig_draft_subject):
                    % (mail.subject, tag_name))
     tag_may_sent_mail = answer.lower() != 'n'
 
+    sync_after = ask_sync_before_change()
     tags_map = read_tags_file()
 
     # regardless of the answer to the above question, suggest removing
