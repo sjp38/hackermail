@@ -36,7 +36,4 @@
 - Simplify sent mail tagging question
   - Easy to switch to other window after answering only the first question
     (sync?).  Ask whole action at once (may I sync and tag as sent?)
-- Let synchronizing all state files including list outputs and list outputs
-  history.
 - hkml open: pass mail object to hkml_view
-- hkml list: Suggest --fetch for initial call.
