@@ -25,10 +25,12 @@ ask_input() and ask_selection() are the methods that user will really use.
 class Question:
     description = None
     prompt = None
+    allow_cancel = None
 
-    def __init__(self, prompt=None, desc=None):
+    def __init__(self, prompt=None, desc=None, allow_cancel=True):
         self.description = desc
         self.prompt = prompt
+        self.allow_cancel = allow_cancel
 
     '''
     internal method.  Shouldn't be called directly from Question user.
@@ -49,19 +51,24 @@ class Question:
         if len(lines) > 0:
             print('\n'.join(lines))
 
-        if default_selection is None:
+        allow_cancel = self.allow_cancel
+        if allow_cancel is False:
+            prompt = self.prompt
+        elif default_selection is None:
             prompt = '%s (enter \'\' to cancel): ' % self.prompt
         else:
             prompt = '%s (enter \'\' for \'%s\', \'cancel\' to cancel): ' % (
                     self.prompt, default_selection.text)
 
         answer = input(prompt)
-        if answer == '' and default_selection is None:
-            print('Canceled.')
-            return None, None, 'canceled'
-        elif answer == 'cancel' and default_selection is not None:
-            print('Canceled.')
-            return None, None, 'canceled'
+
+        if allow_cancel is True:
+            if answer == '' and default_selection is None:
+                print('Canceled.')
+                return None, None, 'canceled'
+            elif answer == 'cancel' and default_selection is not None:
+                print('Canceled.')
+                return None, None, 'canceled'
 
         selection = None
         selection_handle_fn = None
