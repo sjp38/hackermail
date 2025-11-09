@@ -43,6 +43,8 @@ class Question:
         if selections is not None:
             for idx, selection in enumerate(selections):
                 lines.append('%d: %s' % (idx + 1, selection.text))
+                if selection == default_selection:
+                    lines[-1] += ' (default)'
             lines.append('')
         if len(lines) > 0:
             print('\n'.join(lines))
