@@ -53,7 +53,7 @@ class Question:
 
         allow_cancel = self.allow_cancel
         if allow_cancel is False:
-            prompt = self.prompt
+            prompt = '%s: ' % self.prompt
         elif default_selection is None:
             prompt = '%s (enter \'\' to cancel): ' % self.prompt
         else:
