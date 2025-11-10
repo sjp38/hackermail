@@ -70,10 +70,10 @@ def git_rebase(hkml_dir):
     if subprocess.call(git_cmd + ['rebase', 'sync-target/latest']) == 0:
         return 'success'
 
-    selections=[
+    selections = [
             _hkml_cli.Selection('manually resolve the conflict'),
             _hkml_cli.Selection('reset to the remote files'),
-            ],
+            ]
     answer, selection, err = _hkml_cli.ask_selection(
             desc='Rebasing files for sync failed.  What to do?',
             selections=selections,
