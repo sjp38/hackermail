@@ -148,9 +148,10 @@ def ask_selection(desc=None, selections=None, prompt=None,
 
     Returns user's input to the question, the 'Selection' object, and an error.
     '''
-    return Question(desc=desc, prompt=prompt).ask_selection(
-            selections=selections, data=handler_common_data,
-            default_selection=default_selection, allow_cancel=allow_cancel)
+    return Question(desc=desc, prompt=prompt,
+                    allow_cancel=allow_cancel).ask_selection(
+                            selections=selections, data=handler_common_data,
+                            default_selection=default_selection)
 
 yes_answers = ['y', 'yes']
 no_answers = ['n', 'no']
