@@ -252,8 +252,10 @@ class Mail:
 
     def set_mbox(self):
         if self.gitdir is not None and self.gitid is not None:
-            cmd = ['git', '--git-dir=%s' % self.gitdir,
-                    'show', '%s:m' % self.gitid]
+            gitdir = self.gitdir
+            if not os.path.isabs(gitdir):
+                gitdir = os.path.join(get_hkml_dir(), gitdir)
+            cmd = ['git', '--git-dir=%s' % gitdir, 'show', '%s:m' % self.gitid]
             try:
                 self.mbox = cmd_str_output(cmd)
             except:
