@@ -50,8 +50,8 @@ need_file_update = False
 def get_cache_key(gitid=None, gitdir=None, msgid=None):
     # prefer gitid/gitdir over msgid, to reduce unnecessary network i/o
     if gitid is not None:
-        return '%s/%s' % (gitid, gitdir)
-    return msgid
+        return 'g/%s/%s' % (gitid, gitdir)
+    return 'm/%s' % msgid
 
 def list_archive_files():
     """Return a list of archived cache files sorted in recent one first"""
