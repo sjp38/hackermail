@@ -335,7 +335,13 @@ class ScrollableList:
     def set_searched_lines(self, line_idxs):
         self.searched_lines = line_idxs
 
+in_shell_mode = False
+
 def shell_mode_start(slist_or_screen):
+    global in_shell_mode
+    if in_shell_mode is True:
+        return
+
     if type(slist_or_screen) == ScrollableList:
         screen = slist_or_screen.screen
     else:
@@ -343,8 +349,13 @@ def shell_mode_start(slist_or_screen):
     screen.clear()
     screen.refresh()
     curses.reset_shell_mode()
+    in_shell_mode = True
 
 def shell_mode_end(slist_or_screen, session_name=None):
+    global in_shell_mode
+    if in_shell_mode is False:
+        return
+
     if session_name is None:
         print('\nGonna erase outputs on screen and enter curses mode.')
     else:
@@ -357,6 +368,7 @@ def shell_mode_end(slist_or_screen, session_name=None):
         screen = slist_or_screen
     curses.reset_prog_mode()
     screen.clear()
+    in_shell_mode = False
 
 def focus_down(c, slist):
     slist.focus_row = min(slist.focus_row + 1, len(slist.lines) - 1)
