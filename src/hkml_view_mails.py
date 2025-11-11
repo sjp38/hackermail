@@ -1067,7 +1067,7 @@ def should_fetch(list_args, list_data, err):
 
     # if the last list was fetched one, due to added (cached list) comment at
     # th beginning, the position is one line upper than the real end.
-    if last_cursor_position_row < len(list_data.text.count('\n')) - 2:
+    if last_cursor_position_row < list_data.text.count('\n') - 2:
         return False
     return _hkml_cli.ask_yes_no(
             'You previously closed the list after putting ' \
