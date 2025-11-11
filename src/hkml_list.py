@@ -731,7 +731,8 @@ def git_log_output_line_to_mail(line, mdir):
         return None
     subject_offset = len(fields[0]) + 1 + len(fields[1]) + 1
     subject = line[subject_offset:]
-    return _hkml.Mail.from_gitlog(fields[0], mdir, fields[1], subject)
+    gitdir = os.path.relpath(mdir, _hkml.get_hkml_dir())
+    return _hkml.Mail.from_gitlog(fields[0], gitdir, fields[1], subject)
 
 def warn_old_epochs(mails, since, oldest_epoch):
     if oldest_epoch == 0:
