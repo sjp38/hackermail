@@ -549,9 +549,10 @@ def build_suggest_dim_old_prompt(last_dates):
     if len(last_dates) == 0:
         lines += [
                   'May I dim mails on the list that are older than a date?',
-                  "- Enter the date to dim mails older than it (%s)." %
-                  hkml_common.date_format_description(),
+                  "- Enter the date to dim mails older than it."
                   "- Or, enter 'n' if you don't want to dim any mail.",
+                  '',
+                  hkml_common.date_format_description(),
                   ]
     else:
         lines.append('Dates you generated old versions of the list are:')
@@ -564,7 +565,8 @@ def build_suggest_dim_old_prompt(last_dates):
                 "- Enter 'y' or nothing if yes.",
                 "- Enter 'n' if you don't want to dim any mail.",
                 "- Enter an index on the above list to select the date of it.",
-                "- Or, enter custom date to dim mails older than it (%s)." %
+                "- Or, enter custom date to dim mails older than it.",
+                '',
                 hkml_common.date_format_description(),
                 ]
     lines += ['', 'Enter: ']
