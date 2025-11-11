@@ -836,16 +836,14 @@ def get_mails_gitlog_lines(mdir, since, until, min_nr_mails, max_nr_mails,
 
 def get_mails_from_git(mail_list, since, until,
                        min_nr_mails, max_nr_mails, commits_range=None):
-    lines = []
     mdirs = _hkml.mail_list_data_paths(mail_list)
     if not mdirs:
         return None, "Mailing list '%s' in manifest not found." % mail_list
 
     mails = []
     for mdir in mdirs:
-        lines = get_mails_gitlog_lines(mdir, since, until, min_nr_mails,
-                                       max_nr_mails, commits_range)
-        for line in lines:
+        for line in get_mails_gitlog_lines(mdir, since, until, min_nr_mails,
+                                           max_nr_mails, commits_range):
             mail = git_log_output_line_to_mail(line, mdir)
             # mbox can be empty string if the commit is invalid one.
             if mail is None or mail.mbox == '':
