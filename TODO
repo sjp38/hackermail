@@ -43,6 +43,8 @@
     - Updating absolute path based keys to relative path based ones.
     - 'hkml list --alias to refill the cache' for git-based one.
     - 'hkml list <msgid>' for msgid-based one.
+  - If it is from cached list output, notify the failure and let user simply
+    reload the list.
 - show list information (e.g., current dim_old date and list arguments being
   used)
 - Encode origin of mail cache key on the key
