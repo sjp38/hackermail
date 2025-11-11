@@ -38,3 +38,9 @@
     file path.
 - make hkml_view_mails deal better with mails that cannot be written from the
   cache. (hkml_view_mais.py/get_mails())
+- handle mail cache lookup failure in a more graceful way
+  - Suggest work arounds
+    - 'hkml list --alias to refill the cache' for git-based one
+    - 'hkml list <msgid>' for msgid-based one
+- show list information (e.g., current dim_old date and list arguments being
+  used)
