@@ -44,3 +44,5 @@
     - 'hkml list <msgid>' for msgid-based one
 - show list information (e.g., current dim_old date and list arguments being
   used)
+- Encode origin of mail cache key on the key
+  - e.g., adding 'g/' or 'm/' prefix for git-based or msgid-based keys.
