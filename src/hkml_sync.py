@@ -86,8 +86,9 @@ def git_rebase(hkml_dir):
 
     if selection == selections[0]:
         print('Ok, I\'m quitting.  ' \
-                'Please resolve the git rebase conflict in .hkml/ and ' \
-                'push it to latest branch of sync-target remote.')
+                'Please resolve the git rebase conflict in "%s" and ' \
+                'push it to "latest" branch of "sync-target" remote.' %
+              (hkml_dir))
         return 'quit'
     elif selection == selections[1]:
         if subprocess.call(git_cmd + ['rebase', '--abort']) != 0:
