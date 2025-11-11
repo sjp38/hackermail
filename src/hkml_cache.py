@@ -40,7 +40,7 @@ def set_cache_config(max_active_cache_sz, max_archived_caches):
         json.dump({'max_active_cache_sz': max_active_cache_sz,
                    'max_archived_caches': max_archived_caches}, f, indent=4)
 
-# dict having gitid/gitdir as key, Mail kvpairs as value
+# dict having gitid/gitdir or msgid as key, Mail kvpairs as value.
 
 archived_caches = []
 active_cache = None
@@ -48,6 +48,7 @@ active_cache = None
 need_file_update = False
 
 def get_cache_key(gitid=None, gitdir=None, msgid=None):
+    # prefer gitid/gitdir over msgid, to reduce unnecessary network i/o
     if gitid is not None:
         return '%s/%s' % (gitid, gitdir)
     return msgid
