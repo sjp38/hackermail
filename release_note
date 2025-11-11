@@ -5,6 +5,7 @@ v1.4.7
 - hkml list: Suggest --fetch if there is no mails to list.
 - hkml list: Suggest updating lore manifest if there is no mails to list.
 - hkml list: introduce --alias option for multiple sessions management.
+- hkml sync: Add an experimental option to sync cached list outputs.
 
 v1.4.6
 - hkml ptch format: add valid --subject_prefix intention confirmation.
