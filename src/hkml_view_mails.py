@@ -560,8 +560,7 @@ def build_suggest_dim_old_prompt(last_dates):
                   (idx, last_date, now_time - last_date))
         lines += [
                 '',
-                'May I dim mails older than the latest one (%s)?' %
-                last_dates[-1],
+                'May I dim mails older than the latest one?',
                 "- Enter 'y' or nothing if yes.",
                 "- Enter 'n' if you don't want to dim any mail.",
                 "- Enter an index on the above list to select the date of it.",
