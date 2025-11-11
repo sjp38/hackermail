@@ -89,7 +89,14 @@ class MailListDecorator:
         self.collapse = args.collapse
         self.sort_threads_by = args.sort_threads_by
         self.ascend = args.ascend
+
+        if args.cols is None:
+            try:
+                args.cols = int(os.get_terminal_size().columns * 9 / 10)
+            except OSError as e:
+                pass
         self.cols = args.cols
+
         self.show_url = args.url
         self.hide_stat = args.hide_stat
         self.runtime_profile = args.runtime_profile
@@ -1139,12 +1146,6 @@ def args_to_mails_list_data(args):
         since = (until - datetime.timedelta(days=1)).strftime('%Y-%m-%d')
         args.min_nr_mails = args.nr_mails
         args.max_nr_mails = args.nr_mails
-
-    if args.cols is None:
-        try:
-            args.cols = int(os.get_terminal_size().columns * 9 / 10)
-        except OSError as e:
-            pass
 
     runtime_profiles = RuntimeProfiles(using_hkml_view(args))
     runtime_profiles.start('get_mails')
