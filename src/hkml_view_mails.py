@@ -328,6 +328,14 @@ def get_mails(slist):
     for mail_idx in mail_idx_key_map:
         mail_key = mail_idx_key_map[mail_idx]
         mail = hkml_cache.get_mail(key=mail_key)
+        if mail is None:
+            hkml_view.shell_mode_start(slist)
+            print('\n'.join([
+                'Getting a cached mail of key "%s" failed.' % mail_key,
+                'There is no good way to recover from this.  I will exit...',
+                ]))
+            hkml_view.shell_mode_end(slist)
+            exit(1)
         mail.pridx = int(mail_idx)
         mail.filtered_out = False
         mails.append(mail)
