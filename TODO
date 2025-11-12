@@ -47,3 +47,8 @@
   used)
 - Encode origin of mail cache key on the key
   - e.g., adding 'g/' or 'm/' prefix for git-based or msgid-based keys.
+- Fix sync failures after --exp_cached_list_outputs.
+  - After the sync, suppose another update on the cached lists output is made,
+    and it is not yet synced manually.  And the user adds a tag.  Then 'hkml
+    tag' tries to do sync withour --exp_cached_list_outputs.  It keeps the
+    local change on the lists output as uncommitted, so the rebase fails.
