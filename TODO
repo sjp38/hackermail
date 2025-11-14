@@ -52,3 +52,9 @@
     and it is not yet synced manually.  And the user adds a tag.  Then 'hkml
     tag' tries to do sync withour --exp_cached_list_outputs.  It keeps the
     local change on the lists output as uncommitted, so the rebase fails.
+- Better sync failure handling
+  - Wait for manual resolution
+  - Handle rebase abort failure
+- Suggest --fetch always with last quit condition explanation
+  - E.g., "you quit the list last time on line XXX; may I do --fetch?"
+- Drop --exp_cached_list_outputs of 'hkml sync'
