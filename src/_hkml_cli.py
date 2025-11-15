@@ -61,22 +61,24 @@ class Question:
             print('\n'.join(lines))
 
         allow_cancel = self.allow_cancel
-        if allow_cancel is False:
-            prompt = '%s: ' % self.prompt
-        elif default_selection is None:
-            prompt = '%s (enter \'\' to cancel): ' % self.prompt
+
+        enter_info = []
+        if default_selection is not None:
+            enter_info.append("'' for default option")
+            if allow_cancel:
+                enter_info.append("'cancel' to cancel")
         else:
-            prompt = '%s (enter \'\' for \'%s\', \'cancel\' to cancel): ' % (
-                    self.prompt, default_selection.text)
+            enter_info.append("'' to cancel)")
+        prompt = '%s (%s): ' % (self.prompt, ', '.join(enter_info))
 
         answer = input(prompt)
 
         if allow_cancel is True:
-            if answer == '' and default_selection is None:
-                print('Canceled.')
-                return None, None, 'canceled'
-            elif answer == 'cancel' and default_selection is not None:
-                print('Canceled.')
+            if default_selection is None:
+                cancel_keyword = ''
+            else:
+                cancel_keyword = 'cancel'
+            if answer == cancel_keyword:
                 return None, None, 'canceled'
 
         selection = None
@@ -86,12 +88,13 @@ class Question:
                 selection = selections[int(answer) - 1]
                 selection_handle_fn = selection.handle_fn
             except:
-                print('Invalid input.')
-                if default_selection is not None:
+                if answer == '' and default_selection is not None:
                     print('The default (%s) is selected.' %
                           default_selection.text)
-                    return answer, default_selection, None
-                return None, None, 'wrong input'
+                    selection = default_selection
+                    selection_handle_fn = default_selection.handle_fn
+                else:
+                    return None, None, 'wrong input'
 
         if selection_handle_fn is not None:
             err = selection_handle_fn(data, answer, selection)
