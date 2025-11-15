@@ -47,7 +47,7 @@ class Question:
         if self.description is not None:
             for line in self.description.split('\n'):
                 lines += _hkml_fmtstr.wrap_line(
-                        prefix='', line=line, nr_cols=nr_cols)
+                        prefix=None, line=line, nr_cols=nr_cols)
             lines.append('')
         if selections is not None:
             for idx, selection in enumerate(selections):
