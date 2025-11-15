@@ -18,6 +18,10 @@ class TestHkmlFmtstr(unittest.TestCase):
                 ['[something] foo bar',
                  '            baz asdf',
                  ])
+        self.assertEqual(
+                _hkml_fmtstr.wrap_line(None, 'foo bar baz asdf', 15),
+                ['foo bar baz',
+                 'asdf'])
 
 if __name__ == '__main__':
     unittest.main()
