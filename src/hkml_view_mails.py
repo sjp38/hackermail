@@ -1060,14 +1060,15 @@ def show_mails_list(screen, mails_view_data):
     return slist
 
 def should_fetch(list_args, list_data, err):
-    if err == 'no mail to list' and list_args.fetch is False:
+    if not hkml_list.use_cached_output(list_args):
+        return False
+
+    if err == 'no mail to list':
         return _hkml_cli.ask_yes_no(
                 'No mails to show.  ' \
                         'Shall I fetch the mails from the internet and ' \
                         'do listing again?') == 'y'
 
-    if not hkml_list.use_cached_output(list_args):
-        return False
     last_cursor_positions = _hkml_list_cache.get_last_cursor_positions()
     cache_key = hkml_list.args_to_lists_cache_key(list_args)
     if not cache_key in last_cursor_positions:
