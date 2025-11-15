@@ -9,17 +9,20 @@ def wrap_line(prefix, line, nr_cols):
     [something] foo bar
                 baz asdf
     '''
-    lines = []
+    if nr_cols is None:
+        return [line]
     words = [prefix] + line.split(' ')
-    words_to_print = []
+    lines = []
+    line_words = []
     for w in words:
-        words_to_print.append(w)
-        line_len = len(' '.join(words_to_print))
-        if nr_cols is not None and line_len > nr_cols:
-            if len(words_to_print) == 1:
-                lines.append(words_to_print[0])
-            else:
-                lines.append(' '.join(words_to_print[:-1]))
-                words_to_print = [' ' * (len(prefix) + 1) + words_to_print[-1]]
-    lines.append(' '.join(words_to_print))
+        line_words.append(w)
+        line_len = len(' '.join(line_words))
+        if line_len <= nr_cols:
+            continue
+        if len(line_words) == 1:
+            lines.append(line_words[0])
+        else:
+            lines.append(' '.join(line_words[:-1]))
+            line_words = [' ' * (len(prefix) + 1) + line_words[-1]]
+    lines.append(' '.join(line_words))
     return lines
