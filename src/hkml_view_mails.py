@@ -954,6 +954,39 @@ def menu_open_content_with(slist, answer, selection):
     if err is not None:
         print(err)
 
+def menu_list_info(slist, answer, selection):
+    mails_view_data = get_mails_view_data(slist)
+
+    list_args = mails_view_data.list_args
+    print('Sources')
+    print('-------')
+    for idx, source in enumerate(list_args.sources):
+        print('- %s (%s)' % (source, list_args.source_type[idx]))
+    if hkml_list.use_cached_output(list_args):
+        print('(Cached outputs is reused)')
+    else:
+        print('(Freshly generated)')
+    print()
+
+    print('Display rules')
+    print('-------------')
+    print('%s' % mails_view_data.display_rule)
+    print()
+
+    key = hkml_list.args_to_lists_cache_key(list_args)
+    dates = _hkml_list_cache.get_cache_creation_dates(key)
+    print('Last opened dates')
+    print('-----------------')
+    now = datetime.datetime.now().astimezone()
+    for date in dates:
+        print('- %s (%s before)' % (date, now - date))
+    print()
+
+    print('Addiotinal info')
+    print('---------------')
+    print()
+    print('\n'.join(mails_view_data.list_data.comments_lines))
+
 def show_mails_list_menu(c, slist):
     mail = get_focused_mail(slist)
     if mail is None:
@@ -1001,6 +1034,8 @@ def show_mails_list_menu(c, slist):
                 _hkml_cli.Selection(
                     'open screen content with ...',
                     handle_fn=menu_open_content_with),
+                _hkml_cli.Selection(
+                    'list info', handle_fn=menu_list_info),
                 ])
     hkml_view.shell_mode_end(slist)
 
