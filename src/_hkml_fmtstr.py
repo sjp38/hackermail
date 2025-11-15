@@ -11,7 +11,9 @@ def wrap_line(prefix, line, nr_cols):
     '''
     if nr_cols is None:
         return [line]
-    words = [prefix] + line.split(' ')
+    words = line.split(' ')
+    if prefix is not None:
+        words = [prefix] + words
     lines = []
     line_words = []
     for w in words:
@@ -23,6 +25,9 @@ def wrap_line(prefix, line, nr_cols):
             lines.append(line_words[0])
         else:
             lines.append(' '.join(line_words[:-1]))
-            line_words = [' ' * (len(prefix) + 1) + line_words[-1]]
+            if prefix is None:
+                line_words = [line_words[-1]]
+            else:
+                line_words = [' ' * (len(prefix) + 1) + line_words[-1]]
     lines.append(' '.join(line_words))
     return lines
