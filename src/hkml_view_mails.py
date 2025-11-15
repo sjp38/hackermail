@@ -1063,28 +1063,33 @@ def should_fetch(list_args, list_data, err):
     if not hkml_list.use_cached_output(list_args):
         return False
 
+    if err is None:
+        last_cursor_positions = _hkml_list_cache.get_last_cursor_positions()
+        cache_key = hkml_list.args_to_lists_cache_key(list_args)
+        if not cache_key in last_cursor_positions:
+            return False
+        last_cursor_position_row = last_cursor_positions[cache_key][0]
+        list_nr_lines = list_data.text.count('\n')
+        desc = 'You stopped reading the list before.  ' \
+                'The cursor position at the time was %d/%d.' % (
+                        last_cursor_position_row, list_nr_lines)
+        selections = [
+                _hkml_cli.Selection('Continue reading it'),
+                _hkml_cli.Selection(
+                    'Fetch mails from the internet and make a new list'),
+                ]
+        _, selection, err = _hkml_cli.ask_selection(
+                desc=desc, selections=selections,
+                default_selection=selections[0],
+                allow_cancel=False)
+        return selection == selections[1]
+
     if err == 'no mail to list':
         return _hkml_cli.ask_yes_no(
                 'No mails to show.  ' \
                         'Shall I fetch the mails from the internet and ' \
                         'do listing again?') == 'y'
-
-    last_cursor_positions = _hkml_list_cache.get_last_cursor_positions()
-    cache_key = hkml_list.args_to_lists_cache_key(list_args)
-    if not cache_key in last_cursor_positions:
-        return False
-    last_cursor_position_row = last_cursor_positions[cache_key][0]
-
-    # if the last list was fetched one, due to added (cached list) comment at
-    # th beginning, the position is one line upper than the real end.
-    if last_cursor_position_row < list_data.text.count('\n') - 2:
-        return False
-    return _hkml_cli.ask_yes_no(
-            'You previously closed the list after putting ' \
-            'the cursor at the nearly end of the list.  ' \
-            'Maybe you finished reading it?  If so, ' \
-            'shall I fetch the mails from the internet and ' \
-            'do listing again?') == 'y'
+    return False
 
 def should_update_manifest_and_retry(list_args, list_data, err):
     if list_args.fetch is False:
