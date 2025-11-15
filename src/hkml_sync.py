@@ -95,8 +95,7 @@ def git_rebase(hkml_dir):
         return 'success'
     elif selection == selections[1]:
         if subprocess.call(git_cmd + ['rebase', '--abort']) != 0:
-            print('aborting rebase fail')
-            return 'error'
+            print('aborting rebase fail; but this should be ok.')
         if subprocess.call(
                 git_cmd + ['reset', '--hard', 'sync-target/latest']) == 0:
             print('resetting to the remote success')
