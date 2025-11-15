@@ -1123,9 +1123,9 @@ def args_to_mails_list_data(args):
             return None, 'no valid cached list output exists'
         _hkml_list_cache.writeback_list_output()
         return MailsListData(to_show, None, None, mail_idx_key_map), None
-    else:
-        for source in args.sources:
-            _hkml_list_cache.invalidate_cached_outputs(source)
+
+    for source in args.sources:
+        _hkml_list_cache.invalidate_cached_outputs(source)
 
     now = datetime.datetime.now().astimezone()
     if args.since is None:
