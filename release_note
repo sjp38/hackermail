@@ -1,5 +1,8 @@
 This file contains major changes in each version since v1.0.0
 
+v1.4.8
+- hkml list: Suggest --fetch always with cached output information.
+
 v1.4.7
 - hkml list: Suggest --fetch if the user likely finished the last cached list.
 - hkml list: Suggest --fetch if there is no mails to list.
