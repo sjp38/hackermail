@@ -1140,15 +1140,19 @@ def should_update_manifest_and_retry(list_args, list_data, err):
         return False
     if err != 'no mail to list':
         return False
+    manifest_age = _hkml.manifest_age()
+    print(''.join([
+        'Got no mail to list.  ',
+        'This usually happens because there are actually no mail ',
+        'to show, while respecting your "hkml list" arguments.  ',
+        'But, this can also happen because your manifest is outdated.  ',
+        'Your manifest is %d days old.' % manifest_age.days]))
+
     # user might downloaded manifest just before it becomes outdated.
     # maybe a better approach is showing the size of the git repo.
-    # do this for now...
-    manifest_age = _hkml.manifest_age()
-    if manifest_age <= datetime.timedelta(days=2):
-        return False
-    print('Got no mail to list, and the manifest is older than %d days.' %
-          manifest_age.days)
-    print('You _might_ need to update the manifest.')
+    # just give a hint for now...
+    if manifest_age.days < datetime.timedelta(days=2):
+        print('Your manifest is unlikely outdated, though.')
     if not _hkml.is_for_lore_kernel_org():
         # but hkml cannot help this case on its own.
         return False
