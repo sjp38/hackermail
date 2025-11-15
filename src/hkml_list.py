@@ -683,7 +683,15 @@ class MailsListData:
         self.len_comments = len_comments
         self.line_nr_mail_map = line_nr_mail_map
         self.mail_idx_key_map = mail_idx_key_map
+
         lines = text.split('\n')
+        # in case of cached list, len_comments is passed as None
+        if len_comments is None:
+            len_comments = 0
+            for line in lines:
+                if line.startswith('# '):
+                    len_comments += 1
+
         self.comments_lines = lines[:len_comments]
         self.mail_lines = lines[len_comments:]
 
