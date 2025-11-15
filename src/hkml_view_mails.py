@@ -1055,7 +1055,12 @@ def show_mails_list(screen, mails_view_data):
         cache_key = hkml_list.args_to_lists_cache_key(list_args)
         if cache_key in last_cursor_positions:
             slist.focus_row, slist.focus_col = last_cursor_positions[cache_key]
-
+    elif list_args.source_type == ['msgid']:
+        for line_nr, mail in list_data.line_nr_mail_map.items():
+            mail_msgid = mail.get_field('message-id')[1:-1]
+            if mail_msgid in list_args.sources[0]:
+                slist.focus_row = list_data.len_comments + line_nr
+                slist.focus_col = 0
     slist.draw()
     return slist
 
