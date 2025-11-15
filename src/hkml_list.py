@@ -14,6 +14,7 @@ import xml.etree.ElementTree as ET
 
 import _hkml
 import _hkml_date
+import _hkml_fmtstr
 import _hkml_list_cache
 import _hkml_subproc
 import hkml_cache
@@ -119,29 +120,6 @@ class MailListDecorator:
             setattr(self, key, value)
         return self
 
-def wrap_line(prefix, line, nr_cols):
-    '''Wrap a string for a limited columns and returns a list of resulting
-    lines.  Second and below lines starts with spaces of 'prefix' length.
-    For example:
-    >>> print('\n'.join(hkml_list.wrap_line('[something]', 'foo bar baz asdf', 20)))
-    [something] foo bar
-                baz asdf
-    '''
-    lines = []
-    words = [prefix] + line.split(' ')
-    words_to_print = []
-    for w in words:
-        words_to_print.append(w)
-        line_len = len(' '.join(words_to_print))
-        if nr_cols is not None and line_len > nr_cols:
-            if len(words_to_print) == 1:
-                lines.append(words_to_print[0])
-            else:
-                lines.append(' '.join(words_to_print[:-1]))
-                words_to_print = [' ' * (len(prefix) + 1) + words_to_print[-1]]
-    lines.append(' '.join(words_to_print))
-    return lines
-
 def find_ancestors_from_cache(mail, by_msgids, found_parents):
     parent_msgid = mail.get_field('in-reply-to-msgid')
     if parent_msgid is None or parent_msgid in by_msgids:
@@ -214,7 +192,7 @@ def format_entry(mail, max_digits_for_idx, show_nr_replies, show_url, nr_cols):
         suffices.append(mail.url())
     suffix = ' (%s)' % ', '.join(suffices)
 
-    lines = wrap_line(prefix, subject + suffix, nr_cols)
+    lines = _hkml_fmtstr.wrap_line(prefix, subject + suffix, nr_cols)
     return lines
 
 def nr_replies_of(mail):

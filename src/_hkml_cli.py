@@ -2,7 +2,7 @@
 
 import os
 
-import hkml_list
+import _hkml_fmtstr
 
 '''
 object for Question.ask_selection()
@@ -46,7 +46,7 @@ class Question:
         nr_cols = os.get_terminal_size().columns * 9 / 10
         if self.description is not None:
             for line in self.description.split('\n'):
-                lines += hkml_list.wrap_line(
+                lines += _hkml_fmtstr.wrap_line(
                         prefix='', line=line, nr_cols=nr_cols)
             lines.append('')
         if selections is not None:
@@ -54,7 +54,7 @@ class Question:
                 line = selection.text
                 if selection == default_selection:
                     line += ' (default)'
-                lines += hkml_list.wrap_line(
+                lines += _hkml_fmtstr.wrap_line(
                         prefix='%d: ' % (idx + 1), line=line, nr_cols=nr_cols)
             lines.append('')
         if len(lines) > 0:

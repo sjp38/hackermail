@@ -14,9 +14,9 @@ import time
 import sys
 
 import _hkml_date
+import _hkml_fmtstr
 import hkml_cache
 import hkml_init
-import hkml_list
 
 def cmd_str_output(cmd):
     output = subprocess.check_output(cmd)
@@ -381,7 +381,7 @@ class Mail:
         in_patch_cv_lines = []
 
         cv_subject = cvmail.get_field('subject')
-        first_paragraph = hkml_list.wrap_line(
+        first_paragraph = _hkml_fmtstr.wrap_line(
                 'Patch series', '\'%s\'' % cv_subject, 72)
         first_paragraph = '\n'.join(first_paragraph)
         in_patch_cv_lines = [first_paragraph, '']
