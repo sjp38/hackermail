@@ -10,16 +10,11 @@ import _hkml_cli
 Synchronize personal files in .hkm/ via user-specified git repo.
 '''
 
-sync_cached_list_outputs = False
-
 def files_to_sync(hkml_dir):
     files = ['manifest', 'monitor_requests', 'tags']
     for filename in os.listdir(hkml_dir):
         if filename.startswith('tags_'):
             files.append(filename)
-    if sync_cached_list_outputs is True:
-        files += ['list_output_cache', 'list_output_cache_history',
-                  'last_cursor_positions']
     return files
 
 def commit_changes(hkml_dir):
@@ -138,10 +133,6 @@ def syncup_ready():
     return os.path.isdir(os.path.join(_hkml.get_hkml_dir(), '.git'))
 
 def main(args):
-    global sync_cached_list_outputs
-    if args.exp_cached_list_outputs:
-        sync_cached_list_outputs = True
-
     if not syncup_ready():
         setup_git(_hkml.get_hkml_dir(), args.remote)
     syncup(_hkml.get_hkml_dir(), args.remote)
@@ -150,7 +141,3 @@ def set_argparser(parser):
     parser.description = 'synchronize the outputs and setups'
     parser.add_argument('--remote', metavar='<git repo>',
                         help='remote git repo to synchronize with')
-    parser.add_argument(
-            '--exp_cached_list_outputs', action='store_true',
-            help='(EXPERIMENTAL) sync cached monitor list outputs and ' \
-                    'read status too')
