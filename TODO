@@ -45,6 +45,3 @@
   used)
 - Encode origin of mail cache key on the key
   - e.g., adding 'g/' or 'm/' prefix for git-based or msgid-based keys.
-- Better sync failure handling
-  - Wait for manual resolution
-  - Handle rebase abort failure
