@@ -1116,14 +1116,13 @@ def args_to_mails_list_data(args):
     if use_cached_output(args):
         if args.sources == []:
             to_show, mail_idx_key_map = _hkml_list_cache.get_last_list()
-            if to_show is None:
-                return None, 'no valid last list output exists'
         else:
             to_show, mail_idx_key_map = _hkml_list_cache.get_list_for(
                     lists_cache_key)
-        if to_show is not None:
-            _hkml_list_cache.writeback_list_output()
-            return MailsListData(to_show, None, None, mail_idx_key_map), None
+        if to_show is None:
+            return None, 'no valid cached list output exists'
+        _hkml_list_cache.writeback_list_output()
+        return MailsListData(to_show, None, None, mail_idx_key_map), None
     else:
         for source in args.sources:
             _hkml_list_cache.invalidate_cached_outputs(source)
