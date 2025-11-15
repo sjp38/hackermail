@@ -9,9 +9,9 @@ import time
 
 import _hkml
 import _hkml_cli
+import _hkml_date
 import _hkml_list_cache
 import hkml_cache
-import hkml_common
 import hkml_export
 import hkml_forward
 import hkml_list
@@ -465,7 +465,7 @@ class MailDisplayEffect:
 
     def interactive_setup_dates(self):
         prompt = ' '.join(['Minimum date.',
-                           hkml_common.date_format_description(),
+                           _hkml_date.date_format_description(),
                            '"min" keyword is also supported.'])
         answer, err = _hkml_cli.ask_input(prompt=prompt)
         if err is not None:
@@ -473,12 +473,12 @@ class MailDisplayEffect:
         if answer == 'min':
             self.min_date = answer
         else:
-            self.min_date, err = hkml_common.parse_date(answer)
+            self.min_date, err = _hkml_date.parse_date(answer)
             if err is not None:
                 print(err)
                 return
         prompt = ' '.join(['Maximum date.',
-                           hkml_common.date_format_description(),
+                           _hkml_date.date_format_description(),
                            '"max" keyword is also supported.'])
         answer, err = _hkml_cli.ask_input(prompt=prompt)
         if err is not None:
@@ -486,7 +486,7 @@ class MailDisplayEffect:
         if answer == 'max':
             self.max_date = answer
         else:
-            self.max_date, err = hkml_common.parse_date(answer)
+            self.max_date, err = _hkml_date.parse_date(answer)
             if err is not None:
                 print(err)
                 return
@@ -564,7 +564,7 @@ def build_suggest_dim_old_prompt(last_dates):
                   "- Enter the date to dim mails older than it."
                   "- Or, enter 'n' if you don't want to dim any mail.",
                   '',
-                  hkml_common.date_format_description(),
+                  _hkml_date.date_format_description(),
                   ]
     else:
         lines.append('Dates you generated old versions of the list are:')
@@ -579,7 +579,7 @@ def build_suggest_dim_old_prompt(last_dates):
                 "- Enter an index on the above list to select the date of it.",
                 "- Or, enter custom date to dim mails older than it.",
                 '',
-                hkml_common.date_format_description(),
+                _hkml_date.date_format_description(),
                 ]
     lines += ['', 'Enter: ']
     return lines
@@ -590,7 +590,7 @@ def suggest_dim_old(key):
     last_dates = last_dates[:-1]
     answer = input('\n'.join(build_suggest_dim_old_prompt(last_dates)))
     answer_fields = answer.split()
-    _, err = hkml_common.parse_date_arg(answer_fields)
+    _, err = _hkml_date.parse_date_arg(answer_fields)
     if err is None:
         return answer_fields
     if answer.lower() == 'n':
@@ -616,7 +616,7 @@ def menu_dim_old_mails(slist, answer, selection):
     max_date_str = suggest_dim_old(key)
     if max_date_str is None:
         return
-    max_date, err = hkml_common.parse_date_arg(max_date_str)
+    max_date, err = _hkml_date.parse_date_arg(max_date_str)
     if err is not None:
         print(err)
         return
@@ -1179,7 +1179,7 @@ def generate_mails_view_data(args):
         if args.dim_old is None:
             return MailsViewData(list_data, args, None), err
 
-    max_date, err = hkml_common.parse_date_arg(args.dim_old)
+    max_date, err = _hkml_date.parse_date_arg(args.dim_old)
     if err is not None:
         err = 'wrong --dim_old (%s)' % err
         display_effect_rule = None

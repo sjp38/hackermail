@@ -13,10 +13,10 @@ import time
 import xml.etree.ElementTree as ET
 
 import _hkml
+import _hkml_date
 import _hkml_list_cache
 import _hkml_subproc
 import hkml_cache
-import hkml_common
 import hkml_fetch
 import hkml_open
 import hkml_patch
@@ -767,8 +767,8 @@ def gitlog_date_misordered(mdir, oldest_commit):
         return False
     if len(two_more_logs) != 2:
         return False
-    newer = hkml_common.parse_iso_date(two_more_logs[0].split()[1])
-    older = hkml_common.parse_iso_date(two_more_logs[1].split()[1])
+    newer = _hkml_date.parse_iso_date(two_more_logs[0].split()[1])
+    older = _hkml_date.parse_iso_date(two_more_logs[1].split()[1])
     return newer < older
 
 def handle_gitlog_date_misorders(
@@ -1137,13 +1137,13 @@ def args_to_mails_list_data(args):
     if args.since is None:
         since = now - datetime.timedelta(days=3)
     else:
-        since, err = hkml_common.parse_date_arg(args.since)
+        since, err = _hkml_date.parse_date_arg(args.since)
         if err is not None:
             return None, 'parsing --since fail (%s)' % err
     if args.until is None:
         until = now + datetime.timedelta(days=1)
     else:
-        until, err = hkml_common.parse_date_arg(args.until)
+        until, err = _hkml_date.parse_date_arg(args.until)
         if err is not None:
             return None, 'parsing --until fail (%s)' % err
 
@@ -1368,14 +1368,14 @@ def set_argparser(parser=None):
             help='type of sources')
     parser.add_argument('--fetch', action='store_true',
             help='fetch mails before listing')
-    hkml_common.add_date_arg(parser, '--since', 'show mails sent after this.')
-    hkml_common.add_date_arg(parser, '--until', 'show mails sent before this.')
+    _hkml_date.add_date_arg(parser, '--since', 'show mails sent after this.')
+    _hkml_date.add_date_arg(parser, '--until', 'show mails sent before this.')
 
     add_mails_filter_arguments(parser)
     add_decoration_arguments(parser, show_help=False)
 
     # this option is handled by hkml_view_mails
-    hkml_common.add_date_arg(parser, '--dim_old', 'dim mails older than this.')
+    _hkml_date.add_date_arg(parser, '--dim_old', 'dim mails older than this.')
 
     add_advanced_arguments(parser, show_help=False)
 

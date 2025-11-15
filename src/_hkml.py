@@ -13,8 +13,8 @@ import tempfile
 import time
 import sys
 
+import _hkml_date
 import hkml_cache
-import hkml_common
 import hkml_init
 import hkml_list
 
@@ -102,7 +102,7 @@ class Mail:
         self = cls()
         self.gitid = gitid
         self.gitdir = gitdir
-        self.date = hkml_common.parse_iso_date(date)
+        self.date = _hkml_date.parse_iso_date(date)
         self.subject = subject
         self.set_subject_tags_series()
         self.__fields = {}
