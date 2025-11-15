@@ -4,6 +4,7 @@ v1.4.8
 - hkml list: Suggest --fetch always with cached output information.
 - hkml sync: Wait manual sync failure resolve.
 - hkml sync: Drop expeerimental option to sync cached list outputs.
+- hkml list: Put curosr on mail of the msgid on msgid-soure lists.
 
 v1.4.7
 - hkml list: Suggest --fetch if the user likely finished the last cached list.
