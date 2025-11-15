@@ -1,5 +1,9 @@
 # SPDX-License-Identifier: GPL-2.0
 
+import os
+
+import hkml_list
+
 '''
 object for Question.ask_selection()
 'text' is displayed to the user with the selection question.
@@ -39,14 +43,19 @@ class Question:
             default_selection=None):
         # return answer, selection, and error
         lines = ['']
+        nr_cols = os.get_terminal_size().columns * 9 / 10
         if self.description is not None:
-            lines.append(self.description)
+            for line in self.description.split('\n'):
+                lines += hkml_list.wrap_line(
+                        prefix='', line=line, nr_cols=nr_cols)
             lines.append('')
         if selections is not None:
             for idx, selection in enumerate(selections):
-                lines.append('%d: %s' % (idx + 1, selection.text))
+                line = selection.text
                 if selection == default_selection:
-                    lines[-1] += ' (default)'
+                    line += ' (default)'
+                lines += hkml_list.wrap_line(
+                        prefix='%d: ' % (idx + 1), line=line, nr_cols=nr_cols)
             lines.append('')
         if len(lines) > 0:
             print('\n'.join(lines))
