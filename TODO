@@ -33,12 +33,8 @@
 - Clear screen completely when quit
   - If replying was used, the screen is not cleaned after quit.
 - hkml open: pass mail object to hkml_view
-- make mail cache key's git repo dir relative to hkml dir
-  - This makes synced list_output_cache unusable on machines having differnt
-    file path.
-- make hkml_view_mails deal better with mails that cannot be written from the
-  cache. (hkml_view_mais.py/get_mails())
 - handle mail cache lookup failure in a more graceful way
+  - Maybe this is not needed as long as we don't sync cached list outputs.
   - Suggest work arounds
     - Updating absolute path based keys to relative path based ones.
     - 'hkml list --alias to refill the cache' for git-based one.
@@ -49,14 +45,6 @@
   used)
 - Encode origin of mail cache key on the key
   - e.g., adding 'g/' or 'm/' prefix for git-based or msgid-based keys.
-- Fix sync failures after --exp_cached_list_outputs.
-  - After the sync, suppose another update on the cached lists output is made,
-    and it is not yet synced manually.  And the user adds a tag.  Then 'hkml
-    tag' tries to do sync withour --exp_cached_list_outputs.  It keeps the
-    local change on the lists output as uncommitted, so the rebase fails.
 - Better sync failure handling
   - Wait for manual resolution
   - Handle rebase abort failure
-- Suggest --fetch always with last quit condition explanation
-  - E.g., "you quit the list last time on line XXX; may I do --fetch?"
-- Drop --exp_cached_list_outputs of 'hkml sync'
