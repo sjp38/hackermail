@@ -9,7 +9,7 @@ import subprocess
 import tempfile
 
 import _hkml
-import hkml_common
+import _hkml_subproc
 
 def need_to_print(key, depth, mlists):
     if depth > 0:
@@ -47,9 +47,9 @@ def fetch_lore(output_file=None):
     Returns an error string or None if no error happened.
     '''
         # Get the current working directory
-    if not hkml_common.cmd_available('wget'):
+    if not _hkml_subproc.cmd_available('wget'):
         return 'wget is unavailable'
-    if not hkml_common.cmd_available('gzip'):
+    if not _hkml_subproc.cmd_available('gzip'):
         return 'gzip is unavailable'
     original_dir = os.getcwd()
     temp_dir = tempfile.mkdtemp(prefix='hkml_manifest_dir_')

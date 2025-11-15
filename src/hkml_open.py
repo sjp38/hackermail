@@ -7,7 +7,7 @@ import tempfile
 
 import _hkml
 import _hkml_list_cache
-import hkml_common
+import _hkml_subproc
 import hkml_list
 import hkml_view
 import hkml_view_text
@@ -113,7 +113,7 @@ def show_git_commit(commit, to_stdout, use_less, string_after_less):
 
 def handle_command_target(args):
     cmd = args.target.split()[0]
-    is_cmd = hkml_common.cmd_available(cmd)
+    is_cmd = _hkml_subproc.cmd_available(cmd)
     if not is_cmd:
         return False
 

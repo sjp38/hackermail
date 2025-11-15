@@ -14,6 +14,7 @@ import xml.etree.ElementTree as ET
 
 import _hkml
 import _hkml_list_cache
+import _hkml_subproc
 import hkml_cache
 import hkml_common
 import hkml_fetch
@@ -916,7 +917,7 @@ def get_mails_from_pisearch(mailing_list, query_str):
     query_str = query_str.replace(' ', '+')
     query_url = '%s/%s/?q=%s&x=A' % (pi_url, mailing_list, query_str)
     _, query_output = tempfile.mkstemp(prefix='hkml_pisearch_atom-')
-    if not hkml_common.cmd_available('curl'):
+    if not _hkml_subproc.cmd_available('curl'):
         return None, '"which curl" fails'
 
     _hkml.delay_public_inbox_query()

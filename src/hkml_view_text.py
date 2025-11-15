@@ -9,8 +9,8 @@ import tempfile
 import _hkml
 import _hkml_cli
 import _hkml_list_cache
+import _hkml_subproc
 import hkml_cache
-import hkml_common
 import hkml_list
 import hkml_open
 import hkml_view
@@ -147,11 +147,11 @@ def menu_selections_for_url(line):
     for word in line.split():
         if not word.startswith('http://') and not word.startswith('https://'):
             continue
-        if hkml_common.cmd_available('lynx'):
+        if _hkml_subproc.cmd_available('lynx'):
             cmd = 'lynx %s' % word
             selections.append(_hkml_cli.Selection(
                 cmd, handle_fn=menu_exec_web, data=cmd))
-        if hkml_common.cmd_available('w3m'):
+        if _hkml_subproc.cmd_available('w3m'):
             cmd = 'w3m %s' % word
             selections.append(_hkml_cli.Selection(
                 cmd, handle_fn=menu_exec_web, data=cmd))
