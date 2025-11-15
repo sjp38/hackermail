@@ -26,6 +26,10 @@ import hkml_write
 
 # mails list
 
+def get_mails_view_data(slist):
+    '''Returns MailsViewData that associated to the slist'''
+    return slist.data
+
 def mail_of_row(slist, row):
     line_nr_mail_map = slist.data.list_data.line_nr_mail_map
     # in case of cached output reuse, the map is None
