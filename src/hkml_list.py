@@ -683,10 +683,7 @@ class MailsListData:
         self.len_comments = len_comments
         self.line_nr_mail_map = line_nr_mail_map
         self.mail_idx_key_map = mail_idx_key_map
-        if self.text is None:
-            lines = []
-        else:
-            lines = text.split('\n')
+        lines = text.split('\n')
         self.comments_lines = lines[:len_comments]
         self.mail_lines = lines[len_comments:]
 
