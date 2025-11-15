@@ -85,11 +85,14 @@ def git_rebase(hkml_dir):
         raise Exception('BUG')
 
     if selection == selections[0]:
-        print('Ok, I\'m quitting.  ' \
-                'Please resolve the git rebase conflict in "%s" and ' \
-                'push it to "latest" branch of "sync-target" remote.' %
-              (hkml_dir))
-        return 'quit'
+        desc = ''.join([
+            'You selected to manually resolve the conflict.  ',
+            'Please open a new window and do following there.  ',
+            'Resolve the git rebase failure in "%s" ' % hkml_dir,
+            'and push it to "latest" branch of "sync-target" remote.  ',
+            'After doing that, enter anything here.'])
+        _hkml_cli.as_input(desc=desc)
+        return 'success'
     elif selection == selections[1]:
         if subprocess.call(git_cmd + ['rebase', '--abort']) != 0:
             print('aborting rebase fail')
