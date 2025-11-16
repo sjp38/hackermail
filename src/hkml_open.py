@@ -6,6 +6,7 @@ import subprocess
 import tempfile
 
 import _hkml
+import _hkml_fmtstr
 import _hkml_list_cache
 import _hkml_subproc
 import hkml_list
@@ -79,7 +80,7 @@ def mail_display_str(mail, head_columns=None, valid_mbox=False,
                     lines.append('%s: %s' % (head, recipient.strip()))
                 continue
             if head_columns is not None:
-                lines += hkml_list.wrap_line('%s:' % head, value, head_columns)
+                lines += _hkml_fmtstr.wrap_line('%s:' % head, value, head_columns)
             else:
                 lines.append('%s: %s' % (head, value))
     lines.append('\n%s' % mail.get_field('body'))
