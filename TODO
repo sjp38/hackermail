@@ -43,3 +43,6 @@
     reload the list.
 - Encode origin of mail cache key on the key
   - e.g., adding 'g/' or 'm/' prefix for git-based or msgid-based keys.
+- Better cursor positioning on reply
+  - When reply, try to put the cursor position same to the last line the user
+    was reading.
