@@ -200,7 +200,14 @@ def reply_mail(c, slist):
         slist.toast('parent is not a mail?')
         return
 
-    hkml_view_mails.reply_mail(slist, mail)
+    nr_header_rows = 0
+    for line in slist.lines:
+        nr_header_rows += 1
+        if line == '':
+            break
+
+    hkml_view_mails.reply_mail(
+            slist, mail, cursor_row=slist.focus_row - nr_header_rows)
 
 def menu_reply_mail(slist, answer, selection):
     mail, err = get_showing_mail(slist)

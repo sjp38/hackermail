@@ -133,12 +133,15 @@ def ask_editor(default_editor):
         cmd = choices[0]
     return cmd
 
-def open_editor(file_path, target_desc='mail'):
+def open_editor(file_path, target_desc='mail', cursor_row=0):
     editor = os.environ.get('EDITOR')
     editor = ask_editor(editor)
 
     print('I will open a text editor for the %s.' % target_desc)
-    if subprocess.call([editor, file_path]) != 0:
+    cmd = [editor, file_path]
+    if cursor_row != 0 and editor in ['vim', 'nvim', 'nano']:
+        cmd = [editor, '+%d' % cursor_row, file_path]
+    if subprocess.call(cmd) != 0:
         return 'The editor for %s exit with an error.' % target_desc
     return None
 

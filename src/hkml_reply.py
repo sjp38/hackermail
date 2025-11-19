@@ -35,16 +35,26 @@ def format_reply(mail, attach_file):
                                   from_=None, draft_mail=None,
                                   attach_files=attach_file)
 
-def reply(mail, attach_files, format_only):
+def reply(mail, attach_files, format_only, cursor_row=0):
     reply_mbox_str = format_reply(mail, attach_files)
     if format_only:
         print(reply_mbox_str)
         return
 
+    if cursor_row != 0:
+        nr_header_rows = 0
+        for line in reply_mbox_str.split('\n'):
+            nr_header_rows += 1
+            if line == '':
+                break
+        # add three for the context line, the blank line after it, and because
+        # vim counts rows from 1.
+        cursor_row += nr_header_rows + 3
+
     fd, reply_tmp_path = tempfile.mkstemp(prefix='hkml_reply_')
     with open(reply_tmp_path, 'w') as f:
         f.write(reply_mbox_str)
-    err = hkml_write.open_editor(reply_tmp_path)
+    err = hkml_write.open_editor(reply_tmp_path, cursor_row=cursor_row)
     if err is not None:
         print(err)
         exit(1)

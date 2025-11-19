@@ -123,7 +123,7 @@ def suggest_continuing_draft(drafts):
             pass
     return None
 
-def reply_mail(slist, mail):
+def reply_mail(slist, mail, cursor_row=0):
     hkml_view.shell_mode_start(slist)
     reply_subject = hkml_reply.format_reply_subject(mail)
     drafts = hkml_tag.get_mails_of_subject_tag(reply_subject, 'drafts')
@@ -134,7 +134,8 @@ def reply_mail(slist, mail):
                 cc=None, body=None, attach=None, format_only=None)
     else:
         files = get_attach_files()
-        hkml_reply.reply(mail, attach_files=files, format_only=None)
+        hkml_reply.reply(mail, attach_files=files, format_only=None,
+                         cursor_row=cursor_row)
     hkml_view.shell_mode_end(slist)
 
 def reply_focused_mail(c, slist):
