@@ -43,9 +43,6 @@
     reload the list.
 - Encode origin of mail cache key on the key
   - e.g., adding 'g/' or 'm/' prefix for git-based or msgid-based keys.
-- Better cursor positioning on reply
-  - When reply, try to put the cursor position same to the last line the user
-    was reading.
 - Implement a feature to show hkml list usage history
   - e.g., you read damon mailing list with something an hour ago with options
     xxx; the last cursor position was ...
