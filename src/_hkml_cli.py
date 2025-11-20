@@ -159,11 +159,25 @@ def ask_selection(desc=None, selections=None, prompt=None,
     have its own data for slection-specific one.
 
     Returns user's input to the question, the 'Selection' object, and an error.
+
+    If selections is a list of strings, the second return value is not
+    'Selection' object but the index of the selection on the list.
     '''
-    return Question(desc=desc, prompt=prompt,
-                    allow_cancel=allow_cancel).ask_selection(
-                            selections=selections, data=handler_common_data,
-                            default_selection=default_selection)
+    string_selections = False
+    if type(selections[0]) is str:
+        string_selections = True
+        selections = [Selection(s) for s in selections]
+        if default_selection is not None:
+            default_selection = [s for s in selections
+                                 if s.text == default_selection][0]
+    answer, selection, err = Question(
+            desc=desc, prompt=prompt, allow_cancel=allow_cancel).ask_selection(
+                    selections=selections, data=handler_common_data,
+                    default_selection=default_selection)
+    if string_selections == False:
+        return answer, selection, err
+    selection = selections.index(selection)
+    return answer, selection, err
 
 yes_answers = ['y', 'yes']
 no_answers = ['n', 'no']
