@@ -1,14 +1,12 @@
 This file contains major changes in each version since v1.0.0
 
-v1.4.9
-- put cursor on reply editor screen same to last row the user was reading the
-  original mail.
-
 v1.4.8
 - hkml list: Suggest --fetch always with cached output information.
 - hkml sync: Wait manual sync failure resolve.
 - hkml sync: Drop expeerimental option to sync cached list outputs.
 - hkml list: Put curosr on mail of the msgid on msgid-soure lists.
+- put cursor on reply editor screen same to last row the user was reading the
+  original mail.
 
 v1.4.7
 - hkml list: Suggest --fetch if the user likely finished the last cached list.
