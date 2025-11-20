@@ -8,6 +8,7 @@ import sys
 import tempfile
 
 import _hkml
+import _hkml_cli
 import _hkml_list_cache
 import _hkml_subproc
 import hkml_list
@@ -140,7 +141,18 @@ def open_editor(file_path, target_desc='mail', cursor_row=0):
     print('I will open a text editor for the %s.' % target_desc)
     cmd = [editor, file_path]
     if cursor_row != 0 and editor in ['vim', 'nvim', 'nano']:
-        cmd = [editor, '+%d' % cursor_row, file_path]
+        answer, selection_idx, err = _hkml_cli.ask_selection(
+                'Seems you are replying on a mail that ' \
+                        'you were reading with the cursor on %d-th row.  ' \
+                        'Shall I put the cursor on the reply writing screen ' \
+                        'on the same row, ' \
+                        'so that you can write reply from there?' % cursor_row,
+                        ['Yes, put cursor on the %d-throw' % cursor_row,
+                         'No, put the cursor on the first row'],
+                        allow_cancel=False, default_selection='Yes',
+                        allow_error=False)
+        if selection_idx == 0:
+            cmd = [editor, '+%d' % cursor_row, file_path]
     if subprocess.call(cmd) != 0:
         return 'The editor for %s exit with an error.' % target_desc
     return None
