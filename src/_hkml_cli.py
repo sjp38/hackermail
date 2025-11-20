@@ -150,7 +150,7 @@ def ask_input(desc=None, prompt=None, handler_data=None,
 
 def ask_selection(desc=None, selections=None, prompt=None,
                   handler_common_data=None, default_selection=None,
-                  allow_cancel=True):
+                  allow_cancel=True, allow_error=True):
     '''
     Prints 'desc', a blank line, 'selections', and 'prompt'.  Then, wait for
     user selection.  For given user input, 'handle_fn' of the selected
@@ -170,10 +170,19 @@ def ask_selection(desc=None, selections=None, prompt=None,
         if default_selection is not None:
             default_selection = [s for s in selections
                                  if s.text == default_selection][0]
-    answer, selection, err = Question(
-            desc=desc, prompt=prompt, allow_cancel=allow_cancel).ask_selection(
-                    selections=selections, data=handler_common_data,
-                    default_selection=default_selection)
+
+    while True:
+        answer, selection, err = Question(
+                desc=desc, prompt=prompt,
+                allow_cancel=allow_cancel).ask_selection(
+                        selections=selections, data=handler_common_data,
+                        default_selection=default_selection)
+        if allow_error is False and err is not None:
+            print('Error (%s)' % err)
+            print('Please answer correctly.')
+            continue
+        break
+
     if string_selections == False:
         return answer, selection, err
     selection = selections.index(selection)
