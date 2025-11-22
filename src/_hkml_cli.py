@@ -150,7 +150,8 @@ def ask_input(desc=None, prompt=None, handler_data=None,
 
 def ask_selection(desc=None, selections=None, prompt=None,
                   handler_common_data=None, default_selection=None,
-                  allow_cancel=True, allow_error=True):
+                  allow_cancel=True, allow_error=True,
+                  default_selection_idx=None):
     '''
     Prints 'desc', a blank line, 'selections', and 'prompt'.  Then, wait for
     user selection.  For given user input, 'handle_fn' of the selected
@@ -167,9 +168,11 @@ def ask_selection(desc=None, selections=None, prompt=None,
     if type(selections[0]) is str:
         string_selections = True
         selections = [Selection(s) for s in selections]
-        if default_selection is not None:
+        if default_selection is not None and type(default_selection) is str:
             default_selection = [s for s in selections
                                  if s.text == default_selection][0]
+    if default_selection_idx is not None:
+        default_selection = selections[default_selection_idx]
 
     while True:
         answer, selection, err = Question(
