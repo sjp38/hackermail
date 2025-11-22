@@ -1124,8 +1124,7 @@ def should_fetch(list_args, list_data, err):
                     'Fetch mails from the internet and make a new list'),
                 ]
         _, selection, err = _hkml_cli.ask_selection(
-                desc=desc, selections=selections,
-                default_selection=selections[0],
+                desc=desc, selections=selections, default_selection_idx=0,
                 allow_cancel=False)
         return selection == selections[1]
 

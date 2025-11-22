@@ -268,7 +268,7 @@ def menu_jump(slist, answer, selection):
 
     answer, selection, err = _hkml_cli.ask_selection(
             desc='Select where to jump.', selections=selections,
-            default_selection=selections[0])
+            default_selection_idx=0)
     current_depth = mail_depth(slist.lines[slist.focus_row])
 
     if selection == selections[0]:

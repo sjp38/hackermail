@@ -75,9 +75,7 @@ def git_rebase(hkml_dir):
             ]
     answer, selection, err = _hkml_cli.ask_selection(
             desc='Rebasing files for sync failed.  What to do?',
-            selections=selections,
-            default_selection=selections[0],
-            allow_cancel=False,
+            selections=selections, default_selection_idx=0, allow_cancel=False,
             )
     if err is not None:
         # cannot error since cancel is not allowed and it has a
