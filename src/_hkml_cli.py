@@ -165,11 +165,7 @@ def ask_selection(desc=None, selections_txt=None, selections=None, prompt=None,
     'Selection' object but the index of the selection on the list.
     '''
     if selections_txt is not None:
-        selections = selections_txt
-    string_selections = False
-    if type(selections[0]) is str:
-        string_selections = True
-        selections = [Selection(s) for s in selections]
+        selections = [Selection(text=s) for s in selections_txt]
     default_selection = None
     if default_selection_idx is not None:
         default_selection = selections[default_selection_idx]
@@ -186,7 +182,7 @@ def ask_selection(desc=None, selections_txt=None, selections=None, prompt=None,
             continue
         break
 
-    if string_selections == False:
+    if selections_txt is None:
         return answer, selection, err
     selection = selections.index(selection)
     return answer, selection, err
