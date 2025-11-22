@@ -138,7 +138,6 @@ def open_editor(file_path, target_desc='mail', cursor_row=0):
     editor = os.environ.get('EDITOR')
     editor = ask_editor(editor)
 
-    print('I will open a text editor for the %s.' % target_desc)
     cmd = [editor, file_path]
     if cursor_row != 0 and editor in ['vim', 'nvim', 'nano']:
         answer, selection_idx, err = _hkml_cli.ask_selection(
