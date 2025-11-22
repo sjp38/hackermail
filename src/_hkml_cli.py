@@ -148,7 +148,7 @@ def ask_input(desc=None, prompt=None, handler_data=None,
     return Question(desc=desc, prompt=prompt).ask_input(
             data=handler_data, handle_fn=handle_fn)
 
-def ask_selection(desc=None, selections=None, prompt=None,
+def ask_selection(desc=None, selections_txt=None, selections=None, prompt=None,
                   handler_common_data=None,
                   allow_cancel=True, allow_error=True,
                   default_selection_idx=None):
@@ -164,6 +164,8 @@ def ask_selection(desc=None, selections=None, prompt=None,
     If selections is a list of strings, the second return value is not
     'Selection' object but the index of the selection on the list.
     '''
+    if selections_txt is not None:
+        selections = selections_txt
     string_selections = False
     if type(selections[0]) is str:
         string_selections = True
