@@ -149,8 +149,7 @@ def open_editor(file_path, target_desc='mail', cursor_row=0):
                         'so that you can write reply from there?' % cursor_row,
                         ['Yes, put cursor on the %d-throw' % cursor_row,
                          'No, put the cursor on the first row'],
-                        allow_cancel=False,
-                        default_selection='Yes, put cursor on the %d-throw' % cursor_row,
+                        default_selection_idx=0, allow_cancel=False,
                         allow_error=False)
         if selection_idx == 0:
             cmd = [editor, '+%d' % cursor_row, file_path]
