@@ -46,3 +46,7 @@
 - Implement a feature to show hkml list usage history
   - e.g., you read damon mailing list with something an hour ago with options
     xxx; the last cursor position was ...
+- Better handle failure from 'hkml list damon -31 days'
+  - Without --fetch, it fails with below message on curses mode.
+    "Failed mails list generating (source type inference for -31 failed: no
+    candidate you could use --source_type option to solve this)."
