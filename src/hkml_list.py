@@ -1100,13 +1100,18 @@ def args_to_mails_list_data(args):
     if use_cached_output(args):
         if args.sources == []:
             to_show, mail_idx_key_map = _hkml_list_cache.get_last_list()
+            # This is explicit cached list request.  Fail if cached list is
+            # unavailable.
+            if to_show is None:
+                return None, 'no valid cached list output exists'
         else:
+            # This is implicit cached list request.  If there is no cached list
+            # for this request, we may be able to get it from the git.
             to_show, mail_idx_key_map = _hkml_list_cache.get_list_for(
                     lists_cache_key)
-        if to_show is None:
-            return None, 'no valid cached list output exists'
-        _hkml_list_cache.writeback_list_output()
-        return MailsListData(to_show, None, None, mail_idx_key_map), None
+        if to_show is not None:
+            _hkml_list_cache.writeback_list_output()
+            return MailsListData(to_show, None, None, mail_idx_key_map), None
 
     for source in args.sources:
         _hkml_list_cache.invalidate_cached_outputs(source)
