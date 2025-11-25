@@ -46,3 +46,7 @@
 - Implement a feature to show hkml list usage history
   - e.g., you read damon mailing list with something an hour ago with options
     xxx; the last cursor position was ...
+- Better suggest --dim_old for threads
+  - Same thread can be created with different mail's msgid, so --dim_old
+    suggestion is not consistently applied.
+  - Use root mail's msgid as the key to set/get the last creation dates.
