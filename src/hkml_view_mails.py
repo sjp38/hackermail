@@ -585,8 +585,18 @@ def build_suggest_dim_old_prompt(last_dates):
     lines += ['', 'Enter: ']
     return lines
 
-def suggest_dim_old(key):
+def get_thread_last_dates(thread_msgids):
+    last_dates = []
+    for msgid in thread_msgids:
+        key = hkml_list.args_to_lists_cache_key(
+                hkml_list_args_for_msgid(msgid))
+        last_dates += _hkml_list_cache.get_cache_creation_dates(key)
+    return sorted(last_dates)[-10:]
+
+def suggest_dim_old(key, thread_msgids=None):
     last_dates = _hkml_list_cache.get_cache_creation_dates(key)
+    if thread_msgids is not None:
+        last_dates += get_thread_last_dates(thread_msgids)
     # the very last created date is that for the current list.  Exclude it.
     last_dates = last_dates[:-1]
     answer = input('\n'.join(build_suggest_dim_old_prompt(last_dates)))
@@ -1179,8 +1189,16 @@ def generate_mails_view_data(args):
         return None, err
 
     if not hasattr(args, 'dim_old') or args.dim_old is None:
+        thread_msgids = None
+        if args.source_type == ['msgid'] and list_data.line_nr_mail_map:
+            thread_msgids = []
+            for line_nr, mail in list_data.line_nr_mail_map.items():
+                msgid = mail.get_field('message-id')
+                if len(thread_msgids) > 0 and thread_msgids[-1] == msgid:
+                    continue
+                thread_msgids.append(mail.get_field('message-id'))
         args.dim_old = suggest_dim_old(
-                hkml_list.args_to_lists_cache_key(args))
+                hkml_list.args_to_lists_cache_key(args), thread_msgids)
         if args.dim_old is None:
             return MailsViewData(list_data, args, None), err
 
