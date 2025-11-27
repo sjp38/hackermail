@@ -612,7 +612,8 @@ def suggest_dim_old(key):
     return [date_str]
 
 def menu_dim_old_mails(slist, answer, selection):
-    gen_args = slist.data.list_args
+    mails_view_data = get_mails_view_data(slist)
+    gen_args = mails_view_data.list_args
     key = hkml_list.args_to_lists_cache_key(gen_args)
     max_date_str = suggest_dim_old(key)
     if max_date_str is None:
