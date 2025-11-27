@@ -2,6 +2,7 @@ This file contains major changes in each version since v1.0.0
 
 v1.4.9
 - hkml list: Suggest --dim_old based on all thread mails.
+- hkml list: Add --history option for showing history of a given list.
 
 v1.4.8
 - hkml list: Suggest --fetch always with cached output information.
