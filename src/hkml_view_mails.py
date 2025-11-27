@@ -1109,10 +1109,10 @@ def show_mails_list(screen, mails_view_data):
         slist.focus_row = min(list_data.len_comments, len(text_lines) - 1)
 
     if hkml_list.use_cached_output(list_args):
-        last_cursor_positions = _hkml_list_cache.get_last_cursor_positions()
         cache_key = hkml_list.args_to_lists_cache_key(list_args)
-        if cache_key in last_cursor_positions:
-            slist.focus_row, slist.focus_col = last_cursor_positions[cache_key]
+        row_col, err = _hkml_list_cache.get_last_cursor_position(cache_key)
+        if err is None:
+            slist.focus_row, slist.focus_col = row_col
     elif list_args.source_type == ['msgid']:
         for line_nr, mail in list_data.line_nr_mail_map.items():
             mail_msgid = mail.get_field('message-id')[1:-1]
@@ -1127,14 +1127,14 @@ def should_fetch(list_args, list_data, err):
         return False
 
     if err is None:
-        last_cursor_positions = _hkml_list_cache.get_last_cursor_positions()
         cache_key = hkml_list.args_to_lists_cache_key(list_args)
-        if not cache_key in last_cursor_positions:
+        row_col, err = _hkml_list_cache.get_last_cursor_position(cache_key)
+        if err is not None:
             return False
-        last_cursor_position_row = last_cursor_positions[cache_key][0]
+        last_cursor_position_row = row_col[0]
         list_nr_lines = list_data.text.count('\n')
         desc = 'You stopped reading the list before.  ' \
-                'The cursor position at the time was %d/%d.' % (
+                'The cursor position at the time was %d/%d row.' % (
                         last_cursor_position_row, list_nr_lines)
         selections = [
                 _hkml_cli.Selection('Continue reading it'),
