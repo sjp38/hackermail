@@ -210,9 +210,8 @@ def pr_cache_stat(cache_path, profile_mail_parsing_time):
 
 def show_cache_status(config_only, profile_mail_parsing_time):
     cache_config = load_cache_config()
-    print('max active cache file size: %s bytes' %
-          cache_config['max_active_cache_sz'])
-    print('max archived caches: %d' % cache_config['max_archived_caches'])
+    print('max active cache file size: %.3f MiB' %
+          (cache_config['max_active_cache_sz'] / 1024 / 1024))
     if config_only is True:
         return
     print()
