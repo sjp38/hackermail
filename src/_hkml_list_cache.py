@@ -40,6 +40,16 @@ def record_last_cursor_position(cache_key, position):
     last_cursor_positions[cache_key] = position
     writeback_last_cursor_positions()
 
+def get_last_cursor_position(cache_key):
+    '''
+    Returns row and column indices of the last cursor position on the cache_key
+    list output, and an error.
+    '''
+    positions = get_last_cursor_positions()
+    if not cache_key in positions:
+        return None, 'no cached history'
+    return positions[cache_key], None
+
 '''
 A dict containing history of cache.  Saved as file.  Will be used for dim_old
 suggestion.  Keys are the json string of the list command arguments.
