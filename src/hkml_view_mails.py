@@ -161,6 +161,7 @@ def hkml_list_args_for_msgid(msgid, current_list_args=None):
     parser = argparse.ArgumentParser()
     hkml_list.set_argparser(parser)
     args = parser.parse_args([msgid])
+    args.source_type = ['msgid']
     args.hkml_dir = None
     args.directory = None
     args.command = 'list'
