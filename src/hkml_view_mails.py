@@ -173,7 +173,7 @@ def hkml_list_args_for_msgid(msgid, current_list_args=None):
 
 def list_thread_of_focused_mail(c, slist):
     msgid = get_focused_mail(slist).get_field('message-id')
-    args = hkml_list_args_for_msgid(msgid)
+    args = hkml_list_args_for_msgid(msgid, slist.data.list_args)
     gen_show_mails_list(slist.screen, args)
 
 def refresh_list(slist):
