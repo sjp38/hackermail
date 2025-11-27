@@ -1202,7 +1202,7 @@ def generate_mails_view_data(args):
                 thread_msgids.append(mail.get_field('message-id'))
         for msgid in thread_msgids:
             keys.append(hkml_list.args_to_lists_cache_key(
-                hkml_list_args_for_msgid(msgid)))
+                hkml_list_args_for_msgid(msgid, args)))
         args.dim_old = suggest_dim_old(keys)
         if args.dim_old is None:
             return MailsViewData(list_data, args, None), err
