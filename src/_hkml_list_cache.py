@@ -78,6 +78,15 @@ def record_cache_creation(cache_key):
     history[cache_key]['create_dates'] = create_dates
     writeback_cache_history()
 
+def get_cache_creation_dates(key):
+    history = get_cache_history()
+    date_strs = []
+    if key in history:
+        date_strs += history[key]['create_dates']
+    date_strs = sorted(set(date_strs))[-10:]
+    return [datetime.datetime.strptime(s, '%Y-%m-%d-%H-%M-%S').astimezone()
+            for s in date_strs]
+
 '''
 Cache previously generated mails lists data for later fast processing and
 context management.
@@ -128,15 +137,6 @@ def get_list_for(key):
     if outputs is None:
         return None, None
     return outputs['output'], outputs['index_to_cache_key']
-
-def get_cache_creation_dates(key):
-    history = get_cache_history()
-    date_strs = []
-    if key in history:
-        date_strs += history[key]['create_dates']
-    date_strs = sorted(set(date_strs))[-10:]
-    return [datetime.datetime.strptime(s, '%Y-%m-%d-%H-%M-%S').astimezone()
-            for s in date_strs]
 
 def get_last_mails_list():
     cache = get_mails_lists_cache()
