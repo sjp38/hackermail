@@ -162,9 +162,13 @@ def hkml_list_args_for_msgid(msgid, current_list_args=None):
     hkml_list.set_argparser(parser)
     args = parser.parse_args([msgid])
     args.source_type = ['msgid']
+
+    # --hkml_dir, --directory and --command are added to 'hkml list', from
+    # hkml.py
     args.hkml_dir = None
     args.directory = None
     args.command = 'list'
+    # inherit non-default environmental arguments from current list arguments.
     if current_list_args is not None:
         args.hkml_dir = current_list_args.hkml_dir
         args.directory = current_list_args.directory
