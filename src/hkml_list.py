@@ -29,6 +29,7 @@ def args_to_lists_cache_key(args):
     dict_ = copy.deepcopy(args.__dict__)
     dict_['cols'] = None
     dict_['fetch'] = False
+    dict_['ignore_cache'] = False
     dict_['stdout'] = False
     dict_['dim_old'] = None
     dict_['read_dates'] = False
