@@ -157,10 +157,19 @@ def forward_focused_mail(c, slist):
         return
     forward_mail(slist, mail)
 
-def hkml_list_args_for_msgid(msgid):
+def hkml_list_args_for_msgid(msgid, current_list_args=None):
     parser = argparse.ArgumentParser()
     hkml_list.set_argparser(parser)
-    return parser.parse_args([msgid])
+    args = parser.parse_args([msgid])
+    args.hkml_dir = None
+    args.directory = None
+    args.command = 'list'
+    if current_list_args is not None:
+        args.hkml_dir = current_list_args.hkml_dir
+        args.directory = current_list_args.directory
+        args.command = current_list_args.command
+        args.manifest = current_list_args.manifest
+    return args
 
 def list_thread_of_focused_mail(c, slist):
     msgid = get_focused_mail(slist).get_field('message-id')
