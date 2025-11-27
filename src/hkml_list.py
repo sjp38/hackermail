@@ -1198,6 +1198,24 @@ def print_read_dates(args):
               (idx, last_date,
                datetime.datetime.now().astimezone() - last_date))
 
+def print_history(args):
+    err = validate_set_source_type(args)
+    if err is not None:
+        print(err)
+        exit(1)
+    lists_cache_key = args_to_lists_cache_key(args)
+    last_dates = _hkml_list_cache.get_cache_creation_dates(lists_cache_key)
+    print('The list was generated on below dates.')
+    for idx, last_date in enumerate(last_dates):
+        print(' %2d. %s (%s before)' %
+              (idx, last_date,
+               datetime.datetime.now().astimezone() - last_date))
+    row_col, err = _hkml_list_cache.get_last_cursor_position(lists_cache_key)
+    if err is None:
+        print()
+        print('The last cursor position on the list was %d/%d row/column.' %
+              (row_col[0], row_col[1]))
+
 def using_hkml_view(args):
     return not args.stdout and not args.use_less
 
@@ -1206,6 +1224,8 @@ def main(args):
         return print_options_for(args.options_for)
     if args.read_dates:
         return print_read_dates(args)
+    if args.history:
+        return print_history(args)
 
     if using_hkml_view(args):
         return hkml_view.view(
@@ -1329,6 +1349,9 @@ def add_advanced_arguments(parser, show_help):
                         if show_help else argparse.SUPPRESS)
     parser.add_argument('--read_dates', action='store_true',
                         help='print last dates that read the list'
+                        if show_help else argparse.SUPPRESS)
+    parser.add_argument('--history', action='store_true',
+                        help='print your read history of the given list'
                         if show_help else argparse.SUPPRESS)
     _hkml.set_manifest_option(parser)
 
