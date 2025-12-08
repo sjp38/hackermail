@@ -281,6 +281,10 @@ class ScrollableList:
                 c = 'key_left'
             elif x == curses.KEY_RIGHT:
                 c = 'key_right'
+            elif x == curses.KEY_NPAGE:
+                c = 'key_npage'
+            elif x == curses.KEY_PPAGE:
+                c = 'key_ppage'
             else:
                 try:
                     c = chr(x)
@@ -524,9 +528,9 @@ def show_help_msg_list(c, slist):
 def scrollable_list_default_handlers():
     return [
             InputHandler(['j', 'key_down'], focus_down, 'focus down'),
-            InputHandler(['J'], focus_down_half_page, 'focus down half page'),
+            InputHandler(['J', 'key_npage'], focus_down_half_page, 'focus down half page'),
             InputHandler(['k', 'key_up'], focus_up, 'focus up'),
-            InputHandler(['K'], focus_up_half_page, 'focus up half page'),
+            InputHandler(['K', 'key_ppage'], focus_up_half_page, 'focus up half page'),
             InputHandler([':'], focus_set, 'focus specific line'),
             InputHandler(['/'], search_keyword, 'search keyword'),
             InputHandler(['n'], focus_next_searched,
