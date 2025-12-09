@@ -1,5 +1,8 @@
 This file contains major changes in each version since v1.0.0
 
+v1.5.0
+- hkml list: Support page up and page down keys.
+
 v1.4.9
 - hkml list: Suggest --dim_old based on all thread mails.
 - hkml list: Add --history option for showing history of a given list.
