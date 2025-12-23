@@ -62,3 +62,13 @@ or refer to [USAGE.md](USAGE.md) file.  For daily use of `hkml`, particularly,
 you may want to know how to [manage tags](USAGE.md#tagging) of mails (useful
 for managing 'sent' and 'drafts' mails) and how you can
 [backup/syncronize](USAGE.md#synchronizing) those.
+
+
+Additional Resources
+====================
+
+- SeongJae Park, __hkml: Mailing Tool for Simple Linux Kernel Development.__ In
+  _Open Source Summit Japan_, Dec 2025.
+  [Slides](https://static.sched.com/hosted_files/ossjapan2025/97/hkml_ossjp25.pdf?_gl=1*pb5adv*_gcl_au*MTU2MDAyNjMzMS4xNzYzMDE0NzE3*FPAU*MTU2MDAyNjMzMS4xNzYzMDE0NzE3),
+  [Video](https://youtu.be/f09kvPvYMsM?si=lS6Cg3zkSG-_7wyX),
+  [Link](https://sched.co/29FmF)
