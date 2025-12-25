@@ -7,6 +7,7 @@ import os
 import subprocess
 
 import _hkml
+import _hkml_cli
 import hkml_tag
 import hkml_write
 
@@ -92,6 +93,28 @@ def send_mail(mboxfile, get_confirm, erase_mbox, orig_draft_subject=None):
         with open(mboxfile, 'r') as f:
             print(f.read())
         print('Above is what you wrote.')
+    user_input, selection, err = _hkml_cli.ask_selection(
+            desc = ''.join([
+                'Maybe I could help you managing the tags for this mail.\n\n',
+                'I can tag it as snet or drafts, ',
+                'depending on your answers to following questions, ',
+                'and results of mail posting.\n',
+                'I can remove drafts-tagged mails that having same subject.\n',
+                'I can sync tags if you already set "hkml sync".\n\n',
+                'May I do those?'
+                ]),
+            selections_txt=['yes', 'no', 'ask again after sending mail'],
+            default_selection_idx=2,
+            allow_cancel=False, allow_error=False)
+    if selection == 0:
+        confirm_tagging = False
+        no_tagging = False
+    elif selection == 1:
+        no_tagging = True
+    else:
+        confirm_tagging = True
+        no_tagging = False
+
     sent = False
     msgid = None
     for line in _hkml.cmd_lines_output(['git', 'send-email', mboxfile,
@@ -102,8 +125,10 @@ def send_mail(mboxfile, get_confirm, erase_mbox, orig_draft_subject=None):
             msgid = fields[1]
         if fields == ['Result:', '250'] or fields == ['Result:' , 'OK']:
             sent = True
-    hkml_tag.handle_may_sent_mail(
-            draft_or_sent_mail(mboxfile, msgid), sent, orig_draft_subject)
+    if no_tagging is False:
+        hkml_tag.handle_may_sent_mail(
+                draft_or_sent_mail(mboxfile, msgid), sent, orig_draft_subject,
+                do_confirm=confirm_tagging)
     if erase_mbox:
         os.remove(mboxfile)
 
