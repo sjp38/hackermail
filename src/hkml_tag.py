@@ -244,7 +244,7 @@ def set_argparser(parser):
 
     parser_list = subparsers.add_parser('list', help='list tags')
 
-def handle_may_sent_mail(mail, sent, orig_draft_subject):
+def handle_may_sent_mail(mail, sent, orig_draft_subject, do_confirm=True):
     '''Handle tags of a mail that may sent or not'''
 
     # suggest tagging the may or may not sent mail
@@ -252,11 +252,15 @@ def handle_may_sent_mail(mail, sent, orig_draft_subject):
         tag_name = 'sent'
     else:
         tag_name = 'drafts'
-    answer = input('Tag the mail (%s) as %s? [Y/n] '
-                   % (mail.subject, tag_name))
+    description = 'Tag the mail (%s) as %s' % (mail.subject, tag_name)
+    if do_confirm:
+        answer = input('%s? [Y/n] ' % description)
+    else:
+        print('%s.' % description)
+        answer = 'y'
     tag_may_sent_mail = answer.lower() != 'n'
 
-    sync_after = ask_sync_before_change()
+    sync_after = ask_sync_before_change(do_confirm)
     tags_map = read_tags_file()
 
     # regardless of the answer to the above question, suggest removing
