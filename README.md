@@ -20,8 +20,8 @@ parts of Linux kernel.
 Demo
 ====
 
-[![asciicast](https://asciinema.org/a/632442.svg)](https://asciinema.org/a/632442)
 ![interactive list](images/hkml_interactive_list_demo.gif)
+[v1.4.9 demo video](https://youtu.be/f09kvPvYMsM?si=_8Vl_8i6h7tiPXer&t=651)
 
 (Note that the above demos are recorded on an old version of `hkml`.  Latest
 version may have different features/interface.)
