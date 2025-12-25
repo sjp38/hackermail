@@ -134,7 +134,7 @@ def ask_editor(default_editor):
         cmd = choices[0]
     return cmd
 
-def open_editor(file_path, target_desc='mail', cursor_row=0):
+def open_editor(file_path, target_desc='mail', cursor_row=0, is_reply=False):
     editor = os.environ.get('EDITOR')
     editor = ask_editor(editor)
 
@@ -151,6 +151,24 @@ def open_editor(file_path, target_desc='mail', cursor_row=0):
                 default_selection_idx=0, allow_cancel=False, allow_error=False)
         if selection_idx == 0:
             cmd = [editor, '+%d' % cursor_row, file_path]
+
+    if is_reply and editor in ['vim', 'nvim']:
+        answer, selection, err = _hkml_cli.ask_selection(
+                desc=''.join([
+                    'On %s, below commands can be used to highlight lines that'
+                    'you may need to reply for.\n' % editor,
+                    '\n',
+                    '    highlight orig ctermfg=green guifg=green\n',
+                    '    2match orig /^> [^>]*$/\n',
+                    '\n',
+                    'Shall I open the editor with the commands?'
+                    ]),
+                selections_txt=['yes', 'no'], default_selection_idx=1,
+                allow_cancel=False, allow_error=False)
+        if selection == 0:
+            cmd += ['-c', 'highlight orig ctermfg=green guifg=green',
+                    '-c', '2match orig /^> [^>]*$/']
+
     if subprocess.call(cmd) != 0:
         return 'The editor for %s exit with an error.' % target_desc
     return None
