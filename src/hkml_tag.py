@@ -73,9 +73,14 @@ def mails_of_tag(tag):
             mails.append(_hkml.Mail(kvpairs=tags_map[msgid]['mail']))
     return mails
 
-def ask_sync_before_change():
+def ask_sync_before_change(do_confirm=True):
+    description = 'Gonna read/write tags.  Sync before and after'
     if hkml_sync.syncup_ready():
-        answer = input('Gonna read/write tags.  Sync before and after? [Y/n] ')
+        if do_confirm:
+            answer = input('%s? [Y/n] ' % description)
+        else:
+            print('%s.' % description)
+            answer = 'y'
         if answer.lower() != 'n':
             hkml_sync.syncup(_hkml.get_hkml_dir(), remote=None)
             return True
