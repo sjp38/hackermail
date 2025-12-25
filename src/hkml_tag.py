@@ -93,7 +93,7 @@ def get_mails_of_subject_tag(subject, tag):
             mails.append(mail)
     return mails
 
-def suggest_removing_drafts_of_subject(subject, tags_map):
+def suggest_removing_drafts_of_subject(subject, tags_map, do_confirm=True):
     for msgid in tags_map:
         tags = tags_map[msgid]['tags']
         if not 'drafts' in tags:
@@ -102,9 +102,13 @@ def suggest_removing_drafts_of_subject(subject, tags_map):
         if draft_mail.subject != subject:
             continue
         while True:
-            prompt = 'remove draft of subject "%s" that written on %s? [y/n] ' % (
+            description = 'remove draft of subject "%s" that written on %s' % (
                     subject, draft_mail.date)
-            answer = input(prompt)
+            if do_confirm:
+                answer = input('%s? [y/n] ' % description)
+            else:
+                print('%s.' % description)
+                answer = 'y'
             if answer.lower() not in ['y', 'n']:
                 continue
             if answer.lower() == 'y':
