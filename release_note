@@ -2,6 +2,8 @@ This file contains major changes in each version since v1.0.0
 
 v1.5.1
 - hkml send: Ask tagging question before sending mails.
+- reply: Add an option to highlight lines that may need to reply for, on the
+  text editor.
 
 v1.5.0
 - hkml list: Support page up and page down keys.
