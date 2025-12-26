@@ -159,7 +159,7 @@ def open_editor(file_path, target_desc='mail', cursor_row=0, is_reply=False):
                     'you may need to reply for.\n' % editor,
                     '\n',
                     '    highlight orig ctermfg=green guifg=green\n',
-                    '    2match orig /^> [^>]*$/\n',
+                    '    2match orig /^> \([^>].*\|\)$/\n',
                     '\n',
                     'Shall I open the editor with the commands?'
                     ]),
@@ -167,7 +167,7 @@ def open_editor(file_path, target_desc='mail', cursor_row=0, is_reply=False):
                 allow_cancel=False, allow_error=False)
         if selection == 0:
             cmd += ['-c', 'highlight orig ctermfg=green guifg=green',
-                    '-c', '2match orig /^> [^>]*$/']
+                    '-c', '2match orig /^> \([^>].*\|\)$/']
 
     if subprocess.call(cmd) != 0:
         return 'The editor for %s exit with an error.' % target_desc
