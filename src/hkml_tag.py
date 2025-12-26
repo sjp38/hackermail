@@ -267,7 +267,8 @@ def handle_may_sent_mail(mail, sent, orig_draft_subject, do_confirm=True):
     # drafts
     if orig_draft_subject is None:
         orig_draft_subject = mail.subject
-    suggest_removing_drafts_of_subject(orig_draft_subject, tags_map)
+    suggest_removing_drafts_of_subject(
+            orig_draft_subject, tags_map, do_confirm)
 
     # do the tagging of the mail.  Do this after the above duplicate drafts
     # removing, since otherwise this mail may tagged as draft and the duplicate
