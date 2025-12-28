@@ -163,7 +163,7 @@ def open_editor(file_path, target_desc='mail', cursor_row=0, is_reply=False):
                     '\n',
                     'Shall I open the editor with the commands?'
                     ]),
-                selections_txt=['yes', 'no'], default_selection_idx=1,
+                selections_txt=['yes', 'no'],
                 allow_cancel=False, allow_error=False)
         if selection == 0:
             cmd += ['-c', 'highlight orig ctermfg=green guifg=green',
