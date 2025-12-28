@@ -103,7 +103,8 @@ def send_mail(mboxfile, get_confirm, erase_mbox, orig_draft_subject=None):
                 'I can sync tags if you already set "hkml sync".\n\n',
                 'May I do those?'
                 ]),
-            selections_txt=['yes', 'no', 'ask again after sending mail'],
+            selections_txt=[
+                'yes', 'no', 'I don\'t know, ask again after sending mail'],
             allow_cancel=False, allow_error=False)
     if selection == 0:
         confirm_tagging = False
