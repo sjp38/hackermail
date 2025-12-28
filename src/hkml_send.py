@@ -104,7 +104,6 @@ def send_mail(mboxfile, get_confirm, erase_mbox, orig_draft_subject=None):
                 'May I do those?'
                 ]),
             selections_txt=['yes', 'no', 'ask again after sending mail'],
-            default_selection_idx=2,
             allow_cancel=False, allow_error=False)
     if selection == 0:
         confirm_tagging = False
