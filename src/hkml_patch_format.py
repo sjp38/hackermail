@@ -295,12 +295,16 @@ def convert_commit_subjects_to_ids(commits_range_txt):
     while idx < len(commits_range_txt):
         converted_txt, converted_len = convert_commits_range_txt(
                 commits_range_txt[idx:])
+        if converted_txt is None:
+            return None
         converted_chrs.append(converted_txt)
         idx += converted_len
     return ''.join(converted_chrs)
 
 def format_patches(args, on_linux_tree):
     commits_range = convert_commit_subjects_to_ids(args.commits)
+    if commits_range is None:
+        return None, 'commits range to commit ids parsing fail'
     commit_ids = [hash for hash in subprocess.check_output(
         ['git', 'log', '--pretty=%H', commits_range]
         ).decode().strip().split('\n') if hash != '']
