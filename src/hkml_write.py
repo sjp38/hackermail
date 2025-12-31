@@ -166,7 +166,7 @@ def open_editor(file_path, target_desc='mail', cursor_row=0, is_reply=False):
                     '\n',
                     'Shall I open the editor with the commands?'
                     ]),
-                selections_txt=['yes', 'no'],
+                selections_txt=['yes', 'no'], default_selection=1,
                 allow_cancel=False, allow_error=False)
         if selection == 0:
             cmd += ['-c', cmds[0], '-c', cmds[1]]
