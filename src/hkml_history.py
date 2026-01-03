@@ -80,7 +80,14 @@ def add_event(desc):
     writeback_history()
 
 def main(args):
-    print('wip')
+    if args.action == 'list':
+        history = get_history()
+        for event in history.events[-10:]:
+            print('%s' % event)
 
 def set_argparser(parser):
-    pass
+    parser.description = 'manage hkml usage history'
+
+    subparsers = parser.add_subparsers(
+            title='action', dest='action', metavar='<action>', required=True)
+    parser_list = subparsers.add_parser('list', help='list previous history')
