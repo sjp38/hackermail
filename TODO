@@ -43,3 +43,5 @@
     reload the list.
 - Encode origin of mail cache key on the key
   - e.g., adding 'g/' or 'm/' prefix for git-based or msgid-based keys.
+- implement 'hkml history'
+  - manage user usage history.
