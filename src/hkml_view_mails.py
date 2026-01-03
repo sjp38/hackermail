@@ -1169,7 +1169,7 @@ def should_update_manifest_and_retry(list_args, list_data, err):
     # user might downloaded manifest just before it becomes outdated.
     # maybe a better approach is showing the size of the git repo.
     # just give a hint for now...
-    if manifest_age.days < datetime.timedelta(days=2):
+    if manifest_age.days < 2:
         print('Your manifest is unlikely outdated, though.')
     if not _hkml.is_for_lore_kernel_org():
         # but hkml cannot help this case on its own.
