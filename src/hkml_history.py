@@ -69,6 +69,16 @@ def writeback_history():
     with open(file_path, 'w') as f:
         json.dump(history.to_kvpairs(), f, indent=4)
 
+def add_event(desc):
+    timestamp = datetime.datetime.now().timestamp()
+    event = HistoryEvent(timestamp, desc)
+
+    history = get_history()
+    if len(history.events) >= 256:
+        history.events = history.events[1:]
+    history.events.append(event)
+    writeback_history()
+
 def main(args):
     print('wip')
 
