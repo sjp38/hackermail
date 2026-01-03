@@ -50,7 +50,9 @@ def menu_hkml_open(slist, answer, selection):
     msgid = selection.data
     args = hkml_view_mails.hkml_list_args_for_msgid(msgid)
     args.stdout = True  # to bypass dim_old suggestion
-    list_data, err = hkml_list.args_to_mails_list_data( args)
+    # do not suggest manifest update, since this is for msgid.
+    list_data, err = hkml_list.args_to_mails_list_data(
+            args, suggest_manifest_update=False)
     for idx, cache_key in list_data.mail_idx_key_map.items():
         mail = hkml_cache.get_mail(key=cache_key)
         if mail is None:
