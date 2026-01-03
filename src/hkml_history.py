@@ -82,7 +82,10 @@ def add_event(desc):
 def main(args):
     if args.action == 'list':
         history = get_history()
-        for event in history.events[-10:]:
+        nr_events = args.nr_events
+        if nr_events is None:
+            nr_events = 10
+        for event in history.events[-1 * nr_events:]:
             print('%s' % event)
 
 def set_argparser(parser):
@@ -91,3 +94,5 @@ def set_argparser(parser):
     subparsers = parser.add_subparsers(
             title='action', dest='action', metavar='<action>', required=True)
     parser_list = subparsers.add_parser('list', help='list previous history')
+    parser_list.add_argument(
+            '--nr_events', type=int, help='number of recent events to list')
