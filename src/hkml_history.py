@@ -1,6 +1,10 @@
 # SPDX-License-Identifier: GPL-2.0
 
 import datetime
+import json
+import os
+
+import _hkml
 
 class HistoryEvent:
     timestamp = None
@@ -39,6 +43,31 @@ class History:
         return {
                 'events': [e.to_kvpairs() for e in self.events],
                 }
+
+history = None
+
+def history_file_path():
+    return os.path.join(_hkml.get_hkml_dir(), 'hkml_history')
+
+def get_history():
+    global history
+    if history is not None:
+        return history
+
+    file_path = history_file_path()
+    try:
+        with open(file_path, 'r') as f:
+            history_kvpairs = json.load(f)
+    except:
+        history = History(events=[])
+        return history
+    history = History.from_kvpairs(history_kvpairs)
+    return history
+
+def writeback_history():
+    file_path = history_file_path()
+    with open(file_path, 'w') as f:
+        json.dump(history.to_kvpairs(), f, indent=4)
 
 def main(args):
     print('wip')
