@@ -87,6 +87,10 @@ def main(args):
             nr_events = 10
         for event in history.events[-1 * nr_events:]:
             print('%s' % event)
+    elif args.action == 'remove':
+        history = get_history()
+        history.events = []
+        writeback_history()
 
 def set_argparser(parser):
     parser.description = 'manage hkml usage history'
@@ -96,3 +100,5 @@ def set_argparser(parser):
     parser_list = subparsers.add_parser('list', help='list previous history')
     parser_list.add_argument(
             '--nr_events', type=int, help='number of recent events to list')
+
+    parser_remove = subparsers.add_parser('remove', help='remove history')
