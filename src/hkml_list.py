@@ -789,7 +789,7 @@ def handle_gitlog_date_misorders(
             break
 
 def get_mails_gitlog_lines(mdir, since, until, min_nr_mails, max_nr_mails,
-                           commits_range):
+                           commits_range, use_min_nr_mails):
     lines = []
     if not os.path.isdir(mdir):
         return lines
@@ -802,9 +802,11 @@ def get_mails_gitlog_lines(mdir, since, until, min_nr_mails, max_nr_mails,
 
     if since is not None:
         cmd += ['--since=%s' % since.strftime('%Y-%m-%d %H:%M:%S')]
+    if use_min_nr_mails is True:
+        cmd = base_cmd + ['-n', '%d' % min_nr_mails]
     if until:
         cmd += ['--until=%s' % until.strftime('%Y-%m-%d %H:%M:%S')]
-    if max_nr_mails is not None:
+    if use_min_nr_mails is False and max_nr_mails is not None:
         cmd += ['-n', max_nr_mails]
     try:
         lines = _hkml.cmd_lines_output(cmd)
@@ -812,31 +814,22 @@ def get_mails_gitlog_lines(mdir, since, until, min_nr_mails, max_nr_mails,
         # maybe commits_range is given, but the commit is not in this mdir
         pass
 
-    if min_nr_mails is not None and len(lines) < min_nr_mails:
-        cmd = base_cmd + ['-n', '%d' % min_nr_mails]
-        if until:
-            cmd += ['--until=%s' % until]
-        try:
-            lines = _hkml.cmd_lines_output(cmd)
-        except:
-            # maybe commits_range is given, but the commit is not in this
-            # mdir
-            pass
-
     handle_gitlog_date_misorders(
             lines, mdir, since, commits_range, max_nr_mails)
     return lines
 
 def get_mails_from_git(mail_list, since, until,
-                       min_nr_mails, max_nr_mails, commits_range=None):
+                       min_nr_mails, max_nr_mails, commits_range=None,
+                       use_min_nr_mails=False):
     mdirs = _hkml.mail_list_data_paths(mail_list)
     if not mdirs:
         return None, "Mailing list '%s' in manifest not found." % mail_list
 
     mails = []
     for mdir in mdirs:
-        for line in get_mails_gitlog_lines(mdir, since, until, min_nr_mails,
-                                           max_nr_mails, commits_range):
+        for line in get_mails_gitlog_lines(
+                mdir, since, until, min_nr_mails, max_nr_mails, commits_range,
+                use_min_nr_mails=use_min_nr_mails):
             mail = git_log_output_line_to_mail(line, mdir)
             # mbox can be empty string if the commit is invalid one.
             if mail is None or mail.mbox == '':
@@ -932,6 +925,11 @@ def fetch_get_mails_from_git(fetch, source, since, until, min_nr_mails,
         print(' '.join([
             "No mail has fetched from '%s'." % source,
             "You _might_ need to run 'hkml manifest fetch_lore'."]))
+
+    if min_nr_mails is not None and len(mails) < min_nr_mails:
+        mails, err = get_mails_from_git(
+                source, since, until, min_nr_mails, max_nr_mails,
+                commits_range, use_min_nr_mails=True)
 
     return mails, None
 
