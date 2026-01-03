@@ -13,12 +13,14 @@ import time
 import xml.etree.ElementTree as ET
 
 import _hkml
+import _hkml_cli
 import _hkml_date
 import _hkml_fmtstr
 import _hkml_list_cache
 import _hkml_subproc
 import hkml_cache
 import hkml_fetch
+import hkml_manifest
 import hkml_open
 import hkml_patch
 import hkml_tag
@@ -911,8 +913,32 @@ def manifest_might_be_outdated(mails, until):
     return datetime.datetime.now().astimezone() - until \
             < datetime.timedelta(minutes=5)
 
+def should_update_manifest_and_retry(
+        fetch, suggest_manifest_update, nr_fetched_mails):
+    if not fetch or not suggest_manifest_update or nr_fetched_mails > 0:
+        return False
+    manifest_age = _hkml.manifest_age()
+    print(''.join([
+        'Got no mail to list.  ',
+        'This usually happens because there are actually no mail ',
+        'to show, while respecting your "hkml list" arguments.  ',
+        'But, this can also happen because your manifest is outdated.  ',
+        'Your manifest is %d days old.' % manifest_age.days]))
+
+    # user might downloaded manifest just before it becomes outdated.
+    # maybe a better approach is showing the size of the git repo.
+    # just give a hint for now...
+    if manifest_age.days < 2:
+        print('Your manifest is unlikely outdated, though.')
+    if not _hkml.is_for_lore_kernel_org():
+        # but hkml cannot help this case on its own.
+        return False
+    return _hkml_cli.ask_yes_no(
+            'May I update the manifest and do listing again?') == 'y'
+
 def fetch_get_mails_from_git(fetch, source, since, until, min_nr_mails,
-                             max_nr_mails, commits_range):
+                             max_nr_mails, commits_range,
+                             suggest_manifest_update=False):
     if fetch:
         hkml_fetch.fetch_mail([source], True, 1)
 
@@ -920,6 +946,15 @@ def fetch_get_mails_from_git(fetch, source, since, until, min_nr_mails,
                                     max_nr_mails, commits_range)
     if err is not None:
         return None, err
+
+    if should_update_manifest_and_retry(
+            fetch, suggest_manifest_update, len(mails)):
+        err = hkml_manifest.fetch_lore()
+        if err is not None:
+            return None, 'updating lore fail (%s)' % err
+        return fetch_get_mails_from_git(
+                fetch, source, since, until, min_nr_mails, max_nr_mails,
+                commits_range, suggest_manifest_update=False)
 
     if fetch is True and manifest_might_be_outdated(mails, until):
         print(' '.join([
