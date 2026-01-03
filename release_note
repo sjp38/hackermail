@@ -1,5 +1,8 @@
 This file contains major changes in each version since v1.0.0
 
+v1.5.2
+- Fix manifest update suggestion.
+
 v1.5.1
 - hkml send: Ask tagging question before sending mails.
 - Add an option to highlight lines from past mail and the mail to reply,
