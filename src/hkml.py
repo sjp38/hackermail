@@ -9,6 +9,7 @@ import sys
 import hkml_init
 import hkml_interactive
 import hkml_fetch
+import hkml_history
 import hkml_list
 import hkml_thread
 import hkml_open
@@ -98,6 +99,10 @@ hkml_cache.set_argparser(parser_cache)
 parser_signatures = subparsers.add_parser(
         'signature', help = 'manage signatures')
 hkml_signature.set_argparser(parser_signatures)
+
+parser_history = subparsers.add_parser(
+        'history', help = 'manage hkml usage history')
+hkml_history.set_argparser(parser_history)
 
 args = parser.parse_args()
 
