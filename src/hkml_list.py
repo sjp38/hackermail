@@ -8,6 +8,7 @@ import json
 import math
 import os
 import subprocess
+import sys
 import tempfile
 import time
 import xml.etree.ElementTree as ET
@@ -20,6 +21,7 @@ import _hkml_list_cache
 import _hkml_subproc
 import hkml_cache
 import hkml_fetch
+import hkml_history
 import hkml_manifest
 import hkml_open
 import hkml_patch
@@ -1254,6 +1256,7 @@ def using_hkml_view(args):
     return not args.stdout and not args.use_less
 
 def main(args):
+    hkml_history.add_event('hkml list %s' % ' '.join(sys.argv[2:]))
     if args.options_for is not None:
         return print_options_for(args.options_for)
     if args.read_dates:
