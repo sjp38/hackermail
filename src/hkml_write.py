@@ -161,12 +161,14 @@ def open_editor(file_path, target_desc='mail', cursor_row=0, is_reply=False):
     if is_reply and editor in ['vim', 'nvim']:
         answer, selection, err = _hkml_cli.ask_selection(
                 desc=''.join([
-                    'On %s, I can color lines that ' % editor,
-                    'you may need to reply for. ',
+                    'On %s, I can show lines from past mails ' % editor,
+                    'and this mail with blue and green colors. ',
+                    'That may help you finding lines to write reply for. ',
                     'Shall I open the editor with the coloring?'
                     ]),
-                selections_txt=['yes', 'no'], default_selection_idx=1,
-                allow_cancel=False, allow_error=False)
+                selections_txt=['Yes, do the past lines coloring.',
+                                'No, I\'m good.'],
+                default_selection_idx=1, allow_cancel=False, allow_error=False)
         if selection == 0:
             options = []
             for vim_cmd in vim_cmds:
