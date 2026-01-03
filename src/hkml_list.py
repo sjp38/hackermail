@@ -988,7 +988,8 @@ def get_thread_mails_from_web(msgid):
     if subprocess.call(['gunzip', os.path.join(tmp_path, 't.mbox.gz')]) != 0:
         return None, 'extracting mbox failed'
     mails, err = get_mails(
-            os.path.join(tmp_path, 't.mbox'), False, None, None, None, None)
+            os.path.join(tmp_path, 't.mbox'), False, None, None, None, None,
+            suggest_manifest_update=False)
     os.remove(os.path.join(tmp_path, 't.mbox'))
     os.rmdir(tmp_path)
     if err is not None:
@@ -1006,7 +1007,7 @@ def get_thread_mails_from_web(msgid):
 
 def get_mails(source, fetch, since, until,
               min_nr_mails, max_nr_mails, commits_range=None,
-              source_type=None, pisearch=None):
+              source_type=None, pisearch=None, suggest_manifest_update=False):
     if source_type is None:
         source_type, err = infer_source_type(source, pisearch is not None)
         if err is not None:
@@ -1044,7 +1045,7 @@ def get_mails(source, fetch, since, until,
 
     mails, err = fetch_get_mails_from_git(
             fetch, source, since, until, min_nr_mails, max_nr_mails,
-            commits_range)
+            commits_range, suggest_manifest_update=suggest_manifest_update)
     if err is not None:
         return None, 'failed: %s for %s' % (err ,source)
 
@@ -1053,13 +1054,13 @@ def get_mails(source, fetch, since, until,
 
 def get_mails_from_multiple_sources(
         sources, do_fetch, since, until, min_nr_mails, max_nr_mails,
-        source_types, do_pisearch):
+        source_types, do_pisearch, suggest_manifest_update):
     mails = []
     msgids = {}
     for idx, source in enumerate(sources):
         total_mails, err = get_mails(
                 source, do_fetch, since, until, min_nr_mails, max_nr_mails,
-                None, source_types[idx], do_pisearch)
+                None, source_types[idx], do_pisearch, suggest_manifest_update)
         if err is not None:
             return None, err
         for mail in total_mails:
@@ -1121,7 +1122,7 @@ def use_cached_output(args):
         return False
     return True
 
-def args_to_mails_list_data(args):
+def args_to_mails_list_data(args, suggest_manifest_update=False):
     # return MailsListData and error
     # if cached output is used, line_nr_to_mail_map and len_comments of the
     # list data becomes None.  Caller should make it when those on demand.
@@ -1177,7 +1178,7 @@ def args_to_mails_list_data(args):
     mails_to_show, err = get_mails_from_multiple_sources(
             args.sources, args.fetch, since, until,
             args.min_nr_mails, args.max_nr_mails, args.source_type,
-            args.pisearch)
+            args.pisearch, suggest_manifest_update=suggest_manifest_update)
     if err is not None:
         return None, 'getting mails failed (%s)' % err
     runtime_profile = [['get_mails', time.time() - timestamp]]
