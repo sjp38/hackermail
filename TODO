@@ -45,3 +45,4 @@
   - e.g., adding 'g/' or 'm/' prefix for git-based or msgid-based keys.
 - implement 'hkml history'
   - manage user usage history.
+- Check if a patch is Cc-ing all maintainers/reviewers
