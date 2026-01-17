@@ -1,6 +1,7 @@
 This file contains major changes in each version since v1.0.0
 
 v1.5.2
+- Add new command: 'hkml history' for managing execution history.
 - Fix manifest update suggestion.
 
 v1.5.1
