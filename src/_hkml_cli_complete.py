@@ -46,6 +46,11 @@ def list_candidates(words, cword):
         return candidates
     return []
 
+def patch_candidates(words, cword):
+    if cword == 0:
+        return ['format', 'commit_cv']
+    return []
+
 def handle_cli_complete():
     cword = int(sys.argv[2])
     words = sys.argv[3:]
@@ -58,5 +63,7 @@ def handle_cli_complete():
         command = words[1]
         if command == 'list':
             candidates = list_candidates(words[2:], cword - 2)
+        elif command == 'patch':
+            candidates = patch_candidates(words[2:], cword - 2)
     candidates.append('--help')
     print(' '.join(candidates))
