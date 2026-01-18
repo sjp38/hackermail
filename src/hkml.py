@@ -6,6 +6,7 @@ import os
 import subprocess
 import sys
 
+import _hkml_cli_complete
 import hkml_init
 import hkml_interactive
 import hkml_fetch
@@ -27,6 +28,10 @@ import hkml_cache
 import hkml_signature
 
 import _hkml
+
+if len(sys.argv) > 0 and sys.argv[1] == '--cli_complete':
+    _hkml_cli_complete.handle_cli_complete()
+    exit(0)
 
 class SubCmdHelpFormatter(argparse.RawDescriptionHelpFormatter):
     def _format_action(self, action):
