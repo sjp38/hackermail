@@ -46,9 +46,20 @@ def list_candidates(words, cword):
         return candidates
     return []
 
+def patch_format_candidates(words, cword):
+    return option_candidates(words, cword, {
+        '--output_dir': 1,
+        '--rfc': 0,
+        '--subject_prefix': 1,
+        '--to': -1,
+        '--cc': -1,
+        })
+
 def patch_candidates(words, cword):
     if cword == 0:
         return ['format', 'commit_cv']
+    if cword >= 1 and words[0] == 'format':
+        return patch_format_candidates(words[1:], cword - 1)
     return []
 
 def handle_cli_complete():
