@@ -65,5 +65,6 @@ def handle_cli_complete():
             candidates = list_candidates(words[2:], cword - 2)
         elif command == 'patch':
             candidates = patch_candidates(words[2:], cword - 2)
-    candidates.append('--help')
+    if not '--help' in words:
+        candidates.append('--help')
     print(' '.join(candidates))
