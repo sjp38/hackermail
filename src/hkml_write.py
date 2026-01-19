@@ -26,6 +26,18 @@ SIGNATURE_WARNING = ['',
     ' */',]
 SIGNATURE_WARNING_LEN = len(SIGNATURE_WARNING) - 1 # first line is blank
 
+coloring_notice = [
+        '/*',
+        ' * !THE FOLLOWING COMMENT WAS AUTOMATICALLY ADDED BY HKML.',
+        ' * !REMOVE THIS BLOCK BEFORE CLOSING THE EDITOR.',
+        ' *',
+        ' * Note that Original and past lines of the draft are colored',
+        ' * using vim commands.  You can disable the coloring using',
+        ' * ":match past" and ":2match orig" with random keywords.',
+        ' * E.g., ":match past 32l4kg3l" and "2match orig sdflse334s".',
+        ' */',
+        ]
+
 def git_sendemail_valid_recipients(recipients):
     """each line should be less than 998 char"""
     if not recipients:
@@ -134,6 +146,13 @@ def ask_editor(default_editor):
         cmd = choices[0]
     return cmd
 
+def add_coloring_explanation(file_path, row_to_add):
+    with open(file_path, 'r') as f:
+        lines = f.read().splitlines()
+    lines = lines[:row_to_add] + coloring_notice + lines[row_to_add:]
+    with open(file_path, 'w') as f:
+        f.write('\n'.join(lines))
+
 def open_editor(file_path, target_desc='mail', cursor_row=0, is_reply=False):
     editor = os.environ.get('EDITOR')
     editor = ask_editor(editor)
@@ -176,6 +195,7 @@ def open_editor(file_path, target_desc='mail', cursor_row=0, is_reply=False):
                 options.append('-c')
                 options.append(vim_cmd)
             cmd += options
+            add_coloring_explanation(file_path, cursor_row)
 
     if subprocess.call(cmd) != 0:
         return 'The editor for %s exit with an error.' % target_desc
