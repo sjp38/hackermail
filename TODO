@@ -48,4 +48,3 @@
 - Check if a patch is Cc-ing all maintainers/reviewers
 - auto-completion.
 - Support users setting default answers for questions.
-- Add comments explaining coloring commands on vim-opened mail draft.
