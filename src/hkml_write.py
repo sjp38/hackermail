@@ -196,6 +196,7 @@ def open_editor(file_path, target_desc='mail', cursor_row=0, is_reply=False):
                     ]),
                 selections_txt=['Yes, do the past lines coloring.',
                                 'No, I\'m good.'],
+                default_selection_idx=0,
                 allow_cancel=False, allow_error=False)
         if selection == 0:
             options = []
