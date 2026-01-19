@@ -149,10 +149,17 @@ def ask_editor(default_editor):
 
 def add_coloring_explanation(file_path, row_to_add):
     with open(file_path, 'r') as f:
-        lines = f.read().splitlines()
-    lines = lines[:row_to_add] + coloring_notice + lines[row_to_add:]
+        content = f.read()
+
+    header = content.split('\n\n')[0]
+    body_start_line = len(header.splitlines()) + 1
+    if row_to_add < body_start_line:
+        row_to_add = body_start_line
+
+    lines = content.splitlines()
+    new_lines = lines[:row_to_add] + coloring_notice + lines[row_to_add:]
     with open(file_path, 'w') as f:
-        f.write('\n'.join(lines))
+        f.write('\n'.join(new_lines))
 
 def open_editor(file_path, target_desc='mail', cursor_row=0, is_reply=False):
     editor = os.environ.get('EDITOR')

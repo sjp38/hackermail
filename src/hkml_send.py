@@ -64,9 +64,9 @@ def handle_user_edit_mistakes(tmp_path):
     body_lines = []
     idx = 0
     while idx < len(body):
-        coloring_notice_len = len(hkml_write.coloring_notice)
-        if body[idx:idx + coloring_notice] == hkml_write.coloring_notice:
-            idx += coloring_notice_len
+        len_coloring_notice = len(hkml_write.coloring_notice)
+        if body[idx:idx + len_coloring_notice] == hkml_write.coloring_notice:
+            idx += len_coloring_notice
 
         # A user might delete the newline on top of the signature, so just check
         # for the contents of the comment block.
