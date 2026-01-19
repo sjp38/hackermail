@@ -29,7 +29,8 @@ SIGNATURE_WARNING_LEN = len(SIGNATURE_WARNING) - 1 # first line is blank
 coloring_notice = [
         '/*',
         ' * !THE FOLLOWING COMMENT WAS AUTOMATICALLY ADDED BY HKML.',
-        ' * !REMOVE THIS BLOCK BEFORE CLOSING THE EDITOR.',
+        ' * If you leave this block untouched, then hkml will automatically',
+        ' * remove this block before sending.',
         ' *',
         ' * Note that Original and past lines of the draft are colored',
         ' * using vim commands.  You can disable the coloring using',
