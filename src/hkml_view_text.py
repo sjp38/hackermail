@@ -316,6 +316,28 @@ def menu_open_content_with(slist, answer, selection):
     if err is not None:
         print(err)
 
+def indent_depth(line):
+    depth = 0
+    for c in line:
+        if c in [' ', '\t']:
+            depth += 1
+        else:
+            return depth
+    return depth
+
+def menu_fold_lines(slist, answer, selection):
+    focus_row = slist.focus_row
+    current_depth = indent_depth(slist.lines[focus_row])
+    lines_to_fold = 0
+    for line in slist.lines[focus_row + 1:]:
+        if indent_depth(line) > current_depth:
+            lines_to_fold += 1
+        else:
+            break
+    slist.lines = slist.lines[:focus_row + 1] + \
+            ['[%d lines folded]' % lines_to_fold] + \
+            slist.lines[focus_row + 1 + lines_to_fold:]
+
 def menu_selections(slist):
     line = slist.lines[slist.focus_row]
 
@@ -342,6 +364,11 @@ def menu_selections(slist):
             _hkml_cli.Selection(
                 text='open screen content with ...',
                 handle_fn=menu_open_content_with, data=slist))
+
+    selections.append(
+            _hkml_cli.Selection(
+                text='fold below indented lines',
+                handle_fn=menu_fold_lines, data=slist))
 
     return selections
 
