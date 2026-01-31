@@ -20,6 +20,7 @@ import hkml_write
 class TextViewData:
     mail = None
     mails_list = None
+    unfolded_lines = None
 
     def __init__(self, mail, mails_list):
         self.mail = mail
@@ -334,9 +335,19 @@ def menu_fold_lines(slist, answer, selection):
             lines_to_fold += 1
         else:
             break
+    text_view_data = slist.data
+    if text_view_data.unfolded_lines is None:
+        text_view_data.unfolded_lines = slist.lines
     slist.lines = slist.lines[:focus_row + 1] + \
             ['[%d lines folded]' % lines_to_fold] + \
             slist.lines[focus_row + 1 + lines_to_fold:]
+
+def menu_unfold_all_lines(slist, answer, selection):
+    text_view_data = slist.data
+    if text_view_data.unfolded_lines is None:
+        print('No folded lines')
+        return
+    slist.lines = text_view_data.unfolded_lines
 
 def menu_selections(slist):
     line = slist.lines[slist.focus_row]
@@ -369,6 +380,10 @@ def menu_selections(slist):
             _hkml_cli.Selection(
                 text='fold below indented lines',
                 handle_fn=menu_fold_lines, data=slist))
+    selections.append(
+            _hkml_cli.Selection(
+                text='unfold all folded lines',
+                handle_fn=menu_unfold_all_lines, data=slist))
 
     return selections
 
