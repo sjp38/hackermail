@@ -147,17 +147,16 @@ def ask_editor(default_editor):
         cmd = choices[0]
     return cmd
 
-def add_coloring_explanation(file_path, row_to_add):
+def add_coloring_explanation(file_path):
     with open(file_path, 'r') as f:
         content = f.read()
 
     header = content.split('\n\n')[0]
     body_start_line = len(header.splitlines()) + 1
-    if row_to_add < body_start_line:
-        row_to_add = body_start_line
 
     lines = content.splitlines()
-    new_lines = lines[:row_to_add] + coloring_notice + lines[row_to_add:]
+    new_lines = lines[:body_start_line] + coloring_notice
+    new_lines += lines[body_start_line:]
     with open(file_path, 'w') as f:
         f.write('\n'.join(new_lines))
 
@@ -204,7 +203,7 @@ def open_editor(file_path, target_desc='mail', cursor_row=0, is_reply=False):
                 options.append('-c')
                 options.append(vim_cmd)
             cmd += options
-            add_coloring_explanation(file_path, cursor_row)
+            add_coloring_explanation(file_path)
 
     if subprocess.call(cmd) != 0:
         return 'The editor for %s exit with an error.' % target_desc
