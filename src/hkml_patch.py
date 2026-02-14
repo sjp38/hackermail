@@ -287,7 +287,9 @@ def get_patch_mails(mail, dont_add_cv):
             if msgid.startswith('<') and msgid.endswith('>'):
                 msgid = msgid[1:-1]
             url = '%s/%s' % (link_domain, msgid)
-            patch_mail.add_patch_tag('Link: %s' % url)
+            err = patch_mail.add_patch_tag('Link: %s' % url)
+            if err is not None:
+                return None, 'adding link fail (%s)' % err
         if patch_mail.replies is None:
             continue
         if is_cover_letter(patch_mail):
@@ -299,13 +301,16 @@ def get_patch_mails(mail, dont_add_cv):
                 ['git', 'config', 'user.name']).decode().strip()
         user_email = subprocess.check_output(
                 ['git', 'config', 'user.email']).decode().strip()
-        patch_mail.add_patch_tag('Signed-off-by: %s <%s>' % (user_name, user_email))
+        err = patch_mail.add_patch_tag(
+                'Signed-off-by: %s <%s>' % (user_name, user_email))
+        if err is not None:
+            return None, 'addding s-o-b fail (%s)' % err
     patch_mails.sort(key=lambda m: get_patch_index(m))
     if is_cv and dont_add_cv is False:
         print('Given mail seems the cover letter of the patchset.')
         print('Adding the cover letter on the first patch.')
         patch_mails[1].add_cv(mail, len(patch_mails) - 1)
-    return patch_mails
+    return patch_mails, None
 
 def write_patch_mails(patch_mails):
     if len(patch_mails) > 9999:
@@ -340,7 +345,9 @@ def write_patch_mails(patch_mails):
     return files, None
 
 def check_apply_or_export(mail, args):
-    patch_mails = get_patch_mails(mail, args.dont_add_cv)
+    patch_mails, err = get_patch_mails(mail, args.dont_add_cv)
+    if err is not None:
+        return 'getting patch mails fail (%s)' % err
     if args.action == 'apply':
         return apply_patches(patch_mails, args.repo)
 
