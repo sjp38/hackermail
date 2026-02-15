@@ -100,7 +100,7 @@ def send_mail(mboxfile, get_confirm, erase_mbox, orig_draft_subject=None):
     user_input, selection, err = _hkml_cli.ask_selection(
             desc = ''.join([
                 'Maybe I could help you managing the tags for this mail.\n\n',
-                'I can tag it as snet or drafts, ',
+                'I can tag it as sent or drafts, ',
                 'depending on your answers to following questions, ',
                 'and results of mail posting.\n',
                 'I can remove drafts-tagged mails that having same subject.\n',
