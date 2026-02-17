@@ -288,7 +288,7 @@ def get_patch_mails(mail, dont_add_cv):
                 msgid = msgid[1:-1]
             url = '%s/%s' % (link_domain, msgid)
             err = patch_mail.add_patch_tag('Link: %s' % url)
-            if err is not None:
+            if err is not None and not is_cover_letter(patch_mail):
                 return None, 'adding link fail (%s)' % err
         if patch_mail.replies is None:
             continue
