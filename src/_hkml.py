@@ -327,6 +327,9 @@ class Mail:
                     except UnicodeDecodeError:
                         # just forgive...
                         pass
+                    except LookupError:
+                        # just forgive...
+                        pass
                     # handle multiple to: and cc: lines
                     if key in ['to', 'cc'] and key in parsed:
                         parsed[key] += ', %s' % val
