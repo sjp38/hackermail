@@ -43,7 +43,8 @@ def args_to_lists_cache_key(args):
             'hkml_dir', 'directory', 'command', 'manifest', 'sources',
             'source_type', 'since', 'until', 'nr_mails', 'min_nr_mails',
             'max_nr_mails', 'do_find_ancestors_from_cache', 'pisearch',
-            'stat_only', 'stat_authors', 'from_keywords', 'from_to_keywords',
+            'stat_only', 'stat_authors', 'from_keywords', 'not_from_keywords',
+            'from_to_keywords',
             'from_to_cc_keywords', 'subject_keywords', 'body_keywords', 'new',
             'collapse', 'sort_threads_by', 'ascend', 'hot', 'cols', 'url',
             'hide_stat', 'runtime_profile', 'max_len_list', 'dim_old', 'fetch',
@@ -268,6 +269,7 @@ def keywords_in(keywords, text):
 class MailListFilter:
     new_threads_only = None
     from_keywords = None
+    not_from_keywords = None
     from_to_keywords = None
     from_to_cc_keywords = None
     subject_keywords = None
@@ -281,6 +283,7 @@ class MailListFilter:
             return
         self.new_threads_only = args.new
         self.from_keywords = args.from_keywords
+        self.not_from_keywords = args.not_from_keywords
         self.from_to_keywords = args.from_to_keywords
         self.from_to_cc_keywords = args.from_to_cc_keywords
         self.subject_keywords = args.subject_keywords
@@ -295,6 +298,10 @@ class MailListFilter:
                     if self.from_keywords is None:
                         self.from_keywords = []
                     self.from_keywords.append(filter_keywords)
+                if field == 'not_from':
+                    if self.not_from_keywords is None:
+                        self.not_from_keywords = []
+                    self.not_from_keywords.append(filter_keywords)
                 if field == 'from_to':
                     if self.from_to_keywords is None:
                         self.from_to_keywords = []
@@ -313,10 +320,10 @@ class MailListFilter:
                     self.from_keywords.append(filter_keywords)
 
     def no_filter_set(self):
-        return (not self.new_threads_only and not self.from_keywords and
-            not self.from_to_keywords and not self.from_to_cc_keywords and
-            not self.subject_keywords and not self.body_keywords and
-            not self.patches_for)
+        return (not self.new_threads_only and not self.from_keywords
+                and not self.not_from_keywords and not self.from_to_keywords
+                and not self.from_to_cc_keywords and not self.subject_keywords
+                and not self.body_keywords and not self.patches_for)
 
     def thread_mails_from(self, mail, mails):
         mails.append(mail)
@@ -340,6 +347,8 @@ class MailListFilter:
                         self.keywords_for)
 
     def should_filter_out_keywords_one(self, mail):
+        if keywords_in(self.not_from_keywords, mail.get_field('from')):
+            return True
         if not keywords_in(self.from_keywords, mail.get_field('from')):
             return True
         if not keywords_in(
@@ -424,7 +433,7 @@ class MailListFilter:
             before.  Handle the type compatibility from old version-generated
             kvpairs.
             '''
-            if key in ['from_keywords', 'from_to_keywords',
+            if key in ['from_keywords', 'not_from_keywords', 'from_to_keywords',
                        'from_to_cc_keywords', 'subject_keywords',
                        'body_keywords']:
                 if type(value) is list and len(value) > 0:
@@ -1280,13 +1289,17 @@ def add_mails_filter_arguments(parser):
             help=' '.join([
                 'Keywords to filter-in mails for.',
                 'Format is: "<field> <keyword>...".',
-                '<field> can be "from", "from_to", "from_to_cc", "subject",',
-                'or "body".'
+                '<field> can be "from", "not_from", "from_to", "from_to_cc"',
+                '"subject", or "body".'
                 ]))
     parser.add_argument(
             '--from_keywords', '--from', metavar='<keyword>', nargs='+',
             action='append', help=argparse.SUPPRESS)
             # show mails having the keywords in from: field
+    parser.add_argument(
+            '--not_from_keywords', '--not_from', metavar='<keyword>', nargs='+',
+            action='append', help=argparse.SUPPRESS)
+            # hide mails having the keywords in from: field
     parser.add_argument(
             '--from_to_keywords', '--from_to', metavar='<keyword>', nargs='+',
             action='append', help=argparse.SUPPRESS)
