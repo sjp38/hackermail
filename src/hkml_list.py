@@ -305,19 +305,19 @@ class MailListFilter:
                 if field == 'from_to':
                     if self.from_to_keywords is None:
                         self.from_to_keywords = []
-                    self.from_keywords.append(filter_keywords)
+                    self.from_to_keywords.append(filter_keywords)
                 if field == 'from_to_cc':
                     if self.from_to_cc_keywords is None:
                         self.from_to_cc_keywords = []
-                    self.from_keywords.append(filter_keywords)
+                    self.from_to_cc_keywords.append(filter_keywords)
                 if field == 'subject':
                     if self.subject_keywords is None:
                         self.subject_keywords = []
-                    self.from_keywords.append(filter_keywords)
+                    self.subject_keywords.append(filter_keywords)
                 if field == 'body':
                     if self.body_keywords is None:
                         self.body_keywords = []
-                    self.from_keywords.append(filter_keywords)
+                    self.body_keywords.append(filter_keywords)
 
     def no_filter_set(self):
         return (not self.new_threads_only and not self.from_keywords
