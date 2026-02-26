@@ -3,6 +3,7 @@ This file contains major changes in each version since v1.0.0
 v1.5.4
 - hkml text view: add menu for folding lines based on indentation.
 - hkml patch export: Put 'Link:' tag at the beginning of tags area.
+- hkml list: add --not_from option.
 
 v1.5.3
 - Do reply coloring by default.
