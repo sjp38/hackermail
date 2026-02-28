@@ -48,4 +48,3 @@
 - Check if a patch is Cc-ing all maintainers/reviewers
 - auto-completion.
 - Support users setting default answers for questions.
-- Support filtering out mails.  E.g., --author_not SJ
