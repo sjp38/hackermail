@@ -231,9 +231,12 @@ def do_monitor(request, ignore_mails_before, last_monitored_mails):
         with open(tmp_path, 'w') as f:
             f.write(mail_content)
 
-        _hkml.cmd_str_output(['git', 'send-email', tmp_path,
-                              '--8bit-encoding=UTF-8', '--confirm', 'never',
-                              '--to'] + request.noti_mails)
+        try:
+            _hkml.cmd_str_output(['git', 'send-email', tmp_path,
+                                  '--8bit-encoding=UTF-8', '--confirm', 'never',
+                                  '--to'] + request.noti_mails)
+        except Exception as e:
+            print('git send-email fail (%s)' % e)
         os.remove(tmp_path)
 
 def get_monitor_stop_file_path():
