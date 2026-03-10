@@ -1164,7 +1164,7 @@ def args_to_mails_list_data(args, suggest_manifest_update):
 
     now = datetime.datetime.now().astimezone()
     if args.since is None:
-        since = now - datetime.timedelta(days=3)
+        since = now - datetime.timedelta(days=5)
     else:
         since, err = _hkml_date.parse_date_arg(args.since)
         if err is not None:
