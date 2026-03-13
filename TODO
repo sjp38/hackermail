@@ -50,3 +50,4 @@
 - Support users setting default answers for questions.
 - Support sending all draft replies of a given thread.
 - Show draft replies of a given thread in a way.
+- Aware of stable@ comments and skip the comments part.
