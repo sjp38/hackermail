@@ -393,10 +393,7 @@ def show_text_viewer_menu(c, slist):
     text_view_data = slist.data
     if text_view_data.mail is not None:
         msgid = text_view_data.mail.get_field('message-id')[1:-1]
-        desc_lines += [
-                '',
-                'sashiko.dev link: https://sashiko.dev/#/patchset/%s' % msgid,
-        ]
+        desc_lines.append('msgid: %s' % msgid)
     desc = '\n'.join(desc_lines)
 
     _hkml_cli.ask_selection(
