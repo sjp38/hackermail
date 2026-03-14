@@ -389,8 +389,18 @@ def menu_selections(slist):
 
 def show_text_viewer_menu(c, slist):
     hkml_view.shell_mode_start(slist)
+    desc_lines = ['selected line: %s' % slist.lines[slist.focus_row]]
+    text_view_data = slist.data
+    if text_view_data.mail is not None:
+        msgid = text_view_data.mail.get_field('message-id')[1:-1]
+        desc_lines += [
+                '',
+                'sashiko.dev link: https://sashiko.dev/#/patchset/%s' % msgid,
+        ]
+    desc = '\n'.join(desc_lines)
+
     _hkml_cli.ask_selection(
-            desc='selected line: %s' % slist.lines[slist.focus_row],
+            desc=desc,
             prompt='Enter menu item number',
             handler_common_data=slist,
             selections=menu_selections(slist))
