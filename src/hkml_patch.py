@@ -8,6 +8,7 @@ import tempfile
 
 import _hkml
 import _hkml_list_cache
+import _hkml_sashiko_dev
 import hkml_list
 import hkml_open
 import hkml_patch_format
@@ -433,6 +434,19 @@ def make_cover_letter_commit(subject, content=None):
         message = '%s\n\n%s' % (message, content)
     return subprocess.call(['git', 'commit', '-s', '-m', message])
 
+def fetch_pr_sashiko_review(msgid):
+    review, err = _hkml_sashiko_dev.get_review(msgid)
+    if err is not None:
+        print('fetching review fail (%s)' % err)
+        return -1
+    print('patch subject: %s' % review.patch_subject)
+    print('patch msgid: %s' % review.patch_msgid)
+    print('review status: %s' % review.status)
+    print('reivew result: %s' % review.result)
+    print()
+    print('inline review:')
+    print(review.inline_review)
+
 def main(args):
     if args.action == 'format':
         return hkml_patch_format.main(args)
@@ -443,6 +457,8 @@ def main(args):
             return add_noff_merge_commit(
                     args.as_merge, args.subject, git_cmd=['git'])
         return make_cover_letter_commit(args.subject)
+    elif args.action == 'sashiko_dev':
+        return fetch_pr_sashiko_review(args.msgid)
 
     if args.action == 'check':
         if is_files_argument(args.patch):
@@ -509,6 +525,11 @@ def set_argparser(parser):
                 'Could be index on the list, or \'clipboard\'']))
     parser_export.add_argument('--export_dir', metavar='<dir>',
                                help='directory to save the patch files')
+
+    parser_sashiko = subparsers.add_parser(
+            'sashiko_dev', help='fetch and show sashiko.dev review')
+    parser_sashiko.add_argument('msgid', metavar='<message id>',
+                                help='message id of the patch mail')
 
     parser_format = subparsers.add_parser('format', help='format patch files')
     hkml_patch_format.set_argparser(parser_format)
