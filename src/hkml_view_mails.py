@@ -1022,8 +1022,7 @@ def show_mails_list_menu(c, slist):
         menu_desc = 'selected mail: %s' % mail.subject
 
     msgid = mail.get_field('message-id')[1:-1]
-    menu_desc += '\n\nsashiko.dev link: https://sashiko.dev/#/patchset/%s' % \
-            msgid
+    menu_desc += '\nmsgid: %s' % msgid
 
     hkml_view.shell_mode_start(slist)
     _hkml_cli.ask_selection(
