@@ -51,3 +51,6 @@
 - Support sending all draft replies of a given thread.
 - Show draft replies of a given thread in a way.
 - Aware of stable@ comments and skip the comments part.
+- Update replies and drafts in live, on the list.
+- Integrate sashiko.dev
+  - Show link to the sashiko.dev page
