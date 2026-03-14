@@ -856,6 +856,64 @@ patch file for mail '[PATCH 2/9] Docs/mm/damon/design: clarify regions merging o
 [...]
 ```
 
+Reading Sashiko.dev AI Review
+-----------------------------
+
+https://sashiko.dev is a web site providing AI reviews of kernel patches.
+
+`hkml patch sashiko_dev` receives a message id of a patch mail, fetch the AI
+review from the web site, and show the review on the terminal.  This feature
+can also be interactively used from `hkml list`, by opening menu (press `m`
+key), selecting `handle as patches` -> `show sashiko.dev review`.  For example
+of the non-interactive usage:
+
+```
+$ hkml patch sashiko_dev 20260313044449.4038-1-sj@kernel.org
+patch subject: [PATCH] mm/damon/stat: monitor all System RAM resources
+patch msgid: 20260313044449.4038-1-sj@kernel.org
+review status: Reviewed
+reivew result: Review completed successfully.
+
+inline review:
+commit 4b36180a519af35831edc0f0d2c23cbb69fd0eab
+Author: SeongJae Park <sj@kernel.org>
+
+mm/damon/stat: monitor all System RAM resources
+
+This commit updates damon_stat to monitor all System RAM instead of just the
+biggest contiguous resource. This addresses an issue on NUMA systems where
+only a small fraction of physical memory was being monitored.
+
+> diff --git a/mm/damon/stat.c b/mm/damon/stat.c
+> index f9a2028483b0..3ed71db33e89 100644
+> --- a/mm/damon/stat.c
+> +++ b/mm/damon/stat.c
+> @@ -145,12 +145,57 @@ static int damon_stat_damon_call_fn(void *data)
+[ ... ]
+> +struct damon_stat_system_ram_range_walk_arg {
+> +     bool walked;
+> +     struct resource res;
+> +};
+> +
+> +static int damon_stat_system_ram_walk_fn(struct resource *res, void *arg)
+> +{
+> +     struct damon_stat_system_ram_range_walk_arg *a = arg;
+> +
+> +     if (!a->walked) {
+> +             a->walked = true;
+> +             a->res.start = res->start;
+> +     }
+> +     a->res.end = res->end;
+
+Will this create a single bounding box that includes non-RAM holes?
+
+By recording the start of the first System RAM resource and the end of the
+last, this unified region encompasses all non-RAM physical address holes
+(like PCI MMIO) residing between valid RAM nodes. When DAMON dynamically
+monitors this region, a sub-region may overlap both a valid RAM segment
+and a physical hole.
+```
+
 Cover Letter Purpose Bogus Commit
 ---------------------------------
 
