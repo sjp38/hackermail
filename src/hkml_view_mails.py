@@ -11,7 +11,6 @@ import _hkml
 import _hkml_cli
 import _hkml_date
 import _hkml_list_cache
-import _hkml_sashiko_dev
 import hkml_cache
 import hkml_export
 import hkml_forward
@@ -303,16 +302,7 @@ def do_export_patch(data, answer, selection):
 def do_sashiko_patch(data, answer, selection):
     mail = data
     msgid = mail.get_field('message-id')[1:-1]
-    review, err = _hkml_sashiko_dev.get_review(msgid)
-    if err is not None:
-        print('getting reiview fail (%s)' % err)
-        return
-    print('patch subject: %s' % review.patch_subject)
-    print('patch msgid: %s' % review.patch_msgid)
-    print('review status: %s' % review.status)
-    print('reivew result: %s' % review.result)
-    print('inline review:')
-    print(review.inline_review)
+    return hkml_patch.fetch_pr_sashiko_review(msgid)
 
 def handle_patches_of_mail(mail, list_mails=None):
     msgid = mail.get_field('message-id')
