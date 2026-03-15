@@ -446,6 +446,8 @@ def fetch_pr_sashiko_review(msgid):
     print()
     print('inline review:')
     print(review.inline_review)
+    print('# end of sashiko.dev inline review')
+    print('# review url: https://sashiko.dev/#/patchset/%s' % msgid)
 
 def main(args):
     if args.action == 'format':
