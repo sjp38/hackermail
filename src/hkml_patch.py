@@ -439,12 +439,11 @@ def fetch_pr_sashiko_review(msgid):
     if err is not None:
         print('fetching review fail (%s)' % err)
         return -1
-    print('patch subject: %s' % review.patch_subject)
-    print('patch msgid: %s' % review.patch_msgid)
-    print('review status: %s' % review.status)
-    print('reivew result: %s' % review.result)
-    print()
-    print('inline review:')
+    print('# patch subject: %s' % review.patch_subject)
+    print('# patch msgid: %s' % review.patch_msgid)
+    print('# review status: %s' % review.status)
+    print('# reivew result: %s' % review.result)
+    print('# inline review:')
     print(review.inline_review)
     print('# end of sashiko.dev inline review')
     print('# review url: https://sashiko.dev/#/patchset/%s' % msgid)
