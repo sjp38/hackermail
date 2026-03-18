@@ -52,3 +52,6 @@
 - Show draft replies of a given thread in a way.
 - Aware of stable@ comments and skip the comments part.
 - Update replies and drafts in live, on the list.
+- Local-cache sashiko queries
+- Support sashiko thread navigation
+- Support sashiko review forwarding
