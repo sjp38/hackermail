@@ -29,7 +29,7 @@ import hkml_signature
 
 import _hkml
 
-if len(sys.argv) > 0 and sys.argv[1] == '--cli_complete':
+if len(sys.argv) > 1 and sys.argv[1] == '--cli_complete':
     _hkml_cli_complete.handle_cli_complete()
     exit(0)
 
