@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hackermail"
+version = "0.1.0"
+description = "HacKerMaiL (hkml) - a mails management tool for hackers who collaborate using mailing lists"
+license = "GPL-2.0-only"
+requires-python = ">=3.8"
+dependencies = [
+    "requests",
+]
+
+[project.scripts]
+hkml = "_hkml_entry:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
