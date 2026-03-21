@@ -307,7 +307,7 @@ def do_sashiko_patch(data, answer, selection):
 def do_sashiko_patch_status(data, answer, selection):
     mail = data
     msgid = mail.get_field('message-id')[1:-1]
-    return hkml_patch.fetch_pr_sashiko_reviews(msgid)
+    return hkml_patch.fetch_pr_sashiko_reviews(msgid, for_forwarding=False)
 
 def do_sashiko_patch_forward(data, answer, selection):
     mail = data

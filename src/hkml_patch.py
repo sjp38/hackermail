@@ -477,7 +477,7 @@ def fmt_sashiko_forward_msg(review):
     return '\n'.join([
         'Subject: (Sashiko) Re: %s' % review.patch_subject,
         '',
-        'Forwarding Sashiko review for doing the discussion via mails.',
+        'Forwarding Sashiko review for doing discussions via mails.',
         '',
         '# review url: %s' % review_url,
         '# start of sashiko.dev inline review',
