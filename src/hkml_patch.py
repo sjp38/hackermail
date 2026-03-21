@@ -506,19 +506,20 @@ def fetch_pr_sashiko_review(msgid, thread_status, for_forwarding):
     print('# end of sashiko.dev inline review')
     print('# review url: https://sashiko.dev/#/patchset/%s' % msgid)
 
-def forward_sashiko(msgid, thread_status):
-    mails, err = hkml_list.get_thread_mails_from_web(msgid)
-    if err is not None:
-        print('retrieving mail from web fail (%s)' % err)
-        return -1
-    mail = None
-    for m in mails:
-        if m.get_field('message-id') == '<%s>' % msgid:
-            mail = m
-            break
+def forward_sashiko(msgid, thread_status, mail=None):
     if mail is None:
-        print('cannot find mail from web-retrieved mails')
-        return -1
+        mails, err = hkml_list.get_thread_mails_from_web(msgid)
+        if err is not None:
+            print('retrieving mail from web fail (%s)' % err)
+            return -1
+        mail = None
+        for m in mails:
+            if m.get_field('message-id') == '<%s>' % msgid:
+                mail = m
+                break
+        if mail is None:
+            print('cannot find mail from web-retrieved mails')
+            return -1
 
     if thread_status is True:
         text, err = fmt_sashiko_reviews_summary(msgid)
