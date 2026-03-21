@@ -499,7 +499,8 @@ def fmt_sashiko_forward_msg(review):
         '# hkml [1] generated a draft of this mail.  It can be regenerated',
         '# using below command:',
         '#',
-        '#     hkml patch sashiko_dev --for_forwarding %s' % msgid,
+        '#     hkml patch sashiko_dev --for_forwarding \\',
+        '#             %s' % msgid,
         '#',
         '# [1] https://github.com/sjp38/hackermail',
         ])
