@@ -461,27 +461,25 @@ def fetch_pr_sashiko_reviews(msgid):
     return 0
 
 def fmt_sashiko_forward_msg(review):
-    lines = []
-    lines.append('Subject: (Sashiko) Re: %s' % review.patch_subject)
-    lines.append('')
-    lines.append(
-            'Forwarding Sashiko review for doing the discussion via mails.')
-    lines.append('')
-    review_url = 'https://sashiko.dev/#/patchset/%s' % review.patch_msgid
-    lines.append('# review url: %s' % review_url)
-    lines.append('# start of sashiko.dev inline review')
-    lines.append(review.inline_review)
-    lines.append('# end of sashiko.dev inline review')
-    lines.append('# review url: %s' % review_url)
-    lines.append('#')
-    lines.append(
-            '# hkml [1] generated a draft of this mail using below command:')
-    lines.append('#')
-    lines.append('#     hkml patch sashiko_dev --for_forwarding %s' %
-                 review.patch_msgid)
-    lines.append('#')
-    lines.append('# [1] https://github.com/sjp38/hackermail')
-    return '\n'.join(lines)
+    msgid = review.patch_msgid
+    review_url = 'https://sashiko.dev/#/patchset/%s' % msgid
+    return '\n'.join([
+        'Subject: (Sashiko) Re: %s' % review.patch_subject,
+        '',
+        'Forwarding Sashiko review for doing the discussion via mails.',
+        '',
+        '# review url: %s' % review_url,
+        '# start of sashiko.dev inline review',
+        review.inline_review,
+        '# end of sashiko.dev inline review',
+        '# review url: %s' % review_url,
+        '#',
+        '# hkml [1] generated a draft of this mail using below command:',
+        '#',
+        '#     hkml patch sashiko_dev --for_forwarding %s' % msgid,
+        '#',
+        '# [1] https://github.com/sjp38/hackermail',
+        ])
 
 def pr_sashiko_for_forwarding(review):
     print(fmt_sashiko_forward_msg(review))
