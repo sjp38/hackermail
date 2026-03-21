@@ -7,7 +7,14 @@ results and show those on the terminal.
 '''
 
 import argparse
-import requests
+
+requests_import_success = False
+
+try:
+    import requests
+    requests_import_success = True
+except:
+    pass
 
 class SashikoDevReview:
     result = None
@@ -31,6 +38,10 @@ def get_review(msgid):
     '''
     Return SashikoDevReview and an error
     '''
+    if requests_import_success is False:
+        # TODO: add more guide about how to install the module
+        return None, 'requests python module import fail'
+
     if msgid in msgid_output_cache:
         return msgid_output_cache[msgid], None
 
