@@ -304,6 +304,11 @@ def do_sashiko_patch(data, answer, selection):
     msgid = mail.get_field('message-id')[1:-1]
     return hkml_patch.fetch_pr_sashiko_review(msgid)
 
+def do_sashiko_patch_status(data, answer, selection):
+    mail = data
+    msgid = mail.get_field('message-id')[1:-1]
+    return hkml_patch.fetch_pr_sashiko_reviews(msgid)
+
 def handle_patches_of_mail(mail, list_mails=None):
     msgid = mail.get_field('message-id')
     if list_mails is None:
@@ -336,6 +341,9 @@ def handle_patches_of_mail(mail, list_mails=None):
                     'export patch[es]', handle_fn=do_export_patch),
                 _hkml_cli.Selection(
                     'show sashiko.dev review', handle_fn=do_sashiko_patch),
+                _hkml_cli.Selection(
+                    'show sashiko.dev review status',
+                    handle_fn=do_sashiko_patch_status),
                 ]
             )
 
