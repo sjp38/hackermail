@@ -434,23 +434,30 @@ def make_cover_letter_commit(subject, content=None):
         message = '%s\n\n%s' % (message, content)
     return subprocess.call(['git', 'commit', '-s', '-m', message])
 
-def fetch_pr_sashiko_reviews(msgid):
+def fmt_sashiko_reviews_summary(msgid):
     reviews, err = _hkml_sashiko_dev.get_reviews(msgid)
     if err is not None:
-        print('fetching reviews fail (%s)' % err)
-        return -1
+        return None, 'fetching reviews fail (%s)' % err
     if len(reviews) == 0:
-        print('zero review')
-        return 0
+        return 'zero review', None
+    lines = []
     for review in reviews:
-        print('- %s' % review.patch_subject)
-        print('  - status: %s' % review.status)
+        lines.append('- %s' % review.patch_subject)
+        lines.append('  - status: %s' % review.status)
         result = review.result
         if result is not None and result != 'Review completed successfully.':
-            print('  - result: %s' % result)
+            lines.append('  - result: %s' % result)
         inline_review =  review.inline_review
         if inline_review is not None and len(inline_review.split('\n')) == 1:
-            print('  - review: %s' % inline_review)
+            lines.append('  - review: %s' % inline_review)
+    return '\n'.join(lines), None
+
+def fetch_pr_sashiko_reviews(msgid):
+    text, err = fmt_sashiko_reviews_summary(msgid)
+    if err is not None:
+        print(err)
+        return -1
+    print(text)
     return 0
 
 def pr_sashiko_for_forwarding(review):
