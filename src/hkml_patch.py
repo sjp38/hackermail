@@ -437,13 +437,21 @@ def make_cover_letter_commit(subject, content=None):
         message = '%s\n\n%s' % (message, content)
     return subprocess.call(['git', 'commit', '-s', '-m', message])
 
-def fmt_sashiko_reviews_summary(msgid):
+def fmt_sashiko_reviews_summary(msgid, for_forwarding=False):
     reviews, err = _hkml_sashiko_dev.get_reviews(msgid)
     if err is not None:
         return None, 'fetching reviews fail (%s)' % err
-    if len(reviews) == 0:
-        return 'zero review', None
     lines = []
+    if for_forwarding is True:
+        lines = [
+                'Forwarding sashiko.dev review status for this thread.',
+                '',
+                '# review url: https://sashiko.dev/#/patchset/%s' % msgid,
+                '',
+                ]
+    if len(reviews) == 0:
+        lines.append('zero review')
+        return '\n'.join(lines), None
     for review in reviews:
         lines.append('- %s' % review.patch_subject)
         lines.append('  - status: %s' % review.status)
@@ -455,8 +463,8 @@ def fmt_sashiko_reviews_summary(msgid):
             lines.append('  - review: %s' % inline_review)
     return '\n'.join(lines), None
 
-def fetch_pr_sashiko_reviews(msgid):
-    text, err = fmt_sashiko_reviews_summary(msgid)
+def fetch_pr_sashiko_reviews(msgid, for_forwarding):
+    text, err = fmt_sashiko_reviews_summary(msgid, for_forwarding)
     if err is not None:
         print(err)
         return -1
@@ -490,7 +498,7 @@ def pr_sashiko_for_forwarding(review):
 
 def fetch_pr_sashiko_review(msgid, thread_status, for_forwarding):
     if thread_status is True:
-        return fetch_pr_sashiko_reviews(msgid)
+        return fetch_pr_sashiko_reviews(msgid, for_forwarding)
     review, err = _hkml_sashiko_dev.get_review(msgid)
     if err is not None:
         print('fetching review fail (%s)' % err)
@@ -523,7 +531,7 @@ def forward_sashiko(msgid, thread_status, mail=None):
             return -1
 
     if thread_status is True:
-        text, err = fmt_sashiko_reviews_summary(msgid)
+        text, err = fmt_sashiko_reviews_summary(msgid, for_forwarding=True)
         if err is not None:
             print(err)
             return -1
