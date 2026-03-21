@@ -464,6 +464,13 @@ def pr_sashiko_for_forwarding(review):
     print(review.inline_review)
     print('# end of sashiko.dev inline review')
     print('# review url: %s' % review_url)
+    print('#')
+    print('# hkml [1] generated a draft of this mail using below command:')
+    print('#')
+    print('#     hkml patch sashiko_dev --for_forwarding %s' %
+          review.patch_msgid)
+    print('#')
+    print('# [1] https://github.com/sjp38/hackermail')
 
 def fetch_pr_sashiko_review(msgid, thread_status, for_forwarding):
     if thread_status is True:
