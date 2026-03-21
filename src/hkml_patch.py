@@ -462,7 +462,7 @@ def fmt_sashiko_reviews_summary(msgid, for_forwarding=False):
         if inline_review is not None and len(inline_review.split('\n')) == 1:
             lines.append('  - review: %s' % inline_review)
         else:
-            lines.append('  - review: >1 lines; MAYBE NEED A DEEP LOOK?')
+            lines.append('  - review: ISSUES MAY FOUND')
 
     lines += [
             '',
