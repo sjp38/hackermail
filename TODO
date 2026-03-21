@@ -55,3 +55,5 @@
 - Local-cache sashiko queries
 - Support sashiko thread navigation
 - Support sashiko review forwarding
+- Support series having no cover letter
+- try-except requests import
