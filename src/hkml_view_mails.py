@@ -315,6 +315,12 @@ def do_sashiko_patch_forward(data, answer, selection):
     return hkml_patch.forward_sashiko(
             msgid=msgid, thread_status=False, mail=mail)
 
+def do_sashiko_patch_status_forward(data, answer, selection):
+    mail = data
+    msgid = mail.get_field('message-id')[1:-1]
+    return hkml_patch.forward_sashiko(
+            msgid=msgid, thread_status=True, mail=mail)
+
 def handle_patches_of_mail(mail, list_mails=None):
     msgid = mail.get_field('message-id')
     if list_mails is None:
@@ -353,6 +359,10 @@ def handle_patches_of_mail(mail, list_mails=None):
                 _hkml_cli.Selection(
                     'forward sashiko.dev review',
                     handle_fn=do_sashiko_patch_forward),
+                _hkml_cli.Selection(
+                    'forward sashiko.dev review status',
+                    handle_fn=do_sashiko_patch_status_forward),
+
                 ]
             )
 
