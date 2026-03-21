@@ -107,4 +107,5 @@ def get_reviews(msgid):
                 result, status, patch_msgid, patch_subject, inline_review)
         msgid_output_cache[patch_msgid] = sashiko_dev_review
         sashiko_reviews.append(sashiko_dev_review)
+    sashiko_reviews.sort(key=lambda x: x.patch_subject)
     return sashiko_reviews, None
