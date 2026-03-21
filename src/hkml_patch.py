@@ -453,13 +453,28 @@ def fetch_pr_sashiko_reviews(msgid):
             print('  - review: %s' % inline_review)
     return 0
 
-def fetch_pr_sashiko_review(msgid, thread_status):
+def pr_sashiko_for_forwarding(review):
+    print('Subject: (Sashiko) Re: %s' % review.patch_subject)
+    print()
+    print('Forwarding Sashiko review for doing the discussion via mails.')
+    print()
+    review_url = 'https://sashiko.dev/#/patchset/%s' % review.patch_msgid
+    print('# review url: %s' % review_url)
+    print('# start of sashiko.dev inline review')
+    print(review.inline_review)
+    print('# end of sashiko.dev inline review')
+    print('# review url: %s' % review_url)
+
+def fetch_pr_sashiko_review(msgid, thread_status, for_forwarding):
     if thread_status is True:
         return fetch_pr_sashiko_reviews(msgid)
     review, err = _hkml_sashiko_dev.get_review(msgid)
     if err is not None:
         print('fetching review fail (%s)' % err)
         return -1
+    if for_forwarding is True:
+        return pr_sashiko_for_forwarding(review)
+
     print('# patch subject: %s' % review.patch_subject)
     print('# patch msgid: %s' % review.patch_msgid)
     print('# review status: %s' % review.status)
@@ -480,7 +495,8 @@ def main(args):
                     args.as_merge, args.subject, git_cmd=['git'])
         return make_cover_letter_commit(args.subject)
     elif args.action == 'sashiko_dev':
-        return fetch_pr_sashiko_review(args.msgid, args.thread_status)
+        return fetch_pr_sashiko_review(args.msgid, args.thread_status,
+                                       args.for_forwarding)
 
     if args.action == 'check':
         if is_files_argument(args.patch):
@@ -554,6 +570,8 @@ def set_argparser(parser):
                                 help='message id of the patch mail')
     parser_sashiko.add_argument('--thread_status', action='store_true',
                                 help='print entire thread review status')
+    parser_sashiko.add_argument('--for_forwarding', action='store_true',
+                                help='print in mail-forwarding friendly form')
 
     parser_format = subparsers.add_parser('format', help='format patch files')
     hkml_patch_format.set_argparser(parser_format)
