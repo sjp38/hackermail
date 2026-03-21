@@ -491,6 +491,9 @@ def fetch_pr_sashiko_review(msgid, thread_status, for_forwarding):
     print('# end of sashiko.dev inline review')
     print('# review url: https://sashiko.dev/#/patchset/%s' % msgid)
 
+def handle_sashiko(msgid, thread_status, for_forwarding):
+    return fetch_pr_sashiko_review(msgid, thread_status, for_forwarding)
+
 def main(args):
     if args.action == 'format':
         return hkml_patch_format.main(args)
@@ -502,8 +505,8 @@ def main(args):
                     args.as_merge, args.subject, git_cmd=['git'])
         return make_cover_letter_commit(args.subject)
     elif args.action == 'sashiko_dev':
-        return fetch_pr_sashiko_review(args.msgid, args.thread_status,
-                                       args.for_forwarding)
+        return handle_sashiko(args.msgid, args.thread_status,
+                              args.for_forwarding)
 
     if args.action == 'check':
         if is_files_argument(args.patch):
