@@ -1,9 +1,9 @@
 This file contains major changes in each version since v1.0.0
 
 v1.5.5
-- Introduce AI review (https://sashiko.dev) fetching
+- Introduce AI review (https://sashiko.dev) fetching.
   - hkml list -> menu -> 'handle as patches' -> 'show sashiko.dev review'
-  - hkml patch sashiko_dev
+  - hkml patch sashiko_dev [--thread_status]
 
 v1.5.4
 - hkml text view: add menu for folding lines based on indentation.
