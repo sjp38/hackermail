@@ -463,6 +463,7 @@ def fmt_sashiko_reviews_summary(msgid, for_forwarding=False):
             lines.append('  - review: %s' % inline_review)
 
     lines += [
+            '',
             '# hkml [1] generated a draft of this mail.  It can be regenerated',
             '# using below command:',
             '#',
