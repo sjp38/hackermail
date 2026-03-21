@@ -16,20 +16,21 @@ def format_reply_subject(mail):
         subject = 'Re: %s' % subject
     return subject
 
-def format_reply(mail, attach_file):
+def format_reply(mail, attach_file, body_lines=None):
     subject = format_reply_subject(mail)
     in_reply_to = mail.get_field('message-id')
     cc = [x for x in [mail.get_field('to'), mail.get_field('cc')] if x]
     to = [mail.get_field('from')]
 
-    body_lines = []
-    date = mail.get_field('date')
-    if date and to[0]:
-        body_lines.append('On %s %s wrote:' % (date, to[0]))
-        body_lines.append('')
-    body = mail.get_field('body')
-    for line in body.split('\n'):
-        body_lines.append('> %s' % line)
+    if body_lines is None:
+        body_lines = []
+        date = mail.get_field('date')
+        if date and to[0]:
+            body_lines.append('On %s %s wrote:' % (date, to[0]))
+            body_lines.append('')
+        body = mail.get_field('body')
+        for line in body.split('\n'):
+            body_lines.append('> %s' % line)
     body = '\n'.join(body_lines)
     return hkml_write.format_mbox(subject, in_reply_to, to, cc, body,
                                   from_=None, draft_mail=None,
