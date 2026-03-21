@@ -461,6 +461,17 @@ def fmt_sashiko_reviews_summary(msgid, for_forwarding=False):
         inline_review =  review.inline_review
         if inline_review is not None and len(inline_review.split('\n')) == 1:
             lines.append('  - review: %s' % inline_review)
+
+    lines += [
+            '# hkml [1] generated a draft of this mail.  It can be regenerated',
+            '# using below command:',
+            '#',
+            '#     hkml patch sashiko_dev --thread_status --for_forwarding \\',
+            '#             %s' % msgid,
+            '#',
+            '# [1] https://github.com/sjp38/hackermail',
+            ]
+
     return '\n'.join(lines), None
 
 def fetch_pr_sashiko_reviews(msgid, for_forwarding):
