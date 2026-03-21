@@ -12,6 +12,9 @@ import _hkml_sashiko_dev
 import hkml_list
 import hkml_open
 import hkml_patch_format
+import hkml_reply
+import hkml_write
+import hkml_send
 
 def find_mail_from_thread(thread, msgid):
     if thread.get_field('message-id') == msgid:
@@ -503,8 +506,48 @@ def fetch_pr_sashiko_review(msgid, thread_status, for_forwarding):
     print('# end of sashiko.dev inline review')
     print('# review url: https://sashiko.dev/#/patchset/%s' % msgid)
 
-def handle_sashiko(msgid, thread_status, for_forwarding):
-    return fetch_pr_sashiko_review(msgid, thread_status, for_forwarding)
+def forward_sashiko(msgid, thread_status):
+    mails, err = hkml_list.get_thread_mails_from_web(msgid)
+    if err is not None:
+        print('retrieving mail from web fail (%s)' % err)
+        return -1
+    mail = None
+    for m in mails:
+        if m.get_field('message-id') == '<%s>' % msgid:
+            mail = m
+            break
+    if mail is None:
+        print('cannot find mail from web-retrieved mails')
+        return -1
+
+    if thread_status is True:
+        text, err = fmt_sashiko_reviews_summary(msgid)
+        if err is not None:
+            print(err)
+            return -1
+    else:
+        review, err = _hkml_sashiko_dev.get_review(msgid)
+        if err is not None:
+            print('fetching review fail (%s)' % err)
+            return -1
+        text = fmt_sashiko_forward_msg(review)
+
+    mbox_str = hkml_reply.format_reply(
+            mail=mail, attach_file=None, body_lines=[text])
+    fd, forward_tmp_path = tempfile.mkstemp(prefix='hkml_sashiko_forward_')
+    with open(forward_tmp_path, 'w') as f:
+        f.write(mbox_str)
+    err = hkml_write.open_editor(forward_tmp_path)
+    if err is not None:
+        print(err)
+        return -1
+    hkml_send.send_mail(forward_tmp_path, get_confirm=True, erase_mbox=True,
+                        orig_draft_subject=None)
+
+def handle_sashiko(msgid, thread_status, for_forwarding, do_forward):
+    if do_forward is False:
+        return fetch_pr_sashiko_review(msgid, thread_status, for_forwarding)
+    return forward_sashiko(msgid, thread_status)
 
 def main(args):
     if args.action == 'format':
@@ -517,8 +560,9 @@ def main(args):
                     args.as_merge, args.subject, git_cmd=['git'])
         return make_cover_letter_commit(args.subject)
     elif args.action == 'sashiko_dev':
-        return handle_sashiko(args.msgid, args.thread_status,
-                              args.for_forwarding)
+        return handle_sashiko(
+                args.msgid, args.thread_status, args.for_forwarding,
+                args.forward)
 
     if args.action == 'check':
         if is_files_argument(args.patch):
@@ -594,6 +638,8 @@ def set_argparser(parser):
                                 help='print entire thread review status')
     parser_sashiko.add_argument('--for_forwarding', action='store_true',
                                 help='print in mail-forwarding friendly form')
+    parser_sashiko.add_argument('--forward', action='store_true',
+                                help='forward the sashiko status or review')
 
     parser_format = subparsers.add_parser('format', help='format patch files')
     hkml_patch_format.set_argparser(parser_format)
