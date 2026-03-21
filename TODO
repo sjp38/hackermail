@@ -54,6 +54,5 @@
 - Update replies and drafts in live, on the list.
 - Local-cache sashiko queries
 - Support sashiko thread navigation
-- Support sashiko review forwarding
 - Support series having no cover letter
-- try-except requests import
+- sashiko thread status forwarding: sort patches by title
