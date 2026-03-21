@@ -444,7 +444,13 @@ def fetch_pr_sashiko_reviews(msgid):
         return 0
     for review in reviews:
         print('- %s' % review.patch_subject)
-        print('  - %s (%s)' % (review.status, review.result))
+        print('  - status: %s' % review.status)
+        result = review.result
+        if result is not None and result != 'Review completed successfully.':
+            print('  - result: %s' % result)
+        inline_review =  review.inline_review
+        if inline_review is not None and len(inline_review.split('\n')) == 1:
+            print('  - review: %s' % inline_review)
     return 0
 
 def fetch_pr_sashiko_review(msgid, thread_status):
