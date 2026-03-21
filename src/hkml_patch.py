@@ -434,7 +434,22 @@ def make_cover_letter_commit(subject, content=None):
         message = '%s\n\n%s' % (message, content)
     return subprocess.call(['git', 'commit', '-s', '-m', message])
 
-def fetch_pr_sashiko_review(msgid):
+def fetch_pr_sashiko_reviews(msgid):
+    reviews, err = _hkml_sashiko_dev.get_reviews(msgid)
+    if err is not None:
+        print('fetching reviews fail (%s)' % err)
+        return -1
+    if len(reviews) == 0:
+        print('zero review')
+        return 0
+    for review in reviews:
+        print('- %s' % review.patch_subject)
+        print('  - %s (%s)' % (review.status, review.result))
+    return 0
+
+def fetch_pr_sashiko_review(msgid, thread_status):
+    if thread_status is True:
+        return fetch_pr_sashiko_reviews(msgid)
     review, err = _hkml_sashiko_dev.get_review(msgid)
     if err is not None:
         print('fetching review fail (%s)' % err)
@@ -459,7 +474,7 @@ def main(args):
                     args.as_merge, args.subject, git_cmd=['git'])
         return make_cover_letter_commit(args.subject)
     elif args.action == 'sashiko_dev':
-        return fetch_pr_sashiko_review(args.msgid)
+        return fetch_pr_sashiko_review(args.msgid, args.thread_status)
 
     if args.action == 'check':
         if is_files_argument(args.patch):
@@ -531,6 +546,8 @@ def set_argparser(parser):
             'sashiko_dev', help='fetch and show sashiko.dev review')
     parser_sashiko.add_argument('msgid', metavar='<message id>',
                                 help='message id of the patch mail')
+    parser_sashiko.add_argument('--thread_status', action='store_true',
+                                help='print entire thread review status')
 
     parser_format = subparsers.add_parser('format', help='format patch files')
     hkml_patch_format.set_argparser(parser_format)
