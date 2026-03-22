@@ -371,6 +371,16 @@ def handle_patches_of_mail(mail, list_mails=None):
                 ]
             )
 
+def add_replies(mails, mail, replies):
+    msgid = mail.get_field('message-id')
+    reply = replies.get(msgid, None)
+    if reply is None:
+        return
+    reply.pridx = 9999
+    reply.filtered_out = False
+    mails.append(reply)
+    add_replies(mails, reply, replies)
+
 def __set_prdepth(mail, depth):
     mail.prdepth = depth
     for reply in mail.replies:
@@ -383,6 +393,7 @@ def set_prdepth(mails):
 
 def get_mails(slist):
     mails = []
+    mails_view_data = get_mails_view_data(slist)
     mail_idx_key_map = slist.data.list_data.mail_idx_key_map
     for mail_idx in mail_idx_key_map:
         mail_key = mail_idx_key_map[mail_idx]
@@ -398,6 +409,7 @@ def get_mails(slist):
         mail.pridx = int(mail_idx)
         mail.filtered_out = False
         mails.append(mail)
+        add_replies(mails, mail, mails_view_data.replies)
     set_prdepth(mails)
     return mails
 
