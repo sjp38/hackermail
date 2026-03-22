@@ -144,7 +144,10 @@ def reply_mail(slist, mail, cursor_row=0):
         # this can be called from hkml_view_text, with TextViewData.
         if type(mails_view_data) is not MailsViewData:
             return
-        mails_view_data.replies[mail.get_field('message-id')] = reply_mail
+        msgid = mail.get_field('message-id')
+        if not msgid in mails_view_data.replies:
+            mails_view_data.replies[msgid] = []
+        mails_view_data.replies[msgid].append(reply_mail)
         refresh_list(slist)
 
 def reply_focused_mail(c, slist):
@@ -377,13 +380,12 @@ def handle_patches_of_mail(mail, list_mails=None):
 
 def add_replies(mails, mail, replies):
     msgid = mail.get_field('message-id')
-    reply = replies.get(msgid, None)
-    if reply is None:
-        return
-    reply.pridx = 9999
-    reply.filtered_out = False
-    mails.append(reply)
-    add_replies(mails, reply, replies)
+    replies_list = replies.get(msgid, [])
+    for reply in replies_list:
+        reply.pridx = mail.pridx
+        reply.filtered_out = False
+        mails.append(reply)
+        add_replies(mails, reply, replies)
 
 def __set_prdepth(mail, depth):
     mail.prdepth = depth
