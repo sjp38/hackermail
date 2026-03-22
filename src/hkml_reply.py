@@ -38,10 +38,11 @@ def format_reply(mail, attach_file, body_lines=None, subject=None):
                                   attach_files=attach_file)
 
 def reply(mail, attach_files, format_only, cursor_row=0):
+    '''Return the sent mail or None'''
     reply_mbox_str = format_reply(mail, attach_files)
     if format_only:
         print(reply_mbox_str)
-        return
+        return None
 
     if cursor_row != 0:
         nr_header_rows = 0
@@ -61,8 +62,8 @@ def reply(mail, attach_files, format_only, cursor_row=0):
     if err is not None:
         print(err)
         exit(1)
-    hkml_send.send_mail(reply_tmp_path, get_confirm=True, erase_mbox=True,
-                        orig_draft_subject=None)
+    return hkml_send.send_mail(reply_tmp_path, get_confirm=True,
+                               erase_mbox=True, orig_draft_subject=None)
 
 def main(args):
     if args.mail.isdigit():
