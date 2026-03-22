@@ -54,6 +54,8 @@ def get_review(msgid):
     if resp.status_code != 200:
         return None, 'get response is not 200 but %s' % resp.status_code
     data = resp.json()
+    if data['status'] != 'Reviewed':
+        return None, 'Status is not Reviewed but "%s"' % data['status']
 
     id_patch_map = {}
     for patch in data['patches']:
@@ -88,6 +90,8 @@ def get_reviews(msgid):
     if resp.status_code != 200:
         return None, 'get response is not 200 but %s' % resp.status_code
     data = resp.json()
+    if data['status'] != 'Reviewed':
+        return None, 'Status is not Reviewed but "%s"' % data['status']
 
     id_patch_map = {}
     for patch in data['patches']:
