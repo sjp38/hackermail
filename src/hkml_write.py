@@ -216,7 +216,7 @@ def write_send_mail(draft_mail, subject, in_reply_to, to, cc, body, attach,
 
     if format_only:
         print(mbox)
-        return
+        return Nonee
 
     fd, tmp_path = tempfile.mkstemp(prefix='hkml_mail_')
     with open(tmp_path, 'w') as f:
@@ -229,7 +229,7 @@ def write_send_mail(draft_mail, subject, in_reply_to, to, cc, body, attach,
     orig_draft_subject = None
     if draft_mail:
         orig_draft_subject = draft_mail.subject
-    hkml_send.send_mail(tmp_path, get_confirm=True, erase_mbox=True,
+    return hkml_send.send_mail(tmp_path, get_confirm=True, erase_mbox=True,
                         orig_draft_subject=orig_draft_subject)
 
 def main(args):
