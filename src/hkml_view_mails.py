@@ -717,6 +717,9 @@ class MailsViewData:
     display_rule = None
     collapsed_mails = None
     last_cursor_position = None
+    # replies that sent after opening this view.
+    # key: msgid of original mail, value: the sent (or drafted) mail.
+    replies = None
 
     # cache for per-line display effect decisions that made by display_rule.
     display_effects = None
@@ -728,6 +731,7 @@ class MailsViewData:
         self.collapsed_mails = {}
         self.last_cursor_position = {}
         self.display_effects = {}
+        self.replies = {}
 
     def update_display_rule(self, rule):
         self.display_rule = rule
