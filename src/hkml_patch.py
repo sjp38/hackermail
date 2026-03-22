@@ -493,7 +493,7 @@ def fmt_sashiko_forward_msg(review):
         '',
         '# review url: %s' % review_url,
         '# start of sashiko.dev inline review',
-        review.inline_review,
+        '%s' % review.inline_review,
         '# end of sashiko.dev inline review',
         '# review url: %s' % review_url,
         '#',
