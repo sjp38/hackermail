@@ -856,63 +856,156 @@ patch file for mail '[PATCH 2/9] Docs/mm/damon/design: clarify regions merging o
 [...]
 ```
 
-Reading Sashiko.dev AI Review
------------------------------
+sashiko.dev
+-----------
 
-https://sashiko.dev is a web site providing AI reviews of kernel patches.
+[sashiko.dev](https://sashiko.dev) provides Linux kernel patch AI reviews.
+`hkml patch sashiko_dev` command reads the review status and comments, or
+forward those as mails.
 
-`hkml patch sashiko_dev` receives a message id of a patch mail, fetch the AI
-review from the web site, and show the review on the terminal.  This feature
-can also be interactively used from `hkml list`, by opening menu (press `m`
-key), selecting `handle as patches` -> `show sashiko.dev review`.  For example
-of the non-interactive usage:
+### Reading sashiko.dev Review Status
+
+`hkml patch sashiko_dev` receives a message id of a patch mail, and outputs the
+review status of the entire patch series of the given message id, when
+`--thread_status` option is also passed.
+
+This can also be done on the `hkml list` [interactive
+mode](#interactive-viewer) for the mail that currently focused on, via menu
+(press `m` key) -> `handle as patches` -> `show sashiko.dev review status`
+menu.
+
+For example:
 
 ```
-$ hkml patch sashiko_dev 20260313044449.4038-1-sj@kernel.org
-patch subject: [PATCH] mm/damon/stat: monitor all System RAM resources
-patch msgid: 20260313044449.4038-1-sj@kernel.org
-review status: Reviewed
-reivew result: Review completed successfully.
+$ hkml patch sashiko_dev --thread_status 20260322155728.81434-1-sj@kernel.org
+- [RFC PATCH v4 01/10] mm/damon/core: introduce damon_ctx->paused
+  - status: Reviewed
+  - review: ISSUES MAY FOUND
+- [RFC PATCH v4 02/10] mm/damon/sysfs: add pause file under context dir
+  - status: Reviewed
+  - review: No issues found.
+- [RFC PATCH v4 03/10] Docs/mm/damon/design: update for context pause/resume feature
+  - status: Reviewed
+  - review: No issues found.
+- [RFC PATCH v4 04/10] Docs/admin-guide/mm/damon/usage: update for pause file
+  - status: Reviewed
+  - review: No issues found.
+- [RFC PATCH v4 05/10] Docs/ABI/damon: update for pause sysfs file
+  - status: Reviewed
+  - review: No issues found.
+- [RFC PATCH v4 06/10] mm/damon/tests/core-kunit: test pause commitment
+  - status: Reviewed
+  - review: No issues found.
+- [RFC PATCH v4 07/10] selftests/damon/_damon_sysfs: support pause file staging
+  - status: Pending
+- [RFC PATCH v4 08/10] selftests/damon/drgn_dump_damon_status: dump pause
+  - status: Reviewed
+  - review: No issues found.
+- [RFC PATCH v4 09/10] selftests/damon/sysfs.py: check pause on assert_ctx_committed()
+  - status: Reviewed
+  - review: No issues found.
+- [RFC PATCH v4 10/10] selftets/damon/sysfs.py: pause DAMON before dumping status
+  - status: Reviewed
+  - review: ISSUES MAY FOUND
 
-inline review:
-commit 4b36180a519af35831edc0f0d2c23cbb69fd0eab
+# hkml [1] generated a draft of this mail.  It can be regenerated
+# using below command:
+#
+#     hkml patch sashiko_dev --thread_status --for_forwarding \
+#             20260322155728.81434-1-sj@kernel.org
+#
+# [1] https://github.com/sjp38/hackermail
+```
+
+### Reading sashiko.dev Inline Review Comments
+
+`hkml patch sashiko_dev` receives a message id of a patch mail, and outputs the
+inline review comments from sashiko.dev for the given patch, if
+`--thread_status` option is not passed.
+
+This can also be done on the `hkml list` [interactive
+mode](#interactive-viewer) for the mail that currently focused on, via menu
+(press `m` key) -> `handle as patches` -> `show sashiko.dev review` menu.
+
+For example:
+
+```
+$ hkml patch sashiko_dev 20260322155728.81434-2-sj@kernel.org
+# patch subject: [RFC PATCH v4 01/10] mm/damon/core: introduce damon_ctx->paused
+# patch msgid: 20260322155728.81434-2-sj@kernel.org
+# review status: Reviewed
+# reivew result: Review completed successfully.
+# inline review:
+commit 2a3be2c8b6c327ef72163cd54e6121ef72b9c932
 Author: SeongJae Park <sj@kernel.org>
 
-mm/damon/stat: monitor all System RAM resources
+mm/damon/core: introduce damon_ctx->paused
 
-This commit updates damon_stat to monitor all System RAM instead of just the
-biggest contiguous resource. This addresses an issue on NUMA systems where
-only a small fraction of physical memory was being monitored.
+DAMON supports only start and stop of the execution. When it is
+stopped, its internal data that it self-trained goes away. It will be
+useful if the execution can be paused and resumed with the previous
+self-trained data.
 
-> diff --git a/mm/damon/stat.c b/mm/damon/stat.c
-> index f9a2028483b0..3ed71db33e89 100644
-> --- a/mm/damon/stat.c
-> +++ b/mm/damon/stat.c
-> @@ -145,12 +145,57 @@ static int damon_stat_damon_call_fn(void *data)
+> diff --git a/mm/damon/core.c b/mm/damon/core.c
+> index db6c67e52d2b..0ab2cfa848e6 100644
+> --- a/mm/damon/core.c
+> +++ b/mm/damon/core.c
+
 [ ... ]
-> +struct damon_stat_system_ram_range_walk_arg {
-> +     bool walked;
-> +     struct resource res;
-> +};
-> +
-> +static int damon_stat_system_ram_walk_fn(struct resource *res, void *arg)
-> +{
-> +     struct damon_stat_system_ram_range_walk_arg *a = arg;
-> +
-> +     if (!a->walked) {
-> +             a->walked = true;
-> +             a->res.start = res->start;
-> +     }
-> +     a->res.end = res->end;
+> +                     kdamond_usleep(ctx->attrs.sample_interval);
 
-Will this create a single bounding box that includes non-RAM holes?
+Could this result in a busy loop if sample_interval is 0?
 
-By recording the start of the first System RAM resource and the end of the
-last, this unified region encompasses all non-RAM physical address holes
-(like PCI MMIO) residing between valid RAM nodes. When DAMON dynamically
-monitors this region, a sub-region may overlap both a valid RAM segment
-and a physical hole.
+The DAMON API allows attrs.sample_interval to be 0 (for example, when
+tuning is disabled via goal.aggrs == 0).
+
+If sample_interval is 0, this invokes usleep_range_idle(0, 1), which
+sleeps for at most 1 microsecond using an hrtimer.
+
+Since the normally expensive monitoring operations are bypassed while
+paused, would this cause the thread to loop almost instantly and create
+an interrupt storm?
+
+> +                     /* allow caller unset pause via damon_call() */
+> +                     kdamond_call(ctx, false);
+> +                     if (kdamond_need_stop(ctx) || ctx->maybe_corrupted)
+> +                             goto done;
+> +             }
+>               if (!list_empty(&ctx->schemes))
+>                       kdamond_apply_schemes(ctx);
+>               else
+
+
+# end of sashiko.dev inline review
+# review url: https://sashiko.dev/#/patchset/20260322155728.81434-2-sj@kernel.org
 ```
+
+### Forwarding sashiko.dev status/comments to Mailing List
+
+It is easy to work with sashiko reviews on mailing list, like normal code
+review.  For that, forwarding the sashiko.dev review status and comments to the
+mailing list can be useful.
+
+`hkml patch sashiko_dev` helps such forwarding operations when `--forward`
+option is passed.  In the case, `hkml patch sashiko_dev` generates a draft of
+the forwarding mail and opens a text editor with the draft so that the user can
+modify the draft if they want.  After the user save and exit the text editor,
+`hkml` will further send the mail, like usual `hkml` mail writing features.
+
+When `--forward` option is passed to `hkml patch sashiko_dev` command, it opens
+a text editor with appripriate sashiko.dev review status or comments forwarding
+message.
+
+This can also be done on the `hkml list` [interactive
+mode](#interactive-viewer) for the mail that currently focused on, via menu
+(press `m` key) -> `handle as patches` -> `forward sashiko.dev review [status]`
+menu.
+
+For example, below mails are sent using the features from the `hkml list`
+interactive mode.
+
+- [Review status forwarding mail](https://lore.kernel.org/20260322171114.83314-1-sj@kernel.org)
+- [Review comments forwarding mail](https://lore.kernel.org/20260322170700.83123-1-sj@kernel.org)
 
 Cover Letter Purpose Bogus Commit
 ---------------------------------
@@ -1158,155 +1251,3 @@ For example, below commit log history can be imagined.
 
 `apply`, `format`, and `commit_cv` sub-commands of `hkml patch` support this
 worklfow.
-
-sashiko.dev
------------
-
-[sashiko.dev](https://sashiko.dev) provides Linux kernel patch AI reviews.
-`hkml patch sashiko_dev` command reads the review status and comments, or
-forward those as mails.
-
-### Reading sashiko.dev Review Status
-
-`hkml patch sashiko_dev` receives a message id of a patch mail, and outputs the
-review status of the entire patch series of the given message id, when
-`--thread_status` option is also passed.
-
-This can also be done on the `hkml list` [interactive
-mode](#interactive-viewer) for the mail that currently focused on, via menu
-(press `m` key) -> `handle as patches` -> `show sashiko.dev review status`
-menu.
-
-For example:
-
-```
-$ hkml patch sashiko_dev --thread_status 20260322155728.81434-1-sj@kernel.org
-- [RFC PATCH v4 01/10] mm/damon/core: introduce damon_ctx->paused
-  - status: Reviewed
-  - review: ISSUES MAY FOUND
-- [RFC PATCH v4 02/10] mm/damon/sysfs: add pause file under context dir
-  - status: Reviewed
-  - review: No issues found.
-- [RFC PATCH v4 03/10] Docs/mm/damon/design: update for context pause/resume feature
-  - status: Reviewed
-  - review: No issues found.
-- [RFC PATCH v4 04/10] Docs/admin-guide/mm/damon/usage: update for pause file
-  - status: Reviewed
-  - review: No issues found.
-- [RFC PATCH v4 05/10] Docs/ABI/damon: update for pause sysfs file
-  - status: Reviewed
-  - review: No issues found.
-- [RFC PATCH v4 06/10] mm/damon/tests/core-kunit: test pause commitment
-  - status: Reviewed
-  - review: No issues found.
-- [RFC PATCH v4 07/10] selftests/damon/_damon_sysfs: support pause file staging
-  - status: Pending
-- [RFC PATCH v4 08/10] selftests/damon/drgn_dump_damon_status: dump pause
-  - status: Reviewed
-  - review: No issues found.
-- [RFC PATCH v4 09/10] selftests/damon/sysfs.py: check pause on assert_ctx_committed()
-  - status: Reviewed
-  - review: No issues found.
-- [RFC PATCH v4 10/10] selftets/damon/sysfs.py: pause DAMON before dumping status
-  - status: Reviewed
-  - review: ISSUES MAY FOUND
-
-# hkml [1] generated a draft of this mail.  It can be regenerated
-# using below command:
-#
-#     hkml patch sashiko_dev --thread_status --for_forwarding \
-#             20260322155728.81434-1-sj@kernel.org
-#
-# [1] https://github.com/sjp38/hackermail
-```
-
-### Reading sashiko.dev Inline Review Comments
-
-`hkml patch sashiko_dev` receives a message id of a patch mail, and outputs the
-inline review comments from sashiko.dev for the given patch, if
-`--thread_status` option is not passed.
-
-This can also be done on the `hkml list` [interactive
-mode](#interactive-viewer) for the mail that currently focused on, via menu
-(press `m` key) -> `handle as patches` -> `show sashiko.dev review` menu.
-
-For example:
-
-```
-$ hkml patch sashiko_dev 20260322155728.81434-2-sj@kernel.org
-# patch subject: [RFC PATCH v4 01/10] mm/damon/core: introduce damon_ctx->paused
-# patch msgid: 20260322155728.81434-2-sj@kernel.org
-# review status: Reviewed
-# reivew result: Review completed successfully.
-# inline review:
-commit 2a3be2c8b6c327ef72163cd54e6121ef72b9c932
-Author: SeongJae Park <sj@kernel.org>
-
-mm/damon/core: introduce damon_ctx->paused
-
-DAMON supports only start and stop of the execution. When it is
-stopped, its internal data that it self-trained goes away. It will be
-useful if the execution can be paused and resumed with the previous
-self-trained data.
-
-> diff --git a/mm/damon/core.c b/mm/damon/core.c
-> index db6c67e52d2b..0ab2cfa848e6 100644
-> --- a/mm/damon/core.c
-> +++ b/mm/damon/core.c
-
-[ ... ]
-> +                     kdamond_usleep(ctx->attrs.sample_interval);
-
-Could this result in a busy loop if sample_interval is 0?
-
-The DAMON API allows attrs.sample_interval to be 0 (for example, when
-tuning is disabled via goal.aggrs == 0).
-
-If sample_interval is 0, this invokes usleep_range_idle(0, 1), which
-sleeps for at most 1 microsecond using an hrtimer.
-
-Since the normally expensive monitoring operations are bypassed while
-paused, would this cause the thread to loop almost instantly and create
-an interrupt storm?
-
-> +                     /* allow caller unset pause via damon_call() */
-> +                     kdamond_call(ctx, false);
-> +                     if (kdamond_need_stop(ctx) || ctx->maybe_corrupted)
-> +                             goto done;
-> +             }
->               if (!list_empty(&ctx->schemes))
->                       kdamond_apply_schemes(ctx);
->               else
-
-
-# end of sashiko.dev inline review
-# review url: https://sashiko.dev/#/patchset/20260322155728.81434-2-sj@kernel.org
-```
-
-
-### Forwarding sashiko.dev status/comments to Mailing List
-
-It is easy to work with sashiko reviews on mailing list, like normal code
-review.  For that, forwarding the sashiko.dev review status and comments to the
-mailing list can be useful.
-
-`hkml patch sashiko_dev` helps such forwarding operations when `--forward`
-option is passed.  In the case, `hkml patch sashiko_dev` generates a draft of
-the forwarding mail and opens a text editor with the draft so that the user can
-modify the draft if they want.  After the user save and exit the text editor,
-`hkml` will further send the mail, like usual `hkml` mail writing features.
-
-When `--forward` option is passed to `hkml patch sashiko_dev` command, it opens
-a text editor with appripriate sashiko.dev review status or comments forwarding
-message.
-
-This can also be done on the `hkml list` [interactive
-mode](#interactive-viewer) for the mail that currently focused on, via menu
-(press `m` key) -> `handle as patches` -> `forward sashiko.dev review [status]`
-menu.
-
-For example, below mails are sent using the features from the `hkml list`
-interactive mode.
-
-- [Review status forwarding mail](https://lore.kernel.org/20260322171114.83314-1-sj@kernel.org)
-- [Review comments forwarding mail](https://lore.kernel.org/20260322170700.83123-1-sj@kernel.org)
