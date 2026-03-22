@@ -123,6 +123,8 @@ def suggest_continuing_draft(drafts):
             pass
     return None
 
+global_replies = {}
+
 def reply_mail(slist, mail, cursor_row=0):
     hkml_view.shell_mode_start(slist)
     reply_subject = hkml_reply.format_reply_subject(mail)
@@ -140,14 +142,10 @@ def reply_mail(slist, mail, cursor_row=0):
                 cursor_row=cursor_row)
     hkml_view.shell_mode_end(slist)
     if reply_mail is not None:
-        mails_view_data = get_mails_view_data(slist)
-        # this can be called from hkml_view_text, with TextViewData.
-        if type(mails_view_data) is not MailsViewData:
-            return
         msgid = mail.get_field('message-id')
-        if not msgid in mails_view_data.replies:
-            mails_view_data.replies[msgid] = []
-        mails_view_data.replies[msgid].append(reply_mail)
+        if not msgid in global_replies:
+            global_replies[msgid] = []
+        global_replies[msgid].append(reply_mail)
         refresh_list(slist)
 
 def reply_focused_mail(c, slist):
@@ -415,7 +413,7 @@ def get_mails(slist):
         mail.pridx = int(mail_idx)
         mail.filtered_out = False
         mails.append(mail)
-        add_replies(mails, mail, mails_view_data.replies)
+        add_replies(mails, mail, global_replies)
     set_prdepth(mails)
     return mails
 
