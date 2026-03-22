@@ -1004,7 +1004,7 @@ menu.
 For example, below mails are sent using the features from the `hkml list`
 interactive mode.
 
-- [Review status forwarding mail](https://lore.kernel.org/20260322171114.83314-1-sj@kernel.org)
+- [Review status forwarding mail](https://lore.kernel.org/20260322170506.82977-1-sj@kernel.org)
 - [Review comments forwarding mail](https://lore.kernel.org/20260322170700.83123-1-sj@kernel.org)
 
 Cover Letter Purpose Bogus Commit
