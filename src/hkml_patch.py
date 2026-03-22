@@ -543,20 +543,25 @@ def forward_sashiko(msgid, thread_status, mail=None):
             print('cannot find mail from web-retrieved mails')
             return -1
 
+    orig_subject = mail.get_field('subject')
+
     if thread_status is True:
         text, err = fmt_sashiko_reviews_summary(msgid, for_forwarding=True)
         if err is not None:
             print(err)
             return -1
+        reply_subject = 'Re: (sashiko status) %s' % orig_subject
     else:
         review, err = _hkml_sashiko_dev.get_review(msgid)
         if err is not None:
             print('fetching review fail (%s)' % err)
             return -1
         text = fmt_sashiko_forward_msg(review)
+        reply_subject = 'Re: (sashiko review) %s' % orig_subject
 
     mbox_str = hkml_reply.format_reply(
-            mail=mail, attach_file=None, body_lines=[text])
+            mail=mail, attach_file=None, body_lines=[text],
+            subject=reply_subject)
     fd, forward_tmp_path = tempfile.mkstemp(prefix='hkml_sashiko_forward_')
     with open(forward_tmp_path, 'w') as f:
         f.write(mbox_str)
