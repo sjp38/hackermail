@@ -56,3 +56,4 @@
 - Support sashiko thread navigation
 - Support series having no cover letter
 - sashiko thread status forwarding: sort patches by title
+- Filter mails that completely answered by someone
