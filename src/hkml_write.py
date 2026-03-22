@@ -216,7 +216,7 @@ def write_send_mail(draft_mail, subject, in_reply_to, to, cc, body, attach,
 
     if format_only:
         print(mbox)
-        return Nonee
+        return None
 
     fd, tmp_path = tempfile.mkstemp(prefix='hkml_mail_')
     with open(tmp_path, 'w') as f:
