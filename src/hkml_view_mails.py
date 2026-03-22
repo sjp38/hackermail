@@ -132,7 +132,7 @@ def reply_mail(slist, mail, cursor_row=0):
     draft = suggest_continuing_draft(drafts)
     reply_mail = None
     if draft is not None:
-        hkml_write.write_send_mail(
+        reply_mail = hkml_write.write_send_mail(
                 draft_mail=draft, subject=None, in_reply_to=None, to=None,
                 cc=None, body=None, attach=None, format_only=None)
     else:
