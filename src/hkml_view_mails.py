@@ -142,6 +142,7 @@ def reply_mail(slist, mail, cursor_row=0):
     if reply_mail is not None:
         mails_view_data = get_mails_view_data(slist)
         mails_view_data.replies[mail.get_field('message-id')] = reply_mail
+        refresh_list(slist)
 
 def reply_focused_mail(c, slist):
     mail = get_focused_mail(slist)
