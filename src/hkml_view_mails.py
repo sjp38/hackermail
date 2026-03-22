@@ -128,15 +128,20 @@ def reply_mail(slist, mail, cursor_row=0):
     reply_subject = hkml_reply.format_reply_subject(mail)
     drafts = hkml_tag.get_mails_of_subject_tag(reply_subject, 'drafts')
     draft = suggest_continuing_draft(drafts)
+    reply_mail = None
     if draft is not None:
         hkml_write.write_send_mail(
                 draft_mail=draft, subject=None, in_reply_to=None, to=None,
                 cc=None, body=None, attach=None, format_only=None)
     else:
         files = get_attach_files()
-        hkml_reply.reply(mail, attach_files=files, format_only=None,
-                         cursor_row=cursor_row)
+        reply_mail = hkml_reply.reply(
+                mail, attach_files=files, format_only=None,
+                cursor_row=cursor_row)
     hkml_view.shell_mode_end(slist)
+    if reply_mail is not None:
+        mails_view_data = get_mails_view_data(slist)
+        mails_view_data.replies[mail.get_field('message-id')] = reply_mail
 
 def reply_focused_mail(c, slist):
     mail = get_focused_mail(slist)
