@@ -1170,7 +1170,14 @@ forward those as mails.
 
 `hkml patch sashiko_dev` receives a message id of a patch mail, and outputs the
 review status of the entire patch series of the given message id, when
-`--thread_status` option is also passed.  For example:
+`--thread_status` option is also passed.
+
+This can also be done on the `hkml list` [interactive
+mode](#interactive-viewer) for the mail that currently focused on, via menu
+(press `m` key) -> `handle as patches` -> `show sashiko.dev review status`
+menu.
+
+For example:
 
 ```
 $ hkml patch sashiko_dev --thread_status 20260322155728.81434-1-sj@kernel.org
@@ -1213,15 +1220,17 @@ $ hkml patch sashiko_dev --thread_status 20260322155728.81434-1-sj@kernel.org
 # [1] https://github.com/sjp38/hackermail
 ```
 
-This can also be done on the `hkml list` interactive mode for the mail that
-currently focused on, via menu (press `m` key) -> `handle as patches` -> `show
-sashiko.dev review status` menu.
-
 ### Reading sashiko.dev Inline Review Comments
 
 `hkml patch sashiko_dev` receives a message id of a patch mail, and outputs the
 inline review comments from sashiko.dev for the given patch, if
-`--thread_status` option is not passed.  For example:
+`--thread_status` option is not passed.
+
+This can also be done on the `hkml list` [interactive
+mode](#interactive-viewer) for the mail that currently focused on, via menu
+(press `m` key) -> `handle as patches` -> `show sashiko.dev review` menu.
+
+For example:
 
 ```
 $ hkml patch sashiko_dev 20260322155728.81434-2-sj@kernel.org
@@ -1246,30 +1255,6 @@ self-trained data.
 > +++ b/mm/damon/core.c
 
 [ ... ]
-
-> @@ -3003,6 +3004,14 @@ static int kdamond_fn(void *data)
->               kdamond_call(ctx, false);
->               if (ctx->maybe_corrupted)
->                       break;
-> +             while (ctx->pause) {
-> +                     damos_walk_cancel(ctx);
-
-Is it safe to repeatedly call damos_walk_cancel() here?
-
-In damos_walk(), the walk_control_lock is dropped after setting
-ctx->walk_control to check damon_is_running(), which opens a race window.
-
-Concurrently, kdamond_fn() calls damos_walk_cancel(), which reads
-ctx->walk_control, drops the lock, and completes the old request.
-
-If a new caller invokes damos_walk() and successfully registers a new
-walk_control, could damos_walk_cancel() resume, reacquire the lock,
-and unconditionally set ctx->walk_control = NULL, dropping the new
-request?
-
-This might leave the new caller permanently deadlocked in
-wait_for_completion().
-
 > +                     kdamond_usleep(ctx->attrs.sample_interval);
 
 Could this result in a busy loop if sample_interval is 0?
@@ -1298,9 +1283,6 @@ an interrupt storm?
 # review url: https://sashiko.dev/#/patchset/20260322155728.81434-2-sj@kernel.org
 ```
 
-This can also be done on the `hkml list` interactive mode for the mail that
-currently focused on, via menu (press `m` key) -> `handle as patches` -> `show
-sashiko.dev review` menu.
 
 ### Forwarding sashiko.dev status/comments to Mailing List
 
@@ -1318,9 +1300,10 @@ When `--forward` option is passed to `hkml patch sashiko_dev` command, it opens
 a text editor with appripriate sashiko.dev review status or comments forwarding
 message.
 
-This can also be done on the `hkml list` interactive mode for the mail that
-currently focused on, via menu (press `m` key) -> `handle as patches` ->
-`forward sashiko.dev review [status]` menu.
+This can also be done on the `hkml list` [interactive
+mode](#interactive-viewer) for the mail that currently focused on, via menu
+(press `m` key) -> `handle as patches` -> `forward sashiko.dev review [status]`
+menu.
 
 For example, below mails are sent using the features from the `hkml list`
 interactive mode.
