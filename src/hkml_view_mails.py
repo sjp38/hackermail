@@ -146,6 +146,14 @@ def reply_mail(slist, mail, cursor_row=0):
         if not msgid in global_replies:
             global_replies[msgid] = []
         global_replies[msgid].append(reply_mail)
+
+        tags_map = hkml_tag.read_tags_file()
+        reply_msgid = reply_mail.get_field('message-id')
+        if reply_msgid in tags_map:
+            tags = tags_map[reply_msgid]['tags']
+        else:
+            tags = []
+        reply_mail.is_draft = 'drafts' in tags
         refresh_list(slist)
 
 def reply_focused_mail(c, slist):
