@@ -154,7 +154,8 @@ def reply_mail(slist, mail, cursor_row=0):
         else:
             tags = []
         reply_mail.is_draft = 'drafts' in tags
-        refresh_list(slist)
+        if type(slist.data) is MailsViewData:
+            refresh_list(slist)
 
 def reply_focused_mail(c, slist):
     mail = get_focused_mail(slist)
