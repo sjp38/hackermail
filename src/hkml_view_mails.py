@@ -141,6 +141,9 @@ def reply_mail(slist, mail, cursor_row=0):
     hkml_view.shell_mode_end(slist)
     if reply_mail is not None:
         mails_view_data = get_mails_view_data(slist)
+        # this can be called from hkml_view_text, with TextViewData.
+        if type(mails_view_data) is not MailsViewData:
+            return
         mails_view_data.replies[mail.get_field('message-id')] = reply_mail
         refresh_list(slist)
 
