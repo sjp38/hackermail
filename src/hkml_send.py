@@ -91,6 +91,7 @@ def handle_user_edit_mistakes(tmp_path):
         f.write(written_mail)
 
 def send_mail(mboxfile, get_confirm, erase_mbox, orig_draft_subject=None):
+    '''Return the sent mail or None'''
     do_send = True
     handle_user_edit_mistakes(mboxfile)
     if get_confirm:
@@ -129,12 +130,15 @@ def send_mail(mboxfile, get_confirm, erase_mbox, orig_draft_subject=None):
             msgid = fields[1]
         if fields == ['Result:', '250'] or fields == ['Result:' , 'OK']:
             sent = True
+    sent_mail = None
     if no_tagging is False:
+        sent_mail = draft_or_sent_mail(mboxfile, msgid)
         hkml_tag.handle_may_sent_mail(
-                draft_or_sent_mail(mboxfile, msgid), sent, orig_draft_subject,
+                sent_mail, sent, orig_draft_subject,
                 do_confirm=confirm_tagging)
     if erase_mbox:
         os.remove(mboxfile)
+    return sent_mail
 
 def main(args):
     send_mail(args.mbox_file, get_confirm=False, erase_mbox=False)
