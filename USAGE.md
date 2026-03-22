@@ -917,6 +917,7 @@ $ hkml patch sashiko_dev --thread_status 20260322155728.81434-1-sj@kernel.org
 # [1] https://github.com/sjp38/hackermail
 ```
 
+### Reading Sashiko.dev AI Review
 ### Reading sashiko.dev Inline Review Comments
 
 `hkml patch sashiko_dev` receives a message id of a patch mail, and outputs the
