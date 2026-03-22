@@ -16,8 +16,9 @@ def format_reply_subject(mail):
         subject = 'Re: %s' % subject
     return subject
 
-def format_reply(mail, attach_file, body_lines=None):
-    subject = format_reply_subject(mail)
+def format_reply(mail, attach_file, body_lines=None, subject=None):
+    if subject is None:
+        subject = format_reply_subject(mail)
     in_reply_to = mail.get_field('message-id')
     cc = [x for x in [mail.get_field('to'), mail.get_field('cc')] if x]
     to = [mail.get_field('from')]
