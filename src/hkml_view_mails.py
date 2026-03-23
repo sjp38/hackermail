@@ -141,6 +141,8 @@ def reply_mail(slist, mail, cursor_row=0):
                 mail, attach_files=files, format_only=None,
                 cursor_row=cursor_row)
     hkml_view.shell_mode_end(slist)
+    # disable below feature for now, as it is quite unstabilized...
+    reply_mail = None
     if reply_mail is not None:
         msgid = mail.get_field('message-id')
         if not msgid in global_replies:
