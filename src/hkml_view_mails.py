@@ -374,17 +374,16 @@ def handle_patches_of_mail(mail, list_mails=None):
                 _hkml_cli.Selection(
                     'export patch[es]', handle_fn=do_export_patch),
                 _hkml_cli.Selection(
-                    'show sashiko.dev review', handle_fn=do_sashiko_patch),
-                _hkml_cli.Selection(
                     'show sashiko.dev review status',
                     handle_fn=do_sashiko_patch_status),
                 _hkml_cli.Selection(
-                    'forward sashiko.dev review',
-                    handle_fn=do_sashiko_patch_forward),
+                    'show sashiko.dev review', handle_fn=do_sashiko_patch),
                 _hkml_cli.Selection(
                     'forward sashiko.dev review status',
                     handle_fn=do_sashiko_patch_status_forward),
-
+                _hkml_cli.Selection(
+                    'forward sashiko.dev review',
+                    handle_fn=do_sashiko_patch_forward),
                 ]
             )
 
