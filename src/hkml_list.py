@@ -350,7 +350,8 @@ class MailListFilter:
                         self.keywords_for)
 
     def should_filter_out_keywords_one(self, mail):
-        if keywords_in(self.not_from_keywords, mail.get_field('from')):
+        if self.not_from_keywords is not None and \
+                keywords_in(self.not_from_keywords, mail.get_field('from')):
             return True
         if not keywords_in(self.from_keywords, mail.get_field('from')):
             return True
