@@ -55,3 +55,7 @@
 - Local-cache sashiko queries
 - Support series having no cover letter
 - Filter mails that completely answered by someone
+- Make sashiko forwarding more guided
+  - Suggest adding tl;dr
+    - I will respin, or This is good to go
+  - Suggest reducing recipients
