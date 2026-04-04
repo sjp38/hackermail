@@ -32,7 +32,8 @@ def draft_or_sent_mail(draft_file, msgid):
 
     fake_header = ['From hkml_draft Thu Jan  1 00:00:00 1970']
     if has_date is False:
-        fake_header.append('Date: %s' % datetime.datetime.now().strftime(
+        date = datetime.datetime.now().astimezone()
+        fake_header.append('Date: %s' % date.strftime(
             '%a, %d %b %Y %H:%M:%S %z'))
     if has_msgid is False:
         if msgid is None:
