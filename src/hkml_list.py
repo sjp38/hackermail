@@ -198,6 +198,9 @@ def format_entry(mail, max_digits_for_idx, show_nr_replies, show_url, nr_cols):
         suffices.append(mail.url())
     suffix = ' (%s)' % ', '.join(suffices)
 
+    if hasattr(mail, 'added_by_tag'):
+        subject = '(%s) %s' % (getattr(mail, 'added_by_tag'), subject)
+
     lines = _hkml_fmtstr.wrap_line(prefix, subject + suffix, nr_cols)
     return lines
 
@@ -599,6 +602,7 @@ def add_tagged_mails(mails, tag):
             expanded_mails.append(tagged_mail)
             tagged_mail.parent_mail = mail
             tagged_mail.prdepth = mail.prdepth + 1
+            tagged_mail.added_by_tag =  tag
     for idx, mail in enumerate(expanded_mails):
         mail.pridx = idx
     mails[:] = expanded_mails
