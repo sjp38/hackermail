@@ -2,6 +2,7 @@ This file contains major changes in each version since v1.0.0
 
 v1.5.7
 - Support forwarding sashiko review in a reply format.
+- Show sent and draft mails on the list in realtime.
 
 v1.5.6
 - Support sashiko.dev review status/comments forwarding.
