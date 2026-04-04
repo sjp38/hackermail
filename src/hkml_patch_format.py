@@ -60,7 +60,7 @@ def find_linux_patch_recipients(patch_file):
         return [], err
     if is_kunit_patch(patch_file):
         recipients += ['Brendan Higgins <brendan.higgins@linux.dev>',
-               'David Gow <davidgow@google.com>',
+               'David Gow <davidgow@davidgow.net>',
                'kunit-dev@googlegroups.com',
                'linux-kselftest@vger.kernel.org']
     return recipients, None
