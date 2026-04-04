@@ -592,10 +592,14 @@ def sort_filter_mails(mails_to_show, do_find_ancestors_from_cache,
 def add_tagged_mails(mails, tag):
     tagged_mails = hkml_tag.mails_of_tag(tag)
     expanded_mails = []
+    existing_msgids = {mail.get_field('message-id') for mail in mails}
     for mail in mails:
         expanded_mails.append(mail)
         msgid = mail.get_field('message-id')
         for tagged_mail in tagged_mails:
+            tagged_msgid = tagged_mail.get_field('message-id')
+            if tagged_msgid in existing_msgids:
+                continue
             in_reply_to = tagged_mail.get_field('in-reply-to-msgid')
             if msgid != in_reply_to:
                 continue
