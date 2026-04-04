@@ -586,6 +586,23 @@ def sort_filter_mails(mails_to_show, do_find_ancestors_from_cache,
         runtime_profiles.end('filtering')
     return filtered_mails, mail_idx_key_map
 
+def add_tagged_mails(mails, tag):
+    tagged_mails = hkml_tag.mails_of_tag(tag)
+    expanded_mails = []
+    for mail in mails:
+        expanded_mails.append(mail)
+        msgid = mail.get_field('message-id')
+        for tagged_mail in tagged_mails:
+            in_reply_to = tagged_mail.get_field('in-reply-to-msgid')
+            if msgid != in_reply_to:
+                continue
+            expanded_mails.append(tagged_mail)
+            tagged_mail.parent_mail = mail
+            tagged_mail.prdepth = mail.prdepth + 1
+    for idx, mail in enumerate(expanded_mails):
+        mail.pridx = idx
+    mails[:] = expanded_mails
+
 def child_of_collapsed(mail, mails_to_collapse):
     if mail.parent_mail is None:
         return False
@@ -715,6 +732,9 @@ def mails_to_list_data(
     timestamp = time.time()
     if runtime_profiles is not None:
         runtime_profiles.start('etc')
+
+    add_tagged_mails(filtered_mails, 'sent')
+    add_tagged_mails(filtered_mails, 'drafts')
 
     lines, line_nr_to_mail_map = fmt_mails_text(
             filtered_mails, list_decorator, mails_to_collapse={})
