@@ -589,7 +589,7 @@ def sort_filter_mails(mails_to_show, do_find_ancestors_from_cache,
         runtime_profiles.end('filtering')
     return filtered_mails, mail_idx_key_map
 
-def add_tagged_mails(mails, tag):
+def add_tagged_replies(mails, tag):
     tagged_mails = hkml_tag.mails_of_tag(tag)
     expanded_mails = []
     existing_msgids = {mail.get_field('message-id') for mail in mails}
@@ -741,8 +741,8 @@ def mails_to_list_data(
     if runtime_profiles is not None:
         runtime_profiles.start('etc')
 
-    add_tagged_mails(filtered_mails, 'sent')
-    add_tagged_mails(filtered_mails, 'drafts')
+    add_tagged_replies(filtered_mails, 'sent')
+    add_tagged_replies(filtered_mails, 'drafts')
 
     lines, line_nr_to_mail_map = fmt_mails_text(
             filtered_mails, list_decorator, mails_to_collapse={})

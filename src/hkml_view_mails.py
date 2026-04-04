@@ -139,7 +139,7 @@ def reply_mail(slist, mail, cursor_row=0):
     hkml_view.shell_mode_end(slist)
     # this function might be called from text view, with TextView data
     if type(slist.data) is MailsViewData:
-        refresh_list(slist, do_add_tagged_mails=True)
+        refresh_list(slist, show_tagged_replies=True)
 
 def reply_focused_mail(c, slist):
     mail = get_focused_mail(slist)
@@ -184,7 +184,7 @@ def list_thread_of_focused_mail(c, slist):
     args = hkml_list_args_for_msgid(msgid, slist.data.list_args)
     gen_show_mails_list(slist.screen, args)
 
-def refresh_list(slist, do_add_tagged_mails=False):
+def refresh_list(slist, show_tagged_replies=False):
     comment_lines = []
     for line in slist.lines:
         if line.startswith('#'):
@@ -194,7 +194,7 @@ def refresh_list(slist, do_add_tagged_mails=False):
     collapsed_mails = slist.data.collapsed_mails
 
     mails = get_mails(slist)
-    if do_add_tagged_mails:
+    if show_tagged_replies:
         hkml_list.add_tagged_replies(mails, 'drafts')
         hkml_list.add_tagged_replies(mails, 'sent')
     decorator = hkml_list.MailListDecorator(slist.data.list_args)
