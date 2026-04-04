@@ -123,41 +123,20 @@ def suggest_continuing_draft(drafts):
             pass
     return None
 
-global_replies = {}
-
 def reply_mail(slist, mail, cursor_row=0):
     hkml_view.shell_mode_start(slist)
     reply_subject = hkml_reply.format_reply_subject(mail)
     drafts = hkml_tag.get_mails_of_subject_tag(reply_subject, 'drafts')
     draft = suggest_continuing_draft(drafts)
-    reply_mail = None
     if draft is not None:
-        reply_mail = hkml_write.write_send_mail(
+        hkml_write.write_send_mail(
                 draft_mail=draft, subject=None, in_reply_to=None, to=None,
                 cc=None, body=None, attach=None, format_only=None)
     else:
         files = get_attach_files()
-        reply_mail = hkml_reply.reply(
-                mail, attach_files=files, format_only=None,
-                cursor_row=cursor_row)
+        hkml_reply.reply(mail, attach_files=files, format_only=None,
+                         cursor_row=cursor_row)
     hkml_view.shell_mode_end(slist)
-    # disable below feature for now, as it is quite unstabilized...
-    reply_mail = None
-    if reply_mail is not None:
-        msgid = mail.get_field('message-id')
-        if not msgid in global_replies:
-            global_replies[msgid] = []
-        global_replies[msgid].append(reply_mail)
-
-        tags_map = hkml_tag.read_tags_file()
-        reply_msgid = reply_mail.get_field('message-id')
-        if reply_msgid in tags_map:
-            tags = tags_map[reply_msgid]['tags']
-        else:
-            tags = []
-        reply_mail.is_draft = 'drafts' in tags
-        if type(slist.data) is MailsViewData:
-            refresh_list(slist)
 
 def reply_focused_mail(c, slist):
     mail = get_focused_mail(slist)
@@ -387,15 +366,6 @@ def handle_patches_of_mail(mail, list_mails=None):
                 ]
             )
 
-def add_replies(mails, mail, replies):
-    msgid = mail.get_field('message-id')
-    replies_list = replies.get(msgid, [])
-    for reply in replies_list:
-        reply.pridx = mail.pridx
-        reply.filtered_out = False
-        mails.append(reply)
-        add_replies(mails, reply, replies)
-
 def __set_prdepth(mail, depth):
     mail.prdepth = depth
     for reply in mail.replies:
@@ -408,7 +378,6 @@ def set_prdepth(mails):
 
 def get_mails(slist):
     mails = []
-    mails_view_data = get_mails_view_data(slist)
     mail_idx_key_map = slist.data.list_data.mail_idx_key_map
     for mail_idx in mail_idx_key_map:
         mail_key = mail_idx_key_map[mail_idx]
@@ -424,7 +393,6 @@ def get_mails(slist):
         mail.pridx = int(mail_idx)
         mail.filtered_out = False
         mails.append(mail)
-        add_replies(mails, mail, global_replies)
     set_prdepth(mails)
     return mails
 
@@ -749,9 +717,6 @@ class MailsViewData:
     display_rule = None
     collapsed_mails = None
     last_cursor_position = None
-    # replies that sent after opening this view.
-    # key: msgid of original mail, value: the sent (or drafted) mail.
-    replies = None
 
     # cache for per-line display effect decisions that made by display_rule.
     display_effects = None
@@ -763,7 +728,6 @@ class MailsViewData:
         self.collapsed_mails = {}
         self.last_cursor_position = {}
         self.display_effects = {}
-        self.replies = {}
 
     def update_display_rule(self, rule):
         self.display_rule = rule

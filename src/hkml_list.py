@@ -179,9 +179,6 @@ def format_entry(mail, max_digits_for_idx, show_nr_replies, show_url, nr_cols):
     prefix = '[%s]%s' % (index, ' ' * 2 * mail.prdepth)
 
     subject = '%s' % mail.get_field('subject')
-    # hkml_view_mails adds is_draft attr for live-replies
-    if hasattr(mail, 'is_draft') and mail.is_draft is True:
-        subject += ' (draft)'
     if mail.prdepth and subject.lower().startswith('re: '):
         subject = subject[4:]
         if orig_subject_formatted(mail):
