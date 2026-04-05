@@ -513,15 +513,15 @@ def fmt_sashiko_forward_msg(review):
                 '# 2. Add short summary of your opinion at the beginning.',
                 '#    For example:',
                 '#',
-                '#      sashiko found an issue.  I will respin this patch.',
-                '#      sashiko found no issue.',
+                '#      TL;DR: sashiko found an issue.  I will respin.',
+                '#      TL;DR: sashiko found no issue on this patch.',
                 '#',
-                '# Please don\'t forget removing this comment block before',
+                '# Please DON\'T FORGET removing this comment block before',
                 '# sending this!',
                 '',
-                'Forwarding sashiko review in a reply format with my inline',
-                'comments below, for details of my view and doing discussions',
-                'via mails if needed.',
+                'Forwarding full sashiko review in a reply format with my ',
+                'inline comments below, for sharing details of my view and',
+                'doing followup discussions via mails if needed.',
                 ]
     else:
         lines.append(
