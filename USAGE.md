@@ -1087,6 +1087,59 @@ manually user-added cc recipients and let the user picks one of them to be set
 as 'To:' recipient (maybe the maintainer of the tree that the patch aim to
 landed on) for all patches.
 
+### Changelog handling
+
+The cv commit is useful at managing patch series changelog.  It cannot be used
+for non-series patches, though.  If there is a paragraph starting with `TODO:
+move to commentary` line in the commit message, `hkml patch format` will ask
+users if they want to move the paragraph to the [commentary
+area](https://docs.kernel.org/process/submitting-patches.html#commentary).
+Unless the user says "no", `hkml patch format` will do so, after excluding the
+`TODO: move to commentary` line.  For example,
+
+```
+$ git show HEAD
+the subject of the patch
+
+long description of the patch.
+long description of the patch line 2.
+
+TODO: mvoe to commentary
+Change from v1:
+- v1: https://lore.kernel.org/foo
+- fix a bug.
+
+Signed-off-by: John Doe <john@doe>
+---
+[...]
+$ hkml patch format HEAD^..HEAD
+[...]
+Found below TODO
+
+TODO: move to commentary
+Changes from v1
+- v1: https://lore.kernel.org/20260411183029.81030-1-sj@kernel.org
+- replace typo-ed word: s/a non-mandastory/an optional/.
+- wordsmith recipients reduction rule of thumbs.
+
+Do that? [Y/n] y
+[...]
+$ cat ./0001-the-subject-of-the-patch.patch
+the subject of the patch
+
+long description of the patch.
+long description of the patch line 2.
+
+Signed-off-by: John Doe <john@doe>
+---
+Change from v1:
+- v1: https://lore.kernel.org/foo
+- fix a bug.
+
+[...]
+
+```
+
 ### Checker Run
 
 In the linux tree use case, it also runs `checkpatch.pl` to resulting patch
