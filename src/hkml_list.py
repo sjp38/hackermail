@@ -607,6 +607,7 @@ def add_tagged_replies(mails, tag):
             tagged_mail.parent_mail = mail
             tagged_mail.prdepth = mail.prdepth + 1
             tagged_mail.added_by_tag =  tag
+            tagged_mail.filtered_out = False
     for idx, mail in enumerate(expanded_mails):
         mail.pridx = idx
     mails[:] = expanded_mails
