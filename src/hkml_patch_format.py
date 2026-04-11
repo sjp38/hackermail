@@ -17,6 +17,42 @@ def add_patch_recipients(patch_file, to, cc):
     with open(patch_file, 'w') as f:
         f.write(to_write)
 
+def do_todo(patch_file):
+    with open(patch_file) as f:
+        content = f.read()
+    three_dash_slices = content.split('\n---\n')
+    if len(three_dash_slices) < 2:
+        return
+    pars = three_dash_slices[0].split('\n\n')
+    par_idxs_for_commentary = []
+    pars_for_commentary = []
+    for idx, par in enumerate(pars):
+        if par.startswith('TODO: move to commentary\n'):
+            print()
+            print('Found below TODO')
+            print()
+            print(par)
+            print()
+            answer = input('Do that? [Y/n] ')
+            if answer.lower() == 'n':
+                print('Ok, I will not do that')
+                continue
+            par_idxs_for_commentary.append(idx)
+            pars_for_commentary.append('\n'.join(par.split('\n')[1:]))
+    if len(par_idxs_for_commentary) == 0:
+        return
+    commentary = '---\n%s' % '\n\n'.join(pars_for_commentary)
+    new_pars = []
+    for idx, par in enumerate(pars):
+        if idx in par_idxs_for_commentary:
+            continue
+        new_pars.append(par)
+    content = '%s\n%s\n\n%s' % (
+            '\n\n'.join(new_pars), commentary,
+            '\n---\n'.join(three_dash_slices[1:]))
+    with open(patch_file, 'w') as f:
+        f.write(content)
+
 def is_linux_tree(dir):
     try:
         # 1da177e4c3f41524e886b7f1b8a0c1fc7321cac2 is the initial commit of
@@ -140,6 +176,7 @@ def add_patches_recipients(patch_files, to, cc, first_patch_is_cv,
             if t in patch_cc:
                 patch_cc.remove(t)
         add_patch_recipients(patch_file, to, patch_cc)
+        do_todo(patch_file)
 
 def fillup_cv(patch_file, subject, content):
     print('I will do below to the coverletter (%s)' % patch_file)
