@@ -185,7 +185,7 @@ def open_editor(file_path, target_desc='mail', cursor_row=0, is_reply=False):
             '''highlight orig ctermfg=darkgreen guifg=darkgreen''',
             '''2match orig /^> \\([^>].*\\|\\)$/''',
             ]
-    if is_reply and editor in ['vim', 'nvim']:
+    if target_desc == 'mail' and editor in ['vim', 'nvim']:
         answer, selection, err = _hkml_cli.ask_selection(
                 desc=''.join([
                     'On %s, I can show lines from past mails ' % editor,
