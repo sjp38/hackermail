@@ -138,7 +138,10 @@ def reply_mail(slist, mail, cursor_row=0):
                          cursor_row=cursor_row)
     hkml_view.shell_mode_end(slist)
     # this function might be called from text view, with TextView data
-    if type(slist.data) is MailsViewData:
+    if type(slist.data) is hkml_view_text.TextViewData:
+        if slist.data.mails_slist is not None:
+            refresh_list(slist.data.mails_slist, show_tagged_replies=True)
+    elif type(slist.data) is MailsViewData:
         refresh_list(slist, show_tagged_replies=True)
 
 def reply_focused_mail(c, slist):
