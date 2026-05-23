@@ -1,5 +1,8 @@
 This file contains major changes in each version since v1.0.0
 
+v1.5.9
+- hkml list: always do live update for replies
+
 v1.5.8
 - hkmk patch format: Support moving changelog in commit message to commentary
   area.
