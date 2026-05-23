@@ -19,9 +19,26 @@ $ hkml shortcut add mail_view t open_thread_on_line
 $ hkml shortcut remove list f
 '''
 
+import argparse
+
 def main(args):
     print('not yet implemented')
     return
 
 def set_argparser(parser):
-    return
+    parser.description = 'handle shortcut on interactive interfaces'
+
+    subparsers = parser.add_subparsers(
+            title='action', dest='action', metavar='<action>')
+
+    parser_list = subparsers.add_parser('list', help='list shortcuts')
+
+    parser_add = subparsers.add_parser('add', help='add a shortcut')
+    parser_add.add_argument(
+            'parameter', nargs='+',
+            metavar='<categorty> <key input> <action> [argument]...',
+            help='add a shortcut')
+
+    parser_remove = subparsers.add_parser('remove', help='remove a shortcut')
+    parser_remove.add_argument('category', help='shortcut category')
+    parser_remove.add_argument('key_input', help='key input of the shortcut')
