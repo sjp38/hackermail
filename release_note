@@ -1,7 +1,9 @@
 This file contains major changes in each version since v1.0.0
 
 v1.5.8
-- hkmkl patch format: Support single patch revision history management.
+- hkmk patch format: Support moving changelog in commit message to commentary
+  area.
+- hkml list: fixup display rule problem on tagged mails live update.
 
 v1.5.7
 - Support forwarding sashiko review in a reply format.
