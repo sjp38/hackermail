@@ -20,11 +20,13 @@ import hkml_write
 class TextViewData:
     mail = None
     mails_list = None
+    mails_slist = None  # ScrollableList of parent mails list
     unfolded_lines = None
 
-    def __init__(self, mail, mails_list):
+    def __init__(self, mail, mails_list, mails_slist=None):
         self.mail = mail
         self.mails_list = mails_list
+        self.mails_slist = mails_slist
 
 def menu_exec_git(slist, answer, selection):
     hkml_view.shell_mode_end(slist)
