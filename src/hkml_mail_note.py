@@ -75,8 +75,12 @@ def main(args):
             mail_notes = full_mail_notes
         else:
             mail_notes = [n for n in full_mail_notes if n.msgid in args.msgid]
-        for note in mail_notes:
-            print('%s' % note.to_kvpairs())
+        for mail_note in mail_notes:
+            idx = 0
+            for line_note in mail_note.notes:
+                print('%d: %s %s %s' % (
+                    idx, mail_note.msgid, line_note.line_nr, line_note.note))
+                idx += 1
     elif args.action == 'add':
         mail_note = None
         for mnote in full_mail_notes:
