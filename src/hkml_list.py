@@ -737,7 +737,8 @@ class MailsListData:
 def mails_to_list_data(
         mails_to_show, do_find_ancestors_from_cache, mails_filter,
         list_decorator, show_thread_of, runtime_profile, stat_only,
-        stat_authors, print_progress=False, runtime_profiles=None):
+        stat_authors, print_progress=False, runtime_profiles=None,
+        show_pinned_mails=True):
     '''Return MailsListData and an error'''
     if len(mails_to_show) == 0:
         return None, 'no mail to list'
@@ -750,7 +751,8 @@ def mails_to_list_data(
     if runtime_profiles is not None:
         runtime_profiles.start('etc')
 
-    filtered_mails = add_tagged_mails_to_head(filtered_mails, 'pinned')
+    if show_pinned_mails:
+        filtered_mails = add_tagged_mails_to_head(filtered_mails, 'pinned')
     add_tagged_replies(filtered_mails, 'sent')
     add_tagged_replies(filtered_mails, 'drafts')
 
