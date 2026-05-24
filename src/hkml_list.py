@@ -1242,7 +1242,10 @@ def args_to_mails_list_data(args, suggest_manifest_update):
     runtime_profile = [['get_mails', time.time() - timestamp]]
     runtime_profiles.end('get_mails')
 
-    show_pinned_mails = args.source_type == ['mailing_list']
+    show_pinned_mails = True
+    for source_type in args.source_type:
+        if source_type != 'mailing_list':
+            show_pinned_mails = False
     list_data, err = mails_to_list_data(
             mails_to_show, args.do_find_ancestors_from_cache,
             MailListFilter(args), MailListDecorator(args), None,
