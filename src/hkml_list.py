@@ -738,7 +738,7 @@ def mails_to_list_data(
         mails_to_show, do_find_ancestors_from_cache, mails_filter,
         list_decorator, show_thread_of, runtime_profile, stat_only,
         stat_authors, print_progress=False, runtime_profiles=None,
-        show_pinned_mails=True):
+        show_pinned_mails=False):
     '''Return MailsListData and an error'''
     if len(mails_to_show) == 0:
         return None, 'no mail to list'
@@ -1242,11 +1242,13 @@ def args_to_mails_list_data(args, suggest_manifest_update):
     runtime_profile = [['get_mails', time.time() - timestamp]]
     runtime_profiles.end('get_mails')
 
+    show_pinned_mails = args.source_type == ['mailing_list']
     list_data, err = mails_to_list_data(
             mails_to_show, args.do_find_ancestors_from_cache,
             MailListFilter(args), MailListDecorator(args), None,
             runtime_profile, args.stat_only, args.stat_authors,
-            using_hkml_view(args), runtime_profiles)
+            using_hkml_view(args), runtime_profiles,
+            show_pinned_mails=show_pinned_mails)
     if err is not None:
         return None, err
     if args.source_type == ['msgid']:
