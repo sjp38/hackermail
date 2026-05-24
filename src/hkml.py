@@ -12,6 +12,7 @@ import hkml_interactive
 import hkml_fetch
 import hkml_history
 import hkml_list
+import hkml_mail_note
 import hkml_thread
 import hkml_open
 import hkml_reply
@@ -112,6 +113,9 @@ hkml_history.set_argparser(parser_history)
 
 parser_shortcut = subparsers.add_parser('shortcut', help = 'manage shortcut')
 hkml_shortcut.set_argparser(parser_shortcut)
+
+parser_mail_note = subparsers.add_parser('mail_note', help='manage mail notes')
+hkml_mail_note.set_argparser(parser_mail_note)
 
 args = parser.parse_args()
 

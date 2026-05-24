@@ -67,3 +67,33 @@ def get_mail_notes():
     if global_mail_notes is None:
         global_mail_notes = read_mail_notes_file()
     return global_mail_notes
+
+def main(args):
+    print('under construction')
+    exit(1)
+
+def set_argparser(parser):
+    parser.description = 'manage notes on mail'
+
+    subparsers = parser.add_subparsers(
+            title='action', dest='action', metavar='<action>')
+
+    parser_list = subparsers.add_parser('list', help='list notest')
+    parser_list.add_argument('--msgid', metavar='<message id>', nargs='+',
+                             help='message id of mails to show notes for')
+
+    parser_add = subparsers.add_parser('add', help='add a note')
+    parser_add.add_argument('msgid', metavar='<message id>',
+                            help='message id of mail to add notes for')
+    parser_add.add_argument('line_nr', metavar='<line number>',
+                            help='line number of the mail to add note for')
+    parser_add.add_argument('note', metavar='<text>',
+                            help='the note to add')
+
+    parser_remove = subparsers.add_parser('remove', help='remove a note')
+    parser_remove.add_argument('msgid', metavar='<message id>',
+                               help='message id of mail to add notes for')
+    parser_remove.add_argument('line_nr', metavar='<line number>',
+                               help='line number of the mail to add note for')
+    parser_remove.add_argument('note_idx', metavar='<note idx>', nargs='+',
+                               help='indices of notes to remove')
