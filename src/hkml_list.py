@@ -589,6 +589,14 @@ def sort_filter_mails(mails_to_show, do_find_ancestors_from_cache,
         runtime_profiles.end('filtering')
     return filtered_mails, mail_idx_key_map
 
+def add_tagged_mails_to_head(mails, tag):
+    tagged_mails = hkml_tag.mails_of_tag(tag)
+    for tagged_mail in tagged_mails:
+        tagged_mail.prdepth = 0
+        tagged_mail.added_by_tag =  tag
+        tagged_mail.filtered_out = False
+    return tagged_mails + mails
+
 def add_tagged_replies(mails, tag):
     tagged_mails = hkml_tag.mails_of_tag(tag)
     expanded_mails = []
@@ -742,6 +750,7 @@ def mails_to_list_data(
     if runtime_profiles is not None:
         runtime_profiles.start('etc')
 
+    filtered_mails = add_tagged_mails_to_head(filtered_mails, 'pinned')
     add_tagged_replies(filtered_mails, 'sent')
     add_tagged_replies(filtered_mails, 'drafts')
 
