@@ -1,5 +1,10 @@
 # SPDX-License-Identifier: GPL-2.0
 
+import json
+import os
+
+import _hkml
+
 class Note:
     line_nr = None
     note = None
@@ -36,3 +41,21 @@ class MailNotes:
     def from_kvpairs(cls, kvpairs):
         return cls(msgid=kvpairs['msgid'],
                    notes=[Note.from_kvpairs(kvp) for kvp in kvpairs['notes']])
+
+def mail_notes_file_path():
+    return os.path.join(_hkml.get_hkml_dir(), 'mail_notes')
+
+def write_mail_notes_file(notes):
+    kvpairs = {
+            'mail_notes': [n.to_kvpairs() for n in notes],
+            }
+    with open(mail_notes_file_path(), 'w') as f:
+        json.dump(kvpairs, f, indent=4, sort_keys=True)
+
+def read_mail_notes_file():
+    file_path = mail_notes_file_path()
+    if not os.path.isfile(file_path):
+        return []
+    with open(file_path, 'r') as f:
+        kvpairs = json.load(f)
+    return [MailNotes.from_kvpairs(kvp) for kvp in kvpairs['mail_notes']]
