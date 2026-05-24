@@ -69,8 +69,27 @@ def read_user_configs_file():
         kvpairs = json.load(f)
     return [UserConfig.from_kvpairs(kvp) for kvp in kvpairs['configs']]
 
+global_user_configs = None
+
+def get_user_configs():
+    global global_user_configs
+    if global_user_configs is None:
+        global_user_configs = read_user_configs_file()
+    return global_user_configs
+
 def main(args):
-    print('not yet implemented')
+    if args.action == 'list':
+        user_configs = get_user_configs()
+        if len(user_configs) == 0:
+            print('no shortcut')
+            exit(0)
+        print('# <category> <key input> <action> <arguments>')
+        for user_config in user_configs:
+            print('%s %s %s %s' % (
+                user_config.category, user_config.key_input,
+                user_config.action, user_config.arguments))
+    else:
+        print('not yet implemented')
     return
 
 def set_argparser(parser):
