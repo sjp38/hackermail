@@ -69,8 +69,17 @@ def get_mail_notes():
     return global_mail_notes
 
 def main(args):
-    print('under construction')
-    exit(1)
+    if args.action == 'list':
+        full_mail_notes = get_mail_notes()
+        if args.msgid is None:
+            mail_notes = full_mail_notes
+        else:
+            mail_notes = [n for n in full_mail_notes if n.msgid in args.msgid]
+        for note in mail_notes:
+            print('%s' % note.to_kvpairs())
+    else:
+        print('under construction')
+        exit(1)
 
 def set_argparser(parser):
     parser.description = 'manage notes on mail'
