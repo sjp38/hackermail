@@ -78,8 +78,8 @@ def get_user_configs():
     return global_user_configs
 
 def main(args):
+    user_configs = get_user_configs()
     if args.action == 'list':
-        user_configs = get_user_configs()
         if len(user_configs) == 0:
             print('no shortcut')
             exit(0)
@@ -88,6 +88,17 @@ def main(args):
             print('%s %s %s %s' % (
                 user_config.category, user_config.key_input,
                 user_config.action, user_config.arguments))
+    elif args.action == 'add':
+        if len(args.parameter) < 3:
+            print('parameter should be three or more')
+            exit(1)
+        category, key_input, action = args.parameter[:3]
+        shortcut_args = args.parameter[3:]
+        # todo: validate inputs, avoid duplicated key_input
+        user_config = UserConfig(category=category, key_input=key_input,
+                                 action=action, arguments=shortcut_args)
+        user_configs.append(user_config)
+        write_user_configs_file(user_configs)
     else:
         print('not yet implemented')
     return
