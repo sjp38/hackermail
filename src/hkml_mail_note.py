@@ -101,9 +101,33 @@ def main(args):
             mail_note.line_notes.append(line_notes)
         line_notes.notes.append(args.note)
         write_mail_notes_file(full_mail_notes)
-    else:
-        print('under construction')
-        exit(1)
+    elif args.action == 'remove':
+        mail_note = None
+        for mnote in full_mail_notes:
+            if mnote.msgid == args.msgid:
+                mail_note = mnote
+                break
+        if mail_note is None:
+            print('no note of the msgid')
+            exit(1)
+        line_notes = None
+        for lnote in mail_note.line_notes:
+            if lnote.line_nr == args.line_nr:
+                line_notes = lnote
+                break
+        if line_notes is None:
+            print('no note of the line_nr')
+            exit(1)
+        if args.note_idx >= len(line_notes.notes):
+            print('note_idx error')
+            exit(1)
+        del line_notes.notes[args.note_idx]
+        if len(line_notes.notes) == 0:
+            mail_note.line_notes.remove(line_notes)
+        if len(mail_note.line_notes) == 0:
+            full_mail_notes.remove(mail_note)
+
+        write_mail_notes_file(full_mail_notes)
 
 def set_argparser(parser):
     parser.description = 'manage notes on mail'
