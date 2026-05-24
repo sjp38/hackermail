@@ -5,42 +5,43 @@ import os
 
 import _hkml
 
-class Note:
+class LineNotes:
     line_nr = None
-    note = None
+    notes = None    # list of texts
 
-    def __init__(self, line_nr, note):
+    def __init__(self, line_nr, notes):
         self.line_nr = line_nr
-        self.note = note
-
-    def to_kvpairs(self):
-        return {
-                'line_nr': self.line_nr,
-                'note': self.note,
-                }
-
-    @classmethod
-    def from_kvpairs(cls, kvpairs):
-        return cls(line_nr=kvpairs['line_nr'], note=kvpairs['note'])
-
-class MailNotes:
-    msgid = None
-    notes = None
-
-    def __init__(self, msgid, notes):
-        self.msgid = msgid
         self.notes = notes
 
     def to_kvpairs(self):
         return {
+                'line_nr': self.line_nr,
+                'notes': self.notes,
+                }
+
+    @classmethod
+    def from_kvpairs(cls, kvpairs):
+        return cls(line_nr=kvpairs['line_nr'], notes=kvpairs['notes'])
+
+class MailNotes:
+    msgid = None
+    line_notes = None   # list of LineNotes objects
+
+    def __init__(self, msgid, line_notes):
+        self.msgid = msgid
+        self.line_notes = line_notes
+
+    def to_kvpairs(self):
+        return {
                 'msgid': self.msgid,
-                'notes': [n.to_kvpairs() for n in self.notes],
+                'line_notes': [n.to_kvpairs() for n in self.line_notes],
                 }
 
     @classmethod
     def from_kvpairs(cls, kvpairs):
         return cls(msgid=kvpairs['msgid'],
-                   notes=[Note.from_kvpairs(kvp) for kvp in kvpairs['notes']])
+                   line_notes=[LineNotes.from_kvpairs(kvp)
+                               for kvp in kvpairs['line_notes']])
 
 def mail_notes_file_path():
     return os.path.join(_hkml.get_hkml_dir(), 'mail_notes')
@@ -76,11 +77,11 @@ def main(args):
         else:
             mail_notes = [n for n in full_mail_notes if n.msgid in args.msgid]
         for mail_note in mail_notes:
-            idx = 0
-            for line_note in mail_note.notes:
-                print('%d: %s %s %s' % (
-                    idx, mail_note.msgid, line_note.line_nr, line_note.note))
-                idx += 1
+            for line_note in mail_note.line_notes:
+                print('%s:%s' % (
+                    mail_note.msgid, line_note.line_nr))
+                for idx, note in enumerate(line_note.notes):
+                    print('- %d: %s' % (idx, note))
     elif args.action == 'add':
         mail_note = None
         for mnote in full_mail_notes:
@@ -90,7 +91,15 @@ def main(args):
         if mail_note is None:
             mail_note = MailNotes(args.msgid, [])
             full_mail_notes.append(mail_note)
-        mail_note.notes.append(Note(args.line_nr, args.note))
+        line_notes = None
+        for lnote in mail_note.line_notes:
+            if lnote.line_nr == args.line_nr:
+                line_notes = lnote
+                break
+        if line_notes is None:
+            line_notes = LineNotes(args.line_nr, [])
+            mail_note.line_notes.append(line_notes)
+        line_notes.notes.append(args.note)
         write_mail_notes_file(full_mail_notes)
     else:
         print('under construction')
