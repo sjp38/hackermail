@@ -128,6 +128,5 @@ def set_argparser(parser):
                                help='message id of mail to add notes for')
     parser_remove.add_argument('line_nr', metavar='<line number>', type=int,
                                help='line number of the mail to add note for')
-    parser_remove.add_argument(
-        'note_idx', metavar='<note idx>', nargs='+', type=int,
-        help='indices of notes to remove')
+    parser_remove.add_argument('note_idx', metavar='<note idx>', type=int,
+                               help='indices of notes to remove')
