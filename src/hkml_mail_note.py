@@ -69,14 +69,25 @@ def get_mail_notes():
     return global_mail_notes
 
 def main(args):
+    full_mail_notes = get_mail_notes()
     if args.action == 'list':
-        full_mail_notes = get_mail_notes()
         if args.msgid is None:
             mail_notes = full_mail_notes
         else:
             mail_notes = [n for n in full_mail_notes if n.msgid in args.msgid]
         for note in mail_notes:
             print('%s' % note.to_kvpairs())
+    elif args.action == 'add':
+        mail_note = None
+        for mnote in full_mail_notes:
+            if mnote.msgid == args.msgid:
+                mail_note = mnote
+                break
+        if mail_note is None:
+            mail_note = MailNotes(args.msgid, [])
+            full_mail_notes.append(mail_note)
+        mail_note.notes.append(Note(args.line_nr, args.note))
+        write_mail_notes_file(full_mail_notes)
     else:
         print('under construction')
         exit(1)
