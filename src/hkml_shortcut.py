@@ -99,9 +99,17 @@ def main(args):
                                  action=action, arguments=shortcut_args)
         user_configs.append(user_config)
         write_user_configs_file(user_configs)
-    else:
-        print('not yet implemented')
-    return
+    elif args.action == 'remove':
+        for idx, user_config in enumerate(user_configs):
+            if args.category != user_config.category:
+                continue
+            if args.key_input != user_config.key_input:
+                continue
+            print('remove the shortcut for %s %s' % (
+                user_config.action, user_config.arguments))
+            del user_configs[idx]
+            write_user_configs_file(user_configs)
+            break
 
 def set_argparser(parser):
     parser.description = 'handle shortcut on interactive interfaces'
