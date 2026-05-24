@@ -59,3 +59,11 @@ def read_mail_notes_file():
     with open(file_path, 'r') as f:
         kvpairs = json.load(f)
     return [MailNotes.from_kvpairs(kvp) for kvp in kvpairs['mail_notes']]
+
+global_mail_notes = None
+
+def get_mail_notes():
+    global global_mail_notes
+    if global_mail_notes is None:
+        global_mail_notes = read_mail_notes_file()
+    return global_mail_notes
