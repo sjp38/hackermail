@@ -94,7 +94,7 @@ def set_argparser(parser):
     parser_add = subparsers.add_parser('add', help='add a note')
     parser_add.add_argument('msgid', metavar='<message id>',
                             help='message id of mail to add notes for')
-    parser_add.add_argument('line_nr', metavar='<line number>',
+    parser_add.add_argument('line_nr', metavar='<line number>', type=int,
                             help='line number of the mail to add note for')
     parser_add.add_argument('note', metavar='<text>',
                             help='the note to add')
@@ -102,7 +102,8 @@ def set_argparser(parser):
     parser_remove = subparsers.add_parser('remove', help='remove a note')
     parser_remove.add_argument('msgid', metavar='<message id>',
                                help='message id of mail to add notes for')
-    parser_remove.add_argument('line_nr', metavar='<line number>',
+    parser_remove.add_argument('line_nr', metavar='<line number>', type=int,
                                help='line number of the mail to add note for')
-    parser_remove.add_argument('note_idx', metavar='<note idx>', nargs='+',
-                               help='indices of notes to remove')
+    parser_remove.add_argument(
+        'note_idx', metavar='<note idx>', nargs='+', type=int,
+        help='indices of notes to remove')
