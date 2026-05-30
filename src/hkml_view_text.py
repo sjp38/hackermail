@@ -311,6 +311,47 @@ def menu_add_note(slist, answer, selection):
     note_line_nr = slist.focus_row - nr_lines_before_body
     hkml_mail_note.add_note(mail.get_field('message-id'), note_line_nr, note)
 
+def menu_remove_notes(slist, answer, selection):
+    mail, err = get_showing_mail(slist)
+    if err is not None:
+        print(err)
+        return
+    msgid = mail.get_field('message-id')
+    notes = hkml_mail_note.get_notes_for(msgid)
+    if notes is None:
+        print('No note for the mail')
+        return
+    nr_lines_before_body = slist.lines.index('') + 1
+    note_line_nr = slist.focus_row - nr_lines_before_body
+    if not note_line_nr in notes.line_notes:
+        print('No note on the line')
+        return
+
+    desc_lines = ['Remove notes for', '']
+    if slist.focus_row > 5:
+        desc_lines.append('[...]')
+    desc_lines += slist.lines[slist.focus_row - 5:slist.focus_row + 1]
+    desc_lines.append('')
+    desc_lines.append('Notes for the line:')
+    for idx, note in enumerate(notes.line_notes[note_line_nr]):
+        desc_lines.append('%d: %s' % (idx, note.text))
+    desc_lines.append('')
+    desc = '\n'.join(desc_lines)
+    prompt='Enter indices of the notes separated by comma, or "all" for all'
+    answer, err = _hkml_cli.ask_input(desc=desc, prompt=prompt)
+    if err is not None:
+        print(err)
+        return
+    if answer == 'all':
+        indices = [i for i in range(len(notes.line_notes[note_line_nr]))]
+    else:
+        try:
+            indices = [int(x) for x in answer.split(',')]
+        except:
+            print('wrong input')
+            return
+    hkml_mail_note.remove_notes(msgid, note_line_nr, indices)
+
 def menu_selections_for_mail():
     return [
             _hkml_cli.Selection('reply', handle_fn=menu_reply_mail),
@@ -325,6 +366,8 @@ def menu_selections_for_mail():
                 'jump cursor to ...', handle_fn=menu_jump),
             _hkml_cli.Selection(
                 'add a note', handle_fn=menu_add_note),
+            _hkml_cli.Selection(
+                'remove notes of the line', handle_fn=menu_remove_notes),
             ]
 
 def menu_wrap_text(slist, answer, selection):
