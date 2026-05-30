@@ -667,8 +667,8 @@ not_yet_merged: 1 mails
 Special Tags
 ------------
 
-Users can use any name for their tags.  Some names including `sent`, `drafts`
-and `pinned` are special, though.
+Users can use any name for their tags.  Some names including `sent` and
+`drafts` are special, though.
 
 When a user write and send a mail via `hkml`, `hkml` suggests tagging the mail
 as `sent`.  When a user wrote a mail via `hkml` but decided not to send it,
@@ -693,9 +693,6 @@ If the list is in the [interactive](#interactive-viewer) mode, whenever
 `drafts` and `sent` mails are generated as replies to a mail of the list in the
 interactive ways, the list is automatically updated to show the draft and sent
 mails with the `(drafts)` and `(sent)` prefixes.
-
-If the list is for [mailing lists](#supporting-mail-source-types), all `pinned`
-mails are shown at the top of the list, with `(pinned)` prefix.
 
 Replying
 ========
