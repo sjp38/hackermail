@@ -12,6 +12,7 @@ import _hkml_list_cache
 import _hkml_subproc
 import hkml_cache
 import hkml_list
+import hkml_mail_note
 import hkml_open
 import hkml_view
 import hkml_view_mails
@@ -291,6 +292,24 @@ def menu_jump(slist, answer, selection):
                 return
         return
 
+def menu_add_note(slist, answer, selection):
+    mail, err = get_showing_mail(slist)
+    if err is not None:
+        print(err)
+        return
+
+    desc_lines = ['Add note for', '']
+    if slist.focus_row > 5:
+        desc_lines.append('[...]')
+    desc_lines += slist.lines[slist.focus_row - 5:slist.focus_row + 1]
+    desc_lines.append('')
+    note, err = _hkml_cli.ask_input(desc='\n'.join(desc_lines), prompt='Enter')
+    if err is not None:
+        print(err)
+        return
+    hkml_mail_note.add_note(
+            mail.get_field('message-id'), slist.focus_row, note)
+
 def menu_selections_for_mail():
     return [
             _hkml_cli.Selection('reply', handle_fn=menu_reply_mail),
@@ -303,6 +322,8 @@ def menu_selections_for_mail():
                 'handle as patches', handle_fn=menu_handle_patches),
             _hkml_cli.Selection(
                 'jump cursor to ...', handle_fn=menu_jump),
+            _hkml_cli.Selection(
+                'add a note', handle_fn=menu_add_note),
             ]
 
 def menu_wrap_text(slist, answer, selection):
