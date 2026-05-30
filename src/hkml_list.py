@@ -589,14 +589,6 @@ def sort_filter_mails(mails_to_show, do_find_ancestors_from_cache,
         runtime_profiles.end('filtering')
     return filtered_mails, mail_idx_key_map
 
-def add_tagged_mails_to_head(mails, tag):
-    tagged_mails = hkml_tag.mails_of_tag(tag)
-    for tagged_mail in tagged_mails:
-        tagged_mail.prdepth = 0
-        tagged_mail.added_by_tag =  tag
-        tagged_mail.filtered_out = False
-    return tagged_mails + mails
-
 def add_tagged_replies(mails, tag):
     tagged_mails = hkml_tag.mails_of_tag(tag)
     expanded_mails = []
@@ -737,8 +729,7 @@ class MailsListData:
 def mails_to_list_data(
         mails_to_show, do_find_ancestors_from_cache, mails_filter,
         list_decorator, show_thread_of, runtime_profile, stat_only,
-        stat_authors, print_progress=False, runtime_profiles=None,
-        show_pinned_mails=False):
+        stat_authors, print_progress=False, runtime_profiles=None):
     '''Return MailsListData and an error'''
     if len(mails_to_show) == 0:
         return None, 'no mail to list'
@@ -751,10 +742,6 @@ def mails_to_list_data(
     if runtime_profiles is not None:
         runtime_profiles.start('etc')
 
-    # pinned mails feature is not yet stable.  Hide it for now.
-    show_pinned_mails = True
-    if show_pinned_mails:
-        filtered_mails = add_tagged_mails_to_head(filtered_mails, 'pinned')
     add_tagged_replies(filtered_mails, 'sent')
     add_tagged_replies(filtered_mails, 'drafts')
 
@@ -1244,16 +1231,11 @@ def args_to_mails_list_data(args, suggest_manifest_update):
     runtime_profile = [['get_mails', time.time() - timestamp]]
     runtime_profiles.end('get_mails')
 
-    show_pinned_mails = True
-    for source_type in args.source_type:
-        if source_type != 'mailing_list':
-            show_pinned_mails = False
     list_data, err = mails_to_list_data(
             mails_to_show, args.do_find_ancestors_from_cache,
             MailListFilter(args), MailListDecorator(args), None,
             runtime_profile, args.stat_only, args.stat_authors,
-            using_hkml_view(args), runtime_profiles,
-            show_pinned_mails=show_pinned_mails)
+            using_hkml_view(args), runtime_profiles)
     if err is not None:
         return None, err
     if args.source_type == ['msgid']:
