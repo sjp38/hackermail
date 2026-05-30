@@ -751,6 +751,8 @@ def mails_to_list_data(
     if runtime_profiles is not None:
         runtime_profiles.start('etc')
 
+    # pinned mails feature is not yet stable.  Hide it for now.
+    show_pinned_mails = True
     if show_pinned_mails:
         filtered_mails = add_tagged_mails_to_head(filtered_mails, 'pinned')
     add_tagged_replies(filtered_mails, 'sent')
