@@ -75,6 +75,20 @@ def get_mail_notes():
         global_mail_notes = read_mail_notes_file()
     return global_mail_notes
 
+def add_note(msgid, line_nr, text):
+    full_mail_notes = get_mail_notes()
+    notes_list = [n for n in full_mail_notes if n.msgid == msgid]
+    if len(notes_list) == 0:
+        notes = Notes(msgid, {})
+        full_mail_notes.append(notes)
+    else:
+        notes = notes_list[0]
+    if not line_nr in notes.line_notes:
+        notes.line_notes[line_nr] = []
+    note = Note(text=text)
+    notes.line_notes[line_nr].append(note)
+    write_mail_notes_file(full_mail_notes)
+
 def main(args):
     full_mail_notes = get_mail_notes()
     if args.action == 'list':
@@ -89,17 +103,7 @@ def main(args):
                 for idx, note in enumerate(notes):
                     print('- %d: %s' % (idx, note.text))
     elif args.action == 'add':
-        notes_list = [n for n in full_mail_notes if n.msgid == args.msgid]
-        if len(notes_list) == 0:
-            notes = Notes(args.msgid, {})
-            full_mail_notes.append(notes)
-        else:
-            notes = notes_list[0]
-        if not args.line_nr in notes.line_notes:
-            notes.line_notes[args.line_nr] = []
-        note = Note(text=args.text)
-        notes.line_notes[args.line_nr].append(note)
-        write_mail_notes_file(full_mail_notes)
+        add_note(args.msgid, args.line_nr, args.text)
     elif args.action == 'remove':
         deleted = False
         for notes_idx, notes in enumerate(full_mail_notes):
