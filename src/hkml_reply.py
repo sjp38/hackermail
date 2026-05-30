@@ -6,6 +6,7 @@ import tempfile
 import _hkml
 import _hkml_list_cache
 import hkml_list
+import hkml_mail_note
 import hkml_send
 import hkml_write
 import hkml_tag
@@ -15,6 +16,23 @@ def format_reply_subject(mail):
     if subject and subject.split()[0].lower() != 're:':
         subject = 'Re: %s' % subject
     return subject
+
+def notes_added(draft_body_lines, mail):
+    notes = hkml_mail_note.get_notes_for(mail.get_field('message-id'))
+    if notes is None:
+        return draft_body_lines
+    line_notes = notes.line_notes
+    notes_added_lines = []
+    for line_nr, line in enumerate(draft_body_lines):
+        notes_added_lines.append(line)
+        # we added two new lines at the beginning of the body.
+        orig_line_nr = line_nr - 2
+        if line_nr in line_notes:
+            notes_added_lines.append('')
+            for note in line_notes[line_nr]:
+                notes_added_lines.append('HKML NOTE: %s' % note.text)
+            notes_added_lines.append('')
+    return notes_added_lines
 
 def format_reply(mail, attach_file, body_lines=None, subject=None):
     if subject is None:
@@ -32,6 +50,7 @@ def format_reply(mail, attach_file, body_lines=None, subject=None):
         body = mail.get_field('body')
         for line in body.split('\n'):
             body_lines.append('> %s' % line)
+    body_lines = notes_added(body_lines, mail)
     body = '\n'.join(body_lines)
     return hkml_write.format_mbox(subject, in_reply_to, to, cc, body,
                                   from_=None, draft_mail=None,
