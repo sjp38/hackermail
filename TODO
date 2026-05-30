@@ -61,3 +61,5 @@
 - Investigate why special tag mails not shown on cached output.
 - Show pinned mails after list refreshed.
   - refresh_list() adds only sent and drafts tagged mails.
+- Document the special recipients handling of 'hkml patch format'.
+- Extend special recipients handling to general mail writing.
