@@ -96,6 +96,32 @@ def add_note(msgid, line_nr, text):
     notes.line_notes[line_nr].append(note)
     write_mail_notes_file(full_mail_notes)
 
+def remove_notes(msgid, line_nr, indices):
+    deleted = False
+    full_mail_notes = get_mail_notes()
+    for notes_idx, notes in enumerate(full_mail_notes):
+        if notes.msgid != msgid:
+            continue
+        if not line_nr in notes.line_notes:
+            return 'no note for the line number'
+        line_notes = notes.line_notes[line_nr]
+        indices.sort(reverse=True)
+        if len(line_notes) < indices[0] + 1:
+            return 'too high index'
+        for idx in indices:
+            del line_notes[idx]
+
+        if len(line_notes) == 0:
+            del notes.line_notes[line_nr]
+        if len(notes.line_notes) == 0:
+            del full_mail_notes[notes_idx]
+        deleted = True
+        break
+    if not deleted:
+        return 'No note for the msgid?'
+
+    write_mail_notes_file(full_mail_notes)
+
 def main(args):
     full_mail_notes = get_mail_notes()
     if args.action == 'list':
@@ -116,30 +142,7 @@ def main(args):
     elif args.action == 'add':
         add_note(args.msgid, args.line_nr, args.text)
     elif args.action == 'remove':
-        deleted = False
-        for notes_idx, notes in enumerate(full_mail_notes):
-            if notes.msgid != args.msgid:
-                continue
-            if not args.line_nr in notes.line_notes:
-                print('no note for the line number')
-                exit(1)
-            line_notes = notes.line_notes[args.line_nr]
-            if len(line_notes) < args.note_idx + 1:
-                print('no note of the index')
-                exit(1)
-            del line_notes[args.note_idx]
-
-            if len(line_notes) == 0:
-                del notes.line_notes[args.line_nr]
-            if len(notes.line_notes) == 0:
-                del full_mail_notes[notes_idx]
-            deleted = True
-            break
-        if not deleted:
-            print('No note for the msgid?')
-            exit(1)
-
-        write_mail_notes_file(full_mail_notes)
+        err = remove_notes(args.msgid, args.line_nr, [args.note_idx])
 
 def set_argparser(parser):
     parser.description = 'manage notes on mail'
