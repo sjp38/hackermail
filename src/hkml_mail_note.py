@@ -5,43 +5,49 @@ import os
 
 import _hkml
 
-class LineNotes:
-    line_nr = None
-    notes = None    # list of texts
+class Note:
+    text = None # string
 
-    def __init__(self, line_nr, notes):
-        self.line_nr = line_nr
-        self.notes = notes
+    def __init__(self, text):
+        self.text = text
 
     def to_kvpairs(self):
         return {
-                'line_nr': self.line_nr,
-                'notes': self.notes,
+                'text': self.text,
                 }
 
     @classmethod
     def from_kvpairs(cls, kvpairs):
-        return cls(line_nr=kvpairs['line_nr'], notes=kvpairs['notes'])
+        return cls(text=kvpairs['text'])
 
-class MailNotes:
+class Notes:
     msgid = None
-    line_notes = None   # list of LineNotes objects
+    line_notes = None   # line number: Note dict
 
     def __init__(self, msgid, line_notes):
         self.msgid = msgid
         self.line_notes = line_notes
 
     def to_kvpairs(self):
+        line_notes_kvpairs = {}
+        for line_nr, notes in self.line_notes.items():
+            notes = [note.to_kvpairs() for note in notes]
+            line_notes_kvpairs[line_nr] = notes
         return {
                 'msgid': self.msgid,
-                'line_notes': [n.to_kvpairs() for n in self.line_notes],
+                'line_notes': line_notes_kvpairs,
                 }
 
     @classmethod
     def from_kvpairs(cls, kvpairs):
-        return cls(msgid=kvpairs['msgid'],
-                   line_notes=[LineNotes.from_kvpairs(kvp)
-                               for kvp in kvpairs['line_notes']])
+        line_notes_kvpairs = kvpairs['line_notes']
+        line_notes = {}
+        for line_nr, notes_kvpairs in line_notes_kvpairs.items():
+            notes = [Note.from_kvpairs(kvp) for kvp in notes_kvpairs]
+            # json.dump() automatically convert key to string
+            line_nr = int(line_nr)
+            line_notes[line_nr] = notes
+        return cls(msgid=kvpairs['msgid'], line_notes=line_notes)
 
 def mail_notes_file_path():
     return os.path.join(_hkml.get_hkml_dir(), 'mail_notes')
@@ -59,7 +65,7 @@ def read_mail_notes_file():
         return []
     with open(file_path, 'r') as f:
         kvpairs = json.load(f)
-    return [MailNotes.from_kvpairs(kvp) for kvp in kvpairs['mail_notes']]
+    return [Notes.from_kvpairs(kvp) for kvp in kvpairs['mail_notes']]
 
 global_mail_notes = None
 
@@ -77,55 +83,46 @@ def main(args):
         else:
             mail_notes = [n for n in full_mail_notes if n.msgid in args.msgid]
         for mail_note in mail_notes:
-            for line_note in mail_note.line_notes:
-                print('%s:%s' % (
-                    mail_note.msgid, line_note.line_nr))
-                for idx, note in enumerate(line_note.notes):
-                    print('- %d: %s' % (idx, note))
+            for line_nr in sorted(mail_note.line_notes.keys()):
+                print('%s:%s' % (mail_note.msgid, line_nr))
+                notes = mail_note.line_notes[line_nr]
+                for idx, note in enumerate(notes):
+                    print('- %d: %s' % (idx, note.text))
     elif args.action == 'add':
-        mail_note = None
-        for mnote in full_mail_notes:
-            if mnote.msgid == args.msgid:
-                mail_note = mnote
-                break
-        if mail_note is None:
-            mail_note = MailNotes(args.msgid, [])
-            full_mail_notes.append(mail_note)
-        line_notes = None
-        for lnote in mail_note.line_notes:
-            if lnote.line_nr == args.line_nr:
-                line_notes = lnote
-                break
-        if line_notes is None:
-            line_notes = LineNotes(args.line_nr, [])
-            mail_note.line_notes.append(line_notes)
-        line_notes.notes.append(args.note)
+        notes_list = [n for n in full_mail_notes if n.msgid == args.msgid]
+        if len(notes_list) == 0:
+            notes = Notes(args.msgid, {})
+            full_mail_notes.append(notes)
+        else:
+            notes = notes_list[0]
+        if not args.line_nr in notes.line_notes:
+            notes.line_notes[args.line_nr] = []
+        note = Note(text=args.text)
+        notes.line_notes[args.line_nr].append(note)
         write_mail_notes_file(full_mail_notes)
     elif args.action == 'remove':
-        mail_note = None
-        for mnote in full_mail_notes:
-            if mnote.msgid == args.msgid:
-                mail_note = mnote
-                break
-        if mail_note is None:
-            print('no note of the msgid')
+        deleted = False
+        for notes_idx, notes in enumerate(full_mail_notes):
+            if notes.msgid != args.msgid:
+                continue
+            if not args.line_nr in notes.line_notes:
+                print('no note for the line number')
+                exit(1)
+            line_notes = notes.line_notes[args.line_nr]
+            if len(line_notes) < args.note_idx + 1:
+                print('no note of the index')
+                exit(1)
+            del line_notes[args.note_idx]
+
+            if len(line_notes) == 0:
+                del notes.line_notes[args.line_nr]
+            if len(notes.line_notes) == 0:
+                del full_mail_notes[notes_idx]
+            deleted = True
+            break
+        if not deleted:
+            print('No note for the msgid?')
             exit(1)
-        line_notes = None
-        for lnote in mail_note.line_notes:
-            if lnote.line_nr == args.line_nr:
-                line_notes = lnote
-                break
-        if line_notes is None:
-            print('no note of the line_nr')
-            exit(1)
-        if args.note_idx >= len(line_notes.notes):
-            print('note_idx error')
-            exit(1)
-        del line_notes.notes[args.note_idx]
-        if len(line_notes.notes) == 0:
-            mail_note.line_notes.remove(line_notes)
-        if len(mail_note.line_notes) == 0:
-            full_mail_notes.remove(mail_note)
 
         write_mail_notes_file(full_mail_notes)
 
@@ -144,8 +141,8 @@ def set_argparser(parser):
                             help='message id of mail to add notes for')
     parser_add.add_argument('line_nr', metavar='<line number>', type=int,
                             help='line number of the mail to add note for')
-    parser_add.add_argument('note', metavar='<text>',
-                            help='the note to add')
+    parser_add.add_argument('text', metavar='<text>',
+                            help='the text note to add')
 
     parser_remove = subparsers.add_parser('remove', help='remove a note')
     parser_remove.add_argument('msgid', metavar='<message id>',
