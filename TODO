@@ -28,11 +28,8 @@
   - E.g., when cached list output is used and --dim_old is set, dim handler
     reads mail's sent date, and it makes delay if mail cache is big.  Same for
     first mail read.  This makes user experience bad.  Think about improvement.
-- Let adding quick note on viewer
-  - The notes should be automatically added on reply draft.
 - Clear screen completely when quit
   - If replying was used, the screen is not cleaned after quit.
-- hkml open: pass mail object to hkml_view
 - handle mail cache lookup failure in a more graceful way
   - Maybe this is not needed as long as we don't sync cached list outputs.
   - Suggest work arounds
@@ -43,23 +40,16 @@
     reload the list.
 - Encode origin of mail cache key on the key
   - e.g., adding 'g/' or 'm/' prefix for git-based or msgid-based keys.
-- implement 'hkml history'
-  - manage user usage history.
 - Check if a patch is Cc-ing all maintainers/reviewers
 - auto-completion.
 - Support users setting default answers for questions.
 - Support sending all draft replies of a given thread.
-- Show draft replies of a given thread in a way.
 - Aware of stable@ comments and skip the comments part.
 - Local-cache sashiko queries
 - Support series having no cover letter
 - Filter mails that completely answered by someone
 - Custom shortcut keys
-- quick note
 - reorganize tag data structure
   - have a file per tag
-- Investigate why special tag mails not shown on cached output.
-- Show pinned mails after list refreshed.
-  - refresh_list() adds only sent and drafts tagged mails.
 - Document the special recipients handling of 'hkml patch format'.
 - Extend special recipients handling to general mail writing.
