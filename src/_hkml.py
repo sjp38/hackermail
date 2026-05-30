@@ -69,8 +69,15 @@ class Mail:
     series = None
     __fields = None
     mbox = None
+
+    # for listing
     replies = None
     parent_mail = None
+    prdepth = None
+    added_by_tag = None
+    filtered_out = None
+
+    # for patch formatting
     collected_patch_tags = None # Reviewed-by: like tags
     cv_text = None  # integrated cover letter on first patch
     additional_to = None
