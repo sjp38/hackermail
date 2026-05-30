@@ -307,8 +307,9 @@ def menu_add_note(slist, answer, selection):
     if err is not None:
         print(err)
         return
-    hkml_mail_note.add_note(
-            mail.get_field('message-id'), slist.focus_row, note)
+    nr_lines_before_body = slist.lines.index('') + 1
+    note_line_nr = slist.focus_row - nr_lines_before_body
+    hkml_mail_note.add_note(mail.get_field('message-id'), note_line_nr, note)
 
 def menu_selections_for_mail():
     return [
