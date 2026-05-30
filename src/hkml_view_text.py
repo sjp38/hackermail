@@ -365,7 +365,7 @@ def menu_selections_for_mail():
             _hkml_cli.Selection(
                 'jump cursor to ...', handle_fn=menu_jump),
             _hkml_cli.Selection(
-                'add a note', handle_fn=menu_add_note),
+                'add a note to the line', handle_fn=menu_add_note),
             _hkml_cli.Selection(
                 'remove notes of the line', handle_fn=menu_remove_notes),
             ]
