@@ -1,5 +1,11 @@
 This file contains major changes in each version since v1.0.0
 
+v1.6.0
+- Support adding notes to mails.
+  - Support command line ('hkml mail_note') and interactive mode menu.
+  - Show added notes on interactive mail viewer.
+  - Add notes to reply drafts.
+
 v1.5.9
 - hkml list: always do live update for replies.
 - Document sent/drafts tag behaviors.
