@@ -564,6 +564,22 @@ def mail_draw_callback(slist):
         context = text_view_data.mail_contexts[depth]
     slist.bottom_lines = ['# context: %s' % context]
 
+def mail_line_callback(slist, line_idx):
+    line = slist.lines[line_idx]
+
+    msgid = slist.data.mail.get_field('message-id')
+    notes = hkml_mail_note.get_notes_for(msgid)
+    if notes is None:
+        return slist.lines[line_idx]
+
+    body_start_idx = slist.lines.index('') + 1
+    body_line_idx = line_idx - body_start_idx
+    if body_line_idx in notes.line_notes:
+        notes_text = ','.join(
+                [n.text for n in notes.line_notes[body_line_idx]])
+        return '%s    # hkml_note: %s' % (line, notes_text)
+    return line
+
 class ShowTextViewerArgs:
     text_lines = None
     text_view_data = None   # TextViewData object
@@ -613,6 +629,7 @@ def show_text_viewer(screen, args):
     if is_showing_mail(slist):
         set_mail_contexts(slist)
         slist.draw_callback = mail_draw_callback
+        slist.line_callback = mail_line_callback
 
     slist.draw()
     return slist
