@@ -608,19 +608,24 @@ def mail_draw_callback(slist):
     slist.bottom_lines = ['# context: %s' % context]
 
 def mail_line_callback(slist, line_idx):
+    '''
+    If the previous line has notes, add those at the beginning of the current
+    line.
+    '''
     line = slist.lines[line_idx]
 
     msgid = slist.data.mail.get_field('message-id')
     notes = hkml_mail_note.get_notes_for(msgid)
     if notes is None:
-        return slist.lines[line_idx]
+        return line
 
     body_start_idx = slist.lines.index('') + 1
-    body_line_idx = line_idx - body_start_idx
-    if body_line_idx in notes.line_notes:
+    prev_body_line_idx = line_idx - 1 - body_start_idx
+    if prev_body_line_idx in notes.line_notes:
         notes_text = ','.join(
-                [n.text for n in notes.line_notes[body_line_idx]])
-        return '%s    # hkml_note: %s' % (line, notes_text)
+                [n.text for n in notes.line_notes[prev_body_line_idx]])
+        return '/* hkml note: %s */ %s' % (notes_text, line)
+    # TODO: handle notes on the last line.
     return line
 
 class ShowTextViewerArgs:
