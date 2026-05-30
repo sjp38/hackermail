@@ -105,6 +105,7 @@ class ScrollableList:
     data = None
     parent_list = None
     display_effect_callback = None
+    line_callback = None
     color_callback = None
     draw_callback = None
     enable_highlight = None
@@ -205,6 +206,8 @@ class ScrollableList:
 
             line = self.lines[line_idx][
                     draw_start_col:draw_start_col + scr_cols]
+            if self.line_callback:
+                line = self.line_callback(self, line_idx)
 
             if self.color_callback:
                 color = self.color_callback(self, line_idx)
