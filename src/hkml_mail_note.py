@@ -75,6 +75,13 @@ def get_mail_notes():
         global_mail_notes = read_mail_notes_file()
     return global_mail_notes
 
+def get_notes_for(msgid):
+    full_mail_notes = get_mail_notes()
+    for mail_notes in full_mail_notes:
+        if mail_notes.msgid == msgid:
+            return mail_notes
+    return None
+
 def add_note(msgid, line_nr, text):
     full_mail_notes = get_mail_notes()
     notes_list = [n for n in full_mail_notes if n.msgid == msgid]
@@ -95,7 +102,11 @@ def main(args):
         if args.msgid is None:
             mail_notes = full_mail_notes
         else:
-            mail_notes = [n for n in full_mail_notes if n.msgid in args.msgid]
+            mail_notes = get_notes_for(args.msgid)
+            if mail_notes is None:
+                print('no note for the msgid')
+                exit(1)
+            mail_notes = [mail_notes]
         for mail_note in mail_notes:
             for line_nr in sorted(mail_note.line_notes.keys()):
                 print('%s:%s' % (mail_note.msgid, line_nr))
