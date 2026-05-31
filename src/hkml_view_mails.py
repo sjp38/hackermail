@@ -34,7 +34,7 @@ def mail_of_row(slist, row):
     line_nr_mail_map = slist.data.list_data.line_nr_mail_map
     # in case of cached output reuse, the map is None
     if line_nr_mail_map is None:
-        refresh_list(slist)
+        refresh_list(slist, show_tagged_replies=True)
         line_nr_mail_map = slist.data.list_data.line_nr_mail_map
     row -= slist.data.list_data.len_comments
     if not row in line_nr_mail_map:
@@ -187,7 +187,7 @@ def list_thread_of_focused_mail(c, slist):
     args = hkml_list_args_for_msgid(msgid, slist.data.list_args)
     gen_show_mails_list(slist.screen, args)
 
-def refresh_list(slist, show_tagged_replies=True):
+def refresh_list(slist, show_tagged_replies):
     comment_lines = []
     for line in slist.lines:
         if line.startswith('#'):
@@ -215,12 +215,12 @@ def collapse_focused_thread(c, slist):
     collapsed_mails = slist.data.collapsed_mails
 
     collapsed_mails[focused_mail_idx(slist)] = True
-    refresh_list(slist)
+    refresh_list(slist, show_tagged_replies=False)
 
 def expand_focused_thread(c, slist):
     collapsed_mails = slist.data.collapsed_mails
     del collapsed_mails[focused_mail_idx(slist)]
-    refresh_list(slist)
+    refresh_list(slist, show_tagged_replies=False)
 
 def write_mail_draft(slist, mail):
     hkml_view.shell_mode_start(slist)
