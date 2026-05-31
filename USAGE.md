@@ -667,8 +667,8 @@ not_yet_merged: 1 mails
 Special Tags
 ------------
 
-Users can use any name for their tags.  Some names including `sent` and
-`drafts` are special, though.
+Users can use any name for their tags.  Some names including `sent`, `drafts`
+and `pinned` are special, though.
 
 When a user write and send a mail via `hkml`, `hkml` suggests tagging the mail
 as `sent`.  When a user wrote a mail via `hkml` but decided not to send it,
@@ -677,22 +677,21 @@ as `sent`.  When a user wrote a mail via `hkml` but decided not to send it,
 `hkml` doesn't suggest tagging a mail as `pinned`.  But it assumes the user
 wants to have good visibility of `pinned` mails.
 
-`hkml` shows the special-tagged mails on the mails [list](#listing-mails) in
-below ways.
+`hkml` shows the special-tagged mails on the [interactive](#interactive-viewer)
+mode mails [list](#listing-mails) in below ways.
 
-If there are mails of `drafts` tag that was written as a reply to a mail of the
-list, the draft mail is shown as a reply on the list, with `(drafts)` prefix on
-the line.
+If there are mails of `drafts` tag that were written as a reply to a mail on
+the list, the draft mail is shown as a reply on the list, with `(drafts)`
+prefix on the line.
 
-If there are mails of `sent` tag that was sent as a reply to a mail of the
+If there are mails of `sent` tag that were sent as a reply to a mail of the
 list, and if the sent mail is not [fetched](#fetching-mails) from the internet
 yet, the sent mail is shown as a reply on the list, with `(sent)` prefix on the
 line.
 
-If the list is in the [interactive](#interactive-viewer) mode, whenever
-`drafts` and `sent` mails are generated as replies to a mail of the list in the
-interactive ways, the list is automatically updated to show the draft and sent
-mails with the `(drafts)` and `(sent)` prefixes.
+Whenever `drafts` and `sent` mails are generated as replies to a mail of the
+list in the interactive ways, the list is automatically updated to show the
+draft and sent mails with the `(drafts)` and `(sent)` prefixes.
 
 Replying
 ========
