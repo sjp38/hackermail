@@ -193,14 +193,17 @@ def writeback_list_output_cache():
     with open(list_output_cache_file_path(), 'w') as f:
         json.dump(cache, f, indent=4)
 
-def set_item(key, list_data):
+def set_item(key, list_data, keep_date=False):
     list_str = list_data.text
     mail_idx_key_map = list_data.mail_idx_key_map
     cache = get_mails_lists_cache()
     changed = True
     if key in cache:
         changed = cache[key]['index_to_cache_key'] != mail_idx_key_map
-    now_str = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
+    if keep_date is False:
+        date_str = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
+    else:
+        date_str = cache[key]['date']
 
     comments_lines = list_data.comments_lines
     if len(comments_lines) > 0:
@@ -215,7 +218,7 @@ def set_item(key, list_data):
     cache[key] = {
             'output': '\n'.join(['# (cached output)', list_str]),
             'index_to_cache_key': mail_idx_key_map,
-            'date': now_str,        # last referenced date
+            'date': date_str,        # last referenced date
             }
     max_cache_sz = 64
     if len(cache) == max_cache_sz:
