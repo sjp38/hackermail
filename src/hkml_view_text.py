@@ -624,7 +624,7 @@ def mail_line_callback(slist, line_idx):
     if prev_body_line_idx in notes.line_notes:
         notes_text = ','.join(
                 [n.text for n in notes.line_notes[prev_body_line_idx]])
-        return '/* hkml note: %s */ %s' % (notes_text, line)
+        return '  /* hkml note: %s */ %s' % (notes_text, line)
     # TODO: handle notes on the last line.
     return line
 
