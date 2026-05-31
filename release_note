@@ -5,6 +5,7 @@ v1.6.0
   - Support command line ('hkml mail_note') and interactive mode menu.
   - Show added notes on interactive mail viewer.
   - Add notes to reply drafts.
+- Always show 'pinned' tag mails on the top of the list.
 
 v1.5.9
 - hkml list: always do live update for replies.
