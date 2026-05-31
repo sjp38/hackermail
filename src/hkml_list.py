@@ -198,7 +198,7 @@ def format_entry(mail, max_digits_for_idx, show_nr_replies, show_url, nr_cols):
         suffices.append(mail.url())
     suffix = ' (%s)' % ', '.join(suffices)
 
-    if hasattr(mail, 'added_by_tag'):
+    if mail.added_by_tag is not None:
         subject = '(%s) %s' % (getattr(mail, 'added_by_tag'), subject)
 
     lines = _hkml_fmtstr.wrap_line(prefix, subject + suffix, nr_cols)
