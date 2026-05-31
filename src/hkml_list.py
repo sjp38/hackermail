@@ -729,7 +729,8 @@ class MailsListData:
 def mails_to_list_data(
         mails_to_show, do_find_ancestors_from_cache, mails_filter,
         list_decorator, show_thread_of, runtime_profile, stat_only,
-        stat_authors, print_progress=False, runtime_profiles=None):
+        stat_authors, print_progress=False, runtime_profiles=None,
+        add_tagged_replies=False):
     '''Return MailsListData and an error'''
     if len(mails_to_show) == 0:
         return None, 'no mail to list'
@@ -742,8 +743,9 @@ def mails_to_list_data(
     if runtime_profiles is not None:
         runtime_profiles.start('etc')
 
-    add_tagged_replies(filtered_mails, 'sent')
-    add_tagged_replies(filtered_mails, 'drafts')
+    if add_tagged_replies:
+        add_tagged_replies(filtered_mails, 'sent')
+        add_tagged_replies(filtered_mails, 'drafts')
 
     lines, line_nr_to_mail_map = fmt_mails_text(
             filtered_mails, list_decorator, mails_to_collapse={})
@@ -1235,7 +1237,8 @@ def args_to_mails_list_data(args, suggest_manifest_update):
             mails_to_show, args.do_find_ancestors_from_cache,
             MailListFilter(args), MailListDecorator(args), None,
             runtime_profile, args.stat_only, args.stat_authors,
-            using_hkml_view(args), runtime_profiles)
+            using_hkml_view(args), runtime_profiles,
+            add_tagged_replies=using_hkml_view(args))
     if err is not None:
         return None, err
     if args.source_type == ['msgid']:
