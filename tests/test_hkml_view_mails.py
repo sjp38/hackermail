@@ -70,7 +70,7 @@ F:	drivers/net/ethernet/dec/tulip/dmfe.c
         mails_view_data = hkml_view_mails.MailsViewData(
             mock_list_data, mock_list_args, display_rule=None)
 
-        mails_view_data.display_effects = {0: 'old_effect', 1: 'another_effect'}
+        mails_view_data.display_effect_cache = {0: 'old_effect', 1: 'another_effect'}
 
         new_rule = hkml_view_mails.MailDisplayEffect(interactive=False)
         new_rule.effect = hkml_view_mails.hkml_view.ScrollableList.effect_dim
@@ -78,7 +78,7 @@ F:	drivers/net/ethernet/dec/tulip/dmfe.c
         mails_view_data.update_display_rule(new_rule)
 
         self.assertEqual(mails_view_data.display_rule, new_rule)
-        self.assertEqual(mails_view_data.display_effects, {})
+        self.assertEqual(mails_view_data.display_effect_cache, {})
 
 if __name__ == '__main__':
     unittest.main()

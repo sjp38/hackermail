@@ -208,7 +208,7 @@ def refresh_list(slist, show_tagged_replies=True):
     text = '\n'.join(lines)
     slist.set_lines(comment_lines + text.split('\n'))
     slist.focus_row = min(slist.focus_row, len(slist.lines) - 1)
-    slist.data.display_effects = {}
+    slist.data.display_effect_cache = {}
     slist.screen.clear()
 
 def collapse_focused_thread(c, slist):
@@ -729,7 +729,7 @@ class MailsViewData:
     last_cursor_position = None
 
     # cache for per-line display effect decisions that made by display_rule.
-    display_effects = None
+    display_effect_cache = None
 
     def __init__(self, list_data, list_args, display_rule):
         self.list_data = list_data
@@ -737,15 +737,15 @@ class MailsViewData:
         self.display_rule = display_rule
         self.collapsed_mails = {}
         self.last_cursor_position = {}
-        self.display_effects = {}
+        self.display_effect_cache = {}
 
     def update_display_rule(self, rule):
         self.display_rule = rule
         # clear display decisions per line that made with old rule
-        self.display_effects = {}
+        self.display_effect_cache = {}
 
     def display_effect_for(self, line_idx, slist):
-        display_effects_cache = self.display_effects
+        display_effects_cache = self.display_effect_cache
         if line_idx in display_effects_cache:
             return display_effects_cache[line_idx]
 
