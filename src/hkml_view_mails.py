@@ -1051,9 +1051,6 @@ def menu_list_info(slist, answer, selection):
     print()
     print('\n'.join(mails_view_data.list_data.comments_lines))
 
-def menu_show_sent_draft(slist, answer, selection):
-    refresh_list(slist, show_tagged_replies=True)
-
 def show_mails_list_menu(c, slist):
     mail = get_focused_mail(slist)
     if mail is None:
