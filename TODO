@@ -53,3 +53,4 @@
   - have a file per tag
 - Document the special recipients handling of 'hkml patch format'.
 - Extend special recipients handling to general mail writing.
+- Display notes with some special display rule.
