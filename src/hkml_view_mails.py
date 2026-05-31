@@ -187,7 +187,7 @@ def list_thread_of_focused_mail(c, slist):
     args = hkml_list_args_for_msgid(msgid, slist.data.list_args)
     gen_show_mails_list(slist.screen, args)
 
-def refresh_list(slist, show_tagged_replies=False):
+def refresh_list(slist, show_tagged_replies=True):
     comment_lines = []
     for line in slist.lines:
         if line.startswith('#'):
