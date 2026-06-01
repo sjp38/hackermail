@@ -1256,8 +1256,7 @@ def args_to_mails_list_data(args, suggest_manifest_update):
             mails_to_show, args.do_find_ancestors_from_cache,
             MailListFilter(args), MailListDecorator(args), None,
             runtime_profile, args.stat_only, args.stat_authors,
-            using_hkml_view(args), runtime_profiles,
-            add_tagged_mails=using_hkml_view(args))
+            using_hkml_view(args), runtime_profiles, add_tagged_mails=True)
     if err is not None:
         return None, err
     if args.source_type == ['msgid']:
