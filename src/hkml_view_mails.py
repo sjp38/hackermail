@@ -34,7 +34,7 @@ def mail_of_row(slist, row):
     line_nr_mail_map = slist.data.list_data.line_nr_mail_map
     # in case of cached output reuse, the map is None
     if line_nr_mail_map is None:
-        refresh_list(slist, show_tagged_mails=True)
+        refresh_list(slist, show_tagged_mails=False)
         line_nr_mail_map = slist.data.list_data.line_nr_mail_map
     row -= slist.data.list_data.len_comments
     if not row in line_nr_mail_map:
