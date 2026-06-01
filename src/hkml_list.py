@@ -756,6 +756,12 @@ def mails_to_list_data(
         add_tagged_replies(filtered_mails, 'sent')
         add_tagged_replies(filtered_mails, 'drafts')
 
+    mail_idx_key_map = {}
+    for idx, mail in enumerate(filtered_mails):
+        mail.pridx = idx
+        mail_idx_key_map['%d' % idx] = hkml_cache.get_cache_key(
+                mail.gitid, mail.gitdir, mail.get_field('message-id'))
+
     lines, line_nr_to_mail_map = fmt_mails_text(
             filtered_mails, list_decorator, mails_to_collapse={})
 
