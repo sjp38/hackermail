@@ -224,7 +224,7 @@ def set_item(key, list_data, keep_date=False):
     if len(cache) == max_cache_sz:
         keys = sorted(cache.keys(), key=lambda x: cache[x]['date'])
         del cache[keys[0]]
-    writeback_list_output_cache()
+    writeback_list_output()
     if changed:
         record_cache_creation(key)
 

@@ -29,7 +29,7 @@ def fetch_mail(mail_lists, quiet=False, epochs=1):
             else:
                 with open(os.devnull, 'w') as f:
                     subprocess.call(cmd.split(), stdout=f)
-    _hkml_list_cache.writeback_list_output_cache()
+    _hkml_list_cache.writeback_list_output()
 
 def fetched_mail_lists():
     archive_dir = os.path.join(_hkml.get_hkml_dir(), 'archives')
