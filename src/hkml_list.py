@@ -70,16 +70,6 @@ def args_to_lists_cache_key(args):
 
     return json.dumps(dict_, sort_keys=True)
 
-def map_idx_to_mail_cache_key(mail, mail_idx_key_map):
-    idx = mail.pridx
-    key = hkml_cache.get_cache_key(
-            mail.gitid, mail.gitdir, mail.get_field('message-id'))
-
-    idx_str = '%d' % idx
-    if idx_str in mail_idx_key_map:
-        return
-    mail_idx_key_map[idx_str] = key
-
 class MailListDecorator:
     collapse = None
     sort_threads_by = None
@@ -220,8 +210,6 @@ def set_index(mail, list_, depth, mail_idx_key_map):
     mail.pridx = len(list_)
     mail.prdepth = depth
     list_.append(mail)
-
-    map_idx_to_mail_cache_key(mail, mail_idx_key_map)
 
     for mail in mail.replies:
         set_index(mail, list_, depth + 1, mail_idx_key_map)
