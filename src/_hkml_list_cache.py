@@ -185,7 +185,7 @@ def get_last_thread():
     outputs = get_cached_list_outputs('thread_output')
     if outputs is None:
         return None
-    return outputs['output'], outputs['index_to_cache_key']
+    return outputs['output']
 
 def invalidate_cached_outputs(source):
     keys_to_del = []
