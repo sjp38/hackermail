@@ -577,12 +577,18 @@ def sort_filter_mails(mails_to_show, do_find_ancestors_from_cache,
     return filtered_mails
 
 def add_tagged_mails_to_head(mails, tag):
+    mails_to_return = []
+    for mail in mails:
+        if mail.added_by_tag == tag:
+            continue
+        mails_to_return.append(mail)
+
     tagged_mails = hkml_tag.mails_of_tag(tag)
     for tagged_mail in tagged_mails:
         tagged_mail.prdepth = 0
         tagged_mail.added_by_tag =  tag
         tagged_mail.filtered_out = False
-    return tagged_mails + mails
+    return tagged_mails + mails_to_return
 
 def add_tagged_replies(mails, tag):
     tagged_mails = hkml_tag.mails_of_tag(tag)
