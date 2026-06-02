@@ -387,7 +387,30 @@ def set_prdepth(mails):
     for mail in threads:
         __set_prdepth(mail, 0)
 
+def get_mails_from_cache_data(mails_cache_data, slist):
+    mails = []
+    for idx, cache_data in enumerate(mails_cache_data):
+        mail_key = cache_data['cache_key']
+        mail = hkml_cache.get_mail(key=mail_key)
+        if mail is None:
+            hkml_view.shell_mode_start(slist)
+            print('\n'.join([
+                'Getting a cached mail of key "%s" failed.' % mail_key,
+                'There is no good way to recover from this.  I will exit...',
+                ]))
+            hkml_view.shell_mode_end(slist)
+            exit(1)
+        mail.pridx = idx
+        mail.prdepth = cache_data['prdepth']
+        mail.added_by_tag = cache_data['added_by_tag']
+        mails.append(mail)
+    return mails
+
 def get_mails(slist):
+    mails_cache_data = slist.data.list_data.mails_cache_data
+    if mails_cache_data is not None:
+        return get_mails_from_cache_data(mails_cache_data, slist)
+
     mails = []
     mail_idx_key_map = slist.data.list_data.mail_idx_key_map
     for mail_idx in mail_idx_key_map:
