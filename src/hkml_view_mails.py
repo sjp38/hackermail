@@ -192,7 +192,6 @@ def refresh_list(slist, show_tagged_mails):
     for line in slist.lines:
         if line.startswith('#'):
             comment_lines.append(line)
-    slist.data.list_data.len_comments = len(comment_lines)
 
     collapsed_mails = slist.data.collapsed_mails
 
@@ -203,11 +202,24 @@ def refresh_list(slist, show_tagged_mails):
         hkml_list.add_tagged_replies(mails, 'sent')
     decorator = hkml_list.MailListDecorator(slist.data.list_args)
 
+    mails_cache_data = []
+    for idx, mail in  enumerate(mails):
+        mail.pridx = idx
+        mails_cache_data.append({
+            'cache_key': hkml_cache.get_cache_key(
+                mail.gitid, mail.gitdir, mail.get_field('message-id')),
+            'prdepth': mail.prdepth,
+            'added_by_tag': mail.added_by_tag,
+            })
+
     lines, line_nr_mail_map = hkml_list.fmt_mails_text(
             mails, decorator, collapsed_mails)
-    slist.data.list_data.line_nr_mail_map = line_nr_mail_map
-    text = '\n'.join(lines)
-    slist.set_lines(comment_lines + text.split('\n'))
+    text = '\n'.join(comment_lines + lines)
+
+    slist.data.list_data = hkml_list.MailsListData(
+            text, len(comment_lines), line_nr_mail_map, {}, mails_cache_data)
+
+    slist.set_lines(comment_lines + lines)
     slist.focus_row = min(slist.focus_row, len(slist.lines) - 1)
     slist.data.display_effect_cache = {}
     slist.screen.clear()
