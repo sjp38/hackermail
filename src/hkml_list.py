@@ -205,14 +205,14 @@ def root_of_thread(mail):
         return mail
     return root_of_thread(mail.parent_mail)
 
-def set_index(mail, list_, depth, mail_idx_key_map):
+def set_index(mail, list_, depth):
     """ Make mails to be all ready for print in list"""
     mail.pridx = len(list_)
     mail.prdepth = depth
     list_.append(mail)
 
     for mail in mail.replies:
-        set_index(mail, list_, depth + 1, mail_idx_key_map)
+        set_index(mail, list_, depth + 1)
 
 def last_reply_date(mail, prev_last_date):
     if len(mail.replies) == 0:
@@ -548,9 +548,8 @@ def sort_filter_mails(mails_to_show, do_find_ancestors_from_cache,
 
     by_pr_idx = []
     timestamp = time.time()
-    mail_idx_key_map = {}
     for mail in threads:
-        set_index(mail, by_pr_idx, 0, mail_idx_key_map)
+        set_index(mail, by_pr_idx, 0)
     runtime_profile.append(['set_index', time.time() - timestamp])
     if runtime_profiles is not None:
         runtime_profiles.end('set_index')
@@ -575,7 +574,7 @@ def sort_filter_mails(mails_to_show, do_find_ancestors_from_cache,
     runtime_profile.append(['filtering', time.time() - timestamp])
     if runtime_profiles is not None:
         runtime_profiles.end('filtering')
-    return filtered_mails, mail_idx_key_map
+    return filtered_mails
 
 def add_tagged_mails_to_head(mails, tag):
     tagged_mails = hkml_tag.mails_of_tag(tag)
@@ -735,7 +734,7 @@ def mails_to_list_data(
     if len(mails_to_show) == 0:
         return None, 'no mail to list'
 
-    filtered_mails, mail_idx_key_map = sort_filter_mails(
+    filtered_mails = sort_filter_mails(
             mails_to_show, do_find_ancestors_from_cache, mails_filter,
             list_decorator, show_thread_of, runtime_profile, runtime_profiles)
 
