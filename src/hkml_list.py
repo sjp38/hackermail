@@ -761,10 +761,17 @@ def mails_to_list_data(
         add_tagged_replies(filtered_mails, 'drafts')
 
     mail_idx_key_map = {}
+    mails_cache_data = []
     for idx, mail in enumerate(filtered_mails):
         mail.pridx = idx
         mail_idx_key_map['%d' % idx] = hkml_cache.get_cache_key(
                 mail.gitid, mail.gitdir, mail.get_field('message-id'))
+        mails_cache_data.append({
+            'cache_key': hkml_cache.get_cache_key(
+                mail.gitid, mail.gitdir, mail.get_field('message-id')),
+            'prdepth': mail.prdepth,
+            'added_by_tag': mail.added_by_tag,
+            })
 
     lines, line_nr_to_mail_map = fmt_mails_text(
             filtered_mails, list_decorator, mails_to_collapse={})
@@ -785,7 +792,7 @@ def mails_to_list_data(
         text = '\n'.join(runtime_profile_lines + stat_lines + lines)
         len_comments = len(runtime_profile_lines) + len(stat_lines)
     return MailsListData(text, len_comments, line_nr_to_mail_map,
-                         mail_idx_key_map), None
+                         mail_idx_key_map, mails_cache_data), None
 
 def git_log_output_line_to_mail(line, mdir):
     fields = line.split()
