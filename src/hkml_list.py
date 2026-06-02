@@ -711,12 +711,16 @@ class MailsListData:
     line_nr_mail_map = None
     # mail print index to cached mail key map
     mail_idx_key_map = None
+    # For list output cache
+    mails_cache_data = None
 
-    def __init__(self, text, len_comments, line_nr_mail_map, mail_idx_key_map):
+    def __init__(self, text, len_comments, line_nr_mail_map, mail_idx_key_map,
+                 mails_cache_data=None):
         self.text = text
         self.len_comments = len_comments
         self.line_nr_mail_map = line_nr_mail_map
         self.mail_idx_key_map = mail_idx_key_map
+        self.mails_cache_data = mails_cache_data
 
         lines = text.split('\n')
         # in case of cached list, len_comments is passed as None
