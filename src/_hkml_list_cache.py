@@ -106,6 +106,12 @@ Values are a dict containing below key/values.
 - 'output': formatted text to display the mails list.
 - 'index_to_cache_key': a dict having the mail index on the output as keys, and
   the corresponding mail's key in the mail cache as values.
+- 'mails_cache_data': a list of cache info for the mails on the list.
+  - Aim to replace index_to_cache_key.
+  - Entries are key-value pairs of below.
+    - cache_key: the mail cache key.
+    - prdepth: same to that on Mail class.
+    - added_by_tag: same to that on Mail class.
 - 'date': last accessed date
 - 'create_date': created date.  Removed after v1.1.7.
 - 'create_dates': last up to ten created dates of same key.  Removed after v1.1.9.
