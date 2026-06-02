@@ -191,6 +191,7 @@ def invalidate_cached_outputs(source):
 def set_item(key, list_data, keep_date=False):
     list_str = list_data.text
     mail_idx_key_map = list_data.mail_idx_key_map
+    mails_cache_data = list_data.mails_cache_data
     cache = get_mails_lists_cache()
     changed = True
     if key in cache:
@@ -213,6 +214,7 @@ def set_item(key, list_data, keep_date=False):
     cache[key] = {
             'output': '\n'.join(['# (cached output)', list_str]),
             'index_to_cache_key': mail_idx_key_map,
+            'mails_cache_data': mails_cache_data,
             'date': date_str,        # last referenced date
             }
     max_cache_sz = 64
