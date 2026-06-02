@@ -219,6 +219,10 @@ def refresh_list(slist, show_tagged_mails):
     slist.data.list_data = hkml_list.MailsListData(
             text, len(comment_lines), line_nr_mail_map, {}, mails_cache_data)
 
+    list_cache_key = hkml_list.args_to_lists_cache_key(slist.data.list_args)
+    _hkml_list_cache.set_item(
+            list_cache_key, slist.data.list_data, keep_date=True)
+
     slist.set_lines(comment_lines + lines)
     slist.focus_row = min(slist.focus_row, len(slist.lines) - 1)
     slist.data.display_effect_cache = {}
