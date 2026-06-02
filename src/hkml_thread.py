@@ -62,9 +62,7 @@ def main(args):
             return
         to_show, mail_idx_key_map = cached
         _hkml_list_cache.writeback_list_output()
-        hkml_list.show_list(to_show, to_stdout=False,
-                            to_less=args.no_interactive,
-                            mail_idx_key_map=mail_idx_key_map)
+        hkml_list.show_list(to_show, to_stdout=False)
         return
 
     list_data = thread_str(args.mail_id,
@@ -74,8 +72,7 @@ def main(args):
     if args.dont_use_internet is False:
         hkml_cache.writeback_mails()
         _hkml_list_cache.set_item('thread_output', list_data)
-    hkml_list.show_list(to_show, to_stdout=False, to_less=args.no_interactive,
-                        mail_idx_key_map=mail_idx_key_map)
+    hkml_list.show_list(to_show, to_stdout=False)
 
 def set_argparser(parser=None):
     parser.description='list mails of a thread'

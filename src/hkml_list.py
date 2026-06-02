@@ -1136,7 +1136,7 @@ def get_mails_from_multiple_sources(
 
     return mails, None
 
-def show_list(text, to_stdout, to_less, mail_idx_key_map):
+def show_list(text, to_stdout):
     if to_stdout:
         print(text)
         return
@@ -1339,8 +1339,7 @@ def main(args):
     if err is not None:
         print(err)
         exit(1)
-    show_list(list_data.text, args.stdout, args.use_less,
-              list_data.mail_idx_key_map)
+    show_list(list_data.text, args.stdout)
 
 def add_mails_filter_arguments(parser):
     parser.add_argument(
