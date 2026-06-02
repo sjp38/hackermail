@@ -188,11 +188,6 @@ def invalidate_cached_outputs(source):
     for key in keys_to_del:
         del cache[key]
 
-def writeback_list_output_cache():
-    cache = get_mails_lists_cache()
-    with open(list_output_cache_file_path(), 'w') as f:
-        json.dump(cache, f, indent=4)
-
 def set_item(key, list_data, keep_date=False):
     list_str = list_data.text
     mail_idx_key_map = list_data.mail_idx_key_map
