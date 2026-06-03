@@ -156,11 +156,7 @@ def threads_of(mails, do_find_ancestors_from_cache=False):
     return threads
 
 def orig_subject_formatted(mail):
-    if mail.parent_mail is None:
-        return False
-    if mail.parent_mail.filtered_out == False:
-        return True
-    return orig_subject_formatted(mail.parent_mail)
+    return mail.parent_mail is not None
 
 def format_entry(mail, max_digits_for_idx, show_nr_replies, show_url, nr_cols):
     index = '%d' % mail.pridx
