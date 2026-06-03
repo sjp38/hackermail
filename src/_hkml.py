@@ -75,7 +75,6 @@ class Mail:
     parent_mail = None
     prdepth = None
     added_by_tag = None
-    filtered_out = None
 
     # for patch formatting
     collected_patch_tags = None # Reviewed-by: like tags

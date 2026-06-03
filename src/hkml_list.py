@@ -476,12 +476,9 @@ def get_filtered_mails(mails, ls_range, mails_filter):
     filtered_mails = []
     for mail in mails:
         if ls_range is not None and not mail.pridx in ls_range:
-            mail.filtered_out = True
             continue
         if mails_filter is not None and mails_filter.should_filter_out(mail):
-            mail.filtered_out = True
             continue
-        mail.filtered_out = False
         filtered_mails.append(mail)
     return filtered_mails
 
@@ -583,7 +580,6 @@ def add_tagged_mails_to_head(mails, tag):
     for tagged_mail in tagged_mails:
         tagged_mail.prdepth = 0
         tagged_mail.added_by_tag =  tag
-        tagged_mail.filtered_out = False
     return tagged_mails + mails_to_return
 
 def add_tagged_replies(mails, tag):
@@ -604,7 +600,6 @@ def add_tagged_replies(mails, tag):
             tagged_mail.parent_mail = mail
             tagged_mail.prdepth = mail.prdepth + 1
             tagged_mail.added_by_tag =  tag
-            tagged_mail.filtered_out = False
     for idx, mail in enumerate(expanded_mails):
         mail.pridx = idx
     mails[:] = expanded_mails

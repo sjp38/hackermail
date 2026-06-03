@@ -443,7 +443,6 @@ def get_mails(slist):
             hkml_view.shell_mode_end(slist)
             exit(1)
         mail.pridx = int(mail_idx)
-        mail.filtered_out = False
         mails.append(mail)
     set_prdepth(mails)
     return mails
