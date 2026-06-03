@@ -210,7 +210,9 @@ def set_item(key, list_data, keep_date=False):
     cache = get_mails_lists_cache()
     changed = True
     if key in cache:
-        changed = cache[key]['index_to_cache_key'] != mail_idx_key_map
+        changed = True
+        if 'mails_cache_data' in cache[key]:
+            changed = cache[key]['mails_cache_data'] != mails_cache_data
     if keep_date is False:
         date_str = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
     else:
@@ -226,8 +228,12 @@ def set_item(key, list_data, keep_date=False):
         mails_lines = list_data.mail_lines
         list_str = '\n'.join(comments_lines + mails_lines)
 
+    if not list_str.startswith('# (cached output)'):
+        list_str = '# (cached output)\n%s' % list_str
+
+
     cache[key] = {
-            'output': '\n'.join(['# (cached output)', list_str]),
+            'output': list_str,
             'index_to_cache_key': mail_idx_key_map,
             'mails_cache_data': mails_cache_data,
             'date': date_str,        # last referenced date
@@ -237,7 +243,7 @@ def set_item(key, list_data, keep_date=False):
         keys = sorted(cache.keys(), key=lambda x: cache[x]['date'])
         del cache[keys[0]]
     writeback_list_output()
-    if changed:
+    if changed and keep_date is False:
         record_cache_creation(key)
 
 def get_mail(idx, not_thread_idx=False):
