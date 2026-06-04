@@ -62,3 +62,4 @@
 - Save and restore prdepth using mail_idx_key_map.
 - Add an option to not show tagged mails.
 - Update cached list output and mail_idx_key_map for list live update.
+- Cache tag-added mails in mail cache.
