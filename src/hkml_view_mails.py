@@ -211,6 +211,8 @@ def refresh_list(slist, show_tagged_mails):
             'prdepth': mail.prdepth,
             'added_by_tag': mail.added_by_tag,
             })
+    if slist.data.list_data.mails_cache_data != mails_cache_data:
+        hkml_cache.writeback_mails()
 
     lines, line_nr_mail_map = hkml_list.fmt_mails_text(
             mails, decorator, collapsed_mails)
