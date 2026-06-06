@@ -247,11 +247,6 @@ def nr_reply_items_of(mail_item):
         nr += nr_reply_items_of(re)
     return nr
 
-def root_of_thread(mail):
-    if mail.parent_mail is None:
-        return mail
-    return root_of_thread(mail.parent_mail)
-
 def get_thread_root_item(mail_item):
     if mail_item.parent_mail is None:
         return mail_item
