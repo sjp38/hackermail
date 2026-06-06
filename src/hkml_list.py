@@ -235,12 +235,6 @@ def format_entry(mail_item, pridx, max_digits_for_idx, show_nr_replies,
     lines = _hkml_fmtstr.wrap_line(prefix, subject + suffix, nr_cols)
     return lines
 
-def nr_replies_of(mail):
-    nr = len(mail.replies)
-    for re in mail.replies:
-        nr += nr_replies_of(re)
-    return nr
-
 def nr_reply_items_of(mail_item):
     nr = len(mail_item.reply_items)
     for re in mail_item.reply_items:
