@@ -1205,15 +1205,15 @@ def get_mails_list_input_handlers():
 
 def after_input_handle_callback(slist):
     list_data = slist.data.list_data
-    mails_cache_data = list_data.mails_cache_data
-    if mails_cache_data is None:
+    mail_items = list_data.mail_items
+    if mail_items is None:
         return
-    mails_list_data = _hkml_list_cache.get_last_list()
-    if mails_list_data is not None:
-        last_mails_cache_data = mails_list_data.mails_cache_data
+    last_list_data = _hkml_list_cache.get_last_list()
+    if last_list_data is None:
+        last_mail_items = None
     else:
-        last_mails_cache_data = None
-    if mails_cache_data != last_mails_cache_data:
+        last_mail_items = last_list_data.mail_items
+    if mail_items != last_mail_items:
         _hkml_list_cache.set_item('thread_output', list_data)
 
 def mails_display_effect_callback(slist, line_idx):
