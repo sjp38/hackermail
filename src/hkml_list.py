@@ -611,13 +611,14 @@ def child_of_collapsed(mail, mails_to_collapse):
         return True
     return child_of_collapsed(mail.parent_mail, mails_to_collapse)
 
-def fmt_mails_text(mails, list_decorator, mails_to_collapse):
+def fmt_mails_text(mail_items, list_decorator, mails_to_collapse):
     '''
-    Format a text for showing the mails as a list.
+    Format a text for showing the mail items as a list.
 
-    mails is a list of mails that already contains all fields that are needed
-    to be formatted, including pridx, and sorted in the pridx order.
+    mail items contains all fields that are needed to be formatted, and sorted
+    in the listing order.
     '''
+    mails = [i.mail for i in mail_items]
     line_nr_to_mail_map = {}
     lines = []
     if len(mails) == 0:
@@ -808,7 +809,7 @@ def mails_to_list_data(
         mail_item.parent_item = msgid_items.get(parent_msgid, None)
 
     lines, line_nr_to_mail_map = fmt_mails_text(
-            filtered_mails, list_decorator, mails_to_collapse={})
+            mail_items, list_decorator, mails_to_collapse={})
 
     stat_lines = []
     if not list_decorator.hide_stat:
