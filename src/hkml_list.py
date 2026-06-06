@@ -665,10 +665,10 @@ def sort_filter_mails(mail_items, do_find_ancestors_from_cache,
         runtime_profiles.start('threads_extract')
 
     timestamp = time.time()
-    threads = threads_of(mails_to_show, do_find_ancestors_from_cache)
+    threads = thread_items_of(mail_items, do_find_ancestors_from_cache)
     sort_threads_by = list_decorator.sort_threads_by
     for sort_category in sort_threads_by:
-        sort_threads(threads, sort_category)
+        sort_thread_items(threads, sort_category)
     descend = not list_decorator.ascend
     if descend:
         threads.reverse()
@@ -677,8 +677,9 @@ def sort_filter_mails(mail_items, do_find_ancestors_from_cache,
     # should we have an option to skip this sort?  maybe, but the usage of such
     # option is unclear.
     for thread in threads:
-        thread.replies.sort(key=lambda t: t.series[0] if t.series is not None
-                             else 0)
+        thread.reply_items.sort(
+                key=lambda t: t.mail.series[0] if t.mail.series is not None
+                else 0)
 
     runtime_profile.append(['threads_extract', time.time() - timestamp])
     if runtime_profiles is not None:
@@ -687,8 +688,8 @@ def sort_filter_mails(mail_items, do_find_ancestors_from_cache,
 
     by_pr_idx = []
     timestamp = time.time()
-    for mail in threads:
-        set_index(mail, by_pr_idx, 0)
+    for mail_item in threads:
+        set_item_prdepth(mail_item, by_pr_idx, 0)
     runtime_profile.append(['set_index', time.time() - timestamp])
     if runtime_profiles is not None:
         runtime_profiles.end('set_index')
@@ -702,18 +703,18 @@ def sort_filter_mails(mail_items, do_find_ancestors_from_cache,
         if end_idx is None:
             end_idx = len(mail_items)
     else:
-        mail = by_pr_idx[show_thread_of]
-        root = root_of_thread(mail)
-        start_idx = root.pridx
-        end_idx = root.pridx + nr_replies_of(root) + 1
+        mail_item = by_pr_idx[show_thread_of]
+        root = get_thread_root_item(mail_item)
+        start_idx = by_pr_idx.index(root)
+        end_idx = start_idx + nr_reply_items_of(root) + 1
     ls_range = range(start_idx, end_idx)
 
-    filtered_mails = get_filtered_mails(by_pr_idx, ls_range, mails_filter)
+    filtered_items = get_filtered_mail_items(by_pr_idx, ls_range, mails_filter)
 
     runtime_profile.append(['filtering', time.time() - timestamp])
     if runtime_profiles is not None:
         runtime_profiles.end('filtering')
-    return filtered_mails
+    return [i.mail for i in filtered_items]
 
 def add_tagged_mails_to_head(mails, tag):
     mails_to_return = []
