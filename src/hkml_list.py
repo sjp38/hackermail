@@ -257,15 +257,6 @@ def get_thread_root_item(mail_item):
         return mail_item
     return get_thread_root_item(mail_item.parent_item)
 
-def set_index(mail, list_, depth):
-    """ Make mails to be all ready for print in list"""
-    mail.pridx = len(list_)
-    mail.prdepth = depth
-    list_.append(mail)
-
-    for mail in mail.replies:
-        set_index(mail, list_, depth + 1)
-
 def set_item_prdepth(mail_item, list_, depth):
     """ Make mails to be all ready for print in list"""
     mail_item.prdepth = depth
