@@ -1052,8 +1052,6 @@ def mails_to_list_data(
 
     mail_idx_key_map = {}
     mails_cache_data = []
-    mail_items = []
-    msgid_items = {}
     for idx, mail_item in enumerate(filtered_items):
         mail = mail_item.mail
         mail.pridx = idx
@@ -1065,13 +1063,6 @@ def mails_to_list_data(
             'prdepth': mail.prdepth,
             'added_by_tag': mail.added_by_tag,
             })
-        mail_items.append(MailListMailItem(
-            mail_cache_key=cache_key, mail=mail, prdepth=mail.prdepth,
-            parent_item=None, added_by_tag=mail.added_by_tag))
-        msgid_items[mail.get_field('message-id')] = mail_items[-1]
-    for mail_item in mail_items:
-        parent_msgid = mail_item.mail.get_field('in-reply-to-msgid')
-        mail_item.parent_item = msgid_items.get(parent_msgid, None)
 
     lines, line_nr_to_mail_map = fmt_mails_text(
             filtered_items, list_decorator, mails_to_collapse={})
