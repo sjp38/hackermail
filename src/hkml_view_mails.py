@@ -222,7 +222,7 @@ def refresh_list(slist, show_tagged_mails):
         parent_msgid = mail_item.mail.get_field('in-reply-to-msgid')
         mail_item.parent_item = msgid_items.get(parent_msgid, None)
 
-    if slist.data.list_data.mails_cache_data != mails_cache_data:
+    if slist.data.list_data.mail_items != mail_items:
         hkml_cache.writeback_mails()
 
     lines, line_nr_mail_map = hkml_list.fmt_mails_text(
