@@ -512,9 +512,10 @@ class RuntimeProfiles:
         if self.print_progress:
             print('# %s done (%s)' % (category, self.profiles[category].runtime))
 
-def sort_filter_mails(mails_to_show, do_find_ancestors_from_cache,
+def sort_filter_mails(mail_items, do_find_ancestors_from_cache,
                       mails_filter, list_decorator, show_thread_of,
                       runtime_profile, runtime_profiles):
+    mails_to_show = [i.mail for i in mail_items]
     if runtime_profiles is not None:
         runtime_profiles.start('threads_extract')
 
@@ -554,7 +555,7 @@ def sort_filter_mails(mails_to_show, do_find_ancestors_from_cache,
         start_idx = 0
         end_idx = list_decorator.max_len
         if end_idx is None:
-            end_idx = len(mails_to_show)
+            end_idx = len(mail_items)
     else:
         mail = by_pr_idx[show_thread_of]
         root = root_of_thread(mail)
@@ -774,8 +775,16 @@ def mails_to_list_data(
     if len(mails_to_show) == 0:
         return None, 'no mail to list'
 
+    mail_items_to_show = []
+    for mail in mails_to_show:
+        cache_key = hkml_cache.get_cache_key(
+                mail.gitid, mail.gitdir, mail.get_field('message-id'))
+        mail_items_to_show.append(MailListMailItem(
+            mail_cache_key=cache_key, mail=mail, prdepth=None,
+            parent_item=None, added_by_tag=None))
+
     filtered_mails = sort_filter_mails(
-            mails_to_show, do_find_ancestors_from_cache, mails_filter,
+            mail_items_to_show, do_find_ancestors_from_cache, mails_filter,
             list_decorator, show_thread_of, runtime_profile, runtime_profiles)
 
     timestamp = time.time()
