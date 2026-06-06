@@ -1,5 +1,8 @@
 This file contains major changes in each version since v1.0.0
 
+v1.6.1
+- Internal code cleanup and refactoring.
+
 v1.6.0
 - Always show 'pinned' tag mails on the top of the list.
 - Support adding notes to mails (experimental).
