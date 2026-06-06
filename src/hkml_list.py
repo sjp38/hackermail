@@ -129,6 +129,24 @@ def find_ancestors_from_cache(mail, by_msgids, found_parents):
         return
     find_ancestors_from_cache(parent, by_msgids, found_parents)
 
+def find_ancestor_items_from_cache(mail_item, msgid_items, found_parents):
+    parent_msgid = mail_item.mail.get_field('in-reply-to-msgid')
+    if parent_msgid is None or parent_msgid in msgid_items:
+        return
+    parent = hkml_cache.get_mail(key=parent_msgid)
+
+    if parent is None:
+        return
+    parent_item = MailListMailItem(
+            mail_cache_key=hkml_cache.get_cache_key(
+                parent.gitid, parent.gitdir, parent_msgid), mail=parent,
+            prdepth=None, parent_item=None, added_by_tag=None)
+    msgid_items[parent_msgid] = parent_item
+    found_parents.append(parent_item)
+    if parent.get_field('in-reply-to') is None:
+        return
+    find_ancestor_items_from_cache(parent_item, msgid_items, found_parents)
+
 def threads_of(mails, do_find_ancestors_from_cache=False):
     by_msgids = {}
     for mail in mails:
@@ -154,24 +172,6 @@ def threads_of(mails, do_find_ancestors_from_cache=False):
                 orig_mail.replies.append(mail)
             mail.parent_mail = orig_mail
     return threads
-
-def find_ancestor_items_from_cache(mail_item, msgid_items, found_parents):
-    parent_msgid = mail_item.mail.get_field('in-reply-to-msgid')
-    if parent_msgid is None or parent_msgid in msgid_items:
-        return
-    parent = hkml_cache.get_mail(key=parent_msgid)
-
-    if parent is None:
-        return
-    parent_item = MailListMailItem(
-            mail_cache_key=hkml_cache.get_cache_key(
-                parent.gitid, parent.gitdir, parent_msgid), mail=parent,
-            prdepth=None, parent_item=None, added_by_tag=None)
-    msgid_items[parent_msgid] = parent_item
-    found_parents.append(parent_item)
-    if parent.get_field('in-reply-to') is None:
-        return
-    find_ancestor_items_from_cache(parent_item, msgid_items, found_parents)
 
 def thread_items_of(mail_items, do_find_ancestors_from_cache=False):
     msgid_items = {}
