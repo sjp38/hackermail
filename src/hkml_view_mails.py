@@ -417,6 +417,26 @@ def set_prdepth(mails):
     for mail in threads:
         __set_prdepth(mail, 0)
 
+def complete_mail_items(mail_items, slist):
+    msgid_items = {}
+    for mail_item in mail_items:
+        if mail_item.mail is not None:
+            return
+        mail_key = mail_item.mail_cache_key
+        mail_item.mail = hkml_cache.get_mail(key=mail_key)
+        if mail_item.mail is None:
+            hkml_view.shell_mode_start(slist)
+            print('\n'.join([
+                'Getting a cached mail of key "%s" failed.' % mail_key,
+                'There is no good way to recover from this.  I will exit...',
+                ]))
+            hkml_view.shell_mode_end(slist)
+            exit(1)
+        msgid_items[mail_item.mail.get_field('messsage-id')] = mail_item
+    for mail_item in mail_items:
+        parent_msgid = mail_item.mail.get_field('in-reply-to-msgid')
+        mail_item.parent_item = msgid_items.get(parent_msgid, None)
+
 def get_mails_from_cache_data(mails_cache_data, slist):
     mails = []
     for idx, cache_data in enumerate(mails_cache_data):
@@ -439,6 +459,10 @@ def get_mails_from_cache_data(mails_cache_data, slist):
     return mails
 
 def get_mails(slist):
+    mail_items  = slist.data.list_data.mail_items
+    if mail_items is not None:
+        complete_mail_items(mail_items, slist)
+
     mails_cache_data = slist.data.list_data.mails_cache_data
     if mails_cache_data is not None:
         return get_mails_from_cache_data(mails_cache_data, slist)
