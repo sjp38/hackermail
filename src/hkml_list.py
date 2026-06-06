@@ -299,16 +299,6 @@ def get_nr_comments(mail_item):
         nr_comments -= mail.series[1]
     return nr_comments
 
-def sort_threads(threads, category):
-    if category == 'first_date':
-        return
-    if category == 'last_date':
-        threads.sort(key=lambda t: last_reply_date(t, None))
-    elif category == 'nr_replies':
-        threads.sort(key=lambda t: nr_replies_of(t))
-    elif category == 'nr_comments':
-        threads.sort(key=lambda t: nr_comments(t))
-
 def sort_thread_items(threads, category):
     if category == 'first_date':
         return
