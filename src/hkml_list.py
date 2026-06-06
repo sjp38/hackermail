@@ -698,6 +698,11 @@ class MailListMailItem:
         self.parent_item = parent_item
         self.added_by_tag = added_by_tag
 
+    def __eq__(self, other):
+        return self.mail_cache_key == other.mail_cache_key and \
+                self.prdepth == other.prdepth and \
+                self.added_by_tag == other.added_by_tag
+
     def to_kvpairs(self):
         # convert only essential information
         return {
