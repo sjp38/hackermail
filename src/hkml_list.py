@@ -787,16 +787,25 @@ def mails_to_list_data(
 
     mail_idx_key_map = {}
     mails_cache_data = []
+    mail_items = []
+    msgid_items = {}
     for idx, mail in enumerate(filtered_mails):
         mail.pridx = idx
-        mail_idx_key_map['%d' % idx] = hkml_cache.get_cache_key(
+        cache_key = hkml_cache.get_cache_key(
                 mail.gitid, mail.gitdir, mail.get_field('message-id'))
+        mail_idx_key_map['%d' % idx] = cache_key
         mails_cache_data.append({
-            'cache_key': hkml_cache.get_cache_key(
-                mail.gitid, mail.gitdir, mail.get_field('message-id')),
+            'cache_key': cache_key,
             'prdepth': mail.prdepth,
             'added_by_tag': mail.added_by_tag,
             })
+        mail_items.append(MailListMailItem(
+            mail_cache_key=cache_key, mail=mail, prdepth=mail.prdepth,
+            parent_item=None, added_by_tag=mail.added_by_tag))
+        msgid_items[mail.get_field('message-id')] = mail_items[-1]
+    for mail_item in mail_items:
+        parent_msgid = mail_item.mail.get_field('in-reply-to-msgid')
+        mail_item.parent_item = msgid_items.get(parent_msgid, None)
 
     lines, line_nr_to_mail_map = fmt_mails_text(
             filtered_mails, list_decorator, mails_to_collapse={})
@@ -817,7 +826,8 @@ def mails_to_list_data(
         text = '\n'.join(runtime_profile_lines + stat_lines + lines)
         len_comments = len(runtime_profile_lines) + len(stat_lines)
     return MailsListData(text, len_comments, line_nr_to_mail_map,
-                         mail_idx_key_map, mails_cache_data), None
+                         mail_idx_key_map, mails_cache_data,
+                         mail_items=mail_items), None
 
 def git_log_output_line_to_mail(line, mdir):
     fields = line.split()
