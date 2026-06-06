@@ -158,7 +158,9 @@ def threads_of(mails, do_find_ancestors_from_cache=False):
 def orig_subject_formatted(mail):
     return mail.parent_mail is not None
 
-def format_entry(mail, max_digits_for_idx, show_nr_replies, show_url, nr_cols):
+def format_entry(mail_item, max_digits_for_idx, show_nr_replies, show_url,
+                 nr_cols):
+    mail = mail_item.mail
     index = '%d' % mail.pridx
     nr_zeroes = max_digits_for_idx - len(index)
     index = '%s%s' % ('0' * nr_zeroes, index)
@@ -649,7 +651,7 @@ def fmt_mails_text(mail_items, list_decorator, mails_to_collapse):
         if child_of_collapsed(mail_item.mail, mails_to_collapse):
             continue
         mail_lines = format_entry(
-                mail_item.mail, max_digits_for_idx, show_nr_replies, show_url,
+                mail_item, max_digits_for_idx, show_nr_replies, show_url,
                 nr_cols)
         for line_nr in range(len(lines), len(lines) + len(mail_lines)):
             line_nr_to_mail_map[line_nr] = mail_item.mail
