@@ -218,8 +218,8 @@ def set_item(key, list_data, keep_date=False):
     changed = True
     if key in cache:
         changed = True
-        if 'mails_cache_data' in cache[key]:
-            changed = cache[key]['mails_cache_data'] != mails_cache_data
+        if 'mail_items' in cache[key]:
+            changed = cache[key]['mail_items'] != mail_items
     if keep_date is False:
         date_str = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
     else:
