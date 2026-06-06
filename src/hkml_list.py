@@ -757,7 +757,7 @@ def sort_filter_mails(mail_items, do_find_ancestors_from_cache,
     runtime_profile.append(['filtering', time.time() - timestamp])
     if runtime_profiles is not None:
         runtime_profiles.end('filtering')
-    return [i.mail for i in filtered_items]
+    return filtered_items
 
 def add_tagged_mails_to_head(mails, tag):
     mails_to_return = []
@@ -1036,7 +1036,7 @@ def mails_to_list_data(
             mail_cache_key=cache_key, mail=mail, prdepth=None,
             parent_item=None, added_by_tag=None))
 
-    filtered_mails = sort_filter_mails(
+    filtered_items = sort_filter_mails(
             mail_items_to_show, do_find_ancestors_from_cache, mails_filter,
             list_decorator, show_thread_of, runtime_profile, runtime_profiles)
 
@@ -1045,15 +1045,17 @@ def mails_to_list_data(
         runtime_profiles.start('etc')
 
     if add_tagged_mails:
-        filtered_mails = add_tagged_mails_to_head(filtered_mails, 'pinned')
-        add_tagged_replies(filtered_mails, 'sent')
-        add_tagged_replies(filtered_mails, 'drafts')
+        filtered_items = add_tagged_mail_items_to_head(
+                filtered_items, 'pinned')
+        add_tagged_reply_items(filtered_items, 'sent')
+        add_tagged_reply_items(filtered_items, 'drafts')
 
     mail_idx_key_map = {}
     mails_cache_data = []
     mail_items = []
     msgid_items = {}
-    for idx, mail in enumerate(filtered_mails):
+    for idx, mail_item in enumerate(filtered_items):
+        mail = mail_item.mail
         mail.pridx = idx
         cache_key = hkml_cache.get_cache_key(
                 mail.gitid, mail.gitdir, mail.get_field('message-id'))
@@ -1076,8 +1078,8 @@ def mails_to_list_data(
 
     stat_lines = []
     if not list_decorator.hide_stat:
-        stat_lines = format_stat_lines(
-                mails_to_show, filtered_mails, stat_authors)
+        stat_lines = format_stat_lines_2(
+                mail_items_to_show, filtered_items, stat_authors)
 
     runtime_profile_lines = format_runtime_profile_lines(
             runtime_profile, list_decorator.runtime_profile, timestamp,
