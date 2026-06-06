@@ -241,10 +241,21 @@ def nr_replies_of(mail):
         nr += nr_replies_of(re)
     return nr
 
+def nr_reply_items_of(mail_item):
+    nr = len(mail_item.reply_items)
+    for re in mail_item.reply_items:
+        nr += nr_reply_items_of(re)
+    return nr
+
 def root_of_thread(mail):
     if mail.parent_mail is None:
         return mail
     return root_of_thread(mail.parent_mail)
+
+def get_thread_root_item(mail_item):
+    if mail_item.parent_mail is None:
+        return mail_item
+    return get_thread_root_item(mail_item.parent_item)
 
 def set_index(mail, list_, depth):
     """ Make mails to be all ready for print in list"""
@@ -254,6 +265,17 @@ def set_index(mail, list_, depth):
 
     for mail in mail.replies:
         set_index(mail, list_, depth + 1)
+
+def set_item_prdepth(mail_item, list_, depth):
+    """ Make mails to be all ready for print in list"""
+    mail_item.prdepth = depth
+    list_.append(mail_item)
+
+    mail_item.mail.pridx = len(list_)
+    mail_item.mail.prdepth = depth
+
+    for reply in mail_item.reply_items:
+        set_item_prdepth(reply, list_, depth + 1)
 
 def last_reply_date(mail, prev_last_date):
     if len(mail.replies) == 0:
@@ -265,9 +287,28 @@ def last_reply_date(mail, prev_last_date):
         prev_last_date = last_reply_date(reply, prev_last_date)
     return prev_last_date
 
+def get_last_reply_date(mail_item, prev_last_date):
+    if len(mail_item.reply_items) == 0:
+        mail = mail_item.mail
+        if prev_last_date == None or prev_last_date < mail.date:
+            return mail.date
+        return prev_last_date
+
+    for reply in mail_item.reply_items:
+        prev_last_date = get_last_reply_date(reply, prev_last_date)
+    return prev_last_date
+
 def nr_comments(mail):
     nr_comments = nr_replies_of(mail)
     # Exclude replies that sent together as a patch series
+    if not mail.get_field('in-reply-to') and mail.series is not None:
+        nr_comments -= mail.series[1]
+    return nr_comments
+
+def get_nr_comments(mail_item):
+    nr_comments = nr_reply_items_of(mail_item)
+    # Exclude replies that sent together as a patch series
+    mail = mail_item.mail
     if not mail.get_field('in-reply-to') and mail.series is not None:
         nr_comments -= mail.series[1]
     return nr_comments
@@ -281,6 +322,16 @@ def sort_threads(threads, category):
         threads.sort(key=lambda t: nr_replies_of(t))
     elif category == 'nr_comments':
         threads.sort(key=lambda t: nr_comments(t))
+
+def sort_thread_items(threads, category):
+    if category == 'first_date':
+        return
+    if category == 'last_date':
+        threads.sort(key=lambda t: get_last_reply_date(t, None))
+    elif category == 'nr_replies':
+        threads.sort(key=lambda t: nr_reply_items_of(t))
+    elif category == 'nr_comments':
+        threads.sort(key=lambda t: get_nr_comments(t))
 
 def all_keywords_in(keywords, text):
     if keywords is None:
