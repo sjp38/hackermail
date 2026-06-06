@@ -1208,7 +1208,11 @@ def after_input_handle_callback(slist):
     mails_cache_data = list_data.mails_cache_data
     if mails_cache_data is None:
         return
-    _, _, last_mails_cache_data = _hkml_list_cache.get_last_mails_list()
+    mails_list_data = _hkml_list_cache.get_last_list()
+    if mails_list_data is not None:
+        last_mails_cache_data = mails_list_data.mails_cache_data
+    else:
+        last_mails_cache_data = None
     if mails_cache_data != last_mails_cache_data:
         _hkml_list_cache.set_item('thread_output', list_data)
 
