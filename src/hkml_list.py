@@ -224,7 +224,7 @@ def format_entry(mail_item, pridx, max_digits_for_idx, show_nr_replies,
         from_fields = from_fields[0:-1]
     suffices = [' '.join(from_fields), mail.date.strftime('%Y/%m/%d %H:%M')]
     if show_nr_replies:
-        suffices.append('%d+ msgs' % nr_replies_of(mail))
+        suffices.append('%d+ msgs' % nr_reply_items_of(mail_item))
     if show_url:
         suffices.append(mail.url())
     suffix = ' (%s)' % ', '.join(suffices)
