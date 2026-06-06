@@ -729,6 +729,25 @@ def add_tagged_mails_to_head(mails, tag):
         tagged_mail.added_by_tag =  tag
     return tagged_mails + mails_to_return
 
+def add_tagged_mail_items_to_head(mail_items, tag):
+    mail_items_to_return = []
+    for mail_item in mail_items:
+        if mail_item.added_by_tag == tag:
+            continue
+        mail_items_to_return.append(mail_item)
+
+    tagged_mails = hkml_tag.mails_of_tag(tag)
+    tagged_mail_items = [
+            MailListMailItem(
+                mail_cache_key=hkml_cache.get_cache_key(
+                    m.gitid, m.gitdir, m.get_field('message-id')),
+                mail=m, prdepth=0, parent_item=None, added_by_tag=tag)
+            for m in tagged_mails]
+    for tagged_mail in tagged_mails:
+        tagged_mail.prdepth = 0
+        tagged_mail.added_by_tag =  tag
+    return tagged_mail_items + mail_items_to_return
+
 def add_tagged_replies(mails, tag):
     tagged_mails = hkml_tag.mails_of_tag(tag)
     expanded_mails = []
@@ -750,6 +769,35 @@ def add_tagged_replies(mails, tag):
     for idx, mail in enumerate(expanded_mails):
         mail.pridx = idx
     mails[:] = expanded_mails
+
+def add_tagged_reply_items(mail_items, tag):
+    tagged_mails = hkml_tag.mails_of_tag(tag)
+    existing_msgids = {i.mail.get_field('message-id') for i in mail_items}
+    expanded_items = []
+    for mail_item in mail_items:
+        expanded_items.append(mail_item)
+        msgid = mail_item.mail.get_field('message-id')
+        for tagged_mail in tagged_mails:
+            tagged_msgid = tagged_mail.get_field('message-id')
+            if tagged_msgid in existing_msgids:
+                continue
+            in_reply_to = tagged_mail.get_field('in-reply-to-msgid')
+            if msgid != in_reply_to:
+                continue
+            new_item =  MailListMailItem(
+                    mail_cache_key=hkml_cache.get_cache_key(
+                        tagged_mail.gitid, tagged_mail.gitdir, tagged_msgid),
+                    mail=tagged_mail, prdepth=mail_item.prdepth + 1,
+                    parent_item=mail_item, added_by_tag=tag)
+            mail_item.reply_items.append(new_item)
+            expanded_items.append(new_item)
+
+            tagged_mail.parent_mail = mail_item.mail
+            tagged_mail.prdepth = mail_item.prdepth + 1
+            tagged_mail.added_by_tag =  tag
+    for idx, mail_item in enumerate(expanded_items):
+        mail_item.mail.pridx = idx
+    mail_items[:] = expanded_items
 
 def child_of_collapsed(mail, mails_to_collapse):
     if mail.parent_mail is None:
