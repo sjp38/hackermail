@@ -1,11 +1,11 @@
 This file contains major changes in each version since v1.0.0
 
 v1.6.0
-- Support adding notes to mails.
+- Always show 'pinned' tag mails on the top of the list.
+- Support adding notes to mails (experimental).
   - Support command line ('hkml mail_note') and interactive mode menu.
   - Show added notes on interactive mail viewer.
   - Add notes to reply drafts.
-- Always show 'pinned' tag mails on the top of the list.
 
 v1.5.9
 - hkml list: always do live update for replies.
