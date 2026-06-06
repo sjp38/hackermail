@@ -418,7 +418,6 @@ def set_prdepth(mails):
         __set_prdepth(mail, 0)
 
 def complete_mail_items(mail_items, slist):
-    msgid_items = {}
     for mail_item in mail_items:
         if mail_item.mail is not None:
             return
@@ -432,10 +431,8 @@ def complete_mail_items(mail_items, slist):
                 ]))
             hkml_view.shell_mode_end(slist)
             exit(1)
-        msgid_items[mail_item.mail.get_field('messsage-id')] = mail_item
-    for mail_item in mail_items:
-        parent_msgid = mail_item.mail.get_field('in-reply-to-msgid')
-        mail_item.parent_item = msgid_items.get(parent_msgid, None)
+    # set parent and replies
+    hkml_list.thread_items_of(mail_items, do_find_ancestors_from_cache=False)
 
 def get_mails_from_cache_data(mails_cache_data, slist):
     mails = []
