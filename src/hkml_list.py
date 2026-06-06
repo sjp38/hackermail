@@ -692,6 +692,7 @@ class MailListMailItem:
     prdepth = None
     parent_item = None
     added_by_tag = None
+    reply_items = None  # list of MailListMailItem objects
 
     def __init__(self, mail_cache_key, mail, prdepth, parent_item,
                  added_by_tag):
@@ -700,6 +701,7 @@ class MailListMailItem:
         self.prdepth = prdepth
         self.parent_item = parent_item
         self.added_by_tag = added_by_tag
+        self.reply_items = []
 
     def __eq__(self, other):
         return self.mail_cache_key == other.mail_cache_key and \
