@@ -192,7 +192,11 @@ def get_last_list():
     mails_cache_data = None
     if 'mails_cache_data' in outputs:
         mails_cache_data = outputs['mails_cache_data']
-    return outputs['output'], outputs['index_to_cache_key'], mails_cache_data
+    return hkml_list.MailsListData(
+        text=outputs['output'], len_comments=None, line_nr_mail_map=None,
+        mail_idx_key_map=outputs['index_to_cache_key'],
+        mails_cache_data=mails_cache_data,
+        mail_items=mail_items_from_kvpairs(outputs.get('mail_items', None)))
 
 def get_last_thread():
     cache = get_mails_lists_cache()

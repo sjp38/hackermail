@@ -1244,27 +1244,18 @@ def args_to_mails_list_data(args, suggest_manifest_update):
     lists_cache_key = args_to_lists_cache_key(args)
     if use_cached_output(args):
         if args.sources == []:
-            to_show, mail_idx_key_map, mails_cache_data = \
-                    _hkml_list_cache.get_last_list()
+            mails_list_data = _hkml_list_cache.get_last_list()
             # This is explicit cached list request.  Fail if cached list is
             # unavailable.
-            if to_show is None:
+            if mails_list_data is None:
                 return None, 'no valid cached list output exists'
         else:
             # This is implicit cached list request.  If there is no cached list
             # for this request, we may be able to get it from the git.
             mails_list_data = _hkml_list_cache.get_list_for(lists_cache_key)
-            if mails_list_data is None:
-                to_show = None
-            else:
-                to_show = mails_list_data.text
-                mail_idx_key_map = mails_list_data.mail_idx_key_map
-                mails_cache_data = mails_list_data.mails_cache_data
-        if to_show is not None:
+        if mails_list_data is not None:
             _hkml_list_cache.writeback_list_output()
-            return MailsListData(
-                    to_show, None, None, mail_idx_key_map, mails_cache_data
-                    ), None
+            return mails_list_data, None
 
     for source in args.sources:
         _hkml_list_cache.invalidate_cached_outputs(source)
