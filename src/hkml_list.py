@@ -155,6 +155,51 @@ def threads_of(mails, do_find_ancestors_from_cache=False):
             mail.parent_mail = orig_mail
     return threads
 
+def find_ancestor_items_from_cache(mail_item, msgid_items, found_parents):
+    parent_msgid = mail_item.mail.get_field('in-reply-to-msgid')
+    if parent_msgid is None or parent_msgid in msgid_items:
+        return
+    parent = hkml_cache.get_mail(key=parent_msgid)
+
+    if parent is None:
+        return
+    parent_item = MailListMailItem(
+            mail_cache_key=hkml_cache.get_cache_key(
+                parent.gitid, parent.gitdir, parent_msgid), mail=parent,
+            prdepth=None, parent_item=None, added_by_tag=None)
+    msgid_items[parent_msgid] = parent_item
+    found_parents.append(parent_item)
+    if parent.get_field('in-reply-to') is None:
+        return
+    find_ancestor_items_from_cache(parent_item, msgid_items, found_parents)
+
+def thread_items_of(mail_items, do_find_ancestors_from_cache=False):
+    msgid_items = {}
+    for mail_item in mail_items:
+        msgid = mail_item.mail.get_field('message-id')
+        if msgid is None:
+            continue
+        msgid_items[msgid] = mail_item
+
+    if do_find_ancestors_from_cache:
+        found_parents = []
+        for mail_item in mail_items:
+            find_ancestor_items_from_cache(
+                    mail_item, msgid_items, found_parents)
+        mail_items += found_parents
+
+    threads = []
+    for mail_item in mail_items:
+        parent_msgid = mail_item.mail.get_field('in-reply-to-msgid')
+        if not parent_msgid in msgid_items:
+            threads.append(mail_item)
+        else:
+            parent_item = msgid_items[parent_msgid]
+            if not mail_item in parent_item.reply_items:
+                parent_item.reply_items.append(mail_item)
+            mail_item.parent_item = parent_item
+    return threads
+
 def format_entry(mail_item, pridx, max_digits_for_idx, show_nr_replies,
                  show_url, nr_cols):
     index = '%d' % pridx
