@@ -698,6 +698,25 @@ class MailListMailItem:
         self.parent_item = parent_item
         self.added_by_tag = added_by_tag
 
+    def to_kvpairs(self):
+        # convert only essential information
+        return {
+                'mail_cache_key': self.mail_cache_key,
+                'prdepth': self.prdepth,
+                'added_by_tag': self.added_by_tag,
+                }
+
+    @classmethod
+    def from_kvpairs(cls, kvpairs):
+        # set only essential information
+        return cls(
+                mail_cache_key=kvpairs['mail_cache_key'],
+                mail=None,
+                prdepth=kvpairs['prdepth'],
+                parent_item=None,
+                added_by_tag=kvpairs['added_by_tag'],
+                )
+
 class MailsListData:
     # formatted text of the list
     text = None
