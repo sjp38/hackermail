@@ -155,9 +155,6 @@ def threads_of(mails, do_find_ancestors_from_cache=False):
             mail.parent_mail = orig_mail
     return threads
 
-def orig_subject_formatted(mail):
-    return mail.parent_mail is not None
-
 def format_entry(mail_item, pridx, max_digits_for_idx, show_nr_replies,
                  show_url, nr_cols):
     index = '%d' % pridx
