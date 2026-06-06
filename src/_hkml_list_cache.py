@@ -184,11 +184,11 @@ def get_last_list():
     cache = get_mails_lists_cache()
     keys = [k for k in cache if k != 'thread_output']
     if not keys:
-        return None, None
+        return None
     key = sorted(keys, key=lambda x: cache[x]['date'])[-1]
     outputs = get_cached_list_outputs(key)
     if outputs is None:
-        return None, None, None
+        return None
     mails_cache_data = None
     if 'mails_cache_data' in outputs:
         mails_cache_data = outputs['mails_cache_data']
