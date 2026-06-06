@@ -1074,7 +1074,7 @@ def mails_to_list_data(
         mail_item.parent_item = msgid_items.get(parent_msgid, None)
 
     lines, line_nr_to_mail_map = fmt_mails_text(
-            mail_items, list_decorator, mails_to_collapse={})
+            filtered_items, list_decorator, mails_to_collapse={})
 
     stat_lines = []
     if not list_decorator.hide_stat:
@@ -1093,7 +1093,7 @@ def mails_to_list_data(
         len_comments = len(runtime_profile_lines) + len(stat_lines)
     return MailsListData(text, len_comments, line_nr_to_mail_map,
                          mail_idx_key_map, mails_cache_data,
-                         mail_items=mail_items), None
+                         mail_items=filtered_items), None
 
 def git_log_output_line_to_mail(line, mdir):
     fields = line.split()
