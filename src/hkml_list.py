@@ -618,16 +618,15 @@ def fmt_mails_text(mail_items, list_decorator, mails_to_collapse):
     mail items contains all fields that are needed to be formatted, and sorted
     in the listing order.
     '''
-    mails = [i.mail for i in mail_items]
     line_nr_to_mail_map = {}
     lines = []
-    if len(mails) == 0:
+    if len(mail_items) == 0:
         return lines, line_nr_to_mail_map
     collapse_threads = list_decorator.collapse
     show_url = list_decorator.show_url
     nr_cols = list_decorator.cols
 
-    max_index = mails[-1].pridx
+    max_index = len(mail_items) - 1
     if max_index == 0:
         max_index = 1
     max_digits_for_idx = math.ceil(math.log(max_index, 10))
@@ -636,22 +635,24 @@ def fmt_mails_text(mail_items, list_decorator, mails_to_collapse):
         # set parent_mail
         # set do_find_ancestors_from_cache as False, since the caller should
         # already did that before.
-        threads_of(mails, do_find_ancestors_from_cache=False)
+        threads_of([i.mail for i in mail_items],
+                   do_find_ancestors_from_cache=False)
 
-    for mail in mails:
+    for idx, mail_item in enumeratemail_items):
         show_nr_replies = False
         if collapse_threads == True:
-            if mail.prdepth > 0:
+            if mail_item.prdepth > 0:
                 continue
             show_nr_replies = True
-        if mail.pridx in mails_to_collapse:
+        if idx in mails_to_collapse:
             show_nr_replies = True
-        if child_of_collapsed(mail, mails_to_collapse):
+        if child_of_collapsed(mail_item.mail, mails_to_collapse):
             continue
-        mail_lines = format_entry(mail, max_digits_for_idx, show_nr_replies,
-                              show_url, nr_cols)
+        mail_lines = format_entry(
+                mail_item.mail, max_digits_for_idx, show_nr_replies, show_url,
+                nr_cols)
         for line_nr in range(len(lines), len(lines) + len(mail_lines)):
-            line_nr_to_mail_map[line_nr] = mail
+            line_nr_to_mail_map[line_nr] = mail_item.mail
         lines += mail_lines
     return lines, line_nr_to_mail_map
 
