@@ -564,48 +564,6 @@ class MailListFilter:
             setattr(self, key, value)
         return self
 
-def format_stat(mails_to_show, stat_authors):
-    nr_threads = 0
-    nr_new_threads = 0
-    nr_patches = 0
-    nr_patchsets = 0
-    oldest = None
-    latest = None
-    authors_nr_mails = {}
-    for mail in mails_to_show:
-        if mail.parent_mail is None:
-            nr_threads += 1
-        if not mail.get_field('in-reply-to'):
-            nr_new_threads += 1
-        if 'patch' in mail.subject_tags:
-            nr_patches += 1
-        if 'patch' in mail.subject_tags and not mail.get_field('in-reply-to'):
-            nr_patchsets += 1
-        if oldest is None or mail.date < oldest.date:
-            oldest = mail
-        if latest is None or latest.date < mail.date:
-            latest = mail
-        author = mail.get_field('from')
-        if not author in authors_nr_mails:
-            authors_nr_mails[author] = 0
-        authors_nr_mails[author] += 1
-
-    lines = []
-    lines.append('# %d mails, %d threads, %d new threads' %
-            (len(mails_to_show), nr_threads, nr_new_threads))
-    lines.append('# %d patches, %d series' % (nr_patches, nr_patchsets))
-    if oldest is not None:
-        lines.append('# oldest: %s' % oldest.date)
-        lines.append('# newest: %s' % latest.date)
-    if stat_authors:
-        authors = [[x, authors_nr_mails[x]]
-                   for x in sorted(authors_nr_mails.keys(), reverse=True,
-                                   key=lambda x: authors_nr_mails[x])[:10]]
-        lines.append('# top %d authors' % len(authors))
-        for author, nr_mails in authors:
-            lines.append('# - %s: %d' % (author, nr_mails))
-    return lines
-
 def format_stat_items(mail_items, stat_authors):
     nr_threads = 0
     nr_new_threads = 0
