@@ -413,6 +413,11 @@ class MailListFilter:
         for reply in mail.replies:
             self.thread_mails_from(reply, mails)
 
+    def fill_thread_items_with(self, mail_item, thread_items):
+        thread_items.append(mail_item)
+        for reply in mail_item.reply_items:
+            self.fill_thread_items_with(reply, thread_items)
+
     def mails_to_check_keywords(self, mail):
         if self.keywords_for == 'each':
             return [mail]
@@ -426,6 +431,22 @@ class MailListFilter:
             mails = []
             self.thread_mails_from(mail, mails)
             return mails
+        raise Exception('MailListFilter.keywords_for is unexpected one: %s' %
+                        self.keywords_for)
+
+    def items_to_check_keywords(self, mail_item):
+        if self.keywords_for == 'each':
+            return [mail_item]
+        elif self.keywords_for == 'root':
+            while mail_item.parent_item is not None:
+                mail_item = mail_item.parent_item
+            return [mail_item]
+        elif self.keywords_for == 'thread':
+            while mail_item.parent_item is not None:
+                mail_item = mail_item.parent_item
+            mail_items = []
+            self.fill_thread_items_with(mail_item, mail_items)
+            return mail_items
         raise Exception('MailListFilter.keywords_for is unexpected one: %s' %
                         self.keywords_for)
 
@@ -497,6 +518,23 @@ class MailListFilter:
             return True
 
         if self.should_filter_out_keywords(self.mails_to_check_keywords(mail)):
+            return True
+
+        if self.should_filter_out_patches(mail):
+            return True
+
+        return False
+
+    def should_filter_out_item(self, mail_item):
+        if self.no_filter_set():
+            return False
+
+        mail = mail_item.mail
+        if self.new_threads_only and mail.get_field('in-reply-to'):
+            return True
+
+        mail_items = self.items_to_check_keywords(mail_item)
+        if self.should_filter_out_keywords([i.mail for i in mail_items]):
             return True
 
         if self.should_filter_out_patches(mail):
@@ -577,6 +615,17 @@ def get_filtered_mails(mails, ls_range, mails_filter):
             continue
         filtered_mails.append(mail)
     return filtered_mails
+
+def get_filtered_mail_items(mail_items, ls_range, mails_filter):
+    filtered_items = []
+    for idx, mail_item in enumerate(mail_items):
+        if ls_range is not None and not idx in ls_range:
+            continue
+        if mails_filter is not None and mails_filter.should_filter_out_item(
+                mail_item):
+            continue
+        filtered_items.append(mail_item)
+    return filtered_items
 
 class RuntimeProfile:
     start_time = None
