@@ -263,16 +263,6 @@ def set_item_prdepth(mail_item, list_, depth):
     for reply in mail_item.reply_items:
         set_item_prdepth(reply, list_, depth + 1)
 
-def last_reply_date(mail, prev_last_date):
-    if len(mail.replies) == 0:
-        if prev_last_date == None or prev_last_date < mail.date:
-            return mail.date
-        return prev_last_date
-
-    for reply in mail.replies:
-        prev_last_date = last_reply_date(reply, prev_last_date)
-    return prev_last_date
-
 def get_last_reply_date(mail_item, prev_last_date):
     if len(mail_item.reply_items) == 0:
         mail = mail_item.mail
