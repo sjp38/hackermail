@@ -1253,8 +1253,13 @@ def args_to_mails_list_data(args, suggest_manifest_update):
         else:
             # This is implicit cached list request.  If there is no cached list
             # for this request, we may be able to get it from the git.
-            to_show, mail_idx_key_map, mails_cache_data = \
-                    _hkml_list_cache.get_list_for(lists_cache_key)
+            mails_list_data = _hkml_list_cache.get_list_for(lists_cache_key)
+            if mails_list_data is None:
+                to_show = None
+            else:
+                to_show = mails_list_data.text
+                mail_idx_key_map = mails_list_data.mail_idx_key_map
+                mails_cache_data = mails_list_data.mails_cache_data
         if to_show is not None:
             _hkml_list_cache.writeback_list_output()
             return MailsListData(

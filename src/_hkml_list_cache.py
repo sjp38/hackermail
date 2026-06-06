@@ -7,6 +7,7 @@ import json
 
 import _hkml
 import hkml_cache
+import hkml_list
 
 '''
 A dict containing last position of cursors on cached lists.  Saved as file.
@@ -149,14 +150,23 @@ def get_cached_list_outputs(key):
     outputs['date'] = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
     return outputs
 
+def mail_items_from_kvpairs(kvpairs):
+    if kvpairs is None:
+        return None
+    return [hkml_list.MailListMailItem.from_kvpairs(kvp) for kvp in kvpairs]
+
 def get_list_for(key):
     outputs = get_cached_list_outputs(key)
     if outputs is None:
-        return None, None, None
+        return None
     mails_cache_data = None
     if 'mails_cache_data' in outputs:
         mails_cache_data = outputs['mails_cache_data']
-    return outputs['output'], outputs['index_to_cache_key'], mails_cache_data
+    return hkml_list.MailsListData(
+        text=outputs['output'], len_comments=None, line_nr_mail_map=None,
+        mail_idx_key_map=outputs['index_to_cache_key'],
+        mails_cache_data=mails_cache_data,
+        mail_items=mail_items_from_kvpairs(outputs.get('mail_items', None)))
 
 def get_last_mails_list():
     cache = get_mails_lists_cache()
