@@ -112,6 +112,7 @@ Values are a dict containing below key/values.
     - cache_key: the mail cache key.
     - prdepth: same to that on Mail class.
     - added_by_tag: same to that on Mail class.
+- 'mail_items': a list of MailListMailItem.to_kvpairs() outputs
 - 'date': last accessed date
 - 'create_date': created date.  Removed after v1.1.7.
 - 'create_dates': last up to ten created dates of same key.  Removed after v1.1.9.
@@ -207,6 +208,10 @@ def set_item(key, list_data, keep_date=False):
     list_str = list_data.text
     mail_idx_key_map = list_data.mail_idx_key_map
     mails_cache_data = list_data.mails_cache_data
+    if list_data.mail_items is None:
+        mail_items = None
+    else:
+        mail_items = [i.to_kvpairs() for i in list_data.mail_items]
     cache = get_mails_lists_cache()
     changed = True
     if key in cache:
@@ -236,6 +241,7 @@ def set_item(key, list_data, keep_date=False):
             'output': list_str,
             'index_to_cache_key': mail_idx_key_map,
             'mails_cache_data': mails_cache_data,
+            'mail_items': mail_items,
             'date': date_str,        # last referenced date
             }
     max_cache_sz = 64
