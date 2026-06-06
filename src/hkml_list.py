@@ -158,19 +158,20 @@ def threads_of(mails, do_find_ancestors_from_cache=False):
 def orig_subject_formatted(mail):
     return mail.parent_mail is not None
 
-def format_entry(mail_item, max_digits_for_idx, show_nr_replies, show_url,
-                 nr_cols):
-    mail = mail_item.mail
-    index = '%d' % mail.pridx
+def format_entry(mail_item, pridx, max_digits_for_idx, show_nr_replies,
+                 show_url, nr_cols):
+    index = '%d' % pridx
     nr_zeroes = max_digits_for_idx - len(index)
     index = '%s%s' % ('0' * nr_zeroes, index)
-    prefix = '[%s]%s' % (index, ' ' * 2 * mail.prdepth)
+    prefix = '[%s]%s' % (index, ' ' * 2 * mail_item.prdepth)
 
+    mail = mail_item.mail
     subject = '%s' % mail.get_field('subject')
-    if mail.prdepth and subject.lower().startswith('re: '):
+    if mail_item.prdepth and subject.lower().startswith('re: '):
         subject = subject[4:]
-        if orig_subject_formatted(mail):
-            parent_subject = mail.parent_mail.get_field('subject')
+        if mail_item.parent_item is not None:
+            parent_mail = mail_item.parent_item.mail
+            parent_subject = parent_mail.get_field('subject')
             if parent_subject[:4].lower() == 're: ':
                 parent_subject = parent_subject[4:]
             if parent_subject == subject:
@@ -186,8 +187,8 @@ def format_entry(mail_item, max_digits_for_idx, show_nr_replies, show_url,
         suffices.append(mail.url())
     suffix = ' (%s)' % ', '.join(suffices)
 
-    if mail.added_by_tag is not None:
-        subject = '(%s) %s' % (getattr(mail, 'added_by_tag'), subject)
+    if mail_item.added_by_tag is not None:
+        subject = '(%s) %s' % (mail_item.added_by_tag, subject)
 
     lines = _hkml_fmtstr.wrap_line(prefix, subject + suffix, nr_cols)
     return lines
@@ -640,7 +641,7 @@ def fmt_mails_text(mail_items, list_decorator, mails_to_collapse):
         threads_of([i.mail for i in mail_items],
                    do_find_ancestors_from_cache=False)
 
-    for idx, mail_item in enumeratemail_items):
+    for idx, mail_item in enumerate(mail_items):
         show_nr_replies = False
         if collapse_threads == True:
             if mail_item.prdepth > 0:
@@ -651,7 +652,7 @@ def fmt_mails_text(mail_items, list_decorator, mails_to_collapse):
         if child_of_collapsed(mail_item.mail, mails_to_collapse):
             continue
         mail_lines = format_entry(
-                mail_item, max_digits_for_idx, show_nr_replies, show_url,
+                mail_item, idx, max_digits_for_idx, show_nr_replies, show_url,
                 nr_cols)
         for line_nr in range(len(lines), len(lines) + len(mail_lines)):
             line_nr_to_mail_map[line_nr] = mail_item.mail
