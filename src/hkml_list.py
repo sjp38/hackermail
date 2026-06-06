@@ -274,13 +274,6 @@ def get_last_reply_date(mail_item, prev_last_date):
         prev_last_date = get_last_reply_date(reply, prev_last_date)
     return prev_last_date
 
-def nr_comments(mail):
-    nr_comments = nr_replies_of(mail)
-    # Exclude replies that sent together as a patch series
-    if not mail.get_field('in-reply-to') and mail.series is not None:
-        nr_comments -= mail.series[1]
-    return nr_comments
-
 def get_nr_comments(mail_item):
     nr_comments = nr_reply_items_of(mail_item)
     # Exclude replies that sent together as a patch series
