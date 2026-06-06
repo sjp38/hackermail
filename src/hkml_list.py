@@ -649,16 +649,6 @@ def format_stat_items(mail_items, stat_authors):
             lines.append('# - %s: %d' % (author, nr_mails))
     return lines
 
-def get_filtered_mails(mails, ls_range, mails_filter):
-    filtered_mails = []
-    for mail in mails:
-        if ls_range is not None and not mail.pridx in ls_range:
-            continue
-        if mails_filter is not None and mails_filter.should_filter_out(mail):
-            continue
-        filtered_mails.append(mail)
-    return filtered_mails
-
 def get_filtered_mail_items(mail_items, ls_range, mails_filter):
     filtered_items = []
     for idx, mail_item in enumerate(mail_items):
