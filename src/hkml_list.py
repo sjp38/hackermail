@@ -884,21 +884,7 @@ def fmt_mails_text(mail_items, list_decorator, mails_to_collapse):
         lines += mail_lines
     return lines, line_nr_to_mail_map
 
-def format_stat_lines(mails_to_show, filtered_mails, stat_authors):
-    stat_lines = []
-    total_stat_lines = format_stat(mails_to_show, stat_authors)
-    filtered_stat_lines = format_stat(filtered_mails, stat_authors)
-    if total_stat_lines == filtered_stat_lines:
-        stat_lines += total_stat_lines
-    else:
-        stat_lines.append('# stat for total mails')
-        stat_lines += total_stat_lines
-        stat_lines.append('#')
-        stat_lines.append('# stat for filtered mails')
-        stat_lines += filtered_stat_lines
-    return stat_lines
-
-def format_stat_lines_2(mail_items, filtered_items, stat_authors):
+def format_stat_lines(mail_items, filtered_items, stat_authors):
     stat_lines = []
     total_stat_lines = format_stat_items(mail_items, stat_authors)
     filtered_stat_lines = format_stat_items(filtered_items, stat_authors)
@@ -1059,7 +1045,7 @@ def mails_to_list_data(
 
     stat_lines = []
     if not list_decorator.hide_stat:
-        stat_lines = format_stat_lines_2(
+        stat_lines = format_stat_lines(
                 mail_items_to_show, filtered_items, stat_authors)
 
     runtime_profile_lines = format_runtime_profile_lines(
