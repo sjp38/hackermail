@@ -683,6 +683,21 @@ def format_runtime_profile_lines(runtime_profile, show_always, timestamp,
     runtime_profile_lines.append('#')
     return runtime_profile_lines
 
+class MailListMailItem:
+    mail_cache_key = None
+    mail = None
+    prdepth = None
+    parent_item = None
+    added_by_tag = None
+
+    def __init__(self, mail_cache_key, mail, prdepth, parent_item,
+                 added_by_tag):
+        self.mail_cache_key = mail_cache_key
+        self.mail = mail
+        self.prdepth = prdepth
+        self.parent_item = parent_item
+        self.added_by_tag = added_by_tag
+
 class MailsListData:
     # formatted text of the list
     text = None
