@@ -1,9 +1,7 @@
 # SPDX-License-Identifier: GPL-2.0
 
 import json
-import os
 
-import _hkml
 import _hkml_list_cache
 import hkml_open
 

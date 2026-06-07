@@ -1,13 +1,11 @@
 # SPDX-License-Identifier: GPL-2.0
 
 import argparse
-import curses
 import datetime
 import fnmatch
 import os
 import time
 
-import _hkml
 import _hkml_cli
 import _hkml_date
 import _hkml_list_cache
@@ -15,7 +13,6 @@ import hkml_cache
 import hkml_export
 import hkml_forward
 import hkml_list
-import hkml_manifest
 import hkml_open
 import hkml_patch
 import hkml_reply

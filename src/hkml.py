@@ -3,12 +3,10 @@
 
 import argparse
 import os
-import subprocess
 import sys
 
 import _hkml_cli_complete
 import hkml_init
-import hkml_interactive
 import hkml_fetch
 import hkml_history
 import hkml_list

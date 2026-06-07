@@ -1,17 +1,13 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: GPL-2.0
 
-import argparse
 import os
 import subprocess
-import sys
 import tempfile
 
-import _hkml
 import _hkml_cli
 import _hkml_list_cache
 import _hkml_subproc
-import hkml_list
 import hkml_open
 import hkml_send
 import hkml_signature

@@ -19,7 +19,6 @@ $ hkml shortcut add mail_view t open_thread_on_line
 $ hkml shortcut remove list f
 '''
 
-import argparse
 import json
 import os
 

@@ -1,15 +1,12 @@
 # SPDX-License-Identifier: GPL-2.0
 
-import subprocess
 import tempfile
 
 import _hkml
 import _hkml_list_cache
-import hkml_list
 import hkml_mail_note
 import hkml_send
 import hkml_write
-import hkml_tag
 
 def format_reply_subject(mail):
     subject = mail.get_field('subject')

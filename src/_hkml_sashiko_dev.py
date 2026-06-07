@@ -6,8 +6,6 @@ https://sashiko.dev provides AI review results of kernel patches.  Fetch the
 results and show those on the terminal.
 '''
 
-import argparse
-
 requests_import_success = False
 
 try:

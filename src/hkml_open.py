@@ -1,6 +1,5 @@
 # SPDX-License-Identifier: GPL-2.0
 
-import json
 import os
 import subprocess
 import tempfile
@@ -9,7 +8,6 @@ import _hkml
 import _hkml_fmtstr
 import _hkml_list_cache
 import _hkml_subproc
-import hkml_list
 import hkml_view
 import hkml_view_text
 
