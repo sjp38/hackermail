@@ -87,8 +87,6 @@ def get_active_mails_cache():
     return active_cache
 
 def load_one_more_archived_cache():
-    global archived_caches
-
     archive_files = list_archive_files()
     if len(archive_files) == len(archived_caches):
         return False
@@ -106,8 +104,6 @@ def __get_kvpairs(key, cache):
     return cache[key]
 
 def get_kvpairs(gitid=None, gitdir=None, key=None):
-    global archived_caches
-
     if key is None:
         key = get_cache_key(gitid, gitdir)
 
