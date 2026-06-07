@@ -24,9 +24,9 @@ def notes_added(draft_body_lines, mail):
         notes_added_lines.append(line)
         # we added two new lines at the beginning of the body.
         orig_line_nr = line_nr - 2
-        if line_nr in line_notes:
+        if orig_line_nr in line_notes:
             notes_added_lines.append('')
-            for note in line_notes[line_nr]:
+            for note in line_notes[orig_line_nr]:
                 notes_added_lines.append('HKML NOTE: %s' % note.text)
             notes_added_lines.append('')
     return notes_added_lines
