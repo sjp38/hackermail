@@ -400,7 +400,7 @@ def focus_set(c, slist):
             try:
                 answer = min(int(answer), len(slist.lines) - 1)
             except Exception as e:
-                return 'wrong answer'
+                return 'wrong answer (%s)' % e
         slist.focus_row = answer
         return None
 

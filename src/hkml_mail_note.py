@@ -143,6 +143,9 @@ def main(args):
         add_note(args.msgid, args.line_nr, args.text)
     elif args.action == 'remove':
         err = remove_notes(args.msgid, args.line_nr, [args.note_idx])
+        if err is not None:
+            print(err)
+            exit(1)
 
 def set_argparser(parser):
     parser.description = 'manage notes on mail'

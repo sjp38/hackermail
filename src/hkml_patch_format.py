@@ -84,7 +84,7 @@ def linux_maintainers_of(patch_or_source_file):
     try:
         recipients = subprocess.check_output(cmd).decode().strip().split('\n')
     except Exception as e:
-        return None, '%s fail' % (' '.join(cmd))
+        return None, '%s fail (%s)' % (' '.join(cmd), e)
 
     return [r for r in recipients if r != ''], None
 
