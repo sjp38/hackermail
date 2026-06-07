@@ -649,10 +649,10 @@ def view(draw_fn=None, fn_args=None):
     to show using the fn_args, and update the screen to show it.
     '''
     try:
-        slist = curses.wrapper(__view, draw_fn, fn_args)
+        curses.wrapper(__view, draw_fn, fn_args)
     except Exception as e:
         if len(e.args) == 2 and e.args[0] == 'terminate hkml':
-            slist = e.args[1]
+            pass
         else:
             raise e
 
