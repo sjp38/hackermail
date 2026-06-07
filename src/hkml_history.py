@@ -101,4 +101,4 @@ def set_argparser(parser):
     parser_list.add_argument(
             '--nr_events', type=int, help='number of recent events to list')
 
-    parser_remove = subparsers.add_parser('remove', help='remove history')
+    subparsers.add_parser('remove', help='remove history')

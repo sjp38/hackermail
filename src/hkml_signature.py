@@ -108,8 +108,8 @@ def set_argparser(parser):
         subparsers = parser.add_subparsers(
                 title='action', dest='action', metavar='<action>')
 
-    parser_add = subparsers.add_parser('add', help='add a signature')
-    parser_list = subparsers.add_parser('list', help='list signatures')
+    subparsers.add_parser('add', help='add a signature')
+    subparsers.add_parser('list', help='list signatures')
     parser_edit = subparsers.add_parser('edit', help='edit a signature')
     parser_edit.add_argument(
             'signature_idx', metavar='<index>', type=int,

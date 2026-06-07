@@ -187,7 +187,6 @@ def get_last_list():
         mail_items=mail_items_from_kvpairs(outputs.get('mail_items', None)))
 
 def get_last_thread():
-    cache = get_mails_lists_cache()
     outputs = get_cached_list_outputs('thread_output')
     if outputs is None:
         return None

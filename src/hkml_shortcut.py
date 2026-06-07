@@ -116,7 +116,7 @@ def set_argparser(parser):
     subparsers = parser.add_subparsers(
             title='action', dest='action', metavar='<action>')
 
-    parser_list = subparsers.add_parser('list', help='list shortcuts')
+    subparsers.add_parser('list', help='list shortcuts')
 
     parser_add = subparsers.add_parser('add', help='add a shortcut')
     parser_add.add_argument(

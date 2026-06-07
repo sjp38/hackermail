@@ -91,7 +91,7 @@ class MailListDecorator:
         if args.cols is None:
             try:
                 args.cols = int(os.get_terminal_size().columns * 9 / 10)
-            except OSError as e:
+            except OSError:
                 pass
         self.cols = args.cols
 
@@ -604,7 +604,6 @@ class RuntimeProfiles:
 def sort_filter_mails(mail_items, do_find_ancestors_from_cache,
                       mails_filter, list_decorator, show_thread_of,
                       runtime_profile, runtime_profiles):
-    mails_to_show = [i.mail for i in mail_items]
     if runtime_profiles is not None:
         runtime_profiles.start('threads_extract')
 
@@ -1437,10 +1436,6 @@ def args_to_mails_list_data(args, suggest_manifest_update):
     runtime_profile = [['get_mails', time.time() - timestamp]]
     runtime_profiles.end('get_mails')
 
-    show_pinned_mails = True
-    for source_type in args.source_type:
-        if source_type != 'mailing_list':
-            show_pinned_mails = False
     list_data, err = mails_to_list_data(
             mails_to_show, args.do_find_ancestors_from_cache,
             MailListFilter(args), MailListDecorator(args), None,

@@ -242,7 +242,7 @@ def set_argparser(parser):
                                nargs='+', default=[],
                                help='indexes of the mails to remove tags')
 
-    parser_list = subparsers.add_parser('list', help='list tags')
+    subparsers.add_parser('list', help='list tags')
 
 def handle_may_sent_mail(mail, sent, orig_draft_subject, do_confirm=True):
     '''Handle tags of a mail that may sent or not'''

@@ -46,7 +46,7 @@ def pr_with_pager_if_needed(text):
         if text.count('\n') < (os.get_terminal_size().lines * 9 / 10):
             print(text)
             return
-    except OSError as e:
+    except OSError:
         # maybe the user is using pipe to the output
         pass
 

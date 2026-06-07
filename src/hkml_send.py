@@ -90,7 +90,6 @@ def handle_user_edit_mistakes(tmp_path):
         f.write(written_mail)
 
 def send_mail(mboxfile, get_confirm, erase_mbox, orig_draft_subject=None):
-    do_send = True
     handle_user_edit_mistakes(mboxfile)
     if get_confirm:
         with open(mboxfile, 'r') as f:

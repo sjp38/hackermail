@@ -349,8 +349,9 @@ def set_argparser(parser):
             'request', metavar='<index or name>',
             help='name or index of the request to remove')
 
-    parser_status = subparsers.add_parser(
-            'status', help='show monitoring status including requests')
+    subparsers.add_parser(
+            'status',
+            help='show monitoring status including requests')
 
     parser_start = subparsers.add_parser(
             'start', help='start monitoring')
@@ -358,5 +359,4 @@ def set_argparser(parser):
             parser_start, '--since',
             'Ignore monitoring target mails that sent before this time')
 
-    parser_stop = subparsers.add_parser(
-            'stop', help='stop monitoring')
+    subparsers.add_parser('stop', help='stop monitoring')

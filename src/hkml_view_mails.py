@@ -98,7 +98,6 @@ def suggest_continuing_draft(drafts):
     if len(drafts) == 0:
         return None
     drafts = sorted(drafts, key=lambda d: d.date)
-    answered = False
     print('you have drafts of subject "%s" written at below dates' %
           drafts[0].subject)
     print()
@@ -967,7 +966,6 @@ def get_files_for_reviewer(reviewer, maintainers_file_content):
             if len(fields) < 2:
                 continue
             if fields[0] in ['M:', 'R:']:
-                m_r_check_stared = True
                 if ' '.join(fields[1:]) == reviewer:
                     section_for_reviewer = True
                 continue
@@ -1221,7 +1219,6 @@ def mails_quit_callback(slist):
 
 def show_mails_list(screen, mails_view_data):
     list_data = mails_view_data.list_data
-    display_rule = mails_view_data.display_rule
     list_args = mails_view_data.list_args
     text_lines = list_data.text.split('\n')
     slist = hkml_view.ScrollableList(screen, text_lines,

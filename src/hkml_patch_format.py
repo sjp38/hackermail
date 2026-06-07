@@ -447,7 +447,6 @@ def parse_subject_prefix(subject_prefix):
     if subject_prefix is None:
         return 'Prefix is none', None, None, None, None
 
-    is_valid = False
     is_rfc = False
     version = None
     sequence = None

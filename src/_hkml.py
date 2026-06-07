@@ -22,7 +22,7 @@ def cmd_str_output(cmd):
     output = subprocess.check_output(cmd)
     try:
         return output.decode('utf-8').strip()
-    except UnicodeDecodeError as e:
+    except UnicodeDecodeError:
         return output.decode('cp437').strip()
 
 def cmd_lines_output(cmd):
