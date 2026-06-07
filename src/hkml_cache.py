@@ -204,7 +204,10 @@ def pr_cache_stat(cache_path, profile_mail_parsing_time):
         return
     before_timestamp = time.time()
     for key in cache:
-        mail = _hkml.Mail(kvpairs=cache[key])
+        # the cache might somehow be corrupted with non-mail value.
+        if not 'gitid' in cache[key]:
+            continue
+        _hkml.Mail(kvpairs=cache[key])
     print('%f seconds for parsing mails' % (time.time() - before_timestamp))
 
 def show_cache_status(config_only, profile_mail_parsing_time):
