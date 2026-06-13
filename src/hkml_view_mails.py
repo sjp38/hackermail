@@ -71,7 +71,8 @@ def focused_mail_idx(slist):
     return line_nr_mail_idx_map[row]
 
 def open_focused_mail(c, slist):
-    mail = get_focused_mail(slist)
+    mail_item = get_focused_mail_item(slist)
+    mail = mail_item.mail
     if mail is None:
         return
 
@@ -85,7 +86,8 @@ def open_focused_mail(c, slist):
     else:
         cursor_position = None
 
-    text_view_data = hkml_view_text.TextViewData(mail, get_mails(slist), slist)
+    text_view_data = hkml_view_text.TextViewData(
+            mail, get_mails(slist), slist, mail_item)
 
     text_view_list = hkml_view_text.show_text_viewer(
             slist.screen,
