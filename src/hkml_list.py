@@ -833,6 +833,9 @@ class MailListMailItem:
 
     def __init__(self, mail_cache_key, mail, prdepth, parent_item,
                  added_by_tag):
+        if mail_cache_key is None and mail is not None:
+            mail_cache_key = hkml_cache.get_cache_key(
+                    mail.gitid, mail.gitdir, mail.get_field('message-id'))
         self.mail_cache_key = mail_cache_key
         self.mail = mail
         self.prdepth = prdepth
