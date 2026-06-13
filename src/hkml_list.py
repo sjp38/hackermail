@@ -707,12 +707,12 @@ def add_tagged_reply_items(mail_items, tag):
         mail_item.mail.pridx = idx
     mail_items[:] = expanded_items
 
-def child_of_collapsed(mail, mails_to_collapse):
-    if mail.parent_mail is None:
+def child_of(mail_item, parents):
+    if mail_item.parent_item is None:
         return False
-    if mail.parent_mail.pridx in mails_to_collapse:
+    if mail_item.parent_item in parents:
         return True
-    return child_of_collapsed(mail.parent_mail, mails_to_collapse)
+    return child_of(mail_item.parent_item, parents)
 
 def fmt_mails_text(mail_items, list_decorator, mails_to_collapse):
     '''
@@ -734,13 +734,7 @@ def fmt_mails_text(mail_items, list_decorator, mails_to_collapse):
         max_index = 1
     max_digits_for_idx = math.ceil(math.log(max_index, 10))
 
-    if mails_to_collapse:
-        # set parent_mail
-        # set do_find_ancestors_from_cache as False, since the caller should
-        # already did that before.
-        threads_of([i.mail for i in mail_items],
-                   do_find_ancestors_from_cache=False)
-
+    collapse_root_items = []
     for idx, mail_item in enumerate(mail_items):
         show_nr_replies = False
         if collapse_threads == True:
@@ -749,7 +743,8 @@ def fmt_mails_text(mail_items, list_decorator, mails_to_collapse):
             show_nr_replies = True
         if idx in mails_to_collapse:
             show_nr_replies = True
-        if child_of_collapsed(mail_item.mail, mails_to_collapse):
+            collapse_root_items.append(mail_item)
+        if child_of(mail_item, collapse_root_items):
             continue
         mail_lines = format_entry(
                 mail_item, idx, max_digits_for_idx, show_nr_replies, show_url,
