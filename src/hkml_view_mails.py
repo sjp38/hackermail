@@ -509,14 +509,15 @@ def do_export(data, answer, selection):
     file_name = hkml_view.receive_file_path(for_read=False)
     if file_name is None:
         return 'file unselected'
-    mails = get_mails(slist)
+    mail_items = get_complete_mail_items(slist)
+    if mail_items is None:
+        return 'getting complete mail items fail'
 
-    if export_range != None:
-        filtered = [m for m in mails
-                    if m.pridx >= export_range[0] and
-                    m.pridx < export_range[1]]
-        mails = filtered
-    hkml_export.export_mails(mails, file_name, human_readable=human_readable)
+    if export_range is not None:
+        mail_items = mail_items[export_range[0]:export_range[1]]
+    hkml_export.export_mails(
+            [i.mail for i in mail_items], file_name,
+            human_readable=human_readable)
     print()
 
 def export_mails(c, slist):
