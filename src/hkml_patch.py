@@ -78,6 +78,33 @@ def user_pointed_mail(mail_identifier):
         return None, 'get replies of the mail fail'
     return mail, None
 
+def user_pointed_mail_item(mail_identifier):
+    if mail_identifier.isdigit():
+        list_data = _hkml_list_cache.get_last_list(except_thread=False)
+        mail_items = list_data.mail_items
+        mail_idx = int(mail_identifier)
+        if mail_idx >= len(mail_items):
+            return None, 'out of mail idx'
+        mail_item = mail_items[int(mail_identifier)]
+    elif mail_identifier == 'clipboard':
+        mails, err = _hkml.read_mails_from_clipboard()
+        if err != None:
+            return None, 'reading mails in clipboard failed: %s' % err
+        if len(mails) != 1:
+            return None, 'multiple mails in clipboard'
+        mail_item = hkml_list.MailListMailItem(
+                mail_cache_key=None, mail=mails[0], prdepth=0,
+                parent_item=None, added_by_tag=None)
+    else:
+        return None, 'unsupported <mail> (%s)' % mail_identifier
+
+    mail_item.set_mail()
+    mail_item = get_mail_item_with_replies(
+            mail_item.mail.get_field('message-id'))
+    if mail_item is None:
+        return None, 'get replies of the mail fail'
+    return mail_item, None
+
 def rm_tmp_patch_dir(patch_files):
     dirname = os.path.dirname(patch_files[-1])
     for patch_file in patch_files:
