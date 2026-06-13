@@ -161,10 +161,11 @@ def get_list_for(key):
     if 'mails_cache_data' in outputs:
         mails_cache_data = outputs['mails_cache_data']
     return hkml_list.MailsListData(
-        text=outputs['output'], len_comments=None, line_nr_mail_map=None,
+        text=outputs['output'], len_comments=None,
         mail_idx_key_map=outputs['index_to_cache_key'],
         mails_cache_data=mails_cache_data,
-        mail_items=mail_items_from_kvpairs(outputs.get('mail_items', [])))
+        mail_items=mail_items_from_kvpairs(outputs.get('mail_items', [])),
+        line_nr_mail_idx_map=None)
 
 def get_last_list(except_thread=True):
     cache = get_mails_lists_cache()
@@ -182,10 +183,12 @@ def get_last_list(except_thread=True):
     if 'mails_cache_data' in outputs:
         mails_cache_data = outputs['mails_cache_data']
     return hkml_list.MailsListData(
-        text=outputs['output'], len_comments=None, line_nr_mail_map=None,
+        text=outputs['output'], len_comments=None,
         mail_idx_key_map=outputs['index_to_cache_key'],
         mails_cache_data=mails_cache_data,
-        mail_items=mail_items_from_kvpairs(outputs.get('mail_items', [])))
+        mail_items=mail_items_from_kvpairs(outputs.get('mail_items', [])),
+        line_nr_mail_idx_map=None
+        )
 
 def get_last_thread():
     outputs = get_cached_list_outputs('thread_output')

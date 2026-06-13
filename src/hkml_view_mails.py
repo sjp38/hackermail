@@ -214,9 +214,8 @@ def refresh_list(slist, show_tagged_mails):
     text = '\n'.join(comment_lines + lines)
 
     slist.data.list_data = hkml_list.MailsListData(
-            text, len(comment_lines), line_nr_mail_map, {},
-            mails_cache_data=[], mail_items=mail_items,
-            line_nr_mail_idx_map=line_nr_mail_idx_map)
+            text, len(comment_lines), {}, mails_cache_data=[],
+            mail_items=mail_items, line_nr_mail_idx_map=line_nr_mail_idx_map)
 
     list_cache_key = hkml_list.args_to_lists_cache_key(slist.data.list_args)
     _hkml_list_cache.set_item(

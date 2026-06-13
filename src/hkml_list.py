@@ -851,22 +851,20 @@ class MailsListData:
     len_comments = None
     comments_lines = None
     mail_lines = None
-    # line number of mail of the line map
-    # line number starts from non-comment
-    line_nr_mail_map = None
     # mail print index to cached mail key map
     mail_idx_key_map = None
     # For list output cache
     mails_cache_data = None
     mail_items = None    # list of MailListMailItem
+    # line number to mail_items index map
+    # line number starts from non-comment
     line_nr_mail_idx_map = None
 
-    def __init__(self, text, len_comments, line_nr_mail_map, mail_idx_key_map,
+    def __init__(self, text, len_comments, mail_idx_key_map,
                  mails_cache_data=None, mail_items=None,
                  line_nr_mail_idx_map=None):
         self.text = text
         self.len_comments = len_comments
-        self.line_nr_mail_map = line_nr_mail_map
         self.mail_idx_key_map = mail_idx_key_map
         self.mails_cache_data = mails_cache_data
         self.mail_items = mail_items
@@ -952,8 +950,8 @@ def mails_to_list_data(
         text = '\n'.join(runtime_profile_lines + stat_lines + lines)
         len_comments = len(runtime_profile_lines) + len(stat_lines)
     return MailsListData(
-            text, len_comments, line_nr_to_mail_map, mail_idx_key_map,
-            mails_cache_data, mail_items=filtered_items,
+            text, len_comments, mail_idx_key_map, mails_cache_data,
+            mail_items=filtered_items,
             line_nr_mail_idx_map=line_nr_mail_idx_map), None
 
 def git_log_output_line_to_mail(line, mdir):
