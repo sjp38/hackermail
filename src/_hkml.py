@@ -73,7 +73,6 @@ class Mail:
     # for listing
     replies = None
     parent_mail = None
-    prdepth = None
     added_by_tag = None
 
     # for patch formatting

@@ -391,16 +391,6 @@ def handle_patches_of_mail(mail, list_mails=None):
                 ]
             )
 
-def __set_prdepth(mail, depth):
-    mail.prdepth = depth
-    for reply in mail.replies:
-        __set_prdepth(reply, depth + 1)
-
-def set_prdepth(mails):
-    threads = hkml_list.threads_of(mails)
-    for mail in threads:
-        __set_prdepth(mail, 0)
-
 def complete_mail_items(mail_items, slist):
     for mail_item in mail_items:
         if mail_item.mail is not None:
@@ -431,7 +421,6 @@ def get_mails_from_cache_data(mails_cache_data, slist):
                 ]))
             hkml_view.shell_mode_end(slist)
             exit(1)
-        mail.prdepth = cache_data['prdepth']
         mail.added_by_tag = cache_data['added_by_tag']
         mails.append(mail)
     # set parent
@@ -461,7 +450,6 @@ def get_mails(slist):
             hkml_view.shell_mode_end(slist)
             exit(1)
         mails.append(mail)
-    set_prdepth(mails)
     return mails
 
 def get_complete_mail_items(slist):
