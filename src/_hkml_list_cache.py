@@ -166,9 +166,12 @@ def get_list_for(key):
         mails_cache_data=mails_cache_data,
         mail_items=mail_items_from_kvpairs(outputs.get('mail_items', [])))
 
-def get_last_list():
+def get_last_list(except_thread=True):
     cache = get_mails_lists_cache()
-    keys = [k for k in cache if k != 'thread_output']
+    if except_thread is True:
+        keys = [k for k in cache if k != 'thread_output']
+    else:
+        keys = [k for k in cache]
     if not keys:
         return None
     key = sorted(keys, key=lambda x: cache[x]['date'])[-1]
