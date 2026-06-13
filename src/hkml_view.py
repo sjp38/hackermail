@@ -199,10 +199,11 @@ class ScrollableList:
             if line_idx >= len(self.lines):
                 break
 
-            line = self.lines[line_idx][
-                    draw_start_col:draw_start_col + scr_cols]
+            line = self.lines[line_idx]
             if self.line_callback:
                 line = self.line_callback(self, line_idx)
+
+            line = line[draw_start_col:draw_start_col + scr_cols]
 
             if self.color_callback:
                 color = self.color_callback(self, line_idx)
