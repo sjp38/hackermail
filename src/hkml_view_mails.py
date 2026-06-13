@@ -309,7 +309,7 @@ def manage_tags_of_mail(slist, mail):
                                        handle_fn=do_remove_tags)])
 
 def do_check_patch(data, answer, selection):
-    mail = data
+    mail = data.mail
     err = hkml_patch.check_apply_or_export(mail, argparse.Namespace(
         hkml_dir=None, command='patch', dont_add_cv='ask', action='check',
         checker=None))
@@ -317,7 +317,7 @@ def do_check_patch(data, answer, selection):
         print('applying action failed (%s)' % err)
 
 def do_apply_patch(data, answer, selection):
-    mail = data
+    mail = data.mail
     err = hkml_patch.check_apply_or_export(mail, argparse.Namespace(
         hkml_dir=None, command='patch', dont_add_cv=True, action='apply',
         repo='./'))
@@ -335,7 +335,7 @@ def do_export_patch(data, answer, selection):
         print('%s exists, and not a directory' % export_dir)
         return
 
-    mail = data
+    mail = data.mail
     err = hkml_patch.check_apply_or_export(mail, argparse.Namespace(
         hkml_dir=None, command='patch', dont_add_cv='ask', action='export',
         repo='./', export_dir=export_dir))
@@ -343,35 +343,34 @@ def do_export_patch(data, answer, selection):
         print('applying action failed (%s)' % err)
 
 def do_sashiko_patch(data, answer, selection):
-    mail = data
+    mail = data.mail
     msgid = mail.get_field('message-id')[1:-1]
     return hkml_patch.fetch_pr_sashiko_review(msgid, thread_status=False,
                                               for_forwarding=False)
 
 def do_sashiko_patch_status(data, answer, selection):
-    mail = data
+    mail = data.mail
     msgid = mail.get_field('message-id')[1:-1]
     return hkml_patch.fetch_pr_sashiko_reviews(msgid, for_forwarding=False)
 
 def do_sashiko_patch_forward(data, answer, selection):
-    mail = data
+    mail = data.mail
     msgid = mail.get_field('message-id')[1:-1]
     return hkml_patch.forward_sashiko(
             msgid=msgid, thread_status=False, mail=mail)
 
 def do_sashiko_patch_status_forward(data, answer, selection):
-    mail = data
+    mail = data.mail
     msgid = mail.get_field('message-id')[1:-1]
     return hkml_patch.forward_sashiko(
             msgid=msgid, thread_status=True, mail=mail)
 
 def handle_patches_of_mail_item(mail_item):
-    mail = mail_item.mail
-
+    subject = mail_item.mail.subject
     _hkml_cli.ask_selection(
-            desc='Handle the mail (\'%s\') as patch[es].' % mail.subject,
+            desc='Handle the mail (\'%s\') as patch[es].' % subject,
             prompt='Enter the item number',
-            handler_common_data=mail,
+            handler_common_data=mail_item,
             selections=[
                 _hkml_cli.Selection(
                     'check patch[es]', handle_fn=do_check_patch),
