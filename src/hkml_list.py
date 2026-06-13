@@ -170,7 +170,6 @@ def threads_of(mails, do_find_ancestors_from_cache=False):
             orig_mail = by_msgids[in_reply_to]
             if not mail in orig_mail.replies:
                 orig_mail.replies.append(mail)
-            mail.parent_mail = orig_mail
     return threads
 
 def thread_items_of(mail_items, do_find_ancestors_from_cache=False):
@@ -658,7 +657,6 @@ def add_tagged_reply_items(mail_items, tag):
             mail_item.reply_items.append(new_item)
             expanded_items.append(new_item)
 
-            tagged_mail.parent_mail = mail_item.mail
     mail_items[:] = expanded_items
 
 def child_of(mail_item, parents):
