@@ -63,5 +63,3 @@
 - Add an option to not show tagged mails.
 - Update cached list output and mail_idx_key_map for list live update.
 - Remove untagged mails.
-- Fix broken horizontal scroll (not working in email text show)
-  - This seems also crashing hkml on hkml_view.py:229
