@@ -1,7 +1,7 @@
 This file contains major changes in each version since v1.0.0
 
 v1.6.1
-- Internal code cleanup and refactoring.
+- Mail list caching code refactoring.
 
 v1.6.0
 - Always show 'pinned' tag mails on the top of the list.
