@@ -365,13 +365,8 @@ def do_sashiko_patch_status_forward(data, answer, selection):
     return hkml_patch.forward_sashiko(
             msgid=msgid, thread_status=True, mail=mail)
 
-def handle_patches_of_mail(mail, list_mails=None):
+def handle_patches_of_mail(mail, list_mails):
     msgid = mail.get_field('message-id')
-    if list_mails is None:
-        list_mails, err = hkml_list.get_thread_mails_from_web(msgid)
-        if err is not None:
-            print('get_thread_mails_from_web() failed (%s)' % err)
-            return
     threads = hkml_list.threads_of(list_mails)
     mail_with_replies = None
     for thread_root_mail in threads:
