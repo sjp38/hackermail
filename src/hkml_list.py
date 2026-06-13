@@ -678,28 +678,6 @@ def add_tagged_mail_items_to_head(mail_items, tag):
         tagged_mail.added_by_tag =  tag
     return tagged_mail_items + mail_items_to_return
 
-def add_tagged_replies(mails, tag):
-    tagged_mails = hkml_tag.mails_of_tag(tag)
-    expanded_mails = []
-    existing_msgids = {mail.get_field('message-id') for mail in mails}
-    for mail in mails:
-        expanded_mails.append(mail)
-        msgid = mail.get_field('message-id')
-        for tagged_mail in tagged_mails:
-            tagged_msgid = tagged_mail.get_field('message-id')
-            if tagged_msgid in existing_msgids:
-                continue
-            in_reply_to = tagged_mail.get_field('in-reply-to-msgid')
-            if msgid != in_reply_to:
-                continue
-            expanded_mails.append(tagged_mail)
-            tagged_mail.parent_mail = mail
-            tagged_mail.prdepth = mail.prdepth + 1
-            tagged_mail.added_by_tag =  tag
-    for idx, mail in enumerate(expanded_mails):
-        mail.pridx = idx
-    mails[:] = expanded_mails
-
 def add_tagged_reply_items(mail_items, tag):
     tagged_mails = hkml_tag.mails_of_tag(tag)
     existing_msgids = {i.mail.get_field('message-id') for i in mail_items}
