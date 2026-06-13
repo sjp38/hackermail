@@ -460,21 +460,6 @@ class MailListFilter:
                 return True
         return False
 
-    def should_filter_out(self, mail):
-        if self.no_filter_set():
-            return False
-
-        if self.new_threads_only and mail.get_field('in-reply-to'):
-            return True
-
-        if self.should_filter_out_keywords(self.mails_to_check_keywords(mail)):
-            return True
-
-        if self.should_filter_out_patches(mail):
-            return True
-
-        return False
-
     def should_filter_out_item(self, mail_item):
         if self.no_filter_set():
             return False
