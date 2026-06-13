@@ -209,7 +209,7 @@ def refresh_list(slist, show_tagged_mails):
     if slist.data.list_data.mail_items != mail_items:
         hkml_cache.writeback_mails()
 
-    lines, line_nr_mail_map, line_nr_mail_idx_map = hkml_list.fmt_mails_text(
+    lines, line_nr_mail_idx_map = hkml_list.fmt_mails_text(
             mail_items, decorator, collapsed_mails)
     text = '\n'.join(comment_lines + lines)
 

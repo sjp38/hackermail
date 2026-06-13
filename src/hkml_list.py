@@ -721,11 +721,10 @@ def fmt_mails_text(mail_items, list_decorator, mails_to_collapse):
     mail items contains all fields that are needed to be formatted, and sorted
     in the listing order.
     '''
-    line_nr_to_mail_map = {}
     lines = []
     line_nr_mail_idx_map = {}
     if len(mail_items) == 0:
-        return lines, line_nr_to_mail_map, line_nr_mail_idx_map
+        return lines, line_nr_mail_idx_map
     collapse_threads = list_decorator.collapse
     show_url = list_decorator.show_url
     nr_cols = list_decorator.cols
@@ -756,10 +755,9 @@ def fmt_mails_text(mail_items, list_decorator, mails_to_collapse):
                 mail_item, idx, max_digits_for_idx, show_nr_replies, show_url,
                 nr_cols)
         for line_nr in range(len(lines), len(lines) + len(mail_lines)):
-            line_nr_to_mail_map[line_nr] = mail_item.mail
             line_nr_mail_idx_map[line_nr] = idx
         lines += mail_lines
-    return lines, line_nr_to_mail_map, line_nr_mail_idx_map
+    return lines, line_nr_mail_idx_map
 
 def format_stat_lines(mail_items, filtered_items, stat_authors):
     stat_lines = []
@@ -931,7 +929,7 @@ def mails_to_list_data(
             'added_by_tag': mail.added_by_tag,
             })
 
-    lines, line_nr_to_mail_map, line_nr_mail_idx_map = fmt_mails_text(
+    lines, line_nr_mail_idx_map = fmt_mails_text(
             filtered_items, list_decorator, mails_to_collapse={})
 
     stat_lines = []
