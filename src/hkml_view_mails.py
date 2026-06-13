@@ -780,7 +780,8 @@ def menu_manage_tags(slist, answer, selection):
     manage_tags_of_mail(slist, mail)
 
 def menu_handle_patches(slist, answer, selection):
-    mail = selection.data
+    mail_item = selection.data
+    mail = mail_item.mail
     if mail is None:
         print('no mail is selected')
         return
@@ -1116,7 +1117,8 @@ def menu_list_info(slist, answer, selection):
     print('\n'.join(mails_view_data.list_data.comments_lines))
 
 def show_mails_list_menu(c, slist):
-    mail = get_focused_mail(slist)
+    mail_item = get_focused_mail_item(slist)
+    mail = mail_item.mail
     if mail is None:
         menu_desc = 'selected mail: none'
     else:
@@ -1151,7 +1153,7 @@ def show_mails_list_menu(c, slist):
                     'manage tags', handle_fn=menu_manage_tags, data=mail),
                 _hkml_cli.Selection(
                     'handle as patches', handle_fn=menu_handle_patches,
-                    data=mail),
+                    data=mail_item),
                 _hkml_cli.Selection(
                     'refresh', handle_fn=menu_refresh_mails),
                 _hkml_cli.Selection(
