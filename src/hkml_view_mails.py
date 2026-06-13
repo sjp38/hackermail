@@ -28,15 +28,17 @@ def get_mails_view_data(slist):
     return slist.data
 
 def mail_of_row(slist, row):
-    line_nr_mail_map = slist.data.list_data.line_nr_mail_map
+    line_nr_mail_idx_map = slist.data.list_data.line_nr_mail_idx_map
     # in case of cached output reuse, the map is None
-    if line_nr_mail_map is None:
+    if line_nr_mail_idx_map is None:
         refresh_list(slist, show_tagged_mails=False)
-        line_nr_mail_map = slist.data.list_data.line_nr_mail_map
+        line_nr_mail_idx_map = slist.data.list_data.line_nr_mail_idx_map
     row -= slist.data.list_data.len_comments
-    if not row in line_nr_mail_map:
+    if not row in line_nr_mail_idx_map:
         return None
-    return line_nr_mail_map[row]
+    mail_idx = line_nr_mail_idx_map[row]
+    mail_items = slist.data.list_data.mail_items
+    return mail_items[mail_idx].mail
 
 def get_focused_mail(slist):
     return mail_of_row(slist, slist.focus_row)
