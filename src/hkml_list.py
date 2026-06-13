@@ -358,11 +358,6 @@ class MailListFilter:
                 and not self.from_to_cc_keywords and not self.subject_keywords
                 and not self.body_keywords and not self.patches_for)
 
-    def thread_mails_from(self, mail, mails):
-        mails.append(mail)
-        for reply in mail.replies:
-            self.thread_mails_from(reply, mails)
-
     def fill_thread_items_with(self, mail_item, thread_items):
         thread_items.append(mail_item)
         for reply in mail_item.reply_items:
