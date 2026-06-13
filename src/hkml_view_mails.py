@@ -44,10 +44,15 @@ def get_focused_mail(slist):
     return mail_of_row(slist, slist.focus_row)
 
 def focused_mail_idx(slist):
-    mail = get_focused_mail(slist)
-    if mail is None:
-        return None
-    return mail.pridx
+    row = slist.focus_row
+
+    line_nr_mail_idx_map = slist.data.list_data.line_nr_mail_idx_map
+    # in case of cached output reuse, the map is None
+    if line_nr_mail_idx_map is None:
+        refresh_list(slist, show_tagged_mails=False)
+        line_nr_mail_idx_map = slist.data.list_data.line_nr_mail_idx_map
+    row -= slist.data.list_data.len_comments
+    return line_nr_mail_idx_map[row]
 
 def open_focused_mail(c, slist):
     mail = get_focused_mail(slist)
