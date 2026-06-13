@@ -16,24 +16,6 @@ import hkml_reply
 import hkml_write
 import hkml_send
 
-def find_mail_from_thread(thread, msgid):
-    if thread.get_field('message-id') == msgid:
-        return thread
-    if thread.replies is None:
-        return None
-    for reply in thread.replies:
-        found_mail = find_mail_from_thread(reply, msgid)
-        if found_mail is not None:
-            return found_mail
-
-def get_mail_with_replies(msgid):
-    mails = _hkml_list_cache.last_listed_mails()
-    threads = hkml_list.threads_of(mails)
-    for thread_root_mail in threads:
-        mail_with_replies = find_mail_from_thread(thread_root_mail, msgid)
-        if mail_with_replies is not None:
-            return mail_with_replies
-
 def find_mail_item_from_thread(mail_item, msgid):
     if mail_item.mail is None:
         return None
@@ -57,26 +39,6 @@ def get_mail_item_with_replies(msgid):
         if item_with_replies is not None:
             return item_with_replies
     return None
-
-def user_pointed_mail(mail_identifier):
-    if mail_identifier.isdigit():
-        mail = _hkml_list_cache.get_mail(int(mail_identifier))
-        if mail is None:
-            return None, 'cache search fail'
-    elif mail_identifier == 'clipboard':
-        mails, err = _hkml.read_mails_from_clipboard()
-        if err != None:
-            return None, 'reading mails in clipboard failed: %s' % err
-        if len(mails) != 1:
-            return None, 'multiple mails in clipboard'
-        mail = mails[0]
-    else:
-        return None, 'unsupported <mail> (%s)' % mail_identifier
-
-    mail = get_mail_with_replies(mail.get_field('message-id'))
-    if mail is None:
-        return None, 'get replies of the mail fail'
-    return mail, None
 
 def user_pointed_mail_item(mail_identifier):
     if mail_identifier.isdigit():
@@ -266,25 +228,6 @@ def get_patch_index(mail):
             return int(idx_total[0])
     return None
 
-def find_add_tags(patch_mail, mail_to_check):
-    for line in mail_to_check.get_field('body').split('\n'):
-        for tag in ['Tested-by:', 'Reviewed-by:', 'Acked-by:', 'Fixes:',
-                    'Cc: stable@', 'Cc: <stable@']:
-            if not line.startswith(tag):
-                continue
-            print('Found below from "%s"' %
-                  mail_to_check.get_field('subject'))
-            print('    %s' % line)
-            answer = input('add the tag to the patch? [Y/n] ')
-            if answer.lower() != 'n':
-                err = patch_mail.add_patch_tag(line)
-                if err is not None:
-                    print(err)
-    if mail_to_check.replies is None:
-        return
-    for reply in mail_to_check.replies:
-        find_add_tags(patch_mail, reply)
-
 def find_add_tags_item(patch_mail_item, mail_item_to_check):
     for line in mail_item_to_check.mail.get_field('body').split('\n'):
         for tag in ['Tested-by:', 'Reviewed-by:', 'Acked-by:', 'Fixes:',
@@ -331,16 +274,6 @@ def get_link_tag_domain():
     else:
         return None
 
-def add_cc_tags(patch_mail):
-    for recipient in recipients_of(patch_mail, 'cc'):
-        if recipient == patch_mail.get_field('from'):
-            continue
-        # add Cc: for formal recipients, e.g., having both name and email
-        # address, excluding mailing list.
-        if len(recipient.split()) == 1:
-            continue
-        patch_mail.add_patch_tag('Cc: %s' % recipient)
-
 def add_cc_tags_item(patch_mail_item):
     patch_mail = patch_mail_item.mail
     for recipient in recipients_of(patch_mail, 'cc'):
@@ -351,51 +284,6 @@ def add_cc_tags_item(patch_mail_item):
         if len(recipient.split()) == 1:
             continue
         patch_mail.add_patch_tag('Cc: %s' % recipient)
-
-def get_patch_mails(mail, dont_add_cv):
-    patch_mails = [mail]
-    is_cv = is_cover_letter(mail)
-    if is_cv is True:
-        if dont_add_cv == 'ask':
-            answer = input('Add cover letter to first patch? [Y/n] ')
-            if answer.lower() != 'n':
-                dont_add_cv = False
-            else:
-                dont_add_cv = True
-
-        patch_mails += [r for r in mail.replies
-                       if 'patch' in r.subject_tags]
-    link_domain = get_link_tag_domain()
-    for patch_mail in patch_mails:
-        if link_domain is not None:
-            msgid = patch_mail.get_field('message-id')
-            if msgid.startswith('<') and msgid.endswith('>'):
-                msgid = msgid[1:-1]
-            url = '%s/%s' % (link_domain, msgid)
-            err = patch_mail.add_patch_tag('Link: %s' % url)
-            if err is not None and not is_cover_letter(patch_mail):
-                return None, 'adding link fail (%s)' % err
-        if patch_mail.replies is None:
-            continue
-        if is_cover_letter(patch_mail):
-            continue
-        for reply in patch_mail.replies:
-            find_add_tags(patch_mail, reply)
-        add_cc_tags(patch_mail)
-        user_name = subprocess.check_output(
-                ['git', 'config', 'user.name']).decode().strip()
-        user_email = subprocess.check_output(
-                ['git', 'config', 'user.email']).decode().strip()
-        err = patch_mail.add_patch_tag(
-                'Signed-off-by: %s <%s>' % (user_name, user_email))
-        if err is not None:
-            return None, 'addding s-o-b fail (%s)' % err
-    patch_mails.sort(key=lambda m: get_patch_index(m))
-    if is_cv and dont_add_cv is False:
-        print('Given mail seems the cover letter of the patchset.')
-        print('Adding the cover letter on the first patch.')
-        patch_mails[1].add_cv(mail, len(patch_mails) - 1)
-    return patch_mails, None
 
 def get_patch_mail_items(mail_item, dont_add_cv):
     patch_mail_items = [mail_item]
@@ -475,24 +363,6 @@ def write_patch_mails(patch_mails):
                 mail, head_columns=None, valid_mbox=True))
         files.append(file_name)
     return files, None
-
-def check_apply_or_export(mail, args):
-    patch_mails, err = get_patch_mails(mail, args.dont_add_cv)
-    if err is not None:
-        return 'getting patch mails fail (%s)' % err
-    if args.action == 'apply':
-        return apply_patches(patch_mails, args.repo)
-
-    patch_files, err = write_patch_mails(patch_mails)
-    if err is not None:
-        return 'writing patch files failed (%s)' % err
-
-    if args.action == 'check':
-        return check_patches(
-                args.checker, patch_files, patch_mails, rm_patches=True)
-    elif args.action == 'export':
-        move_patches(patch_files, args.export_dir)
-        return None
 
 def check_apply_or_export_item(mail_item, args):
     patch_mail_items, err = get_patch_mail_items(mail_item, args.dont_add_cv)
