@@ -30,7 +30,14 @@ def thread_str(mail_id, dont_use_internet, show_url):
         else:
             mail_id = None
     if mails_to_show is None:
-        mails_to_show = _hkml_list_cache.last_listed_mails()
+        list_data = _hkml_list_cache.get_last_list(except_thread=False)
+        if list_data is None:
+            print('no cached list')
+            exit(1)
+        mail_items = list_data.mail_items
+        for mitem in mail_items:
+            mitem.set_mail()
+        mails_to_show = [i.mail for i in mail_items]
         # TODO: Support msgid
 
     nr_cols_in_line = int(os.get_terminal_size().columns * 9 / 10)
