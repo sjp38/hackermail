@@ -309,18 +309,20 @@ def manage_tags_of_mail(slist, mail):
                                        handle_fn=do_remove_tags)])
 
 def do_check_patch(data, answer, selection):
-    mail = data.mail
-    err = hkml_patch.check_apply_or_export(mail, argparse.Namespace(
-        hkml_dir=None, command='patch', dont_add_cv='ask', action='check',
-        checker=None))
+    mail_item = data
+    err = hkml_patch.check_apply_or_export_item(
+            mail_item, argparse.Namespace(
+                hkml_dir=None, command='patch', dont_add_cv='ask',
+                action='check', checker=None))
     if err is not None:
         print('applying action failed (%s)' % err)
 
 def do_apply_patch(data, answer, selection):
-    mail = data.mail
-    err = hkml_patch.check_apply_or_export(mail, argparse.Namespace(
-        hkml_dir=None, command='patch', dont_add_cv=True, action='apply',
-        repo='./'))
+    mail_item = data
+    err = hkml_patch.check_apply_or_export_item(
+            mail_item, argparse.Namespace(
+                hkml_dir=None, command='patch', dont_add_cv=True,
+                action='apply', repo='./'))
     if err is not None:
         print('applying action failed (%s)' % err)
 
@@ -335,10 +337,11 @@ def do_export_patch(data, answer, selection):
         print('%s exists, and not a directory' % export_dir)
         return
 
-    mail = data.mail
-    err = hkml_patch.check_apply_or_export(mail, argparse.Namespace(
-        hkml_dir=None, command='patch', dont_add_cv='ask', action='export',
-        repo='./', export_dir=export_dir))
+    mail_item = data
+    err = hkml_patch.check_apply_or_export_item(
+            mail_item, argparse.Namespace(
+                hkml_dir=None, command='patch', dont_add_cv='ask',
+                action='export', repo='./', export_dir=export_dir))
     if err is not None:
         print('applying action failed (%s)' % err)
 
