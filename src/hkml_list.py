@@ -368,22 +368,6 @@ class MailListFilter:
         for reply in mail_item.reply_items:
             self.fill_thread_items_with(reply, thread_items)
 
-    def mails_to_check_keywords(self, mail):
-        if self.keywords_for == 'each':
-            return [mail]
-        elif self.keywords_for == 'root':
-            while mail.parent_mail is not None:
-                mail = mail.parent_mail
-            return [mail]
-        elif self.keywords_for == 'thread':
-            while mail.parent_mail is not None:
-                mail = mail.parent_mail
-            mails = []
-            self.thread_mails_from(mail, mails)
-            return mails
-        raise Exception('MailListFilter.keywords_for is unexpected one: %s' %
-                        self.keywords_for)
-
     def items_to_check_keywords(self, mail_item):
         if self.keywords_for == 'each':
             return [mail_item]
