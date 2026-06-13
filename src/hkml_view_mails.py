@@ -1232,7 +1232,8 @@ def show_mails_list(screen, mails_view_data):
         if err is None:
             slist.focus_row, slist.focus_col = row_col
     elif list_args.source_type == ['msgid']:
-        for line_nr, mail in list_data.line_nr_mail_map.items():
+        for line_nr, mail_idx in list_data.line_nr_mail_idx_map.items():
+            mail = list_data.mail_items[mail_idx].mail
             mail_msgid = mail.get_field('message-id')[1:-1]
             if mail_msgid in list_args.sources[0]:
                 slist.focus_row = list_data.len_comments + line_nr
@@ -1289,9 +1290,10 @@ def generate_mails_view_data(args):
     if not hasattr(args, 'dim_old') or args.dim_old is None:
         keys = [hkml_list.args_to_lists_cache_key(args)]
         thread_msgids = []
-        if args.source_type == ['msgid'] and list_data.line_nr_mail_map:
+        if args.source_type == ['msgid'] and list_data.line_nr_mail_idx_map:
             thread_msgids = []
-            for line_nr, mail in list_data.line_nr_mail_map.items():
+            for line_nr, mail_idx in list_data.line_nr_mail_idx_map.items():
+                mail = list_data.mail_items[mail_idx].mail
                 msgid = mail.get_field('message-id')
                 if len(thread_msgids) > 0 and thread_msgids[-1] == msgid:
                     continue
