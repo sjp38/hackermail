@@ -365,19 +365,8 @@ def do_sashiko_patch_status_forward(data, answer, selection):
     return hkml_patch.forward_sashiko(
             msgid=msgid, thread_status=True, mail=mail)
 
-def handle_patches_of_mail(mail, list_mails):
-    msgid = mail.get_field('message-id')
-    threads = hkml_list.threads_of(list_mails)
-    mail_with_replies = None
-    for thread_root_mail in threads:
-        mail_with_replies = hkml_patch.find_mail_from_thread(
-                thread_root_mail, msgid)
-        if mail_with_replies is not None:
-            break
-    if mail_with_replies is None:
-        print('getting mail with replies failed.')
-        return
-    mail = mail_with_replies
+def handle_patches_of_mail_item(mail_item):
+    mail = mail_item.mail
 
     _hkml_cli.ask_selection(
             desc='Handle the mail (\'%s\') as patch[es].' % mail.subject,
@@ -785,7 +774,7 @@ def menu_handle_patches(slist, answer, selection):
     if mail is None:
         print('no mail is selected')
         return
-    handle_patches_of_mail(mail, get_mails(slist))
+    handle_patches_of_mail_item(mail_item)
 
 class MailsViewData:
     list_data = None

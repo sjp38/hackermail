@@ -265,9 +265,9 @@ def menu_manage_tags(slist, answer, selection):
     hkml_view_mails.manage_tags_of_mail(slist, mail)
 
 def menu_handle_patches(slist, answer, selection):
-    mail, err = get_showing_mail(slist)
+    mail_item, err = get_showing_mail_item(slist)
     # todo: handle err is not None case
-    hkml_view_mails.handle_patches_of_mail(mail, slist.data.mails_list)
+    hkml_view_mails.handle_patches_of_mail_item(mail_item)
 
 def menu_jump(slist, answer, selection):
     selections = [
