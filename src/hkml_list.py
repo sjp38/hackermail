@@ -251,7 +251,6 @@ def set_item_prdepth(mail_item, list_, depth):
     mail_item.prdepth = depth
     list_.append(mail_item)
 
-    mail_item.mail.pridx = len(list_)
     mail_item.mail.prdepth = depth
 
     for reply in mail_item.reply_items:
@@ -703,8 +702,6 @@ def add_tagged_reply_items(mail_items, tag):
             tagged_mail.parent_mail = mail_item.mail
             tagged_mail.prdepth = mail_item.prdepth + 1
             tagged_mail.added_by_tag =  tag
-    for idx, mail_item in enumerate(expanded_items):
-        mail_item.mail.pridx = idx
     mail_items[:] = expanded_items
 
 def child_of(mail_item, parents):
@@ -914,7 +911,6 @@ def mails_to_list_data(
     mails_cache_data = []
     for idx, mail_item in enumerate(filtered_items):
         mail = mail_item.mail
-        mail.pridx = idx
         cache_key = hkml_cache.get_cache_key(
                 mail.gitid, mail.gitdir, mail.get_field('message-id'))
         mail_idx_key_map['%d' % idx] = cache_key

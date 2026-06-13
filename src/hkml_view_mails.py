@@ -431,7 +431,6 @@ def get_mails_from_cache_data(mails_cache_data, slist):
                 ]))
             hkml_view.shell_mode_end(slist)
             exit(1)
-        mail.pridx = idx
         mail.prdepth = cache_data['prdepth']
         mail.added_by_tag = cache_data['added_by_tag']
         mails.append(mail)
@@ -461,7 +460,6 @@ def get_mails(slist):
                 ]))
             hkml_view.shell_mode_end(slist)
             exit(1)
-        mail.pridx = int(mail_idx)
         mails.append(mail)
     set_prdepth(mails)
     return mails
