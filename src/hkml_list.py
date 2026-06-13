@@ -1357,7 +1357,7 @@ def use_cached_output(args):
 
 def args_to_mails_list_data(args, suggest_manifest_update):
     # return MailsListData and error
-    # if cached output is used, line_nr_to_mail_map and len_comments of the
+    # if cached output is used, line_nr_to_mail_idx_map and len_comments of the
     # list data becomes None.  Caller should make it when those on demand.
     err = validate_set_source_type(args)
     if err is not None:
