@@ -397,6 +397,53 @@ def get_patch_mails(mail, dont_add_cv):
         patch_mails[1].add_cv(mail, len(patch_mails) - 1)
     return patch_mails, None
 
+def get_patch_mail_items(mail_item, dont_add_cv):
+    patch_mail_items = [mail_item]
+    is_cv = is_cover_letter(mail_item.mail)
+    if is_cv is True:
+        if dont_add_cv == 'ask':
+            answer = input('Add cover letter to first patch? [Y/n] ')
+            if answer.lower() != 'n':
+                dont_add_cv = False
+            else:
+                dont_add_cv = True
+
+        patch_mail_items += [
+                r for r in mail_item.reply_items
+                if 'patch' in r.mail.subject_tags]
+    link_domain = get_link_tag_domain()
+    for patch_mail_item in patch_mail_items:
+        if link_domain is not None:
+            msgid = patch_mail_item.mail.get_field('message-id')
+            if msgid.startswith('<') and msgid.endswith('>'):
+                msgid = msgid[1:-1]
+            url = '%s/%s' % (link_domain, msgid)
+            err = patch_mail_item.mail.add_patch_tag('Link: %s' % url)
+            if err is not None and not is_cover_letter(patch_mail_item.mail):
+                return None, 'adding link fail (%s)' % err
+        if patch_mail_item.reply_items is None:
+            continue
+        if is_cover_letter(patch_mail_item.mail):
+            continue
+        for reply in patch_mail_item.reply_items:
+            find_add_tags_item(patch_mail_item, reply)
+        add_cc_tags_item(patch_mail_item)
+        user_name = subprocess.check_output(
+                ['git', 'config', 'user.name']).decode().strip()
+        user_email = subprocess.check_output(
+                ['git', 'config', 'user.email']).decode().strip()
+        err = patch_mail_item.mail.add_patch_tag(
+                'Signed-off-by: %s <%s>' % (user_name, user_email))
+        if err is not None:
+            return None, 'addding s-o-b fail (%s)' % err
+    patch_mail_items.sort(key=lambda item: get_patch_index(item.mail))
+    if is_cv and dont_add_cv is False:
+        print('Given mail seems the cover letter of the patchset.')
+        print('Adding the cover letter on the first patch.')
+        patch_mail_items[1].mail.add_cv(
+                mail_item.mail, len(patch_mail_items) - 1)
+    return patch_mail_items, None
+
 def write_patch_mails(patch_mails):
     if len(patch_mails) > 9999:
         return None, '>9999 patches'
