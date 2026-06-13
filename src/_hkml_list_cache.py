@@ -151,8 +151,6 @@ def get_cached_list_outputs(key):
     return outputs
 
 def mail_items_from_kvpairs(kvpairs):
-    if kvpairs is None:
-        return None
     return [hkml_list.MailListMailItem.from_kvpairs(kvp) for kvp in kvpairs]
 
 def get_list_for(key):
@@ -166,7 +164,7 @@ def get_list_for(key):
         text=outputs['output'], len_comments=None, line_nr_mail_map=None,
         mail_idx_key_map=outputs['index_to_cache_key'],
         mails_cache_data=mails_cache_data,
-        mail_items=mail_items_from_kvpairs(outputs.get('mail_items', None)))
+        mail_items=mail_items_from_kvpairs(outputs.get('mail_items', [])))
 
 def get_last_list():
     cache = get_mails_lists_cache()
@@ -184,7 +182,7 @@ def get_last_list():
         text=outputs['output'], len_comments=None, line_nr_mail_map=None,
         mail_idx_key_map=outputs['index_to_cache_key'],
         mails_cache_data=mails_cache_data,
-        mail_items=mail_items_from_kvpairs(outputs.get('mail_items', None)))
+        mail_items=mail_items_from_kvpairs(outputs.get('mail_items', [])))
 
 def get_last_thread():
     outputs = get_cached_list_outputs('thread_output')
