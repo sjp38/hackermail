@@ -242,7 +242,7 @@ def nr_reply_items_of(mail_item):
     return nr
 
 def get_thread_root_item(mail_item):
-    if mail_item.parent_mail is None:
+    if mail_item.parent_item is None:
         return mail_item
     return get_thread_root_item(mail_item.parent_item)
 
