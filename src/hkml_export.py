@@ -23,10 +23,16 @@ def export_mails(mails, export_file, human_readable=False):
                     ['From hackermail Thu Jan  1 00:00:00 1970', mail.mbox,'']))
 
 def main(args):
-    mails = _hkml_list_cache.last_listed_mails()
+    mail_list_data = _hkml_list_cache.get_last_list(except_thread=False)
+    if mail_list_data is None:
+        print('no list to export')
+        exit(1)
+    mail_items = mail_list_data.mail_items
     if args.range is not None:
-        mails = [mail for mail in mails
-                 if mail.pridx >= args.range[0] and mail.pridx < args.range[1]]
+        mail_items = mail_items[args.range[0]:args.range[1]]
+    for mail_item in mail_items:
+        mail_item.set_mail()
+    mails = [i.mail for i in mail_list_data.mail_items if i.mail is not None]
     return export_mails(mails, args.export_file, args.human_readable)
 
 def set_argparser(parser):
