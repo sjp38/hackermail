@@ -659,19 +659,6 @@ def sort_filter_mails(mail_items, do_find_ancestors_from_cache,
         runtime_profiles.end('filtering')
     return filtered_items
 
-def add_tagged_mails_to_head(mails, tag):
-    mails_to_return = []
-    for mail in mails:
-        if mail.added_by_tag == tag:
-            continue
-        mails_to_return.append(mail)
-
-    tagged_mails = hkml_tag.mails_of_tag(tag)
-    for tagged_mail in tagged_mails:
-        tagged_mail.prdepth = 0
-        tagged_mail.added_by_tag =  tag
-    return tagged_mails + mails_to_return
-
 def add_tagged_mail_items_to_head(mail_items, tag):
     mail_items_to_return = []
     for mail_item in mail_items:
