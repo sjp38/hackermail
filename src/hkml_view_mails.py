@@ -478,6 +478,12 @@ def get_mails(slist):
     set_prdepth(mails)
     return mails
 
+def get_complete_mail_items(slist):
+    mail_items  = slist.data.list_data.mail_items
+    if mail_items is not None:
+        complete_mail_items(mail_items, slist)
+    return mail_items
+
 def do_export(data, answer, selection):
     slist, idx = data
     try:
