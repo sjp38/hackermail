@@ -193,6 +193,12 @@ def get_showing_mail(slist):
         return None, 'not showing mail?'
     return mail, None
 
+def get_showing_mail_item(slist):
+    mail_item = slist.data.mail_item
+    if mail_item is None:
+        return None, 'not showing mail item?'
+    return mail_item, None
+
 def reply_mail(c, slist):
     # maybe called from tui/cli menu
     if slist.parent_list is not None:
