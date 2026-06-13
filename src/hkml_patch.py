@@ -34,6 +34,30 @@ def get_mail_with_replies(msgid):
         if mail_with_replies is not None:
             return mail_with_replies
 
+def find_mail_item_from_thread(mail_item, msgid):
+    if mail_item.mail is None:
+        return None
+    if mail_item.mail.get_field('message-id') == msgid:
+        return mail_item
+    for reply in mail_item.reply_items:
+        found_item = find_mail_item_from_thread(reply, msgid)
+        if found_item is not None:
+            return found_item
+    return None
+
+def get_mail_item_with_replies(msgid):
+    list_data = _hkml_list_cache.get_last_list(except_thread=False)
+    mail_items = list_data.mail_items
+    for item in mail_items:
+        item.set_mail()
+    thread_items = hkml_list.thread_items_of(
+            mail_items, do_find_ancestors_from_cache=False)
+    for thread_root_item in thread_items:
+        item_with_replies = find_mail_item_from_thread(thread_root_item, msgid)
+        if item_with_replies is not None:
+            return item_with_replies
+    return None
+
 def user_pointed_mail(mail_identifier):
     if mail_identifier.isdigit():
         mail = _hkml_list_cache.get_mail(int(mail_identifier))
