@@ -164,13 +164,19 @@ def get_mails_to_check(request, ignore_mails_before, last_monitored_mails):
     return mails_to_check
 
 def get_mails_to_noti(mails_to_check, request):
-    mails_to_noti = []
-
+    items_to_check = []
     for mail in mails_to_check:
-        if request.mail_list_filter.should_filter_out(mail):
+        items_to_check.append(hkml_list.MailListMailItem(
+            mail_cache_key=None, mail=mail, prdepth=None, parent_item=None,
+            added_by_tag=None))
+    # todo: set item parent/replies
+
+    mails_to_noti = []
+    for mail_item in items_to_check:
+        if request.mail_list_filter.should_filter_out_item(mail_item):
             continue
 
-        mails_to_noti.append(mail)
+        mails_to_noti.append(mail_item.mail)
 
     return mails_to_noti
 
