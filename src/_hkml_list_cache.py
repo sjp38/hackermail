@@ -112,7 +112,7 @@ Values are a dict containing below key/values.
   - Entries are key-value pairs of below.
     - cache_key: the mail cache key.
     - prdepth: same to that on MailListMailItem class.
-    - added_by_tag: same to that on Mail class.
+    - added_by_tag: same to that on MailListMailItem class.
 - 'mail_items': a list of MailListMailItem.to_kvpairs() outputs
 - 'date': last accessed date
 - 'create_date': created date.  Removed after v1.1.7.

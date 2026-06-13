@@ -73,7 +73,6 @@ class Mail:
     # for listing
     replies = None
     parent_mail = None
-    added_by_tag = None
 
     # for patch formatting
     collected_patch_tags = None # Reviewed-by: like tags

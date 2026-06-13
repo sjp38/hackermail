@@ -421,7 +421,6 @@ def get_mails_from_cache_data(mails_cache_data, slist):
                 ]))
             hkml_view.shell_mode_end(slist)
             exit(1)
-        mail.added_by_tag = cache_data['added_by_tag']
         mails.append(mail)
     # set parent
     hkml_list.threads_of(mails, do_find_ancestors_from_cache=False)

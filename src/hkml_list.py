@@ -670,8 +670,6 @@ def add_tagged_mail_items_to_head(mail_items, tag):
                     m.gitid, m.gitdir, m.get_field('message-id')),
                 mail=m, prdepth=0, parent_item=None, added_by_tag=tag)
             for m in tagged_mails]
-    for tagged_mail in tagged_mails:
-        tagged_mail.added_by_tag =  tag
     return tagged_mail_items + mail_items_to_return
 
 def add_tagged_reply_items(mail_items, tag):
@@ -697,7 +695,6 @@ def add_tagged_reply_items(mail_items, tag):
             expanded_items.append(new_item)
 
             tagged_mail.parent_mail = mail_item.mail
-            tagged_mail.added_by_tag =  tag
     mail_items[:] = expanded_items
 
 def child_of(mail_item, parents):
@@ -913,7 +910,7 @@ def mails_to_list_data(
         mails_cache_data.append({
             'cache_key': cache_key,
             'prdepth': mail_item.prdepth,
-            'added_by_tag': mail.added_by_tag,
+            'added_by_tag': mail_item.added_by_tag,
             })
 
     lines, line_nr_mail_idx_map = fmt_mails_text(
