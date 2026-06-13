@@ -723,8 +723,9 @@ def fmt_mails_text(mail_items, list_decorator, mails_to_collapse):
     '''
     line_nr_to_mail_map = {}
     lines = []
+    line_nr_mail_idx_map = {}
     if len(mail_items) == 0:
-        return lines, line_nr_to_mail_map
+        return lines, line_nr_to_mail_map, line_nr_mail_idx_map
     collapse_threads = list_decorator.collapse
     show_url = list_decorator.show_url
     nr_cols = list_decorator.cols
@@ -756,8 +757,9 @@ def fmt_mails_text(mail_items, list_decorator, mails_to_collapse):
                 nr_cols)
         for line_nr in range(len(lines), len(lines) + len(mail_lines)):
             line_nr_to_mail_map[line_nr] = mail_item.mail
+            line_nr_mail_idx_map[line_nr] = idx
         lines += mail_lines
-    return lines, line_nr_to_mail_map
+    return lines, line_nr_to_mail_map, line_nr_mail_idx_map
 
 def format_stat_lines(mail_items, filtered_items, stat_authors):
     stat_lines = []
@@ -857,15 +859,18 @@ class MailsListData:
     # For list output cache
     mails_cache_data = None
     mail_items = None    # list of MailListMailItem
+    line_nr_mail_idx_map = None
 
     def __init__(self, text, len_comments, line_nr_mail_map, mail_idx_key_map,
-                 mails_cache_data=None, mail_items=None):
+                 mails_cache_data=None, mail_items=None,
+                 line_nr_mail_idx_map=None):
         self.text = text
         self.len_comments = len_comments
         self.line_nr_mail_map = line_nr_mail_map
         self.mail_idx_key_map = mail_idx_key_map
         self.mails_cache_data = mails_cache_data
         self.mail_items = mail_items
+        self.line_nr_mail_idx_map = line_nr_mail_idx_map
 
         lines = text.split('\n')
         # in case of cached list, len_comments is passed as None
@@ -928,7 +933,7 @@ def mails_to_list_data(
             'added_by_tag': mail.added_by_tag,
             })
 
-    lines, line_nr_to_mail_map = fmt_mails_text(
+    lines, line_nr_to_mail_map, line_nr_mail_idx_map = fmt_mails_text(
             filtered_items, list_decorator, mails_to_collapse={})
 
     stat_lines = []
@@ -946,9 +951,10 @@ def mails_to_list_data(
     else:
         text = '\n'.join(runtime_profile_lines + stat_lines + lines)
         len_comments = len(runtime_profile_lines) + len(stat_lines)
-    return MailsListData(text, len_comments, line_nr_to_mail_map,
-                         mail_idx_key_map, mails_cache_data,
-                         mail_items=filtered_items), None
+    return MailsListData(
+            text, len_comments, line_nr_to_mail_map, mail_idx_key_map,
+            mails_cache_data, mail_items=filtered_items,
+            line_nr_mail_idx_map=line_nr_mail_idx_map), None
 
 def git_log_output_line_to_mail(line, mdir):
     fields = line.split()
@@ -1422,7 +1428,8 @@ def args_to_mails_list_data(args, suggest_manifest_update):
     if err is not None:
         return None, err
     if args.source_type == ['msgid']:
-        for line_nr, mail in list_data.line_nr_mail_map.items():
+        for line_nr, mail_idx in list_data.line_nr_mail_idx_map.items():
+            mail = list_data.mail_items[mail_idx].mail
             # drop enclosing <>
             mail_msgid = mail.get_field('message-id')[1:-1]
             if mail_msgid in args.sources[0]:
