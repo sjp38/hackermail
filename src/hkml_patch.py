@@ -800,12 +800,12 @@ def main(args):
         else:
             args.mail = args.patch[0]
 
-    mail, err = user_pointed_mail(args.mail)
+    mail_item, err = user_pointed_mail_item(args.mail)
     if err is not None:
         print(err)
         exit(1)
 
-    err = check_apply_or_export(mail, args)
+    err = check_apply_or_export_item(mail_item, args)
     if err is not None:
         print(err)
         exit(1)
