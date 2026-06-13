@@ -53,7 +53,8 @@ def menu_hkml_open(slist, answer, selection):
     # do not suggest manifest update, since this is for msgid.
     list_data, err = hkml_list.args_to_mails_list_data(
             args, suggest_manifest_update=False)
-    for line_nr, mail in list_data.line_nr_mail_map.items():
+    for line_nr, mail_idx in list_data.line_nr_mail_idx_map.items():
+        mail = list_data.mail_items[mail_idx].mail
         if mail.get_field('message-id') == msgid:
             _, cols = slist.screen.getmaxyx()
             lines = hkml_open.mail_display_str(mail, cols).split('\n')
