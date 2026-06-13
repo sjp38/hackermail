@@ -864,6 +864,16 @@ class MailListMailItem:
                 added_by_tag=kvpairs['added_by_tag'],
                 )
 
+    def set_mail(self):
+        # Returns error
+        if self.mail is not None:
+            return None
+        self.mail = hkml_cache.get_mail(key=self.mail_cache_key)
+        if self.mail is None:
+            return 'no cached mail'
+        # todo: check tag mails?
+        return None
+
 class MailsListData:
     # formatted text of the list
     text = None
