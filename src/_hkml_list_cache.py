@@ -156,6 +156,8 @@ def get_list_for(key):
     outputs = get_cached_list_outputs(key)
     if outputs is None:
         return None
+    if not 'mail_items' in outputs:
+        return None
     mails_cache_data = None
     if 'mails_cache_data' in outputs:
         mails_cache_data = outputs['mails_cache_data']
