@@ -86,8 +86,7 @@ def open_focused_mail(c, slist):
     else:
         cursor_position = None
 
-    text_view_data = hkml_view_text.TextViewData(
-            mail, get_mails(slist), slist, mail_item)
+    text_view_data = hkml_view_text.TextViewData(mail, slist, mail_item)
 
     text_view_list = hkml_view_text.show_text_viewer(
             slist.screen,

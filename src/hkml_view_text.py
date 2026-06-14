@@ -16,14 +16,12 @@ import hkml_write
 
 class TextViewData:
     mail = None
-    mails_list = None
     mails_slist = None  # ScrollableList of parent mails list
     unfolded_lines = None
     mail_item = None
 
-    def __init__(self, mail, mails_list, mails_slist=None, mail_item=None):
+    def __init__(self, mail, mails_slist=None, mail_item=None):
         self.mail = mail
-        self.mails_list = mails_list
         self.mails_slist = mails_slist
         self.mail_item = mail_item
 
@@ -655,7 +653,7 @@ def show_text_viewer(screen, args):
             screen, text_lines, get_text_viewer_handlers(text_view_data))
 
     if text_view_data is None:
-        text_view_data = TextViewData(mail=None, mails_list=[])
+        text_view_data = TextViewData(mail=None)
     slist.data = text_view_data
     slist.hunk_lines = hunk_lines(text_lines)
     slist.color_callback = text_color_callback
