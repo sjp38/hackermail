@@ -70,9 +70,6 @@ class Mail:
     __fields = None
     mbox = None
 
-    # for listing
-    replies = None
-
     # for patch formatting
     collected_patch_tags = None # Reviewed-by: like tags
     cv_text = None  # integrated cover letter on first patch
@@ -149,7 +146,6 @@ class Mail:
                     'in-reply-to'].split()[0]
 
     def __init__(self, mbox=None, kvpairs=None, atom_entry=None, atom_ml=None):
-        self.replies = []
         self.subject_tags = []
         self.collected_patch_tags = []
         self.additional_to = []
