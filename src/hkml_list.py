@@ -628,12 +628,16 @@ def update_special_tagged_mail_items(mail_items):
 
     new_items += non_tag_mails
     existing_msgids = non_tag_mail_msgids
+    nr_iterations = 0
     while True:
         updated_items = add_replies(
                 new_items, replies_to_add, existing_msgids)
         if len(updated_items) == len(new_items):
             break
         new_items = updated_items
+        nr_iterations += 1
+        if nr_iterations > 100:
+            break
 
     mail_items[:] = new_items
 
