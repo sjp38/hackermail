@@ -739,6 +739,7 @@ class MailsViewData:
     display_rule = None
     collapsed_mails = None
     last_cursor_position = None
+    focus_row_display_effect = None
 
     # cache for per-line display effect decisions that made by display_rule.
     display_effect_cache = None
@@ -1142,7 +1143,11 @@ def after_input_handle_callback(slist):
         _hkml_list_cache.set_item('thread_output', list_data)
 
 def mails_display_effect_callback(slist, line_idx):
-    return slist.data.display_effect_for(line_idx, slist)
+    attrib = slist.data.display_effect_for(line_idx, slist)
+    focus_row_effect = slist.data.focus_row_display_effect
+    if focus_row_effect is not None and line_idx == slist.focus_row:
+        attrib = attrib | focus_row_effect
+    return attrib
 
 def mails_quit_callback(slist):
     mails_view_data = slist.data
