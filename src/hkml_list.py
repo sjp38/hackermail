@@ -621,6 +621,48 @@ def add_tagged_reply_items(mail_items, tag):
 
     mail_items[:] = expanded_items
 
+def update_special_tagged_mail_items(mail_items):
+    pinned_mails = hkml_tag.mails_of_tag('pinned')
+    new_items = [MailListMailItem(
+        mail_cache_key=None, mail=m, prdepth=0, parent_item=None,
+        added_by_tag='pinned') for m in pinned_mails]
+
+    non_tag_mails = []
+    non_tag_mail_msgids = {}
+    for mail_item in mail_items:
+        if mail_item.added_by_tag is None:
+            non_tag_mails.append(mail_item)
+            non_tag_mail_msgids[mail_item.mail.get_field('message-id')] = True
+            continue
+        if mail_item.parent_item is not None:
+            mail_item.parent_item.reply_items.remove(mail_item)
+
+    replies_to_add = {
+            'sent': hkml_tag.mails_of_tag('sent'),
+            'drafts': hkml_tag.mails_of_tag('drafts'),
+            }
+
+    for non_tag_mail_item in non_tag_mails:
+        new_items.append(non_tag_mail_item)
+        for tag, mails in replies_to_add.items():
+            for tagged_mail in mails:
+                tagged_msgid = tagged_mail.get_field('message-id')
+                if tagged_msgid in non_tag_mail_msgids:
+                    continue
+                parent_msgid = tagged_mail.get_field('in-reply-to-msgid')
+                non_tag_msgid = non_tag_mail_item.mail.get_field('message-id')
+                if parent_msgid != non_tag_msgid:
+                    continue
+                new_item = MailListMailItem(
+                        mail_cache_key=None, mail=tagged_mail,
+                        prdepth=non_tag_mail_item.prdepth + 1,
+                        parent_item=non_tag_mail_item, added_by_tag=tag)
+                non_tag_mail_item.reply_items.append(new_item)
+                new_items.append(new_item)
+                # todo: add tagged replies to tagged replies
+
+    mail_items[:] = new_items
+
 def child_of(mail_item, parents):
     if mail_item.parent_item is None:
         return False
