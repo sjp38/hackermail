@@ -279,15 +279,3 @@ def get_mail(idx, not_thread_idx=False):
 
     mail_key = idx_to_keys[idx_str]
     return hkml_cache.get_mail(key=mail_key)
-
-def last_listed_mails():
-    cache = get_mails_lists_cache()
-    last_key = sorted(cache.keys(), key=lambda x: cache[x]['date'])[-1]
-    idx_to_keys = cache[last_key]['index_to_cache_key']
-    mails = []
-    for idx in sorted([int(idx) for idx in idx_to_keys.keys()]):
-        cache_key = idx_to_keys['%d' % idx]
-        mail = hkml_cache.get_mail(key=cache_key)
-        if mail is not None:
-            mails.append(mail)
-    return mails
