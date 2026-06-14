@@ -999,9 +999,6 @@ def menu_search_for_reviewer(handler_common_data, user_input, selection):
     files_for_reviewer = get_files_for_reviewer(
             reviewer, maintainers_file_content)
 
-    list_mails = get_mails(slist)
-    hkml_list.threads_of(list_mails)
-
     searched_lines = []
     for row in range(0, len(slist.lines)):
         mail = mail_of_row(slist, row)
