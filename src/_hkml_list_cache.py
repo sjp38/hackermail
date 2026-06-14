@@ -152,8 +152,6 @@ def get_list_for(key):
         return None
     return hkml_list.MailsListData(
         text=outputs['output'], len_comments=None,
-        mail_idx_key_map=None,
-        mails_cache_data=None,
         mail_items=mail_items_from_kvpairs(outputs.get('mail_items', [])),
         line_nr_mail_idx_map=None)
 

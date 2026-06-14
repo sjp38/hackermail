@@ -758,22 +758,15 @@ class MailsListData:
     len_comments = None
     comments_lines = None
     mail_lines = None
-    # mail print index to cached mail key map
-    mail_idx_key_map = None
-    # For list output cache
-    mails_cache_data = None
     mail_items = None    # list of MailListMailItem
     # line number to mail_items index map
     # line number starts from non-comment
     line_nr_mail_idx_map = None
 
-    def __init__(self, text, len_comments, mail_idx_key_map,
-                 mails_cache_data=None, mail_items=None,
+    def __init__(self, text, len_comments, mail_items=None,
                  line_nr_mail_idx_map=None):
         self.text = text
         self.len_comments = len_comments
-        self.mail_idx_key_map = mail_idx_key_map
-        self.mails_cache_data = mails_cache_data
         self.mail_items = mail_items
         self.line_nr_mail_idx_map = line_nr_mail_idx_map
 
@@ -824,19 +817,6 @@ def mails_to_list_data(
         add_tagged_reply_items(filtered_items, 'sent')
         add_tagged_reply_items(filtered_items, 'drafts')
 
-    mail_idx_key_map = {}
-    mails_cache_data = []
-    for idx, mail_item in enumerate(filtered_items):
-        mail = mail_item.mail
-        cache_key = hkml_cache.get_cache_key(
-                mail.gitid, mail.gitdir, mail.get_field('message-id'))
-        mail_idx_key_map['%d' % idx] = cache_key
-        mails_cache_data.append({
-            'cache_key': cache_key,
-            'prdepth': mail_item.prdepth,
-            'added_by_tag': mail_item.added_by_tag,
-            })
-
     lines, line_nr_mail_idx_map = fmt_mails_text(
             filtered_items, list_decorator, mails_to_collapse={})
 
@@ -856,8 +836,7 @@ def mails_to_list_data(
         text = '\n'.join(runtime_profile_lines + stat_lines + lines)
         len_comments = len(runtime_profile_lines) + len(stat_lines)
     return MailsListData(
-            text, len_comments, mail_idx_key_map, mails_cache_data,
-            mail_items=filtered_items,
+            text, len_comments, mail_items=filtered_items,
             line_nr_mail_idx_map=line_nr_mail_idx_map), None
 
 def git_log_output_line_to_mail(line, mdir):
