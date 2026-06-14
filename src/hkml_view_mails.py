@@ -1233,6 +1233,23 @@ def generate_mails_list_data(list_args):
                 list_args, suggest_manifest_update=True)
     return list_data, err
 
+def ask_focus_row_display_effect(mails_view_data):
+    _, selection, err = _hkml_cli.ask_selection(
+            desc='Select cursor-focused line display effect.',
+            selections_txt=['No effect', 'color-reverse', 'color-foreground'],
+            prompt='Select', default_selection_idx=0)
+    if err is not None:
+        print('Error (%s).  Set no effect for focused row.' % err)
+        return None
+    display_effect = None
+    color = None
+    if selection == 1:
+        display_effect = hkml_view.ScrollableList.effect_reverse
+    elif selection == 2:
+        color = hkml_view.focus_color
+    mails_view_data.focus_row_display_effect = display_effect
+    mails_view_data.focus_row_color = color
+
 def generate_mails_view_data(args):
     # returns MailsViewData and error
     list_data, err = generate_mails_list_data(args)
@@ -1255,7 +1272,9 @@ def generate_mails_view_data(args):
                 hkml_list_args_for_msgid(msgid, args)))
         args.dim_old = suggest_dim_old(keys)
         if args.dim_old is None:
-            return MailsViewData(list_data, args, None), err
+            mails_view_data = MailsViewData(list_data, args, None)
+            ask_focus_row_display_effect(mails_view_data)
+            return mails_view_data, err
 
     max_date, err = _hkml_date.parse_date_arg(args.dim_old)
     if err is not None:
@@ -1264,6 +1283,7 @@ def generate_mails_view_data(args):
     else:
         display_effect_rule = mk_dim_old_rule(max_date)
     mails_view_data = MailsViewData(list_data, args, display_effect_rule)
+    ask_focus_row_display_effect(mails_view_data)
     return mails_view_data, err
 
 def gen_show_mails_list(screen, list_args):
