@@ -175,19 +175,7 @@ def get_last_list(except_thread=True):
     if not keys:
         return None
     key = sorted(keys, key=lambda x: cache[x]['date'])[-1]
-    outputs = get_cached_list_outputs(key)
-    if outputs is None:
-        return None
-    mails_cache_data = None
-    if 'mails_cache_data' in outputs:
-        mails_cache_data = outputs['mails_cache_data']
-    return hkml_list.MailsListData(
-        text=outputs['output'], len_comments=None,
-        mail_idx_key_map=outputs['index_to_cache_key'],
-        mails_cache_data=mails_cache_data,
-        mail_items=mail_items_from_kvpairs(outputs.get('mail_items', [])),
-        line_nr_mail_idx_map=None
-        )
+    return get_list_for(key)
 
 def get_last_thread():
     outputs = get_cached_list_outputs('thread_output')
