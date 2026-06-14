@@ -1,5 +1,11 @@
 This file contains major changes in each version since v1.0.0
 
+v1.6.2
+- Mail list caching code refactoring.
+- Drop support of 'mail_idx_key_map' based cached list output.
+- Live-update list for manually added/removed tags.
+- Add recursive special-tagged mails.
+
 v1.6.1
 - Mail list caching code refactoring.
 
