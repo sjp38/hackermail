@@ -814,10 +814,9 @@ def menu_search_mail_body_keywords(handler_common_data, user_input, selection):
         return
     keywords = answer.split()
     searched_lines = []
-    last_mail = None
     for row in range(0, len(slist.lines)):
         mail = mail_of_row(slist, row)
-        if mail is None or mail == last_mail:
+        if mail is None:
             continue
         body = mail.get_field('body')
         searched = True
@@ -833,10 +832,9 @@ def menu_search_mail_from(handler_common_data, user_input, selection):
     slist = handler_common_data
 
     searched_lines = []
-    last_mail = None
     for row in range(0, len(slist.lines)):
         mail = mail_of_row(slist, row)
-        if mail is None or mail == last_mail:
+        if mail is None:
             continue
         sender = mail.get_field('from')
         searched = False
@@ -877,7 +875,6 @@ def menu_search_reviewed_by(handler_common_data, user_input, selection):
     search_reviewed = selection.data
 
     searched_lines = []
-    last_mail = None
     for row in range(0, len(slist.lines)):
         mail_item = mail_item_of_row(slist, row)
         if mail_item is None:
