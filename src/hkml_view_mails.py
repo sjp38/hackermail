@@ -920,10 +920,6 @@ def menu_search_reviewed_by(handler_common_data, user_input, selection):
     slist = handler_common_data
     search_reviewed = selection.data
 
-    list_mails = get_mails(slist)
-    # ensure replies are set
-    hkml_list.threads_of(list_mails)
-
     searched_lines = []
     last_mail = None
     for row in range(0, len(slist.lines)):
