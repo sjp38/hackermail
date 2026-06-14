@@ -893,16 +893,18 @@ def menu_search_mail_from(handler_common_data, user_input, selection):
                 searched_lines.append(row)
     handle_searched_lines(slist, searched_lines)
 
-def reviewed_by_replies(replies):
-    if replies is None or len(replies) == 0:
+def reviewed_by_replies(reply_items):
+    if reply_items is None or len(reply_items) == 0:
         return False
-    for mail in replies:
+    for mail_item in reply_items:
+        mail = mail_item.mail
         for line in mail.get_field('body').split('\n'):
             if line.startswith('Reviewed-by:'):
                 return True
-        return reviewed_by_replies(mail.replies)
+        return reviewed_by_replies(mail_item.reply_items)
 
-def is_reviewed(mail):
+def is_reviewed(mail_item):
+    mail = mail_item.mail
     body = mail.get_field('body')
     pars = body.split('\n---\n')
     if len(pars) < 2:
@@ -912,7 +914,7 @@ def is_reviewed(mail):
         if tag.startswith('Reviewed-by:'):
             return True, None
 
-    return reviewed_by_replies(mail.replies), None
+    return reviewed_by_replies(mail_item.reply_items), None
 
 def menu_search_reviewed_by(handler_common_data, user_input, selection):
     slist = handler_common_data
@@ -925,14 +927,14 @@ def menu_search_reviewed_by(handler_common_data, user_input, selection):
     searched_lines = []
     last_mail = None
     for row in range(0, len(slist.lines)):
-        mail = mail_of_row(slist, row)
-        if mail is None or mail == last_mail:
+        mail_item = mail_item_of_row(slist, row)
+        if mail_item is None:
             continue
-        if not 'patch' in mail.subject_tags:
+        if not 'patch' in mail_item.mail.subject_tags:
             continue
-        if hkml_patch.is_cover_letter(mail):
+        if hkml_patch.is_cover_letter(mail_item.mail):
             continue
-        reviewed, err = is_reviewed(mail)
+        reviewed, err = is_reviewed(mail_item)
         if err is not None:
             continue
         if reviewed == search_reviewed:
