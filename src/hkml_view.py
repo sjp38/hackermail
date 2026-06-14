@@ -223,6 +223,9 @@ class ScrollableList:
             elif line_idx == highlight_row:
                 self.screen.addstr(row, 0, line,
                                    highlight_color | color_attrib)
+            elif line_idx == self.focus_row:
+                self.screen.addstr(row, 0, line,
+                                   color | color_attrib | self.effect_reverse)
             else:
                 self.screen.addstr(row, 0, line, color | color_attrib)
 
