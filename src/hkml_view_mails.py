@@ -411,24 +411,6 @@ def complete_mail_items(mail_items, slist):
     # set parent and replies
     hkml_list.thread_items_of(mail_items, do_find_ancestors_from_cache=False)
 
-def get_mails_from_cache_data(mails_cache_data, slist):
-    mails = []
-    for idx, cache_data in enumerate(mails_cache_data):
-        mail_key = cache_data['cache_key']
-        mail = hkml_cache.get_mail(key=mail_key)
-        if mail is None:
-            hkml_view.shell_mode_start(slist)
-            print('\n'.join([
-                'Getting a cached mail of key "%s" failed.' % mail_key,
-                'There is no good way to recover from this.  I will exit...',
-                ]))
-            hkml_view.shell_mode_end(slist)
-            exit(1)
-        mails.append(mail)
-    # set parent
-    hkml_list.threads_of(mails, do_find_ancestors_from_cache=False)
-    return mails
-
 def get_complete_mail_items(slist):
     mail_items  = slist.data.list_data.mail_items
     if mail_items is not None:
