@@ -147,31 +147,6 @@ def find_ancestor_items_from_cache(mail_item, msgid_items, found_parents):
         return
     find_ancestor_items_from_cache(parent_item, msgid_items, found_parents)
 
-def threads_of(mails, do_find_ancestors_from_cache=False):
-    by_msgids = {}
-    for mail in mails:
-        msgid = mail.get_field('message-id')
-        if msgid is None:
-            continue
-        by_msgids[mail.get_field('message-id')] = mail
-
-    if do_find_ancestors_from_cache:
-        found_parents = []
-        for mail in mails:
-            find_ancestors_from_cache(mail, by_msgids, found_parents)
-        mails += found_parents
-
-    threads = []
-    for mail in mails:
-        in_reply_to = mail.get_field('in-reply-to-msgid')
-        if not in_reply_to in by_msgids:
-            threads.append(mail)
-        else:
-            orig_mail = by_msgids[in_reply_to]
-            if not mail in orig_mail.replies:
-                orig_mail.replies.append(mail)
-    return threads
-
 def thread_items_of(mail_items, do_find_ancestors_from_cache=False):
     msgid_items = {}
     for mail_item in mail_items:
