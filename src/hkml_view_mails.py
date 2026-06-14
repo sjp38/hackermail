@@ -259,7 +259,7 @@ def write_mail_draft(slist, mail):
     hkml_view.shell_mode_end(slist)
 
 def do_add_tags(data, answer, selection):
-    mail, tags = data
+    mail, tags, slist = data
     prompt = ' '.join(['Enter tags to add, separated by white spaces',
                        '(enter \'cancel_tag\' to cancel): '])
     tags = input(prompt).split()
@@ -267,9 +267,10 @@ def do_add_tags(data, answer, selection):
         _ = input('Canceled.  Press enter to return')
         return 'canceled'
     hkml_tag.do_add_tags(mail, tags, None)
+    refresh_list(slist, show_tagged_mails=True)
 
 def do_remove_tags(data, answer, selection):
-    mail, tags = data
+    mail, tags, slist = data
     tags_to_remove, err = _hkml_cli.ask_input(
             prompt='Enter tags to remove, separated by white spaces')
     if err is not None:
@@ -281,6 +282,7 @@ def do_remove_tags(data, answer, selection):
             _ = input('Canceled.  Press enter to return')
             return 'the mail is not tagged as %s' % tag
     hkml_tag.do_remove_tags(mail, tags_to_remove)
+    refresh_list(slist, show_tagged_mails=True)
 
 def manage_tags_of_mail(slist, mail):
     msgid = mail.get_field('message-id')
@@ -298,7 +300,7 @@ def manage_tags_of_mail(slist, mail):
         for tag in tags:
             msg_lines.append('- %s' % tag)
     _hkml_cli.ask_selection(desc='\n'.join(msg_lines), prompt='Select',
-            handler_common_data=[mail, tags],
+            handler_common_data=[mail, tags, slist],
             selections=[
                 _hkml_cli.Selection('Add tags', handle_fn=do_add_tags),
                 _hkml_cli.Selection('Remove tags',
