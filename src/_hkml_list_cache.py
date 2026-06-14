@@ -6,7 +6,6 @@ import os
 import json
 
 import _hkml
-import hkml_cache
 import hkml_list
 
 '''
@@ -264,18 +263,23 @@ def get_mail(idx, not_thread_idx=False):
         last_key = sorted_keys[-2]
     else:
         last_key = sorted_keys[-1]
-    idx_to_keys = cache[last_key]['index_to_cache_key']
-    idx_str = '%d' % idx
-    if not idx_str in idx_to_keys:
+    outputs = cache[last_key]
+    list_data = get_list_for(last_key)
+    if list_data is None:
+        return None
+    if idx >= len(list_data.mail_items):
+        return None
+    list_data.mail_items[idx].set_mail()
+    mail = list_data.mail_items[idx].mail
+    if mail is None:
         return None
 
-    output_string_lines = cache[last_key]['output'].split('\n')
+    output_string_lines = outputs['output'].split('\n')
     if output_string_lines[0].startswith('# last reference: '):
         output_string_lines = output_string_lines[2:]
     output_string_lines = ['# last reference: %d' % idx,
                            '#'] + output_string_lines
-    cache[last_key]['output'] = '\n'.join(output_string_lines)
+    outputs['output'] = '\n'.join(output_string_lines)
     writeback_list_output()
 
-    mail_key = idx_to_keys[idx_str]
-    return hkml_cache.get_mail(key=mail_key)
+    return mail
