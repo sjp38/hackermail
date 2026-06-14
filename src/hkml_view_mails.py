@@ -217,10 +217,7 @@ def refresh_list(slist, show_tagged_mails):
 
     mail_items = get_complete_mail_items(slist)
     if show_tagged_mails:
-        mail_items = hkml_list.add_tagged_mail_items_to_head(
-                mail_items, 'pinned')
-        hkml_list.add_tagged_reply_items(mail_items, 'drafts')
-        hkml_list.add_tagged_reply_items(mail_items, 'sent')
+        hkml_list.update_special_tagged_mail_items(mail_items)
     decorator = hkml_list.MailListDecorator(slist.data.list_args)
 
     if slist.data.list_data.mail_items != mail_items:

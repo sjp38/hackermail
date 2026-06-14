@@ -854,10 +854,7 @@ def mails_to_list_data(
         runtime_profiles.start('etc')
 
     if add_tagged_mails:
-        filtered_items = add_tagged_mail_items_to_head(
-                filtered_items, 'pinned')
-        add_tagged_reply_items(filtered_items, 'sent')
-        add_tagged_reply_items(filtered_items, 'drafts')
+        update_special_tagged_mail_items(filtered_items)
 
     lines, line_nr_mail_idx_map = fmt_mails_text(
             filtered_items, list_decorator, mails_to_collapse={})
