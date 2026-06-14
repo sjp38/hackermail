@@ -740,6 +740,7 @@ class MailsViewData:
     collapsed_mails = None
     last_cursor_position = None
     focus_row_display_effect = None
+    focus_row_color = None
 
     # cache for per-line display effect decisions that made by display_rule.
     display_effect_cache = None
@@ -1149,6 +1150,14 @@ def mails_display_effect_callback(slist, line_idx):
         attrib = attrib | focus_row_effect
     return attrib
 
+def mails_color_callback(slist, line_idx):
+    if slist.focus_row != line_idx:
+        return hkml_view.normal_color
+    focus_row_color = slist.data.focus_row_color
+    if focus_row_color is None:
+        focus_row_color = hkml_view.normal_color
+    return focus_row_color
+
 def mails_quit_callback(slist):
     mails_view_data = slist.data
     cache_key = hkml_list.args_to_lists_cache_key(mails_view_data.list_args)
@@ -1164,6 +1173,7 @@ def show_mails_list(screen, mails_view_data):
     slist.data = mails_view_data
     slist.after_input_handle_callback = after_input_handle_callback
     slist.display_effect_callback = mails_display_effect_callback
+    slist.color_callback = mails_color_callback
     slist.quit_callback = mails_quit_callback
     if list_data.len_comments is not None:
         slist.focus_row = min(list_data.len_comments, len(text_lines) - 1)
