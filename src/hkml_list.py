@@ -581,6 +581,28 @@ def sort_filter_mails(mail_items, do_find_ancestors_from_cache,
         runtime_profiles.end('filtering')
     return filtered_items
 
+def add_replies(mail_items, replies_to_add, existing_msgids):
+    new_items = []
+    for orig_mail_item in mail_items:
+        new_items.append(orig_mail_item)
+        for tag, mails in replies_to_add.items():
+            for tagged_mail in mails:
+                tagged_msgid = tagged_mail.get_field('message-id')
+                if tagged_msgid in existing_msgids:
+                    continue
+                parent_msgid = tagged_mail.get_field('in-reply-to-msgid')
+                orig_msgid = orig_mail_item.mail.get_field('message-id')
+                if parent_msgid != orig_msgid:
+                    continue
+                new_item = MailListMailItem(
+                        mail_cache_key=None, mail=tagged_mail,
+                        prdepth=orig_mail_item.prdepth + 1,
+                        parent_item=orig_mail_item, added_by_tag=tag)
+                orig_mail_item.reply_items.append(new_item)
+                new_items.append(new_item)
+                existing_msgids[tagged_msgid] = True
+    return new_items
+
 def update_special_tagged_mail_items(mail_items):
     pinned_mails = hkml_tag.mails_of_tag('pinned')
     new_items = [MailListMailItem(
@@ -598,28 +620,20 @@ def update_special_tagged_mail_items(mail_items):
             mail_item.parent_item.reply_items.remove(mail_item)
 
     replies_to_add = {
-            'sent': hkml_tag.mails_of_tag('sent'),
-            'drafts': hkml_tag.mails_of_tag('drafts'),
+            'sent': sorted(
+                hkml_tag.mails_of_tag('sent'), key=lambda m: m.date),
+            'drafts': sorted(
+                hkml_tag.mails_of_tag('drafts'), key=lambda m: m.date),
             }
 
-    for non_tag_mail_item in non_tag_mails:
-        new_items.append(non_tag_mail_item)
-        for tag, mails in replies_to_add.items():
-            for tagged_mail in mails:
-                tagged_msgid = tagged_mail.get_field('message-id')
-                if tagged_msgid in non_tag_mail_msgids:
-                    continue
-                parent_msgid = tagged_mail.get_field('in-reply-to-msgid')
-                non_tag_msgid = non_tag_mail_item.mail.get_field('message-id')
-                if parent_msgid != non_tag_msgid:
-                    continue
-                new_item = MailListMailItem(
-                        mail_cache_key=None, mail=tagged_mail,
-                        prdepth=non_tag_mail_item.prdepth + 1,
-                        parent_item=non_tag_mail_item, added_by_tag=tag)
-                non_tag_mail_item.reply_items.append(new_item)
-                new_items.append(new_item)
-                # todo: add tagged replies to tagged replies
+    new_items += non_tag_mails
+    existing_msgids = non_tag_mail_msgids
+    while True:
+        updated_items = add_replies(
+                new_items, replies_to_add, existing_msgids)
+        if len(updated_items) == len(new_items):
+            break
+        new_items = updated_items
 
     mail_items[:] = new_items
 
