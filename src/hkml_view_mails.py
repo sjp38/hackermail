@@ -367,6 +367,12 @@ def do_sashiko_patch_status_forward(data, answer, selection):
     return hkml_patch.forward_sashiko(
             msgid=msgid, thread_status=True, mail=mail)
 
+def cleanup_patch_format_fields(mail):
+    mail.collected_patch_tags = []
+    mail.cv_text = None
+    mail.additional_to = []
+    mail.additional_cc = []
+
 def handle_patches_of_mail_item(mail_item):
     subject = mail_item.mail.subject
     _hkml_cli.ask_selection(
@@ -393,6 +399,9 @@ def handle_patches_of_mail_item(mail_item):
                     handle_fn=do_sashiko_patch_forward),
                 ]
             )
+    cleanup_patch_format_fields(mail_item.mail)
+    for reply_item in mail_item.reply_items:
+        cleanup_patch_format_fields(reply_item.mail)
 
 def complete_mail_items(mail_items, slist):
     for mail_item in mail_items:
