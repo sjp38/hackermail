@@ -216,13 +216,14 @@ def refresh_list(slist, show_tagged_mails):
     collapsed_mails = slist.data.collapsed_mails
 
     mail_items = get_complete_mail_items(slist)
+    old_mail_keys = [i.mail_cache_key for i in mail_items]
     if show_tagged_mails:
         hkml_list.update_special_tagged_mail_items(mail_items)
-    decorator = hkml_list.MailListDecorator(slist.data.list_args)
-
-    if slist.data.list_data.mail_items != mail_items:
+    new_mail_keys = [i.mail_cache_key for i in mail_items]
+    if old_mail_keys != new_mail_keys:
         hkml_cache.writeback_mails()
 
+    decorator = hkml_list.MailListDecorator(slist.data.list_args)
     lines, line_nr_mail_idx_map = hkml_list.fmt_mails_text(
             mail_items, decorator, collapsed_mails)
     text = '\n'.join(comment_lines + lines)
