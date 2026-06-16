@@ -1068,7 +1068,7 @@ def menu_list_info(slist, answer, selection):
 
 def menu_focus_row_display_effect(slist, answer, selection):
     mails_view_data = get_mails_view_data(slist)
-    ask_focus_row_display_effect(mails_view_data)
+    ask_focus_row_display_effect(mails_view_data, called_from_menu=True)
 
 def show_mails_list_menu(c, slist):
     mail_item = get_focused_mail_item(slist)
@@ -1250,10 +1250,13 @@ def generate_mails_list_data(list_args):
                 list_args, suggest_manifest_update=True)
     return list_data, err
 
-def ask_focus_row_display_effect(mails_view_data):
+def ask_focus_row_display_effect(mails_view_data, called_from_menu):
+    desc = 'Select cursor-focused line display effect.'
+    if called_from_menu is False:
+        desc += '\n(You can change this later using ' \
+                '"set focused row display effect" menu)'
     _, selection, err = _hkml_cli.ask_selection(
-            desc='Select cursor-focused line display effect.',
-            selections_txt=['No effect', 'reverse', 'color'],
+            desc=desc, selections_txt=['No effect', 'reverse', 'color'],
             prompt='Select', default_selection_idx=0)
     if err is not None:
         print('Error (%s).  Set no effect for focused row.' % err)
@@ -1290,7 +1293,8 @@ def generate_mails_view_data(args):
         args.dim_old = suggest_dim_old(keys)
         if args.dim_old is None:
             mails_view_data = MailsViewData(list_data, args, None)
-            ask_focus_row_display_effect(mails_view_data)
+            ask_focus_row_display_effect(
+                    mails_view_data, called_from_menu=False)
             return mails_view_data, err
 
     max_date, err = _hkml_date.parse_date_arg(args.dim_old)
@@ -1300,7 +1304,7 @@ def generate_mails_view_data(args):
     else:
         display_effect_rule = mk_dim_old_rule(max_date)
     mails_view_data = MailsViewData(list_data, args, display_effect_rule)
-    ask_focus_row_display_effect(mails_view_data)
+    ask_focus_row_display_effect(mails_view_data, called_from_menu=False)
     return mails_view_data, err
 
 def gen_show_mails_list(screen, list_args):
