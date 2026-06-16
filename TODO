@@ -58,3 +58,5 @@
 - Add an option to not show tagged mails.
 - Writeback mail cache for mails that added via 'sent' tag.
 - Investigate why mails are silently updated after 'apply patch' is applied.
+- Support config file for focused row display effect.
+  - Suggested by Kairui (https://github.com/sjp38/hackermail/pull/24)
