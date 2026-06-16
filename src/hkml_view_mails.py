@@ -1066,6 +1066,10 @@ def menu_list_info(slist, answer, selection):
     print()
     print('\n'.join(mails_view_data.list_data.comments_lines))
 
+def menu_focus_row_display_effect(slist, answer, selection):
+    mails_view_data = get_mails_view_data(slist)
+    ask_focus_row_display_effect(mails_view_data)
+
 def show_mails_list_menu(c, slist):
     mail_item = get_focused_mail_item(slist)
     mail = mail_item.mail
@@ -1119,6 +1123,9 @@ def show_mails_list_menu(c, slist):
                     handle_fn=menu_open_content_with),
                 _hkml_cli.Selection(
                     'list info', handle_fn=menu_list_info),
+                _hkml_cli.Selection(
+                    'set focused row display effect',
+                    handle_fn=menu_focus_row_display_effect),
                 ])
     hkml_view.shell_mode_end(slist)
 
@@ -1246,7 +1253,7 @@ def generate_mails_list_data(list_args):
 def ask_focus_row_display_effect(mails_view_data):
     _, selection, err = _hkml_cli.ask_selection(
             desc='Select cursor-focused line display effect.',
-            selections_txt=['No effect', 'color-reverse', 'color-foreground'],
+            selections_txt=['No effect', 'reverse', 'color'],
             prompt='Select', default_selection_idx=0)
     if err is not None:
         print('Error (%s).  Set no effect for focused row.' % err)
