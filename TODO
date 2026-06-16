@@ -56,3 +56,5 @@
 - Display notes with some special display rule.
 - Consider not using cached list output on interactive mode.
 - Add an option to not show tagged mails.
+- Writeback mail cache for mails that added via 'sent' tag.
+- Investigate why mails are silently updated after 'apply patch' is applied.
