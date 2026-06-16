@@ -5,6 +5,7 @@ v1.6.2
 - Drop support of 'mail_idx_key_map' based cached list output.
 - Live-update list for manually added/removed tags.
 - Add recursive special-tagged mails.
+- Add focused row display effect feature and menu on the mail list.
 
 v1.6.1
 - Mail list caching code refactoring.
