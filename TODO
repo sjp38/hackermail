@@ -60,6 +60,4 @@
 - Investigate why mails are silently updated after 'apply patch' is applied.
 - Support config file for focused row display effect.
   - Suggested by Kairui (https://github.com/sjp38/hackermail/pull/24)
-- hkml patch: fix series handling
-  - exporting patch series from interactive list downloads only cover letter.
 - Add a shortcut to return to draft writing or list after quitting draft edit.
