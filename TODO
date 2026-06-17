@@ -62,3 +62,4 @@
   - Suggested by Kairui (https://github.com/sjp38/hackermail/pull/24)
 - hkml patch: fix series handling
   - exporting patch series from interactive list downloads only cover letter.
+- Add a shortcut to return to draft writing or list after quitting draft edit.
