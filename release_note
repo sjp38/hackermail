@@ -1,11 +1,11 @@
 This file contains major changes in each version since v1.0.0
 
 v1.6.2
+- Add focused row display effect feature and menu on the mail list.
+- Live-update list for manually added/removed tags.
+- Handle special-tagged replies to special-tagged replies.
 - Mail list caching code refactoring.
 - Drop support of 'mail_idx_key_map' based cached list output.
-- Live-update list for manually added/removed tags.
-- Add recursive special-tagged mails.
-- Add focused row display effect feature and menu on the mail list.
 
 v1.6.1
 - Mail list caching code refactoring.
