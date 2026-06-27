@@ -1273,7 +1273,7 @@ def ask_focus_row_display_effect(mails_view_data, called_from_menu):
                 '"set focused row display effect" menu'
         desc += '\n- You can also skip this question using\n' \
                 '  "hkml config set list-display-rule-focused-row ' \
-                '<reverse|color>"'
+                '<none|reverse|color>"'
     _, selection, err = _hkml_cli.ask_selection(
             desc=desc, selections_txt=['No effect', 'reverse', 'color'],
             prompt='Select', default_selection_idx=0)
