@@ -111,16 +111,16 @@ class Patch:
         three_dash_split = mail_text.split('\n---\n')
         if len(three_dash_split) < 2:
             return None, 'No three dash'
-        desc = three_dash_split[0]
-        desc_pars = desc.split('\n\n')
+        header_desc = three_dash_split[0]
+        header_desc_pars = header_desc.split('\n\n')
 
-        tags_par, err = self.format_tags_par(desc_pars[-1])
+        tags_par, err = self.format_tags_par(header_desc_pars[-1])
         if err is not None:
             return None, 'tags section format fail (%s)' % err
-        desc_pars[-1] = tags_par
+        header_desc_pars[-1] = tags_par
 
-        desc = '\n\n'.join(desc_pars)
-        return '\n---\n'.join([desc] + three_dash_split[1:]), None
+        header_desc = '\n\n'.join(header_desc_pars)
+        return '\n---\n'.join([header_desc] + three_dash_split[1:]), None
 
 def find_mail_item_from_thread(mail_item, msgid):
     if mail_item.mail is None:
