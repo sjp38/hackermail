@@ -27,6 +27,25 @@ def do_todo(patch_file):
     par_idxs_for_commentary = []
     pars_for_commentary = []
     for idx, par in enumerate(pars):
+        if par.startswith('/* TODO: move below to commentary */\n'):
+            # move all paragraphs except the alst one (tags including S-o-b)
+            print()
+            print('Found TODO for moving below paragraphs to commentary.')
+            print()
+            print('\n\n'.join(pars[idx:-1]))
+            print()
+            answer = input('Do that? [Y/n] ')
+            if answer.lower() == 'n':
+                print('Fine, I will not do that')
+                continue
+            for i in range(idx, len(pars) - 1):
+                par_idxs_for_commentary.append(i)
+                par = pars[i]
+                if i == idx:
+                    par = '\n'.join(par.split('\n')[1:])
+                pars_for_commentary.append(par)
+            break
+
         if par.startswith('TODO: move to commentary\n'):
             print()
             print('Found below TODO')
