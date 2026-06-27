@@ -4,6 +4,8 @@ v1.6.3
 - Add 'hkml config' command.
 - Support 'list-display-rule-focused-row' config for focused row display
   option.
+- hkml patch format: Support moving multiple paragraphs from body to
+  commentary.
 
 v1.6.2
 - Add focused row display effect feature and menu on the mail list.
