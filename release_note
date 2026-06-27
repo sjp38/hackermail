@@ -1,5 +1,10 @@
 This file contains major changes in each version since v1.0.0
 
+v1.6.3
+- Add 'hkml config' command.
+- Support 'list-display-rule-focused-row' config for focused row display
+  option.
+
 v1.6.2
 - Add focused row display effect feature and menu on the mail list.
 - Live-update list for manually added/removed tags.
