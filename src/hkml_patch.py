@@ -16,6 +16,20 @@ import hkml_reply
 import hkml_write
 import hkml_send
 
+class Patch:
+    mail = None
+    collected_patch_tags = None
+    cv_text = None
+    additional_to = None
+    additional_cc = None
+
+    def __init__(self, mail):
+        self.mail = mail
+        self.collected_patch_tags = []
+        self.cv_text = None
+        self.additional_to = []
+        self.additional_cc = []
+
 def find_mail_item_from_thread(mail_item, msgid):
     if mail_item.mail is None:
         return None
