@@ -35,6 +35,10 @@ def main(args):
             return
         print('%s' % config[args.name])
         return
+    elif args.action == 'remove':
+        del config[args.name]
+        write_config_file(config)
+        return
     raise Exception("Bug!  Please report to hkml maintainer!")
 
 def set_argparser(parser):
@@ -54,3 +58,7 @@ def set_argparser(parser):
     parsers_get = subparsers.add_parser('get', help='get config')
     parsers_get.add_argument('name', metavar='<name>', nargs='?',
                              help='config name')
+
+    parsers_remove = subparsers.add_parser('remove', help='remove config')
+    parsers_remove.add_argument('name', metavar='<name>', help='config name')
+
