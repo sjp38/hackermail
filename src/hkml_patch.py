@@ -25,10 +25,78 @@ class Patch:
 
     def __init__(self, mail):
         self.mail = mail
-        self.collected_patch_tags = []
+        self.collected_patch_tags = {}  # {tag: [val]}
         self.cv_text = None
         self.additional_to = []
         self.additional_cc = []
+
+    def format_tags_par(self, orig_tags_par):
+        if len(self.collected_patch_tags) == 0:
+            return orig_tags_par, None
+        tags = {}
+        orig_tag_lines = orig_tags_par.split('\n')
+        for tag_line in orig_tag_lines:
+            fields = tag_line.split()
+            if len(fields) < 2:
+                return None, 'invalid tag line (%s)' % tag_line
+            tag = fields[0]
+            val = ' '.join(fields[1:])
+            if not tag in tags:
+                tags[tag] = []
+            tags[tag].append(val)
+
+        for tag in self.collected_patch_tags:
+            if not tag in tags:
+                tags[tag] = []
+            tags[tag].append(val)
+
+        tag_lines = []
+        first_tags = ['Link:', 'Fixes:', 'Reported-by:', 'Closes:', 'Cc:']
+        for tag in first_tags:
+            if not tag in tags:
+                continue
+            for val in tags[tag]:
+                tag_lines.append('%s %s' % (tag, val))
+            del tag_lines[tag]
+        last_tags = ['Acked-by:', 'Reviewed-by:', 'Co-developed-by:',
+                     'Signed-off-by:']
+        for tag in tags:
+            if tag in last_tags:
+                continue
+            for val in tags[tag]:
+                tag_lines.append('%s %s' % (tag, val))
+        for tag in last_tags:
+            for val in tags[tag]:
+                tag_lines.append('%s %s' % (tag, val))
+        return '\n'.join(tag_lines), None
+
+    def format_str(self):
+        '''Returns formatted text and error'''
+        mail_text = hkml_open.mail_display_str(
+                self.mail, head_columns=None, valid_mbox=True)
+        pars = mail_text.split('\n\n')
+        additional_header_lines = []
+        for recipient in self.additional_to:
+            additional_header_lines.append('To: %s' % recipient)
+        for recipient in self.additional_cc:
+            additional_header_lines.append('Cc: %s' % recipient)
+        if len(additional_header_lines) > 0:
+            pars[0] += '\n' + '\n'.join(additional_header_lines)
+
+        mail_text = '\n\n'.join(pars)
+        three_dash_split = mail_text.split('\n---\n')
+        if len(three_dash_split) < 2:
+            return None, 'No three dash'
+        desc = three_dash_split[0]
+        desc_pars = desc.split('\n\n')
+
+        tags_par, err = self.format_tags_par(desc_pars[-1])
+        if err is not None:
+            return None, 'tags section format fail (%s)' % err
+        desc_pars[-1] = tags_par
+
+        desc = '\n\n'.join(desc_pars)
+        return '\n---\n'.join([desc] + three_dash_split[1:]), None
 
 def find_mail_item_from_thread(mail_item, msgid):
     if mail_item.mail is None:
