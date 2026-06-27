@@ -10,6 +10,7 @@ import _hkml_cli
 import _hkml_date
 import _hkml_list_cache
 import hkml_cache
+import hkml_config
 import hkml_export
 import hkml_forward
 import hkml_list
@@ -1251,6 +1252,21 @@ def generate_mails_list_data(list_args):
     return list_data, err
 
 def ask_focus_row_display_effect(mails_view_data, called_from_menu):
+    if called_from_menu is False:
+        config = hkml_config.read_config_file()
+        name = 'list-display-rule-focused-row'
+        if name in config:
+            val = config[name]
+            effect = None
+            color = None
+            if val == 'reverse':
+                effect = hkml_view.ScrollableList.effect_reverse
+            elif val == 'color':
+                effect = hkml_view.focus_color
+            mails_view_data.focus_row_display_effect = effect
+            mails_view_data.focus_row_color = color
+            return
+
     desc = 'Select cursor-focused line display effect.'
     if called_from_menu is False:
         desc += '\n(You can change this later using ' \
