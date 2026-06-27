@@ -26,6 +26,7 @@ import hkml_patch
 import hkml_manifest
 import hkml_cache
 import hkml_signature
+import hkml_config
 
 import _hkml
 
@@ -114,6 +115,9 @@ hkml_shortcut.set_argparser(parser_shortcut)
 
 parser_mail_note = subparsers.add_parser('mail_note', help='manage mail notes')
 hkml_mail_note.set_argparser(parser_mail_note)
+
+parser_config = subparsers.add_parser('config', help='manage config')
+hkml_config.set_argparser(parser_config)
 
 args = parser.parse_args()
 
