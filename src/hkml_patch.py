@@ -7,6 +7,7 @@ import sys
 import tempfile
 
 import _hkml
+import _hkml_fmtstr
 import _hkml_list_cache
 import _hkml_sashiko_dev
 import hkml_list
@@ -29,6 +30,29 @@ class Patch:
         self.cv_text = None
         self.additional_to = []
         self.additional_cc = []
+
+    def set_cv_text(self, cv_mail, sz_series):
+        cv_text_lines = []
+        subject = cv_mail.get_field('subject')
+        cv_text_lines.append(
+                _hkml_fmtstr.wrap_line(
+                    'Patch series', '\'%s\'' % subject, 72))
+        cv_text_lines.append('')
+
+        mail_text = hkml_open.mail_display_str(
+                cv_mail, head_columns=None, valid_mbox=True)
+        three_dash_split = mail_text.split('\n---\n')
+        if len(three_dash_split) < 2:
+            return 'No three dash'
+
+        header_desc = three_dash_split[0]
+        pars = header_desc.split('\n\n')
+        desc = '\n\n'.join(pars[1:])
+        cv_text_lines.append(desc)
+        cv_text_lines.append('')
+        cv_text_lines.append('This patch (of %d):' % sz_series)
+        cv_text_lines.append('')
+        self.cv_text = '\n'.join(cv_text_lines)
 
     def format_tags_par(self, orig_tags_par):
         if len(self.collected_patch_tags) == 0:
