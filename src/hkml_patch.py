@@ -114,6 +114,9 @@ class Patch:
         header_desc = three_dash_split[0]
         header_desc_pars = header_desc.split('\n\n')
 
+        if self.cv_text is not None:
+            header_desc_pars.insert(1, self.cv_text)
+
         tags_par, err = self.format_tags_par(header_desc_pars[-1])
         if err is not None:
             return None, 'tags section format fail (%s)' % err
