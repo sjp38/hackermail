@@ -62,3 +62,5 @@
   - Suggested by Kairui (https://github.com/sjp38/hackermail/pull/24)
 - Add a shortcut to return to draft writing or list after quitting draft edit.
 - 'hkml patch format': Add an option to clean up existing duplicate patches.
+- 'hkml patch format': Add msgid to patches.
+- 'hkml patch format': Add TODO for deleting before sending.
