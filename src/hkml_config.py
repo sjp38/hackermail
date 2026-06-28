@@ -12,11 +12,17 @@ The file is a json format, having a list of strings.
 def config_file_path():
     return os.path.join(_hkml.get_hkml_dir(), 'config')
 
+global_config = None
+
 def read_config_file():
-    if not os.path.isfile(config_file_path()):
-        return {}
-    with open(config_file_path(), 'r') as f:
-        return json.load(f)
+    global global_config
+
+    if global_config is None:
+        if not os.path.isfile(config_file_path()):
+            return {}
+        with open(config_file_path(), 'r') as f:
+            global_config = json.load(f)
+    return global_config
 
 def write_config_file(config):
     with open(config_file_path(), 'w') as f:
