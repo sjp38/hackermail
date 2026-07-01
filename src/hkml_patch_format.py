@@ -561,6 +561,8 @@ def main(args):
 
     if answer.lower() != 'y':
         return
+    print('Ok, I\'m doing "git send-email".  You will still get ' \
+            'the prompts from "git send-email" for final confirmation.')
     lines = _hkml.cmd_lines_output(
             ['git', 'send-email', '--confirm', 'always'] + patch_files)
     msgids = []
