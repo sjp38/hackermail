@@ -106,16 +106,21 @@ def send_mail(mboxfile, get_confirm, erase_mbox, orig_draft_subject=None):
                 'May I do those?'
                 ]),
             selections_txt=[
-                'yes', 'no', 'I don\'t know, ask again after sending mail'],
+                'yes', 'no', 'I don\'t know, ask again after sending mail',
+                'I opened the editor by mistake, just quit'],
             allow_cancel=False, allow_error=False)
     if selection == 0:
         confirm_tagging = False
         no_tagging = False
     elif selection == 1:
         no_tagging = True
-    else:
+    elif selection == 2:
         confirm_tagging = True
         no_tagging = False
+    elif selection == 3:
+        if erase_mbox:
+            os.remove(mboxfile)
+        return
 
     sent = False
     msgid = None
