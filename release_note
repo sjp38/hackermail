@@ -1,5 +1,8 @@
 This file contains major changes in each version since v1.0.0
 
+v1.6.4
+- hkml patch foramt: collect msgids and update patch files if requested.
+
 v1.6.3
 - Add 'hkml config' command.
 - Support 'list-display-rule-focused-row' config for focused row display
