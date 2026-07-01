@@ -577,7 +577,7 @@ def main(args):
     for idx, msgid in enumerate(msgids):
         print('- patch %d: %s' % (idx, msgid))
     print()
-    answer = input('MayI add the msgids to patch files? [y/N] ')
+    answer = input('May I add the msgids to patch files? [y/N] ')
     if answer.lower() != 'y':
         return
     for idx, patch_file in enumerate(patch_files):
