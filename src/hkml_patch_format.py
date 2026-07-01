@@ -559,8 +559,36 @@ def main(args):
         'before answering the next question.']))
     answer = input('Do it? [y/N] ')
 
-    if answer.lower() == 'y':
-        subprocess.call(['git', 'send-email'] + patch_files)
+    if answer.lower() != 'y':
+        return
+    lines = _hkml.cmd_lines_output(
+            ['git', 'send-email', '--confirm', 'always'] + patch_files)
+    msgids = []
+    for line in lines:
+        fields = line.split()
+        if len(fields) == 2 and fields[0].lower() == 'message-id:':
+            if len(msgids) > 0 and msgids[-1] == fields[1]:
+                continue
+            msgids.append(fields[1])
+    if len(msgids) != len(patch_files):
+        print('collecting message id failed')
+        return -1
+    print('Patches are sent with below msgids in order:')
+    for idx, msgid in enumerate(msgids):
+        print('- patch %d: %s' % (idx, msgid))
+    print()
+    answer = input('MayI add the msgids to patch files? [y/N] ')
+    if answer.lower() != 'y':
+        return
+    for idx, patch_file in enumerate(patch_files):
+        with open(patch_file, 'r') as f:
+            text = f.read()
+        pars = text.split('\n\n')
+        pars[0] += '\nMessage-Id: %s' % msgids[idx]
+        with open(patch_file, 'w') as f:
+            f.write('\n\n'.join(pars))
+    print()
+    print('Done.  patch files are updated with \'Message-Id:\' header')
 
 def set_argparser(parser):
     parser.add_argument('commits', metavar='<commits>',
