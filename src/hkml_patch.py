@@ -219,18 +219,7 @@ def rm_tmp_patch_dir(patch_files):
         os.remove(patch_file)
     os.rmdir(dirname)
 
-def check_patches(
-        checker, patch_files, patch_mails, rm_patches, check_recipients):
-    if patch_mails is None:
-        patch_mails = []
-        for patch_file in patch_files:
-            patch_mails.append(_hkml.read_mbox_file(patch_file)[0])
-    if check_recipients in ['do', 'only']:
-        err = do_check_recipients(patch_files, patch_mails)
-        if err is not None:
-            print('recipient check fail (%s)' % err)
-        if check_recipients == 'only':
-            return None
+def run_checker(checker, patch_files, patch_mails, rm_patches):
     checkpatch = os.path.join('scripts', 'checkpatch.pl')
     if checker is None:
         if os.path.isfile(checkpatch):
@@ -259,6 +248,20 @@ def check_patches(
     if rm_patches:
         rm_tmp_patch_dir(patch_files)
     return None
+
+def check_patches(
+        checker, patch_files, patch_mails, rm_patches, check_recipients):
+    if patch_mails is None:
+        patch_mails = []
+        for patch_file in patch_files:
+            patch_mails.append(_hkml.read_mbox_file(patch_file)[0])
+    if check_recipients in ['do', 'only']:
+        err = do_check_recipients(patch_files, patch_mails)
+        if err is not None:
+            print('recipient check fail (%s)' % err)
+        if check_recipients == 'only':
+            return None
+    return run_checker(checker, patch_files, patch_mails, rm_patches)
 
 def git_am(patch_files, repo):
     for patch_file in patch_files:
