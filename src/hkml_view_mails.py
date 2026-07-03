@@ -313,7 +313,7 @@ def do_check_patch(data, answer, selection):
     err = hkml_patch.check_apply_or_export_item(
             mail_item, argparse.Namespace(
                 hkml_dir=None, command='patch', dont_add_cv='ask',
-                action='check', checker=None))
+                action='check', checker=None, check_recipients='do'))
     if err is not None:
         print('applying action failed (%s)' % err)
 
@@ -322,7 +322,7 @@ def do_apply_patch(data, answer, selection):
     err = hkml_patch.check_apply_or_export_item(
             mail_item, argparse.Namespace(
                 hkml_dir=None, command='patch', dont_add_cv=True,
-                action='apply', repo='./'))
+                action='apply', repo='./', check_recipients='do'))
     if err is not None:
         print('applying action failed (%s)' % err)
 
@@ -341,7 +341,8 @@ def do_export_patch(data, answer, selection):
     err = hkml_patch.check_apply_or_export_item(
             mail_item, argparse.Namespace(
                 hkml_dir=None, command='patch', dont_add_cv='ask',
-                action='export', repo='./', export_dir=export_dir))
+                action='export', repo='./', export_dir=export_dir,
+                check_recipients='do'))
     if err is not None:
         print('applying action failed (%s)' % err)
 

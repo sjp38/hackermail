@@ -196,6 +196,8 @@ def do_check_recipients(patch_files, patch_mails):
         recipients += recipients_of(patch_mail, 'cc')
         recipient_mails = [recipient_mail(r) for r in  recipients]
         for recipient in expects:
+            if recipient == '':
+                continue
             mail = recipient_mail(recipient)
             if mail in recipient_mails:
                 continue
@@ -217,11 +219,18 @@ def rm_tmp_patch_dir(patch_files):
         os.remove(patch_file)
     os.rmdir(dirname)
 
-def check_patches(checker, patch_files, patch_mails, rm_patches):
+def check_patches(
+        checker, patch_files, patch_mails, rm_patches, check_recipients):
     if patch_mails is None:
         patch_mails = []
         for patch_file in patch_files:
             patch_mails.append(_hkml.read_mbox_file(patch_file)[0])
+    if check_recipients in ['do', 'only']:
+        err = do_check_recipients(patch_files, patch_mails)
+        if err is not None:
+            return err
+        if check_recipients == 'only':
+            return None
     checkpatch = os.path.join('scripts', 'checkpatch.pl')
     if checker is None:
         if os.path.isfile(checkpatch):
@@ -522,7 +531,8 @@ def check_apply_or_export_item(mail_item, args):
 
     if args.action == 'check':
         return check_patches(
-                args.checker, patch_files, patch_mails, rm_patches=True)
+                args.checker, patch_files, patch_mails, rm_patches=True,
+                check_recipients=args.check_recipients)
     elif args.action == 'export':
         move_patches(patch_files, args.export_dir)
         return None
@@ -803,7 +813,8 @@ def main(args):
     if args.action == 'check':
         if is_files_argument(args.patch):
             err = check_patches(
-                    args.checker, args.patch, None, rm_patches=False)
+                    args.checker, args.patch, None, rm_patches=False,
+                    check_recipients=args.check_recipients)
             if err is not None:
                 print(err)
                 return 1
@@ -856,6 +867,9 @@ def set_argparser(parser):
                  'or \'clipboard\'']))
     parser_check.add_argument('checker', metavar='<program>', nargs='?',
                               help='patch checker program')
+    parser_check.add_argument('--check_recipients',
+                              choices=['do', 'skip', 'only'], default='do',
+                              help='control recipients check')
 
     parser_export = subparsers.add_parser('export', help='save as patch files')
     parser_export.add_argument(
