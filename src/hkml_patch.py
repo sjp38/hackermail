@@ -184,9 +184,12 @@ def recipient_mail(recipient):
     return mail
 
 def do_check_recipients(patch_files, patch_mails):
+    '''
+    Returns problematic patches and an error message
+    '''
     get_maintainer_pl = os.path.join('scripts', 'get_maintainer.pl')
     if not os.path.isfile(get_maintainer_pl):
-        return '%s not found' % get_maintainer_pl
+        return [], '%s not found' % get_maintainer_pl
     cmd = [get_maintainer_pl, '--nogit', '--nogit-fallback', '--norolestats']
     missing_recipients = {}
     for idx, patch_file in enumerate(patch_files):
@@ -206,12 +209,12 @@ def do_check_recipients(patch_files, patch_mails):
                 missing_recipients[subject] = []
             missing_recipients[subject].append(recipient)
     if len(missing_recipients) == 0:
-        return None
+        return [], None
     for subject in missing_recipients:
         print('MISSING RECIPIENTS for "%s"' % subject)
         for recipient in missing_recipients[subject]:
             print('- %s' % recipient)
-    return None
+    return sorted(missing_recipients.keys()), None
 
 def rm_tmp_patch_dir(patch_files):
     dirname = os.path.dirname(patch_files[-1])
@@ -256,7 +259,8 @@ def check_patches(
         for patch_file in patch_files:
             patch_mails.append(_hkml.read_mbox_file(patch_file)[0])
     if check_recipients in ['do', 'only']:
-        err = do_check_recipients(patch_files, patch_mails)
+        rec_missing_patches, err = do_check_recipients(
+                patch_files, patch_mails)
         if err is not None:
             print('recipient check fail (%s)' % err)
         if check_recipients == 'only':
