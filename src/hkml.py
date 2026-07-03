@@ -17,7 +17,6 @@ import hkml_reply
 import hkml_forward
 import hkml_tag
 import hkml_send
-import hkml_shortcut
 import hkml_write
 import hkml_sync
 import hkml_export
@@ -109,9 +108,6 @@ hkml_signature.set_argparser(parser_signatures)
 parser_history = subparsers.add_parser(
         'history', help = 'manage hkml usage history')
 hkml_history.set_argparser(parser_history)
-
-parser_shortcut = subparsers.add_parser('shortcut', help = 'manage shortcut')
-hkml_shortcut.set_argparser(parser_shortcut)
 
 parser_mail_note = subparsers.add_parser('mail_note', help='manage mail notes')
 hkml_mail_note.set_argparser(parser_mail_note)
