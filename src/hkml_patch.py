@@ -208,7 +208,7 @@ def do_check_recipients(patch_files, patch_mails):
     if len(missing_recipients) == 0:
         return None
     for subject in missing_recipients:
-        print('MISSING RECIPIENTS for %s' % subject)
+        print('MISSING RECIPIENTS for "%s"' % subject)
         for recipient in missing_recipients[subject]:
             print('- %s' % recipient)
     return None
