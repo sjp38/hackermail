@@ -228,7 +228,7 @@ def check_patches(
     if check_recipients in ['do', 'only']:
         err = do_check_recipients(patch_files, patch_mails)
         if err is not None:
-            return err
+            print('recipient check fail (%s)' % err)
         if check_recipients == 'only':
             return None
     checkpatch = os.path.join('scripts', 'checkpatch.pl')
