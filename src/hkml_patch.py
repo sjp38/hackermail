@@ -176,6 +176,41 @@ def user_pointed_mail_item(mail_identifier):
         return None, 'get replies of the mail fail'
     return mail_item, None
 
+def recipient_mail(recipient):
+    fields = recipient.split()
+    mail = fields[-1]
+    if mail.startswith('<') and mail.endswith('>'):
+        mail = mail[1:-1]
+    return mail
+
+def do_check_recipients(patch_files, patch_mails):
+    get_maintainer_pl = os.path.join('scripts', 'get_maintainer.pl')
+    if not os.path.isfile(get_maintainer_pl):
+        return '%s not found' % get_maintainer_pl
+    cmd = [get_maintainer_pl, '--nogit', '--nogit-fallback', '--norolestats']
+    missing_recipients = {}
+    for idx, patch_file in enumerate(patch_files):
+        expects = _hkml.cmd_lines_output(cmd + [patch_file])
+        patch_mail = patch_mails[idx]
+        recipients = recipients_of(patch_mail, 'to')
+        recipients += recipients_of(patch_mail, 'cc')
+        recipient_mails = [recipient_mail(r) for r in  recipients]
+        for recipient in expects:
+            mail = recipient_mail(recipient)
+            if mail in recipient_mails:
+                continue
+            subject = patch_mail.subject
+            if not subject in missing_recipients:
+                missing_recipients[subject] = []
+            missing_recipients[subject].append(recipient)
+    if len(missing_recipients) == 0:
+        return None
+    for subject in missing_recipients:
+        print('MISSING RECIPIENTS for %s' % subject)
+        for recipient in missing_recipients[subject]:
+            print('- %s' % recipient)
+    return None
+
 def rm_tmp_patch_dir(patch_files):
     dirname = os.path.dirname(patch_files[-1])
     for patch_file in patch_files:
