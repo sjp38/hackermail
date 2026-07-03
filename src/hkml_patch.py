@@ -247,10 +247,6 @@ def run_checker(checker, patch_files, patch_mails, rm_patches):
             subprocess.call([checker, patch_file])
             print()
             complained_patches.append(patch_mails[idx].subject)
-    print('Below %d patches may have problems' % len(complained_patches))
-    for patch_file in complained_patches:
-        print(' - %s' % patch_file)
-
     if rm_patches:
         rm_tmp_patch_dir(patch_files)
     return complained_patches, None
@@ -270,6 +266,18 @@ def check_patches(
             return None
     check_fail_patches, err = run_checker(
             checker, patch_files, patch_mails, rm_patches)
+    print()
+    if len(rec_missing_patches) + len(check_fail_patches) == 0:
+        print('Seems all clean!')
+        return None
+    if len(rec_missing_patches) > 0:
+        print('Below patches may missing some recipients')
+        for p in rec_missing_patches:
+            print('- %s' % p)
+    if len(check_fail_patches) > 0:
+        print('Below patches may have more problems')
+        for p in check_fail_patches:
+            print('- %s' % p)
 
 def git_am(patch_files, repo):
     for patch_file in patch_files:
