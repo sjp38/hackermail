@@ -223,12 +223,15 @@ def rm_tmp_patch_dir(patch_files):
     os.rmdir(dirname)
 
 def run_checker(checker, patch_files, patch_mails, rm_patches):
+    '''
+    Returns list of problematic patches and an error message
+    '''
     checkpatch = os.path.join('scripts', 'checkpatch.pl')
     if checker is None:
         if os.path.isfile(checkpatch):
             checker = checkpatch
         else:
-            return '<checker> is not given; checkpatch.pl is also not found'
+            return [], '<checker> is none; checkpatch.pl is not found'
 
     complained_patches = []
     for idx, patch_file in enumerate(patch_files):
@@ -243,14 +246,14 @@ def run_checker(checker, patch_files, patch_mails, rm_patches):
                 patch_mails[idx].subject, checker, e))
             subprocess.call([checker, patch_file])
             print()
-            complained_patches.append(patch_file)
+            complained_patches.append(patch_mails[idx].subject)
     print('Below %d patches may have problems' % len(complained_patches))
     for patch_file in complained_patches:
         print(' - %s' % patch_file)
 
     if rm_patches:
         rm_tmp_patch_dir(patch_files)
-    return None
+    return complained_patches, None
 
 def check_patches(
         checker, patch_files, patch_mails, rm_patches, check_recipients):
@@ -265,7 +268,8 @@ def check_patches(
             print('recipient check fail (%s)' % err)
         if check_recipients == 'only':
             return None
-    return run_checker(checker, patch_files, patch_mails, rm_patches)
+    check_fail_patches, err = run_checker(
+            checker, patch_files, patch_mails, rm_patches)
 
 def git_am(patch_files, repo):
     for patch_file in patch_files:
