@@ -426,7 +426,7 @@ def review_patches(on_linux_tree, patch_files):
         if answer.lower() != 'n':
             hkml_patch.check_patches(
                     './scripts/checkpatch.pl', patch_files, None,
-                    rm_patches=False)
+                    rm_patches=False, check_recipients='do')
             if not ok_to_continue(patch_files):
                 return True
 
