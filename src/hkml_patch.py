@@ -325,7 +325,7 @@ def git_cherrypick_merge(patch_files, cv_mail, repo):
     add_noff_merge_commit(head_commit, cv_merge_msg, git_cmd)
     return None
 
-def apply_patches_new(patches, repo):
+def apply_patches(patches, repo):
     err = None
 
     has_cv = len(patches) > 0 and is_cover_letter(patches[0].mail)
@@ -664,7 +664,7 @@ def check_apply_or_export_item(mail_item, args):
     patches = mail_item_to_patches(mail_item, args.dont_add_cv)
 
     if args.action == 'apply':
-        return apply_patches_new(patches, args.repo)
+        return apply_patches(patches, args.repo)
 
     patch_files, err = write_patches(patches)
     if err is not None:
