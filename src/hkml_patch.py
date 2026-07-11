@@ -120,6 +120,9 @@ class Patch:
             pars[0] += '\n' + '\n'.join(additional_header_lines)
 
         mail_text = '\n\n'.join(pars)
+        if is_cover_letter(self.mail):
+            return mail_text, None
+
         three_dash_split = mail_text.split('\n---\n')
         if len(three_dash_split) < 2:
             return None, 'No three dash'
