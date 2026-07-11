@@ -44,7 +44,6 @@
 - auto-completion.
 - Support users setting default answers for questions.
 - Support sending all draft replies of a given thread.
-- Aware of stable@ comments and skip the comments part.
 - Local-cache sashiko queries
 - Support series having no cover letter
 - Filter mails that completely answered by someone
