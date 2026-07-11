@@ -95,7 +95,7 @@ class Patch:
                 continue
             for val in tags[tag]:
                 tag_lines.append('%s %s' % (tag, val))
-            del tag_lines[tag]
+            del tags[tag]
         last_tags = ['Acked-by:', 'Reviewed-by:', 'Co-developed-by:',
                      'Signed-off-by:']
         for tag in tags:
