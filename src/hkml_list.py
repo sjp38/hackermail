@@ -180,7 +180,7 @@ def format_entry(mail_item, pridx, max_digits_for_idx, show_nr_replies,
             if parent_subject == subject:
                 subject = 're:'
 
-    from_fields = mail.get_field('from').split()
+    from_fields = mail.get_from().split()
     if len(from_fields) > 1:
         from_fields = from_fields[0:-1]
     suffices = [' '.join(from_fields), mail.date.strftime('%Y/%m/%d %H:%M')]
@@ -342,17 +342,17 @@ class MailListFilter:
 
     def should_filter_out_keywords_one(self, mail):
         if self.not_from_keywords is not None and \
-                keywords_in(self.not_from_keywords, mail.get_field('from')):
+                keywords_in(self.not_from_keywords, mail.get_from()):
             return True
-        if not keywords_in(self.from_keywords, mail.get_field('from')):
+        if not keywords_in(self.from_keywords, mail.get_from()):
             return True
         if not keywords_in(
                 self.from_to_keywords,
-                '%s %s' % (mail.get_field('from'), mail.get_field('to'))):
+                '%s %s' % (mail.get_from(), mail.get_field('to'))):
             return True
         if not keywords_in(
                 self.from_to_cc_keywords,
-                '%s %s %s' % (mail.get_field('from'), mail.get_field('to'),
+                '%s %s %s' % (mail.get_from(), mail.get_field('to'),
                               mail.get_field('cc'))):
             return True
         if not keywords_in(self.subject_keywords, mail.subject):
@@ -461,7 +461,7 @@ def format_stat_items(mail_items, stat_authors):
             oldest = mail
         if latest is None or latest.date < mail.date:
             latest = mail
-        author = mail.get_field('from')
+        author = mail.get_from()
         if not author in authors_nr_mails:
             authors_nr_mails[author] = 0
         authors_nr_mails[author] += 1

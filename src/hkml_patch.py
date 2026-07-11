@@ -463,7 +463,7 @@ def find_add_tags(patch, patch_mail_item, mail_item_to_check):
 
 def add_cc_tags(patch, patch_mail_item):
     for recipient in recipients_of(patch.mail, 'cc'):
-        if recipient == patch.mail.get_field('from'):
+        if recipient == patch.mail.get_from():
             continue
         # add Cc: for formal recipients, e.g., having both name and email
         # address, excluding mailing list.

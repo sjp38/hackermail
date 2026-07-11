@@ -36,7 +36,7 @@ def format_reply(mail, attach_file, body_lines=None, subject=None):
         subject = format_reply_subject(mail)
     in_reply_to = mail.get_msgid()
     cc = [x for x in [mail.get_field('to'), mail.get_field('cc')] if x]
-    to = [mail.get_field('from')]
+    to = [mail.get_from()]
 
     if body_lines is None:
         body_lines = []

@@ -840,7 +840,7 @@ def menu_search_mail_from(handler_common_data, user_input, selection):
         mail = mail_of_row(slist, row)
         if mail is None:
             continue
-        sender = mail.get_field('from')
+        sender = mail.get_from()
         searched = False
         if slist.data.list_args.from_keywords is not None:
             for keyword in slist.data.list_args.from_keywords:
