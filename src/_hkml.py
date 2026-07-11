@@ -217,6 +217,9 @@ class Mail:
 
         return self.__fields[field_name]
 
+    def get_msgid(self):
+        return self.get_field('message-id')
+
     def set_mbox(self):
         if self.gitdir is not None and self.gitid is not None:
             gitdir = self.gitdir
