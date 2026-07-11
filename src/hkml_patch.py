@@ -104,6 +104,8 @@ class Patch:
             for val in tags[tag]:
                 tag_lines.append('%s %s' % (tag, val))
         for tag in last_tags:
+            if not tag in tags:
+                continue
             for val in tags[tag]:
                 tag_lines.append('%s %s' % (tag, val))
         return '\n'.join(tag_lines), None
