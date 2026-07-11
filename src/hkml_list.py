@@ -130,7 +130,7 @@ def find_ancestor_items_from_cache(mail_item, msgid_items, found_parents):
             prdepth=None, parent_item=None, added_by_tag=None)
     msgid_items[parent_msgid] = parent_item
     found_parents.append(parent_item)
-    if parent.get_field('in-reply-to') is None:
+    if parent.get_in_reply_to_msgid() is None:
         return
     find_ancestor_items_from_cache(parent_item, msgid_items, found_parents)
 
@@ -230,7 +230,7 @@ def get_nr_comments(mail_item):
     nr_comments = nr_reply_items_of(mail_item)
     # Exclude replies that sent together as a patch series
     mail = mail_item.mail
-    if not mail.get_field('in-reply-to') and mail.series is not None:
+    if not mail.get_in_reply_to_msgid() and mail.series is not None:
         nr_comments -= mail.series[1]
     return nr_comments
 
@@ -405,7 +405,7 @@ class MailListFilter:
             return False
 
         mail = mail_item.mail
-        if self.new_threads_only and mail.get_field('in-reply-to'):
+        if self.new_threads_only and mail.get_in_reply_to_msgid():
             return True
 
         mail_items = self.items_to_check_keywords(mail_item)
@@ -451,11 +451,11 @@ def format_stat_items(mail_items, stat_authors):
         if mail_item.parent_item is None:
             nr_threads += 1
         mail = mail_item.mail
-        if not mail.get_field('in-reply-to'):
+        if not mail.get_in_reply_to_msgid():
             nr_new_threads += 1
         if 'patch' in mail.subject_tags:
             nr_patches += 1
-        if 'patch' in mail.subject_tags and not mail.get_field('in-reply-to'):
+        if 'patch' in mail.subject_tags and not mail.get_in_reply_to_msgid():
             nr_patchsets += 1
         if oldest is None or mail.date < oldest.date:
             oldest = mail
