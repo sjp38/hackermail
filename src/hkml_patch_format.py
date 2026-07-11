@@ -461,6 +461,16 @@ def ensure_intended_abnormal_subject_prefix(subject_prefix, reason):
         print('Ok, please start again with correct --subject_prefix')
         exit(1)
 
+def is_version_string(txt):
+    if not txt.startswith('v'):
+        return False
+    try:
+        float(txt[1:])
+        return True
+    except:
+        pass
+    return False
+
 def parse_subject_prefix(subject_prefix):
     # returns invalid reason, whether rfc, version, sequence, and target tree.
     if subject_prefix is None:
@@ -481,7 +491,7 @@ def parse_subject_prefix(subject_prefix):
     found_version_nr = False
     found_sequence = False
     for field in fields[1:]:
-        if field.startswith('v') and field[1:].isdigit():
+        if is_version_string(field):
             if found_version_nr:
                 return 'More than one version number (%s)' % field, None, \
                         None, None, None
