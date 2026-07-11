@@ -70,7 +70,6 @@ class Mail:
     mbox = None
 
     # for patch formatting
-    cv_text = None  # integrated cover letter on first patch
     additional_to = None
     additional_cc = None
 
@@ -202,8 +201,6 @@ class Mail:
     def get_body_field(self):
         field_name = 'body'
         lines = []
-        if self.cv_text is not None:
-            lines.append(self.cv_text)
         lines += self.__fields[field_name].split('\n')
         return '\n'.join(lines)
 
