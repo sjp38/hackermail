@@ -363,26 +363,6 @@ class Mail:
 
         self.__fields = parsed
 
-    def add_patch_tag(self, tag):
-        if tag in self.collected_patch_tags:
-            return None
-        body = self.get_field('body')
-        if body is None:
-            return 'getting body text failed'
-
-        can_add_tag = False
-        lines = body.split('\n')
-        for idx, line in enumerate(lines):
-            if line != '---':
-                continue
-            if tag in lines[:idx + 1]:
-                return None
-            can_add_tag = True
-            break
-        if not can_add_tag:
-            return 'cannot find line to add the tag'
-        self.collected_patch_tags.append(tag)
-
     def add_recipients(self, to_cc, recipients):
         if to_cc == 'to':
             self.additional_to += recipients
