@@ -340,14 +340,6 @@ class Mail:
 
         self.__fields = parsed
 
-    def add_recipients(self, to_cc, recipients):
-        if to_cc == 'to':
-            self.additional_to += recipients
-        elif to_cc == 'cc':
-            self.additional_cc += recipients
-        else:
-            raise Exception('something wrong')
-
     def url(self):
         site = get_manifest()['site']
         return '%s/%s' % (site, self.get_field('message-id')[1:-1])
