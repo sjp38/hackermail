@@ -592,38 +592,6 @@ def mail_item_to_patches(mail_item, dont_add_cv):
         patches[1].set_cv_text(patches[0].mail, len(patches) - 1)
     return patches
 
-def write_patch_mails(patch_mails):
-    if len(patch_mails) > 9999:
-        return None, '>9999 patches'
-    files = []
-    temp_dir = tempfile.mkdtemp(prefix='hkml_patch_')
-    # give index 0 to only coverletter
-    if is_cover_letter(patch_mails[0]):
-        idx_offset = 0
-    else:
-        idx_offset = 1
-    for idx, mail in enumerate(patch_mails):
-        file_name_words = ['%04d-' % (idx + idx_offset)]
-        subject = mail.subject.lower()
-        # exclude [PATCH ...] like suffix
-        tag_closing_idx = subject.find(']')
-        subject = subject[tag_closing_idx + 1:]
-        for c in subject:
-            if not c.isalpha() and not c.isdigit():
-                # avoid multiple '-' in the name
-                if file_name_words[-1][-1] == '-':
-                    continue
-                c = '-'
-            file_name_words.append(c)
-        file_name_words.append('.patch')
-        file_name = ''.join(file_name_words)
-        file_name = os.path.join(temp_dir, file_name)
-        with open(file_name, 'w') as f:
-            f.write(hkml_open.mail_display_str(
-                mail, head_columns=None, valid_mbox=True))
-        files.append(file_name)
-    return files, None
-
 def write_patches(patches):
     if len(patches) > 9999:
         return None, '>9999 patches'
