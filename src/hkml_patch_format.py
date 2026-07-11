@@ -5,15 +5,16 @@ import subprocess
 import sys
 
 import _hkml
-import hkml_open
 import hkml_patch
 
 def add_patch_recipients(patch_file, to, cc):
     mail = _hkml.read_mbox_file(patch_file)[0]
-    mail.add_recipients('to', to)
-    mail.add_recipients('cc', cc)
-    to_write = hkml_open.mail_display_str(
-            mail, head_columns=80, valid_mbox=True, recipients_per_line=True)
+    patch = hkml_patch.Patch(mail)
+    patch.add_recipients(to, cc)
+    to_write, err = patch.format_str()
+    if err is not None:
+        return err
+
     with open(patch_file, 'w') as f:
         f.write(to_write)
 
@@ -194,7 +195,9 @@ def add_patches_recipients(patch_files, to, cc, first_patch_is_cv,
         for t in to:
             if t in patch_cc:
                 patch_cc.remove(t)
-        add_patch_recipients(patch_file, to, patch_cc)
+        err = add_patch_recipients(patch_file, to, patch_cc)
+        if err is not None:
+            return 'adding recipients fail (%s)' % err
         do_todo(patch_file)
 
 def fillup_cv(patch_file, subject, content):
