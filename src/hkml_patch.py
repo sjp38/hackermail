@@ -661,6 +661,15 @@ def write_patches(patches):
     return files, None
 
 def check_apply_or_export_item(mail_item, args):
+    if args.action == 'check':
+        patches = mail_item_to_patches(mail_item, args.dont_add_cv)
+        patch_files, err = write_patches(patches)
+        if err is not None:
+            return 'writing patch files failed (%s)' % err
+        return check_patches(
+                args.checker,  patch_files, [patch.mail for patch in patches],
+                rm_patches=True, check_recipients=args.check_recipients)
+
     if args.action == 'export':
         patches = mail_item_to_patches(mail_item, args.dont_add_cv)
         patch_files, err = write_patches(patches)
@@ -675,15 +684,6 @@ def check_apply_or_export_item(mail_item, args):
     patch_mails = [i.mail for i in patch_mail_items]
     if args.action == 'apply':
         return apply_patches(patch_mails, args.repo)
-
-    patch_files, err = write_patch_mails(patch_mails)
-    if err is not None:
-        return 'writing patch files failed (%s)' % err
-
-    if args.action == 'check':
-        return check_patches(
-                args.checker, patch_files, patch_mails, rm_patches=True,
-                check_recipients=args.check_recipients)
 
 def recipients_of(mail, to_cc):
     field = mail.get_field(to_cc)
