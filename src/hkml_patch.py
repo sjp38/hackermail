@@ -80,7 +80,9 @@ class Patch:
         for tag in self.collected_patch_tags:
             if not tag in tags:
                 tags[tag] = []
-            tags[tag].append(val)
+            for val in self.collected_patch_tags[tag]:
+                if not val in tags[tag]:
+                    tags[tag].append(val)
 
         tag_lines = []
         first_tags = ['Link:', 'Fixes:', 'Reported-by:', 'Closes:', 'Cc:']
