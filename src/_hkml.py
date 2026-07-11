@@ -71,7 +71,6 @@ class Mail:
     mbox = None
 
     # for patch formatting
-    collected_patch_tags = None # Reviewed-by: like tags
     cv_text = None  # integrated cover letter on first patch
     additional_to = None
     additional_cc = None
@@ -147,7 +146,6 @@ class Mail:
 
     def __init__(self, mbox=None, kvpairs=None, atom_entry=None, atom_ml=None):
         self.subject_tags = []
-        self.collected_patch_tags = []
         self.additional_to = []
         self.additional_cc = []
 
@@ -208,23 +206,6 @@ class Mail:
         if self.cv_text is not None:
             lines.append(self.cv_text)
         lines += self.__fields[field_name].split('\n')
-        if len(self.collected_patch_tags) > 0:
-            paragraph_start_idx = 0
-            for idx, line in enumerate(lines):
-                if line == '':
-                    paragraph_start_idx = idx
-                    continue
-                if line == '---':
-                    tags = lines[paragraph_start_idx + 1:idx]
-                    for tag in self.collected_patch_tags:
-                        # Add Link: tag to start of tags paragraph
-                        if tag.startswith('Link:'):
-                            tags = [tag] + tags
-                        else:
-                            tags.append(tag)
-                    lines = lines[:paragraph_start_idx + 1] + tags + \
-                            lines[idx:]
-                    break
         return '\n'.join(lines)
 
     def get_field(self, field_name):
