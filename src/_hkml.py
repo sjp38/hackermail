@@ -14,7 +14,6 @@ import time
 import sys
 
 import _hkml_date
-import _hkml_fmtstr
 import hkml_cache
 import hkml_init
 
@@ -351,22 +350,6 @@ class Mail:
             self.additional_cc += recipients
         else:
             raise Exception('something wrong')
-
-    def add_cv(self, cvmail, sz_patchset):
-        in_patch_cv_lines = []
-
-        cv_subject = cvmail.get_field('subject')
-        first_paragraph = _hkml_fmtstr.wrap_line(
-                'Patch series', '\'%s\'' % cv_subject, 72)
-        first_paragraph = '\n'.join(first_paragraph)
-        in_patch_cv_lines = [first_paragraph, '']
-
-        cv_paragraphs = cvmail.get_field('body').strip().split('\n\n')
-        cv_msg = '\n\n'.join(cv_paragraphs[:-3])
-        in_patch_cv_lines.append(cv_msg)
-
-        in_patch_cv_lines += ['', 'This patch (of %d):' % sz_patchset, '']
-        self.cv_text = '\n'.join(in_patch_cv_lines)
 
     def url(self):
         site = get_manifest()['site']
