@@ -480,17 +480,6 @@ def find_add_tags(patch, patch_mail_item, mail_item_to_check):
     for reply in mail_item_to_check.reply_items:
         find_add_tags(patch, patch_mail_item, reply)
 
-def add_cc_tags_item(patch_mail_item):
-    patch_mail = patch_mail_item.mail
-    for recipient in recipients_of(patch_mail, 'cc'):
-        if recipient == patch_mail.get_field('from'):
-            continue
-        # add Cc: for formal recipients, e.g., having both name and email
-        # address, excluding mailing list.
-        if len(recipient.split()) == 1:
-            continue
-        patch_mail.add_patch_tag('Cc: %s' % recipient)
-
 def add_cc_tags(patch, patch_mail_item):
     for recipient in recipients_of(patch.mail, 'cc'):
         if recipient == patch.mail.get_field('from'):
