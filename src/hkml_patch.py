@@ -32,11 +32,9 @@ class Patch:
         self.additional_cc = []
 
     def set_cv_text(self, cv_mail, sz_series):
-        cv_text_lines = []
         subject = cv_mail.get_field('subject')
-        cv_text_lines.append(
-                _hkml_fmtstr.wrap_line(
-                    'Patch series', '\'%s\'' % subject, 72))
+        cv_text_lines = _hkml_fmtstr.wrap_line(
+                'Patch series', '\'%s\'' % subject, 72)
         cv_text_lines.append('')
 
         mail_text = hkml_open.mail_display_str(
