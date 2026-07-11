@@ -37,19 +37,13 @@ class Patch:
                 'Patch series', '\'%s\'' % subject, 72)
         cv_text_lines.append('')
 
-        mail_text = hkml_open.mail_display_str(
-                cv_mail, head_columns=None, valid_mbox=True)
-        three_dash_split = mail_text.split('\n---\n')
-        if len(three_dash_split) < 2:
-            return 'No three dash'
+        # drop summary, diff, baseline/git version
+        cv_paragraphs = cv_mail.get_field('body').strip().split('\n\n')
+        cv_msg = '\n\n'.join(cv_paragraphs[:-3])
+        cv_text_lines.append(cv_msg)
 
-        header_desc = three_dash_split[0]
-        pars = header_desc.split('\n\n')
-        desc = '\n\n'.join(pars[1:])
-        cv_text_lines.append(desc)
         cv_text_lines.append('')
         cv_text_lines.append('This patch (of %d):' % sz_series)
-        cv_text_lines.append('')
         self.cv_text = '\n'.join(cv_text_lines)
 
     def add_recipients(self, to, cc):
