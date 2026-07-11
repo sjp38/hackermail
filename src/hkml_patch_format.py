@@ -144,7 +144,14 @@ def get_patch_tag_cc(patch_file):
     tags_par = pars[0].split('\n\n')[-1]
     for line in tags_par.split('\n'):
         if line.startswith('Cc: '):
-            cc_list.append(' '.join(line.split()[1:]))
+            fields = line.split()
+            if fields[1] in [
+                    '<stable@vger.kernel.org>', '<stable@kernel.org>',
+                    'stable@vger.kernel.org', 'stable@kernel.org']:
+                recipient = fields[1]
+            else:
+                recipient = ' '.join(fields[1:])
+            cc_list.append(recipient)
     return cc_list
 
 def add_patches_recipients(patch_files, to, cc, first_patch_is_cv,
