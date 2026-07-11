@@ -54,6 +54,22 @@ class Patch:
         cv_text_lines.append('')
         self.cv_text = '\n'.join(cv_text_lines)
 
+    def add_recipients(self, to, cc):
+        if to is not None:
+            self.to  += to
+        if cc is not None:
+            self.cc += cc
+
+    def add_tag(self, tag_line):
+        fields = tag_line.split()
+        tag_name = fields[0]
+        val = ' '.join(fields[1:])
+        if not tag_name in self.collected_patch_tags:
+            self.collected_patch_tags[tag_name] = []
+        if val in self.collected_patch_tags[tag_name]:
+            return
+        self.collected_patch_tags[tag_name].append(val)
+
     def format_tags_par(self, orig_tags_par):
         if len(self.collected_patch_tags) == 0:
             return orig_tags_par, None
