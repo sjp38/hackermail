@@ -226,6 +226,9 @@ class Mail:
     def get_from(self):
         return self.get_field('from')
 
+    def get_body(self):
+        return self.get_field('body')
+
     def set_mbox(self):
         if self.gitdir is not None and self.gitid is not None:
             gitdir = self.gitdir
