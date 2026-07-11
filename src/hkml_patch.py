@@ -687,7 +687,12 @@ def recipients_of(mail, to_cc):
     field = mail.get_field(to_cc)
     if field is None:
         return []
-    return [r.strip() for r in field.split(',')]
+    recipients = []
+    for r in field.split(','):
+        r = r.strip()
+        if r != '':
+            recipients.append(r)
+    return recipients
 
 def common_recipients(patch_mails, to_cc):
     if len(patch_mails) == 0:
