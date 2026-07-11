@@ -325,52 +325,6 @@ def git_cherrypick_merge(patch_files, cv_mail, repo):
     add_noff_merge_commit(head_commit, cv_merge_msg, git_cmd)
     return None
 
-def apply_patches(patch_mails, repo):
-    err = None
-
-    has_cv = len(patch_mails) > 0 and is_cover_letter(patch_mails[0])
-    do_merge = False
-    if has_cv:
-        print('How should I apply the cover letter?')
-        print()
-        print('1: add to first patch\'s commit message  # default')
-        print('2: add as a bogus baseline commit')
-        print('3: add as a merge commit')
-        print('4: Ignore it.')
-        print()
-        answer = input('Enter the number: ')
-        try:
-            answer = int(answer)
-        except:
-            pass
-        if not answer in [1, 2, 3, 4]:
-            answer = 1
-        if answer == 1:
-            patch_mails[1].add_cv(patch_mails[0], len(patch_mails) - 1)
-        elif answer == 2:
-            cv_mail = patch_mails[0]
-            subject = '==== %s ====' % cv_mail.subject
-            content = '%s\n\n%s' % (cv_mail.subject, cv_mail.get_field('body'))
-            make_cover_letter_commit(subject, content)
-        elif answer == 3:
-            do_merge = True
-
-    patch_files, err = write_patch_mails(patch_mails)
-    if err is not None:
-        return 'writing patch files failed (%s)' % err
-    if do_merge:
-        err = git_cherrypick_merge(patch_files, patch_mails[0], repo)
-    else:
-        if has_cv:
-            err = git_am(patch_files[1:], repo)
-        else:
-            err = git_am(patch_files, repo)
-    if err is not None:
-        return err
-    # cleanup tempoeral patches only when success, to let investigation easy
-    rm_tmp_patch_dir(patch_files)
-    return None
-
 def apply_patches_new(patches, repo):
     err = None
 
