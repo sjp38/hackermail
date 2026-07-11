@@ -69,10 +69,6 @@ class Mail:
     __fields = None
     mbox = None
 
-    # for patch formatting
-    additional_to = None
-    additional_cc = None
-
     def set_subject_tags_series(self):
         subject = self.subject
         tag_start_idx = subject.find('[')
@@ -144,8 +140,6 @@ class Mail:
 
     def __init__(self, mbox=None, kvpairs=None, atom_entry=None, atom_ml=None):
         self.subject_tags = []
-        self.additional_to = []
-        self.additional_cc = []
 
         if mbox is None and kvpairs is None and atom_entry is None:
             return
@@ -215,21 +209,6 @@ class Mail:
 
         if not field_name in self.__fields:
             self.__parse_mbox()
-
-        if field_name == 'cc' and len(self.additional_cc) > 0:
-            if not field_name in self.__fields:
-                initial_cc = []
-            else:
-                initial_cc = self.__fields[field_name]
-                initial_cc = [r.strip() for r in initial_cc.split(',')]
-            return ', '.join(initial_cc + self.additional_cc)
-        if field_name == 'to' and len(self.additional_to) > 0:
-            if not field_name in self.__fields:
-                initial_to = []
-            else:
-                initial_to = self.__fields[field_name]
-                initial_to = [r.strip() for r in initial_to.split(',')]
-            return ', '.join(initial_to + self.additional_to)
 
         if not field_name in self.__fields:
             return None
