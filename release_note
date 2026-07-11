@@ -1,5 +1,8 @@
 This file contains major changes in each version since v1.0.0
 
+v1.6.5
+- Internal code cleanup.
+
 v1.6.4
 - hkml patch check: Check recipients based on get_maintainer.pl.
 
