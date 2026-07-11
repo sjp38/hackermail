@@ -208,6 +208,8 @@ def do_check_recipients(patch_files, patch_mails):
     cmd = [get_maintainer_pl, '--nogit', '--nogit-fallback', '--norolestats']
     missing_recipients = {}
     for idx, patch_file in enumerate(patch_files):
+        if is_cover_letter(patch_mails[idx]):
+            continue
         expects = _hkml.cmd_lines_output(cmd + [patch_file])
         patch_mail = patch_mails[idx]
         recipients = recipients_of(patch_mail, 'to')
