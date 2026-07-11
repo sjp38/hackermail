@@ -178,12 +178,12 @@ class Mail:
     def to_kvpairs(self):
         if self.mbox == None:
             # ensure mbox is set.  TODO: don't parse it unnecessarily
-            self.get_field('message-id')
+            self.get_msgid()
         return {
                 'gitid': self.gitid,
                 'gitdir': self.gitdir,
                 'subject': self.subject,
-                'msgid': self.get_field('message-id'),
+                'msgid': self.get_msgid(),
                 'mbox': self.mbox}
 
     def set_field(self, field_name, value):
@@ -324,7 +324,7 @@ class Mail:
 
     def url(self):
         site = get_manifest()['site']
-        return '%s/%s' % (site, self.get_field('message-id')[1:-1])
+        return '%s/%s' % (site, self.get_msgid()[1:-1])
 
 def mbox_body_decoded(message):
     '''message: email.message.Message'''

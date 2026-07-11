@@ -55,7 +55,7 @@ def menu_hkml_open(slist, answer, selection):
             args, suggest_manifest_update=False)
     for line_nr, mail_idx in list_data.line_nr_mail_idx_map.items():
         mail = list_data.mail_items[mail_idx].mail
-        if mail.get_field('message-id') == msgid:
+        if mail.get_msgid() == msgid:
             _, cols = slist.screen.getmaxyx()
             lines = hkml_open.mail_display_str(mail, cols).split('\n')
             show_text_viewer(slist.screen,
@@ -309,14 +309,14 @@ def menu_add_note(slist, answer, selection):
         return
     nr_lines_before_body = slist.lines.index('') + 1
     note_line_nr = slist.focus_row - nr_lines_before_body
-    hkml_mail_note.add_note(mail.get_field('message-id'), note_line_nr, note)
+    hkml_mail_note.add_note(mail.get_msgid(), note_line_nr, note)
 
 def menu_remove_notes(slist, answer, selection):
     mail, err = get_showing_mail(slist)
     if err is not None:
         print(err)
         return
-    msgid = mail.get_field('message-id')
+    msgid = mail.get_msgid()
     notes = hkml_mail_note.get_notes_for(msgid)
     if notes is None:
         print('No note for the mail')
@@ -459,7 +459,7 @@ def show_text_viewer_menu(c, slist):
     desc_lines = ['selected line: %s' % slist.lines[slist.focus_row]]
     text_view_data = slist.data
     if text_view_data.mail is not None:
-        msgid = text_view_data.mail.get_field('message-id')[1:-1]
+        msgid = text_view_data.mail.get_msgid()[1:-1]
         desc_lines.append('msgid: %s' % msgid)
     desc = '\n'.join(desc_lines)
 
@@ -616,7 +616,7 @@ def mail_line_callback(slist, line_idx):
     '''
     line = slist.lines[line_idx]
 
-    msgid = slist.data.mail.get_field('message-id')
+    msgid = slist.data.mail.get_msgid()
     notes = hkml_mail_note.get_notes_for(msgid)
     if notes is None:
         return line

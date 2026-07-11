@@ -129,7 +129,7 @@ def pr_w_time(text):
 
 def mail_in(mail, mails):
     for m in mails:
-        if m.get_field('message-id') == mail.get_field('message-id'):
+        if m.get_msgid() == mail.get_msgid():
             return True
     return False
 
@@ -157,7 +157,7 @@ def get_mails_to_check(request, ignore_mails_before, last_monitored_mails):
         if len(fetched_mails) > 0:
             last_monitored_mails[mailing_list] = fetched_mails[-1]
         for mail in fetched_mails:
-            msgid = mail.get_field('message-id')
+            msgid = mail.get_msgid()
             if not msgid in msgids:
                 mails_to_check.append(mail)
             msgids[msgid] = True

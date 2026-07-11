@@ -81,7 +81,7 @@ def open_focused_mail(c, slist):
     lines = hkml_open.mail_display_str(mail, cols).split('\n')
 
     cursor_position_cache = slist.data.last_cursor_position
-    msgid = mail.get_field('message-id')
+    msgid = mail.get_msgid()
     if msgid in cursor_position_cache:
         cursor_position = cursor_position_cache[msgid]
     else:
@@ -204,7 +204,7 @@ def hkml_list_args_for_msgid(msgid, current_list_args=None):
     return args
 
 def list_thread_of_focused_mail(c, slist):
-    msgid = get_focused_mail(slist).get_field('message-id')
+    msgid = get_focused_mail(slist).get_msgid()
     args = hkml_list_args_for_msgid(msgid, slist.data.list_args)
     gen_show_mails_list(slist.screen, args)
 
@@ -287,7 +287,7 @@ def do_remove_tags(data, answer, selection):
     refresh_list(slist, show_tagged_mails=True)
 
 def manage_tags_of_mail(slist, mail):
-    msgid = mail.get_field('message-id')
+    msgid = mail.get_msgid()
     tags_map = hkml_tag.read_tags_file()
 
     if msgid in tags_map:
@@ -348,24 +348,24 @@ def do_export_patch(data, answer, selection):
 
 def do_sashiko_patch(data, answer, selection):
     mail = data.mail
-    msgid = mail.get_field('message-id')[1:-1]
+    msgid = mail.get_msgid()[1:-1]
     return hkml_patch.fetch_pr_sashiko_review(msgid, thread_status=False,
                                               for_forwarding=False)
 
 def do_sashiko_patch_status(data, answer, selection):
     mail = data.mail
-    msgid = mail.get_field('message-id')[1:-1]
+    msgid = mail.get_msgid()[1:-1]
     return hkml_patch.fetch_pr_sashiko_reviews(msgid, for_forwarding=False)
 
 def do_sashiko_patch_forward(data, answer, selection):
     mail = data.mail
-    msgid = mail.get_field('message-id')[1:-1]
+    msgid = mail.get_msgid()[1:-1]
     return hkml_patch.forward_sashiko(
             msgid=msgid, thread_status=False, mail=mail)
 
 def do_sashiko_patch_status_forward(data, answer, selection):
     mail = data.mail
-    msgid = mail.get_field('message-id')[1:-1]
+    msgid = mail.get_msgid()[1:-1]
     return hkml_patch.forward_sashiko(
             msgid=msgid, thread_status=True, mail=mail)
 
@@ -1071,7 +1071,7 @@ def show_mails_list_menu(c, slist):
     else:
         menu_desc = 'selected mail: %s' % mail.subject
 
-    msgid = mail.get_field('message-id')[1:-1]
+    msgid = mail.get_msgid()[1:-1]
     menu_desc += '\nmsgid: %s' % msgid
 
     hkml_view.shell_mode_start(slist)
@@ -1196,7 +1196,7 @@ def show_mails_list(screen, mails_view_data):
     elif list_args.source_type == ['msgid']:
         for line_nr, mail_idx in list_data.line_nr_mail_idx_map.items():
             mail = list_data.mail_items[mail_idx].mail
-            mail_msgid = mail.get_field('message-id')[1:-1]
+            mail_msgid = mail.get_msgid()[1:-1]
             if mail_msgid in list_args.sources[0]:
                 slist.focus_row = list_data.len_comments + line_nr
                 slist.focus_col = 0
@@ -1294,10 +1294,10 @@ def generate_mails_view_data(args):
             thread_msgids = []
             for line_nr, mail_idx in list_data.line_nr_mail_idx_map.items():
                 mail = list_data.mail_items[mail_idx].mail
-                msgid = mail.get_field('message-id')
+                msgid = mail.get_msgid()
                 if len(thread_msgids) > 0 and thread_msgids[-1] == msgid:
                     continue
-                thread_msgids.append(mail.get_field('message-id'))
+                thread_msgids.append(mail.get_msgid())
         for msgid in thread_msgids:
             keys.append(hkml_list.args_to_lists_cache_key(
                 hkml_list_args_for_msgid(msgid, args)))

@@ -137,7 +137,7 @@ def find_ancestor_items_from_cache(mail_item, msgid_items, found_parents):
 def thread_items_of(mail_items, do_find_ancestors_from_cache=False):
     msgid_items = {}
     for mail_item in mail_items:
-        msgid = mail_item.mail.get_field('message-id')
+        msgid = mail_item.mail.get_msgid()
         if msgid is None:
             continue
         msgid_items[msgid] = mail_item
@@ -587,11 +587,11 @@ def add_replies(mail_items, replies_to_add, existing_msgids):
         new_items.append(orig_mail_item)
         for tag, mails in replies_to_add.items():
             for tagged_mail in mails:
-                tagged_msgid = tagged_mail.get_field('message-id')
+                tagged_msgid = tagged_mail.get_msgid()
                 if tagged_msgid in existing_msgids:
                     continue
                 parent_msgid = tagged_mail.get_field('in-reply-to-msgid')
-                orig_msgid = orig_mail_item.mail.get_field('message-id')
+                orig_msgid = orig_mail_item.mail.get_msgid()
                 if parent_msgid != orig_msgid:
                     continue
                 new_item = MailListMailItem(
@@ -614,7 +614,7 @@ def update_special_tagged_mail_items(mail_items):
     for mail_item in mail_items:
         if mail_item.added_by_tag is None:
             non_tag_mails.append(mail_item)
-            non_tag_mail_msgids[mail_item.mail.get_field('message-id')] = True
+            non_tag_mail_msgids[mail_item.mail.get_msgid()] = True
             continue
         if mail_item.parent_item is not None:
             mail_item.parent_item.reply_items.remove(mail_item)
@@ -729,7 +729,7 @@ class MailListMailItem:
                  added_by_tag):
         if mail_cache_key is None and mail is not None:
             mail_cache_key = hkml_cache.get_cache_key(
-                    mail.gitid, mail.gitdir, mail.get_field('message-id'))
+                    mail.gitid, mail.gitdir, mail.get_msgid())
         self.mail_cache_key = mail_cache_key
         self.mail = mail
         self.prdepth = prdepth
@@ -818,7 +818,7 @@ def mails_to_list_data(
     mail_items_to_show = []
     for mail in mails_to_show:
         cache_key = hkml_cache.get_cache_key(
-                mail.gitid, mail.gitdir, mail.get_field('message-id'))
+                mail.gitid, mail.gitdir, mail.get_msgid())
         mail_items_to_show.append(MailListMailItem(
             mail_cache_key=cache_key, mail=mail, prdepth=None,
             parent_item=None, added_by_tag=None))
@@ -1135,7 +1135,7 @@ def get_thread_mails_from_web(msgid):
     deduped_mails = []
     msgids = {}
     for mail in mails:
-        msgid = mail.get_field('message-id')
+        msgid = mail.get_msgid()
         if msgid in msgids:
             continue
         msgids[msgid] = True
@@ -1201,7 +1201,7 @@ def get_mails_from_multiple_sources(
         if err is not None:
             return None, err
         for mail in total_mails:
-            msgid = mail.get_field('message-id')
+            msgid = mail.get_msgid()
             if not msgid in msgids:
                 mails.append(mail)
             msgids[msgid] = True
@@ -1331,7 +1331,7 @@ def args_to_mails_list_data(args, suggest_manifest_update):
         for line_nr, mail_idx in list_data.line_nr_mail_idx_map.items():
             mail = list_data.mail_items[mail_idx].mail
             # drop enclosing <>
-            mail_msgid = mail.get_field('message-id')[1:-1]
+            mail_msgid = mail.get_msgid()[1:-1]
             if mail_msgid in args.sources[0]:
                 lines = list_data.text.split('\n')
                 comment = '# mail of the msgid is at row %d (%s ...)' % (

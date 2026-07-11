@@ -14,7 +14,7 @@ def export_mails(mails, export_file, human_readable=False):
     with open(export_file, 'w') as f:
         for mail in mails:
             if mail.mbox is None:
-                mail.get_field('message-id')
+                mail.get_msgid()
             if human_readable:
                 f.write(hkml_open.mail_display_str(
                     mail, head_columns=None, valid_mbox=True))

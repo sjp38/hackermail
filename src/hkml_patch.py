@@ -143,7 +143,7 @@ class Patch:
 def find_mail_item_from_thread(mail_item, msgid):
     if mail_item.mail is None:
         return None
-    if mail_item.mail.get_field('message-id') == msgid:
+    if mail_item.mail.get_msgid() == msgid:
         return mail_item
     for reply in mail_item.reply_items:
         found_item = find_mail_item_from_thread(reply, msgid)
@@ -186,7 +186,7 @@ def user_pointed_mail_item(mail_identifier):
 
     mail_item.set_mail()
     mail_item = get_mail_item_with_replies(
-            mail_item.mail.get_field('message-id'))
+            mail_item.mail.get_msgid())
     if mail_item is None:
         return None, 'get replies of the mail fail'
     return mail_item, None
@@ -491,7 +491,7 @@ def mail_item_to_patches(mail_item, dont_add_cv):
         patch = Patch(patch_mail_item.mail)
         patches.append(patch)
         if link_domain is not None:
-            msgid = patch_mail_item.mail.get_field('message-id')
+            msgid = patch_mail_item.mail.get_msgid()
             if msgid.startswith('<') and msgid.endswith('>'):
                 msgid = msgid[1:-1]
             url = '%s/%s' % (link_domain, msgid)
@@ -791,7 +791,7 @@ def forward_sashiko(msgid, thread_status, mail=None):
             return -1
         mail = None
         for m in mails:
-            if m.get_field('message-id') == '<%s>' % msgid:
+            if m.get_msgid() == '<%s>' % msgid:
                 mail = m
                 break
         if mail is None:

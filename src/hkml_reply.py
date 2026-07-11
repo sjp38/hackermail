@@ -15,7 +15,7 @@ def format_reply_subject(mail):
     return subject
 
 def notes_added(draft_body_lines, mail):
-    notes = hkml_mail_note.get_notes_for(mail.get_field('message-id'))
+    notes = hkml_mail_note.get_notes_for(mail.get_msgid())
     if notes is None:
         return draft_body_lines
     line_notes = notes.line_notes
@@ -34,7 +34,7 @@ def notes_added(draft_body_lines, mail):
 def format_reply(mail, attach_file, body_lines=None, subject=None):
     if subject is None:
         subject = format_reply_subject(mail)
-    in_reply_to = mail.get_field('message-id')
+    in_reply_to = mail.get_msgid()
     cc = [x for x in [mail.get_field('to'), mail.get_field('cc')] if x]
     to = [mail.get_field('from')]
 

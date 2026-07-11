@@ -22,7 +22,7 @@ def thread_str(mail_id, dont_use_internet, show_url):
             if mail is None:
                 print('wrong <mail_id>')
                 exit(1)
-            msgid = mail.get_field('message-id')
+            msgid = mail.get_msgid()
 
         mails_to_show, err = hkml_list.get_thread_mails_from_web(msgid)
         if err is not None:
