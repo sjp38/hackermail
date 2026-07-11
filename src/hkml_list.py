@@ -169,12 +169,12 @@ def format_entry(mail_item, pridx, max_digits_for_idx, show_nr_replies,
     prefix = '[%s]%s' % (index, ' ' * 2 * mail_item.prdepth)
 
     mail = mail_item.mail
-    subject = '%s' % mail.get_field('subject')
+    subject = '%s' % mail.subject
     if mail_item.prdepth and subject.lower().startswith('re: '):
         subject = subject[4:]
         if mail_item.parent_item is not None:
             parent_mail = mail_item.parent_item.mail
-            parent_subject = parent_mail.get_field('subject')
+            parent_subject = parent_mail.subject
             if parent_subject[:4].lower() == 're: ':
                 parent_subject = parent_subject[4:]
             if parent_subject == subject:

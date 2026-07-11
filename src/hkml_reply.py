@@ -9,7 +9,7 @@ import hkml_send
 import hkml_write
 
 def format_reply_subject(mail):
-    subject = mail.get_field('subject')
+    subject = mail.subject
     if subject and subject.split()[0].lower() != 're:':
         subject = 'Re: %s' % subject
     return subject

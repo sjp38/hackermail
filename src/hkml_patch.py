@@ -32,7 +32,7 @@ class Patch:
         self.additional_cc = []
 
     def set_cv_text(self, cv_mail, sz_series):
-        subject = cv_mail.get_field('subject')
+        subject = cv_mail.subject
         cv_text_lines = _hkml_fmtstr.wrap_line(
                 'Patch series', '\'%s\'' % subject, 72)
         cv_text_lines.append('')
@@ -450,8 +450,7 @@ def find_add_tags(patch, patch_mail_item, mail_item_to_check):
                     'Cc: stable@', 'Cc: <stable@']:
             if not line.startswith(tag):
                 continue
-            print('Found below from "%s"' %
-                  mail_item_to_check.mail.get_field('subject'))
+            print('Found below from "%s"' % mail_item_to_check.mail.subject)
             print('    %s' % line)
             answer = input('add the tag to the patch? [Y/n] ')
             if answer.lower() != 'n':
@@ -798,7 +797,7 @@ def forward_sashiko(msgid, thread_status, mail=None):
             print('cannot find mail from web-retrieved mails')
             return -1
 
-    orig_subject = mail.get_field('subject')
+    orig_subject = mail.subject
 
     if thread_status is True:
         text, err = fmt_sashiko_reviews_summary(msgid, for_forwarding=True)
