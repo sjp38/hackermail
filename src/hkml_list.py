@@ -117,7 +117,7 @@ class MailListDecorator:
         return self
 
 def find_ancestor_items_from_cache(mail_item, msgid_items, found_parents):
-    parent_msgid = mail_item.mail.get_field('in-reply-to-msgid')
+    parent_msgid = mail_item.mail.get_in_reply_to_msgid()
     if parent_msgid is None or parent_msgid in msgid_items:
         return
     parent = hkml_cache.get_mail(key=parent_msgid)
@@ -151,7 +151,7 @@ def thread_items_of(mail_items, do_find_ancestors_from_cache=False):
 
     threads = []
     for mail_item in mail_items:
-        parent_msgid = mail_item.mail.get_field('in-reply-to-msgid')
+        parent_msgid = mail_item.mail.get_in_reply_to_msgid()
         if not parent_msgid in msgid_items:
             threads.append(mail_item)
         else:
@@ -590,7 +590,7 @@ def add_replies(mail_items, replies_to_add, existing_msgids):
                 tagged_msgid = tagged_mail.get_msgid()
                 if tagged_msgid in existing_msgids:
                     continue
-                parent_msgid = tagged_mail.get_field('in-reply-to-msgid')
+                parent_msgid = tagged_mail.get_in_reply_to_msgid()
                 orig_msgid = orig_mail_item.mail.get_msgid()
                 if parent_msgid != orig_msgid:
                     continue
