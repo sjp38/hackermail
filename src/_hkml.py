@@ -223,6 +223,9 @@ class Mail:
     def get_in_reply_to_msgid(self):
         return self.get_field('in-reply-to-msgid')
 
+    def get_from(self):
+        return self.get_field('from')
+
     def set_mbox(self):
         if self.gitdir is not None and self.gitid is not None:
             gitdir = self.gitdir
