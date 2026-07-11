@@ -490,6 +490,16 @@ def add_cc_tags_item(patch_mail_item):
             continue
         patch_mail.add_patch_tag('Cc: %s' % recipient)
 
+def add_cc_tags(patch, patch_mail_item):
+    for recipient in recipients_of(patch.mail, 'cc'):
+        if recipient == patch.mail.get_field('from'):
+            continue
+        # add Cc: for formal recipients, e.g., having both name and email
+        # address, excluding mailing list.
+        if len(recipient.split()) == 1:
+            continue
+        patch.add_tag('Cc: %s' % recipient)
+
 def get_patch_mail_items(mail_item, dont_add_cv):
     patch_mail_items = [mail_item]
     is_cv = is_cover_letter(mail_item.mail)
