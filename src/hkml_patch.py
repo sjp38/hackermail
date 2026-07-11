@@ -371,6 +371,52 @@ def apply_patches(patch_mails, repo):
     rm_tmp_patch_dir(patch_files)
     return None
 
+def apply_patches_new(patches, repo):
+    err = None
+
+    has_cv = len(patches) > 0 and is_cover_letter(patches[0].mail)
+    do_merge = False
+    if has_cv:
+        print('How should I apply the cover letter?')
+        print()
+        print('1: add to first patch\'s commit message  # default')
+        print('2: add as a bogus baseline commit')
+        print('3: add as a merge commit')
+        print('4: Ignore it.')
+        print()
+        answer = input('Enter the number: ')
+        try:
+            answer = int(answer)
+        except:
+            pass
+        if not answer in [1, 2, 3, 4]:
+            answer = 1
+        if answer == 1:
+            patches[1].set_cv_text(patches[0].mail, len(patches) - 1)
+        elif answer == 2:
+            cv_mail = patches[0].mail
+            subject = '==== %s ====' % cv_mail.subject
+            content = '%s\n\n%s' % (cv_mail.subject, cv_mail.get_field('body'))
+            make_cover_letter_commit(subject, content)
+        elif answer == 3:
+            do_merge = True
+
+    patch_files, err = write_patches(patches)
+    if err is not None:
+        return 'writing patch files failed (%s)' % err
+    if do_merge:
+        err = git_cherrypick_merge(patch_files, patches[0].mail, repo)
+    else:
+        if has_cv:
+            err = git_am(patch_files[1:], repo)
+        else:
+            err = git_am(patch_files, repo)
+    if err is not None:
+        return err
+    # cleanup tempoeral patches only when success, to let investigation easy
+    rm_tmp_patch_dir(patch_files)
+    return None
+
 def add_patch_suffix(basename, count):
     patch_sections = basename.split('.')
     suffix = '-' + str(count)
