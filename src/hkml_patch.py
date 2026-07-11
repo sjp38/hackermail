@@ -48,9 +48,9 @@ class Patch:
 
     def add_recipients(self, to, cc):
         if to is not None:
-            self.to  += to
+            self.additional_to  += to
         if cc is not None:
-            self.cc += cc
+            self.additional_cc += cc
 
     def add_tag(self, tag_line):
         fields = tag_line.split()
