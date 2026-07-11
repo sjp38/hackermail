@@ -44,7 +44,7 @@ def format_reply(mail, attach_file, body_lines=None, subject=None):
         if date and to[0]:
             body_lines.append('On %s %s wrote:' % (date, to[0]))
             body_lines.append('')
-        body = mail.get_field('body')
+        body = mail.get_body()
         for line in body.split('\n'):
             body_lines.append('> %s' % line)
     body_lines = notes_added(body_lines, mail)

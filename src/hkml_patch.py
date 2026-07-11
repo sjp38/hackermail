@@ -38,7 +38,7 @@ class Patch:
         cv_text_lines.append('')
 
         # drop summary, diff, baseline/git version
-        cv_paragraphs = cv_mail.get_field('body').strip().split('\n\n')
+        cv_paragraphs = cv_mail.get_body().strip().split('\n\n')
         cv_msg = '\n\n'.join(cv_paragraphs[:-3])
         cv_text_lines.append(cv_msg)
 
@@ -321,7 +321,7 @@ def git_cherrypick_merge(patch_files, cv_mail, repo):
     cv_merge_msg = '\n'.join([
         'Merge patch series \'%s\'' % cv_mail.subject, '',
         'Below is the cover letter of the series', '',
-        cv_mail.get_field('body')])
+        cv_mail.get_body()])
     add_noff_merge_commit(head_commit, cv_merge_msg, git_cmd)
     return None
 
@@ -350,7 +350,7 @@ def apply_patches(patches, repo):
         elif answer == 2:
             cv_mail = patches[0].mail
             subject = '==== %s ====' % cv_mail.subject
-            content = '%s\n\n%s' % (cv_mail.subject, cv_mail.get_field('body'))
+            content = '%s\n\n%s' % (cv_mail.subject, cv_mail.get_body())
             make_cover_letter_commit(subject, content)
         elif answer == 3:
             do_merge = True
@@ -445,7 +445,7 @@ def get_link_tag_domain():
         return None
 
 def find_add_tags(patch, patch_mail_item, mail_item_to_check):
-    for line in mail_item_to_check.mail.get_field('body').split('\n'):
+    for line in mail_item_to_check.mail.get_body().split('\n'):
         for tag in ['Tested-by:', 'Reviewed-by:', 'Acked-by:', 'Fixes:',
                     'Cc: stable@', 'Cc: <stable@']:
             if not line.startswith(tag):

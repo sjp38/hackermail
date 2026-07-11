@@ -822,7 +822,7 @@ def menu_search_mail_body_keywords(handler_common_data, user_input, selection):
         mail = mail_of_row(slist, row)
         if mail is None:
             continue
-        body = mail.get_field('body')
+        body = mail.get_body()
         searched = True
         for keyword in keywords:
             if not keyword in body:
@@ -856,14 +856,14 @@ def reviewed_by_replies(reply_items):
         return False
     for mail_item in reply_items:
         mail = mail_item.mail
-        for line in mail.get_field('body').split('\n'):
+        for line in mail.get_body().split('\n'):
             if line.startswith('Reviewed-by:'):
                 return True
         return reviewed_by_replies(mail_item.reply_items)
 
 def is_reviewed(mail_item):
     mail = mail_item.mail
-    body = mail.get_field('body')
+    body = mail.get_body()
     pars = body.split('\n---\n')
     if len(pars) < 2:
         return False, '--- line not found'
@@ -917,7 +917,7 @@ def get_files_for_reviewer(reviewer, maintainers_file_content):
 
 def files_touched_by(patch_mail):
     touched_files = []
-    for idx, line in enumerate(patch_mail.get_field('body').split('\n')):
+    for idx, line in enumerate(patch_mail.get_body().split('\n')):
         # parse diff lines that look like, e.g.
         # diff --git a/mm/swap.h b/mm/swap.h
         fields = line.split()

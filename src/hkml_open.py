@@ -81,7 +81,7 @@ def mail_display_str(mail, head_columns=None, valid_mbox=False,
                 lines += _hkml_fmtstr.wrap_line('%s:' % head, value, head_columns)
             else:
                 lines.append('%s: %s' % (head, value))
-    lines.append('\n%s' % mail.get_field('body'))
+    lines.append('\n%s' % mail.get_body())
     return '\n'.join(lines)
 
 def last_open_mail_idx():

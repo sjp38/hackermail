@@ -357,7 +357,7 @@ class MailListFilter:
             return True
         if not keywords_in(self.subject_keywords, mail.subject):
             return True
-        if not keywords_in(self.body_keywords, mail.get_field('body')):
+        if not keywords_in(self.body_keywords, mail.get_body()):
             return True
         return False
 
