@@ -462,6 +462,23 @@ def get_link_tag_domain():
     else:
         return None
 
+def find_add_tags(patch, patch_mail_item, mail_item_to_check):
+    for line in mail_item_to_check.mail.get_field('body').split('\n'):
+        for tag in ['Tested-by:', 'Reviewed-by:', 'Acked-by:', 'Fixes:',
+                    'Cc: stable@', 'Cc: <stable@']:
+            if not line.startswith(tag):
+                continue
+            print('Found below from "%s"' %
+                  mail_item_to_check.mail.get_field('subject'))
+            print('    %s' % line)
+            answer = input('add the tag to the patch? [Y/n] ')
+            if answer.lower() != 'n':
+                patch.add_tag(line)
+    if mail_item_to_check.reply_items is None:
+        return
+    for reply in mail_item_to_check.reply_items:
+        find_add_tags(patch, patch_mail_item, reply)
+
 def add_cc_tags_item(patch_mail_item):
     patch_mail = patch_mail_item.mail
     for recipient in recipients_of(patch_mail, 'cc'):
