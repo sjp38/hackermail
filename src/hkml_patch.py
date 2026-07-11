@@ -623,6 +623,42 @@ def write_patch_mails(patch_mails):
         files.append(file_name)
     return files, None
 
+def write_patches(patches):
+    if len(patches) > 9999:
+        return None, '>9999 patches'
+    files = []
+    temp_dir = tempfile.mkdtemp(prefix='hkml_patch_')
+    # give index 0 to only coverletter
+    if is_cover_letter(patches[0].mail):
+        idx_offset = 0
+    else:
+        idx_offset = 1
+    for idx, patch in enumerate(patches):
+        file_name_words = ['%04d-' % (idx + idx_offset)]
+        subject = patch.mail.subject.lower()
+        # exclude [PATCH ...] like suffix
+        tag_closing_idx = subject.find(']')
+        subject = subject[tag_closing_idx + 1:]
+        for c in subject:
+            if not c.isalpha() and not c.isdigit():
+                # avoid multiple '-' in the name
+                if file_name_words[-1][-1] == '-':
+                    continue
+                c = '-'
+            file_name_words.append(c)
+        file_name_words.append('.patch')
+        file_name = ''.join(file_name_words)
+        file_name = os.path.join(temp_dir, file_name)
+
+        text, err = patch.format_str()
+        if err is not None:
+            return None, err
+
+        with open(file_name, 'w') as f:
+            f.write(text)
+        files.append(file_name)
+    return files, None
+
 def check_apply_or_export_item(mail_item, args):
     patch_mail_items, err = get_patch_mail_items(mail_item, args.dont_add_cv)
     if err is not None:
