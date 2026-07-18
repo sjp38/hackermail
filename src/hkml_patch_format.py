@@ -581,6 +581,10 @@ def main(args):
 
     if answer.lower() != 'y':
         return
+    answer = input(
+            'Add "Message-Id:" header to the patch files after sent? [Y/n] ')
+    add_msgid = answer.lower() != 'n'
+
     print('Ok, I\'m doing "git send-email".  You will still get ' \
             'the prompts from "git send-email" for final confirmation.')
     lines = _hkml.cmd_lines_output(
@@ -599,18 +603,16 @@ def main(args):
     for idx, msgid in enumerate(msgids):
         print('- patch %d: %s' % (idx, msgid))
     print()
-    answer = input('May I add the msgids to patch files? [y/N] ')
-    if answer.lower() != 'y':
-        return
-    for idx, patch_file in enumerate(patch_files):
-        with open(patch_file, 'r') as f:
-            text = f.read()
-        pars = text.split('\n\n')
-        pars[0] += '\nMessage-Id: %s' % msgids[idx]
-        with open(patch_file, 'w') as f:
-            f.write('\n\n'.join(pars))
-    print()
-    print('Done.  patch files are updated with \'Message-Id:\' header')
+    if add_msgid is True:
+        for idx, patch_file in enumerate(patch_files):
+            with open(patch_file, 'r') as f:
+                text = f.read()
+            pars = text.split('\n\n')
+            pars[0] += '\nMessage-Id: %s' % msgids[idx]
+            with open(patch_file, 'w') as f:
+                f.write('\n\n'.join(pars))
+        print()
+        print('patch files are updated with \'Message-Id:\' header')
 
 def set_argparser(parser):
     parser.add_argument('commits', metavar='<commits>',
