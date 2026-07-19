@@ -611,8 +611,7 @@ def main(args):
             pars[0] += '\nMessage-Id: %s' % msgids[idx]
             with open(patch_file, 'w') as f:
                 f.write('\n\n'.join(pars))
-        print()
-        print('patch files are updated with \'Message-Id:\' header')
+        print('\'Message-Id:\' headers are also added to patch files.')
 
 def set_argparser(parser):
     parser.add_argument('commits', metavar='<commits>',
