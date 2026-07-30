@@ -204,11 +204,15 @@ def set_item(key, list_data, keep_date=False):
 
     comments_lines = list_data.comments_lines
     if len(comments_lines) > 0:
-        if comments_lines[-1].startswith('# mail of the msgid is at row '):
-            fields = comments_lines[-1].split()
-            new_nr = int(fields[8]) + 1
-            new_line = ' '.join(fields[:8] + ['%d' % new_nr] + fields[9:])
-            comments_lines = comments_lines[:-1] + [new_line]
+        location_prefix = '# mail of the msgid is at row '
+        location = comments_lines[-1]
+        if location.startswith(location_prefix):
+            row_end = location.find(',', len(location_prefix))
+            if row_end != -1:
+                row = int(location[len(location_prefix):row_end]) + 1
+                location = '%s%d%s' % (
+                        location_prefix, row, location[row_end:])
+                comments_lines = comments_lines[:-1] + [location]
         mails_lines = list_data.mail_lines
         list_str = '\n'.join(comments_lines + mails_lines)
 

@@ -1328,22 +1328,28 @@ def args_to_mails_list_data(args, suggest_manifest_update):
     if err is not None:
         return None, err
     if args.source_type == ['msgid']:
-        for line_nr, mail_idx in list_data.line_nr_mail_idx_map.items():
-            mail = list_data.mail_items[mail_idx].mail
-            # drop enclosing <>
-            mail_msgid = mail.get_msgid()[1:-1]
-            if mail_msgid in args.sources[0]:
-                lines = list_data.text.split('\n')
-                comment = '# mail of the msgid is at row %d (%s ...)' % (
-                        line_nr + list_data.len_comments + 1,
-                        lines[line_nr + list_data.len_comments][:45])
-                list_data.append_comments([comment])
-                break
+        add_msgid_location_comment(list_data, args.sources[0])
 
     hkml_cache.writeback_mails()
     _hkml_list_cache.set_item(lists_cache_key, list_data)
 
     return list_data, None
+
+def add_msgid_location_comment(list_data, source):
+    for line_nr, mail_idx in list_data.line_nr_mail_idx_map.items():
+        mail = list_data.mail_items[mail_idx].mail
+        # drop enclosing <>
+        mail_msgid = mail.get_msgid()[1:-1]
+        if mail_msgid not in source:
+            continue
+
+        # Account for this comment itself and convert to one-based row.
+        row = line_nr + list_data.len_comments + 2
+        comment = (
+                '# mail of the msgid is at row %d, mail index %d (%s ...)' %
+                (row, mail_idx, list_data.mail_lines[line_nr][:45]))
+        list_data.append_comments([comment])
+        return
 
 def print_options_for(category):
     parser = argparse.ArgumentParser(add_help=False)
