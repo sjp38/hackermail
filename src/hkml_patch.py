@@ -126,7 +126,7 @@ class Patch:
         three_dash_split = mail_text.split('\n---\n')
         if len(three_dash_split) < 2:
             return None, 'No three dash'
-        header_desc = three_dash_split[0]
+        header_desc = three_dash_split[0].strip()
         header_desc_pars = header_desc.split('\n\n')
 
         if self.cv_text is not None:
