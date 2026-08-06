@@ -140,7 +140,7 @@ def send_mail(mboxfile, get_confirm, erase_mbox, orig_draft_subject=None):
         os.remove(mboxfile)
 
 def main(args):
-    send_mail(args.mbox_file, get_confirm=False, erase_mbox=False)
+    send_mail(args.mbox_file, get_confirm=True, erase_mbox=False)
 
 def set_argparser(parser=None):
     parser.description = 'send a mail'
