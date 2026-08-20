@@ -3,6 +3,7 @@ This file contains major changes in each version since v1.0.0
 v1.6.6
 - hkml patch format: add message-id header by default, ask before sending.
 - hkml send: get user confirm of the mail content.
+- Add 'hkml version' command.
 
 v1.6.5
 - Internal code cleanup.
