@@ -69,8 +69,8 @@ def write_tags_single_file(tags_map, file_idx):
         json.dump(tags_map, f, indent=4, sort_keys=True)
 
     if profile_runtime is True:
-        read_time_seconds = time.time() - start_time
-        hkml_view.log('tag file write time: %s seconds' % read_time_seconds)
+        hkml_view.log('tag file write time: %s seconds' %
+                      (time.time() - start_time))
 
 def write_tags_file(tags_map, sync_after):
     profile_runtime = hkml_config.get_config(
@@ -90,17 +90,16 @@ def write_tags_file(tags_map, sync_after):
     write_tags_single_file(tags_map_to_write, None)
 
     if profile_runtime is True:
-        read_time_seconds = time.time() - start_time
-        hkml_view.log('tag files write time: %s seconds' % read_time_seconds)
-
-    if profile_runtime is True:
+        hkml_view.log('tag files write time: %s seconds' %
+                      (time.time() - start_time))
         start_time = time.time()
 
     if hkml_sync.syncup_ready() and sync_after is True:
         hkml_sync.syncup(_hkml.get_hkml_dir(), remote=None)
 
     if profile_runtime is True:
-        print('tags sync time: %s seconds' % (time.time() - start_time))
+        hkml_view.log('tags sync time: %s seconds' %
+                      ( time.time() - start_time))
 
 def tags_of_msgid(msgid):
     tags_map = read_tags_file()
