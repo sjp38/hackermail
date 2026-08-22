@@ -24,6 +24,14 @@ are sorted by the msgid key.  Then, the key-value pairs are saved into
 tags_<number> file for 100 entries each.  The <number> starts from 0 and
 increase for each 100 entries limit.  The last <100 entries are saved into
 'tags' file.
+
+The files structure have rooms to improve.  Most operations being executed are
+mails_of_tag().  Maybe having files per tag name is better.  Having msgid to
+tag names data together would be good for tags_of_msgid() acceleration.
+
+That said, reading and writing the files take only about 50ms and 200ms when
+there are ~3,000 mails of tags.  Meanwhile, tags syncing takes ~5 seconds.
+Still better to optimize but no need to rush.
 '''
 
 def read_tags_file():
