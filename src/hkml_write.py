@@ -22,18 +22,27 @@ SIGNATURE_WARNING = ['',
     ' */',]
 SIGNATURE_WARNING_LEN = len(SIGNATURE_WARNING) - 1 # first line is blank
 
-coloring_notice = [
+coloring_notice_header = [
         '/*',
         ' * !THE FOLLOWING COMMENT WAS AUTOMATICALLY ADDED BY HKML.',
         ' * If you leave this block untouched, then hkml will automatically',
         ' * remove this block before sending.',
         ' *',
+        ]
+coloring_notice_footer = [' */']
+coloring_notice_vim = coloring_notice_header + [
         ' * Note that Original and past lines of the draft are colored',
         ' * using vim commands.  You can disable the coloring using',
         ' * ":match past" and ":2match orig" with random keywords.',
         ' * E.g., ":match past 32l4kg3l" and "2match orig sdflse334s".',
-        ' */',
-        ]
+        ] + coloring_notice_footer
+coloring_notice_kak = coloring_notice_header + [
+        ' * Note that Original and past lines of the draft are colored',
+        ' * using kakoune commands.  You can disable the coloring using',
+        ' * ":remove-highlighter window/past" and',
+        ' * ":remove-highlighter window/orig".',
+        ] + coloring_notice_footer
+coloring_notices = [coloring_notice_vim, coloring_notice_kak]
 
 def git_sendemail_valid_recipients(recipients):
     """each line should be less than 998 char"""
@@ -120,12 +129,12 @@ def ask_editor(default_editor):
         choices = [default_editor]
     else:
         choices = []
-    for editor in ['vim', 'nvim', 'emacs', 'nano']:
+    for editor in ['vim', 'nvim', 'emacs', 'nano', 'kak']:
         if not editor in choices:
             if _hkml_subproc.cmd_available(editor):
                 choices.append(editor)
     if choices == []:
-        print('please install vim, nvim, emacs or nano and retry')
+        print('please install vim, nvim, emacs, nano or kak and retry')
         exit(1)
     print('I will open a text editor to let you edit the mail.')
     print('What text editor shall I use?')
@@ -143,7 +152,7 @@ def ask_editor(default_editor):
         cmd = choices[0]
     return cmd
 
-def add_coloring_explanation(file_path):
+def add_coloring_explanation(file_path, notice):
     with open(file_path, 'r') as f:
         content = f.read()
 
@@ -151,7 +160,7 @@ def add_coloring_explanation(file_path):
     body_start_line = len(header.splitlines()) + 1
 
     lines = content.splitlines()
-    new_lines = lines[:body_start_line] + coloring_notice
+    new_lines = lines[:body_start_line] + notice
     new_lines += lines[body_start_line:]
     with open(file_path, 'w') as f:
         f.write('\n'.join(new_lines))
@@ -161,7 +170,7 @@ def open_editor(file_path, target_desc='mail', cursor_row=0, is_reply=False):
     editor = ask_editor(editor)
 
     cmd = [editor, file_path]
-    if cursor_row != 0 and editor in ['vim', 'nvim', 'nano']:
+    if cursor_row != 0 and editor in ['vim', 'nvim', 'nano', 'kak']:
         answer, selection_idx, err = _hkml_cli.ask_selection(
                 desc='Seems you are replying on a mail that ' \
                         'you were reading with the cursor on %d-th row.  ' \
@@ -181,7 +190,12 @@ def open_editor(file_path, target_desc='mail', cursor_row=0, is_reply=False):
             '''highlight orig ctermfg=darkgreen guifg=darkgreen''',
             '''2match orig /^> \\([^>].*\\|\\)$/''',
             ]
-    if target_desc == 'mail' and editor in ['vim', 'nvim']:
+    # kakoune executes the '-e' argument as commands on client initialisation
+    kak_cmds = [
+            '''add-highlighter window/past regex '^> >.*$' 0:blue''',
+            '''add-highlighter window/orig regex '^> ([^>].*|)$' 0:green''',
+            ]
+    if target_desc == 'mail' and editor in ['vim', 'nvim', 'kak']:
         answer, selection, err = _hkml_cli.ask_selection(
                 desc=''.join([
                     'On %s, I can show lines from past mails ' % editor,
@@ -195,11 +209,16 @@ def open_editor(file_path, target_desc='mail', cursor_row=0, is_reply=False):
                 allow_cancel=False, allow_error=False)
         if selection == 0:
             options = []
-            for vim_cmd in vim_cmds:
-                options.append('-c')
-                options.append(vim_cmd)
+            if editor == 'kak':
+                options += ['-e', '; '.join(kak_cmds)]
+                notice = coloring_notice_kak
+            else:
+                for vim_cmd in vim_cmds:
+                    options.append('-c')
+                    options.append(vim_cmd)
+                notice = coloring_notice_vim
             cmd += options
-            add_coloring_explanation(file_path)
+            add_coloring_explanation(file_path, notice)
 
     if subprocess.call(cmd) != 0:
         return 'The editor for %s exit with an error.' % target_desc
