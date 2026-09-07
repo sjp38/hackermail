@@ -28,7 +28,7 @@ def do_todo(patch_file):
     par_idxs_for_commentary = []
     pars_for_commentary = []
     for idx, par in enumerate(pars):
-        if par.startswith('/* TODO: move below to commentary */\n'):
+        if par.split('\n')[0] == '/* TODO: move below to commentary */':
             # move all paragraphs except the alst one (tags including S-o-b)
             print()
             print('Found TODO for moving below paragraphs to commentary.')
