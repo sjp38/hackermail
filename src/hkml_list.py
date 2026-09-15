@@ -1302,7 +1302,7 @@ def args_to_mails_list_data(args, suggest_manifest_update):
             return None, 'parsing --until fail (%s)' % err
 
     if args.nr_mails is not None:
-        since = (until - datetime.timedelta(days=1)).strftime('%Y-%m-%d')
+        since = until - datetime.timedelta(days=1)
         args.min_nr_mails = args.nr_mails
         args.max_nr_mails = args.nr_mails
 
