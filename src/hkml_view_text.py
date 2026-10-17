@@ -498,8 +498,10 @@ def text_color_callback(slist, line_idx):
             return hkml_view.add_color
         elif line[0] == '-':
             return hkml_view.delete_color
-    elif line[0] == '>':
+    elif line.startswith('> > ') or line.startswith('>> '):
         return hkml_view.original_color
+    elif line[0] == '>':
+        return hkml_view.focus_color
     return hkml_view.normal_color
 
 def hunk_length(lines, orig_content, new_content):
