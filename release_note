@@ -1,5 +1,9 @@
 This file contains major changes in each version since v1.0.0
 
+v1.6.8
+- 'hkml list': Fixup --since bug.
+- Use yellow color for quoted previous mail message.
+
 v1.6.7
 - Support kaoune (kak) as a text editor.
 - Support 'TODO: move below to commentary' only paragraph.
