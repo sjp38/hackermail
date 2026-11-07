@@ -47,6 +47,7 @@ def args_to_lists_cache_key(args):
             'from_to_keywords',
             'from_to_cc_keywords', 'subject_keywords', 'body_keywords', 'new',
             'collapse', 'sort_threads_by', 'ascend', 'hot', 'cols', 'url',
+            'grep_body',
             'hide_stat', 'runtime_profile', 'max_len_list', 'dim_old', 'fetch',
             'ignore_cache', 'stdout', 'use_less', 'read_dates', 'keywords_for',
             'patches_for', 'keywords', 'alias'}
@@ -76,6 +77,7 @@ class MailListDecorator:
     ascend = None
     cols = None
     show_url = None
+    grep_body_keywords = None
     hide_stat = None
     runtime_profile = None
     max_len = None
@@ -96,6 +98,7 @@ class MailListDecorator:
         self.cols = args.cols
 
         self.show_url = args.url
+        self.grep_body_keywords = args.grep_body
         self.hide_stat = args.hide_stat
         self.runtime_profile = args.runtime_profile
         self.max_len = args.max_len_list
@@ -162,7 +165,7 @@ def thread_items_of(mail_items, do_find_ancestors_from_cache=False):
     return threads
 
 def format_entry(mail_item, pridx, max_digits_for_idx, show_nr_replies,
-                 show_url, nr_cols):
+                 show_url, grep_body_keywords, nr_cols):
     index = '%d' % pridx
     nr_zeroes = max_digits_for_idx - len(index)
     index = '%s%s' % ('0' * nr_zeroes, index)
@@ -188,6 +191,16 @@ def format_entry(mail_item, pridx, max_digits_for_idx, show_nr_replies,
         suffices.append('%d+ msgs' % nr_reply_items_of(mail_item))
     if show_url:
         suffices.append(mail.url())
+
+    if grep_body_keywords is not None:
+        body = mail.get_body()
+        grepped_lines = []
+        for line in body.split('\n'):
+            for keyword in grep_body_keywords:
+                if keyword in line:
+                    grepped_lines.append(line)
+        if len(grepped_lines) > 0:
+            suffices.append(', grep (%s)' % (','.join(grepped_lines)))
     suffix = ' (%s)' % ', '.join(suffices)
 
     if mail_item.added_by_tag is not None:
@@ -661,6 +674,7 @@ def fmt_mails_text(mail_items, list_decorator, mails_to_collapse):
         return lines, line_nr_mail_idx_map
     collapse_threads = list_decorator.collapse
     show_url = list_decorator.show_url
+    grep_body_keywords = list_decorator.grep_body_keywords
     nr_cols = list_decorator.cols
 
     max_index = len(mail_items) - 1
@@ -682,7 +696,7 @@ def fmt_mails_text(mail_items, list_decorator, mails_to_collapse):
             continue
         mail_lines = format_entry(
                 mail_item, idx, max_digits_for_idx, show_nr_replies, show_url,
-                nr_cols)
+                grep_body_keywords, nr_cols)
         for line_nr in range(len(lines), len(lines) + len(mail_lines)):
             line_nr_mail_idx_map[line_nr] = idx
         lines += mail_lines
@@ -1476,6 +1490,8 @@ def add_decoration_arguments(parser, show_help):
     parser.add_argument('--url', action='store_true',
                         help='print URLs of the mails'
                         if show_help else argparse.SUPPRESS)
+    parser.add_argument('--grep_body', metavar='<keyword>', nargs='+',
+                        help='grep and show keywords in body')
     parser.add_argument('--hide_stat', action='store_true',
                         help='hide stat of the mails'
                         if show_help else argparse.SUPPRESS)
