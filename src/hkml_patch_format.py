@@ -269,6 +269,21 @@ def find_topic_merge_commit(base_commit, last_commit):
         return hashes[0]
     return None
 
+def update_baseline_to_parent(patch_file):
+    with open(patch_file, 'r') as f:
+        content = f.read()
+    lines = content.split('\n')
+    base_commit_line = lines[-4]
+    if not base_commit_line.startswith('base-commit: '):
+        raise Exception('base-commit line not found')
+    base_commit = base_commit_line.split()[-1]
+    base_commit = subprocess.check_output(
+            ['git', 'rev-parse', '%s^' % base_commit]).decode().strip()
+    lines[-4] = 'base-commit: %s' % base_commit
+    content = '\n'.join(lines)
+    with open(patch_file, 'w') as f:
+        f.write(content)
+
 def add_base_or_merge_commit_as_cv(patch_file, base_commit, commit_ids):
     merge_commit = find_topic_merge_commit(base_commit, commit_ids[0])
     if merge_commit is None:
@@ -278,6 +293,7 @@ def add_base_or_merge_commit_as_cv(patch_file, base_commit, commit_ids):
             return
 
         fillup_cv_from_commit(patch_file, base_commit)
+        update_baseline_to_parent(patch_file)
         return
 
     base_commit_title = subprocess.check_output(
