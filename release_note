@@ -1,5 +1,9 @@
 This file contains major changes in each version since v1.0.0
 
+v1.6.9
+- Do not strip mail body.
+- hkml list: Support showing body lines of keywords (--grep_body_keywords).
+
 v1.6.8
 - 'hkml list': Fixup --since bug.
 - Use yellow color for quoted previous mail message.
